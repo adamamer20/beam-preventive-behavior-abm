@@ -1,0 +1,302 @@
+[
+  {
+    "model": "B_COVID_MAIN_vax_willingness_T12_ENGINES_STAKESdanger",
+    "group": "B_COVID",
+    "description": "Compressed ABM backbone (engines) for initial-offer willingness (T12), with stakes as perceived danger (covid_perceived_danger_T12)",
+    "outcome": "vax_willingness_T12",
+    "model_type": "ordinal",
+    "blocks": [
+      "controls_demography_SES",
+      "trust_engine",
+      "disposition_engine",
+      "stakes_engine",
+      "norms_engine",
+      "legitimacy_engine",
+      "missingness"
+    ],
+    "predictors": {
+      "controls_demography_SES": [
+        "age",
+        "sex_female",
+        "M_education",
+        "income_ppp_norm",
+        "minority",
+        "M_religion"
+      ],
+      "trust_engine": [
+        "institutional_trust_avg"
+      ],
+      "disposition_engine": [
+        "fivec_pro_vax_idx"
+      ],
+      "stakes_engine": [
+        "covid_perceived_danger_T12"
+      ],
+      "norms_engine": [
+        "social_norms_vax_avg"
+      ],
+      "legitimacy_engine": [
+        "covax_legitimacy_scepticism_idx"
+      ],
+      "missingness": [
+        "M_religion_missing",
+        "income_ppp_norm_missing",
+        "minority_missing",
+        "social_norms_vax_avg_missing"
+      ]
+    },
+    "interactions": [],
+    "add_country": true
+  },
+  {
+    "model": "B_PROTECT_mask_when_symptomatic_crowded_ENGINES_REF",
+    "group": "B_PROTECT",
+    "description": "Mask use in crowds when symptomatic (ref engines: LOBO/BIC-positive blocks only)",
+    "outcome": "mask_when_symptomatic_crowded",
+    "model_type": "ordinal",
+    "blocks": [
+      "controls_demography_SES",
+      "disposition_engine",
+      "stakes_engine",
+      "trust_engine",
+      "norms_engine",
+      "moral_engine",
+      "missingness"
+    ],
+    "predictors": {
+      "controls_demography_SES": [
+        "age",
+        "sex_female",
+        "M_education",
+        "income_ppp_norm",
+        "minority",
+        "M_religion"
+      ],
+      "disposition_engine": [
+        "fivec_collective_responsibility",
+        "fivec_confidence",
+        "fivec_low_complacency",
+        "fivec_low_constraints"
+      ],
+      "stakes_engine": [
+        "disease_fear_avg",
+        "infection_likelihood_avg",
+        "severity_if_infected_avg"
+      ],
+      "trust_engine": [
+        "institutional_trust_avg",
+        "group_trust_vax"
+      ],
+      "norms_engine": [
+        "family_progressive_norms_nonvax_idx",
+        "friends_progressive_norms_nonvax_idx",
+        "colleagues_progressive_norms_nonvax_idx",
+        "social_norms_vax_avg"
+      ],
+      "moral_engine": [
+        "moral_progressive_orientation",
+        "mfq_agreement_binding_idx",
+        "mfq_relevance_binding_idx"
+      ],
+      "missingness": [
+        "M_religion_missing",
+        "colleagues_progressive_norms_nonvax_idx_missing",
+        "family_progressive_norms_nonvax_idx_missing",
+        "friends_progressive_norms_nonvax_idx_missing",
+        "group_trust_vax_missing",
+        "income_ppp_norm_missing",
+        "minority_missing",
+        "severity_if_infected_avg_missing",
+        "social_norms_vax_avg_missing"
+      ]
+    },
+    "interactions": [],
+    "add_country": true
+  },
+  {
+    "model": "B_PROTECT_stay_home_when_symptomatic_ENGINES_REF",
+    "group": "B_PROTECT",
+    "description": "Staying home when symptomatic (ref engines: LOBO/BIC-positive blocks only)",
+    "outcome": "stay_home_when_symptomatic",
+    "model_type": "ordinal",
+    "blocks": [
+      "controls_demography_SES",
+      "disposition_engine",
+      "stakes_engine",
+      "trust_engine",
+      "norms_engine",
+      "moral_engine",
+      "missingness"
+    ],
+    "predictors": {
+      "controls_demography_SES": [
+        "age",
+        "sex_female",
+        "M_education",
+        "income_ppp_norm",
+        "minority",
+        "M_religion"
+      ],
+      "disposition_engine": [
+        "fivec_collective_responsibility",
+        "fivec_confidence",
+        "fivec_low_complacency",
+        "fivec_low_constraints"
+      ],
+      "stakes_engine": [
+        "disease_fear_avg",
+        "infection_likelihood_avg",
+        "severity_if_infected_avg"
+      ],
+      "trust_engine": [
+        "institutional_trust_avg",
+        "group_trust_vax"
+      ],
+      "norms_engine": [
+        "family_progressive_norms_nonvax_idx",
+        "friends_progressive_norms_nonvax_idx",
+        "colleagues_progressive_norms_nonvax_idx",
+        "social_norms_vax_avg"
+      ],
+      "moral_engine": [
+        "moral_progressive_orientation",
+        "mfq_agreement_binding_idx",
+        "mfq_relevance_binding_idx"
+      ],
+      "missingness": [
+        "M_religion_missing",
+        "colleagues_progressive_norms_nonvax_idx_missing",
+        "family_progressive_norms_nonvax_idx_missing",
+        "friends_progressive_norms_nonvax_idx_missing",
+        "group_trust_vax_missing",
+        "income_ppp_norm_missing",
+        "minority_missing",
+        "severity_if_infected_avg_missing",
+        "social_norms_vax_avg_missing"
+      ]
+    },
+    "interactions": [],
+    "add_country": true
+  },
+  {
+    "model": "B_PROTECT_mask_when_pressure_high_ENGINES_REF",
+    "group": "B_PROTECT",
+    "description": "Mask use during high epidemic pressure (ref engines: LOBO/BIC-positive blocks only)",
+    "outcome": "mask_when_pressure_high",
+    "model_type": "ordinal",
+    "blocks": [
+      "controls_demography_SES",
+      "disposition_engine",
+      "stakes_engine",
+      "trust_engine",
+      "norms_engine",
+      "moral_engine",
+      "missingness"
+    ],
+    "predictors": {
+      "controls_demography_SES": [
+        "age",
+        "sex_female",
+        "M_education",
+        "income_ppp_norm",
+        "minority",
+        "M_religion"
+      ],
+      "disposition_engine": [
+        "fivec_collective_responsibility",
+        "fivec_confidence",
+        "fivec_low_complacency",
+        "fivec_low_constraints"
+      ],
+      "stakes_engine": [
+        "disease_fear_avg",
+        "infection_likelihood_avg",
+        "severity_if_infected_avg"
+      ],
+      "trust_engine": [
+        "institutional_trust_avg",
+        "group_trust_vax"
+      ],
+      "norms_engine": [
+        "family_progressive_norms_nonvax_idx",
+        "friends_progressive_norms_nonvax_idx",
+        "colleagues_progressive_norms_nonvax_idx",
+        "social_norms_vax_avg"
+      ],
+      "moral_engine": [
+        "moral_progressive_orientation",
+        "mfq_agreement_binding_idx",
+        "mfq_relevance_binding_idx"
+      ],
+      "missingness": [
+        "M_religion_missing",
+        "colleagues_progressive_norms_nonvax_idx_missing",
+        "family_progressive_norms_nonvax_idx_missing",
+        "friends_progressive_norms_nonvax_idx_missing",
+        "group_trust_vax_missing",
+        "income_ppp_norm_missing",
+        "minority_missing",
+        "severity_if_infected_avg_missing",
+        "social_norms_vax_avg_missing"
+      ]
+    },
+    "interactions": [],
+    "add_country": true
+  },
+  {
+    "model": "B_FLU_vaccinated_2023_2024_ENGINES_HABIT",
+    "group": "B_FLU",
+    "description": "Compressed ABM backbone for flu uptake (engines) + explicit inertia/state-dependence",
+    "outcome": "flu_vaccinated_2023_2024",
+    "model_type": "logit",
+    "blocks": [
+      "controls_demography_SES",
+      "habit_engine",
+      "trust_engine",
+      "disposition_engine",
+      "stakes_engine",
+      "norms_engine",
+      "missingness"
+    ],
+    "predictors": {
+      "controls_demography_SES": [
+        "age",
+        "sex_female",
+        "M_education",
+        "income_ppp_norm",
+        "minority",
+        "M_religion"
+      ],
+      "habit_engine": [
+        "flu_vaccinated_2022_2023",
+        "flu_vaccinated_2021_2022",
+        "flu_vaccinated_2020_2021",
+        "flu_vaccinated_pre_pandemic"
+      ],
+      "trust_engine": [
+        "institutional_trust_avg"
+      ],
+      "disposition_engine": [
+        "fivec_pro_vax_idx"
+      ],
+      "stakes_engine": [
+        "flu_disease_fear"
+      ],
+      "norms_engine": [
+        "social_norms_vax_avg"
+      ],
+      "missingness": [
+        "M_religion_missing",
+        "flu_vaccinated_2020_2021_missing",
+        "flu_vaccinated_2021_2022_missing",
+        "flu_vaccinated_2022_2023_missing",
+        "flu_vaccinated_pre_pandemic_missing",
+        "income_ppp_norm_missing",
+        "minority_missing",
+        "social_norms_vax_avg_missing"
+      ]
+    },
+    "interactions": [],
+    "add_country": true
+  }
+]

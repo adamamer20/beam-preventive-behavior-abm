@@ -1,0 +1,28 @@
+{
+  "template": "https://github.com/adamamer20/pythonic-template",
+  "commit": "9465fad3e073551f10095fd4824dc7c5301b3d08",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "_copy_without_render": [
+        ".github/workflows/*"
+      ],
+      "project_name": "beam-abm",
+      "package_name": "llm_abm",
+      "repo_name": "beam-abm",
+      "author_name": "Adam Amer",
+      "author_email": "adam@example.com",
+      "github_username": "adamamer20",
+      "python_version": "3.12",
+      "initial_version": "0.1.0",
+      "ruff_version": "v0.11.13",
+      "license": "MIT",
+      "project_type": "paper",
+      "ai_agents": "all",
+      "project_short_description": "LLM-based Agent-Based Model for behavioral analysis",
+      "_template": "https://github.com/adamamer20/pythonic-template",
+      "_commit": "9465fad3e073551f10095fd4824dc7c5301b3d08"
+    }
+  },
+  "directory": null
+}

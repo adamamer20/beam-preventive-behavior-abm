@@ -1,0 +1,52 @@
+ci:
+  autoupdate_schedule: 'monthly'
+  autofix_commit_msg: |
+    [pre-commit.ci] auto fixes from pre-commit.com hooks
+
+    for more information, see https://pre-commit.ci
+
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: "v0.11.13"
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.5.18
+    hooks:
+      - id: uv-lock
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-added-large-files
+        # Exclude generated outputs (large CSVs) under empirical/output
+        exclude: '^empirical/output/|^thesis/final_output/'
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.4.1
+    hooks:
+      - id: codespell
+        # Exclude generated outputs and other common assets which are large or auto-generated
+        # and are not relevant for spell-checking
+        args: [
+          # Skip common generated / large files and assets (lockfiles, JS/CSS) and
+          # the preprocessing specs directory which contains many generated JSONs
+          "--skip=*.lock,*.css,*.js,preprocess/specs/**,empirical/output/**,thesis/References.bib,**/appendix-example-prompts.html",
+          "--ignore-words-list=nd,jupyter,linke,havent,splitted,statics,NMAE,smae,strat,te,coo,Sclar,DEMOG,Devine,trough",
+        ]
+
+  - repo: local
+    hooks:
+      - id: typeguard-test
+        name: runtime type-check (pytest)
+        entry: bash -c 'DEV_TYPECHECK=1 pytest -q --tb=short'
+        language: system
+        stages: [pre-push]
+        pass_filenames: false

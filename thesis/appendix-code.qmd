@@ -1,0 +1,3 @@
+# Code and reproducibility {#sec-appendix-code}
+
+The codebase includes data preparation, construction of derived variables and indices, estimation of the empirical models, the LLM micro-validation framework, and the agent-based model used for the counterfactual experiments. The thesis code is available in the public GitHub repository ([beam-preventive-behavior-abm](https://github.com/adamamer20/beam-preventive-behavior-abm)), while the full survey data are not publicly available.

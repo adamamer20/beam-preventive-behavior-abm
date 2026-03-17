@@ -1,0 +1,26 @@
+# Derivation of PE for GLM {#sec-appendix-ice-glm-derivation}
+
+I derive the two-point ICE contrast, and hence the corresponding reference perturbation effect (PE), under a GLM decision rule, making explicit its dependence on the estimated slope $\beta_X$, the lever step $\Delta x$, and, through the inverse link, the baseline index level. Let the fitted rule be written as
+$$
+f(x,z)=g^{-1}\big(\eta(x,z)\big),
+\qquad
+\eta(x,z)=\alpha+\beta_X x+\gamma^\top z,
+$$
+where $x$ is the lever value and $z$ collects all remaining covariates held fixed in the ICE thought experiment. For a shift $x_0\to x_1$ with $\Delta x=x_1-x_0$ and baseline index $\eta_0=\eta(x_0,z)$, the latent-scale displacement is
+$$
+\Delta\eta=\eta(x_1,z)-\eta(x_0,z)=\beta_X\Delta x,
+$$
+which is exact and independent of $z$ (the intercept and $\gamma^\top z$ cancel in the difference). The associated two-point ICE contrast is therefore
+$$
+f(x_1,z)-f(x_0,z)=g^{-1}(\eta_0+\Delta\eta)-g^{-1}(\eta_0)= g^{-1}(\eta_0+\beta_X\Delta x)-g^{-1}(\eta_0).
+$$
+
+In the proportional-odds cumulative logit reference models used in the thesis,
+$$
+\operatorname{logit}\Pr(Y\le k\mid x,z)=\tau_k-\eta(x,z),\qquad k=1,\dots,K-1,
+$$
+so a lever shift $x_0\to x_1$ implies the same additive change for every cumulative logit:
+$$
+\operatorname{logit}\Pr(Y\le k\mid x_1,z)-\operatorname{logit}\Pr(Y\le k\mid x_0,z)=(\eta(x_1,z)-\eta(x_0,z))=\beta_X\Delta x.
+$$
+Outcome-scale contrasts for any category probability or summary derived from these probabilities are then induced by this common latent displacement and depend on the baseline index $\eta_0$ only through the link function.

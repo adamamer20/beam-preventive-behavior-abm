@@ -1,0 +1,821 @@
+# LLM Micro-Validation {#sec-04-llm-micro-validation}
+
+The previous chapter established the empirical benchmark used in this chapter: a compact set of theory-guided blocks and reference perturbation contrasts derived from a multi-country survey fielded in 2024 [@offeddu_2025_advancing_behavioural_epidemic_data]. This chapter asks whether LLMs can reproduce that structure in a way that is useful for simulation.
+
+I evaluate two task families: predicting preventive outcomes from fixed respondent profiles, and predicting a small set of psychological profile variables, such as trust, legitimacy, perceived stakes, and norms, from broader parts of the survey profile. For both task families, I distinguish *unperturbed* tests of baseline reconstruction from *perturbed* tests of response to controlled shifts.
+
+Evaluating the full survey ($N \approx 22{,}246$) would be computationally expensive and statistically redundant, because many respondents occupy nearby regions of the same empirical profile space. I therefore evaluate on *anchor prototypes*: observed respondent profiles selected to cover that space efficiently. Each anchor is stratified by country, producing an anchor × country cell, and within each cell I sample $50$ complete profiles from the local neighbourhood. Across $10$ anchors and $6$ countries, this yields a fixed evaluation set of $3{,}000$ profiles. This preserves the joint structure of survey profiles while keeping the evaluation budget manageable. The same neighbourhood sampler is later used to initialise ABM populations and counterfactual variants from observed profile space. Full survey and sampling details are reported in Appendix A (@sec-appendix-anchor-prototypes; @offeddu_2025_advancing_behavioural_epidemic_data).
+
+Because LLM outputs can depend on how the same respondent profile is presented, I vary both the model and the prompt form while holding the underlying profile fixed. I consider five prompt formats: a data-only profile; two narrative renderings of the same profile, a short third-person vignette and a first-person self-description; a three-expert decomposition; and a paired-contrast format. In the three-expert variant, the model first produces separate expert-style judgments, which are then combined on the response scale, while the paired-contrast format presents low and high versions jointly to make the counterfactual comparison explicit. Example prompts for all formats are reported in @sec-appendix-llm-prompts.
+
+The model suite is chosen to separate prompt effects from model-family and scale effects. The main workhorse is openai/gpt-oss-20b at reasoning effort medium, with a high-effort setting used to test whether additional deliberation improves performance at fixed scale. openai/gpt-oss-120b probes within-family scaling, and qwen/qwen3-32b provides a cross-family robustness check.
+
+## Baseline Reconstruction: Unperturbed Micro-Validation {#sec-04-unperturbed}
+
+### Reconstructing behavioural outcomes: can the LLM rank baseline preventive behaviour? {#sec-04-choice-unperturbed}
+
+```{python}
+#| echo: false
+from __future__ import annotations
+
+import ast
+import json
+from pathlib import Path
+
+import numpy as np
+import polars as pl
+
+from IPython.display import Markdown, display
+
+from utils.ch04_plot_tables import belief_signal_headline_metrics
+from utils.ch04_plot_tables import build_belief_engine_scorecard_rows
+from utils.ch04_plot_tables import build_belief_moderation_rows
+from utils.ch04_plot_tables import build_belief_unperturbed_difficulty_rows
+from utils.ch04_plot_tables import build_belief_vignette_rows
+from utils.ch04_plot_tables import build_unperturbed_difficulty_rows
+from utils.ch04_plot_tables import label_block
+from utils.ch04_plot_tables import label_strategy_pert
+from utils.ch04_plot_tables import make_signal_labeler
+from utils.ch04_plot_tables import prepare_belief_context
+from utils.ch04_plot_tables import prepare_perturbed_context
+from utils.ch04_plot_tables import prepare_unperturbed_context
+from utils.ch04_plot_tables import render_belief_construct_readiness
+from utils.ch04_plot_tables import render_belief_frontier
+from utils.ch04_plot_tables import render_belief_scope_control
+from utils.ch04_plot_tables import render_belief_signal_activation
+from utils.ch04_plot_tables import render_belief_perturbed_signal_engine_heatmap
+from utils.ch04_plot_tables import render_belief_signal_block_sensitivity_alignment
+from utils.ch04_plot_tables import render_belief_unperturbed_engine_panel_heatmaps
+from utils.ch04_plot_tables import render_belief_unperturbed_cosine_heatmap
+from utils.ch04_plot_tables import render_belief_vector_importance_alignment_cosine
+from utils.ch04_plot_tables import render_block_importance_alignment_gini
+from utils.ch04_plot_tables import render_block_metric_heatmap
+from utils.ch04_plot_tables import render_perturbed_pareto_by_model
+from utils.ch04_plot_tables import render_primary_block_sensitivity
+from utils.ch04_plot_tables import render_unperturbed_gini_heatmap
+from utils.chapter_io import md_table as _md_table
+from utils.chapter_io import read_csv_fast as _read_csv_fast
+from utils.engine_labels import (
+    BELIEF_SIGNAL_MECHANISM_BUCKET_LABELS,
+    BELIEF_SIGNAL_MECHANISM_BUCKET_MAP,
+    BELIEF_SIGNAL_MECHANISM_BUCKET_ORDER,
+    CHOICE_ENGINE_BLOCK_LABELS,
+    label_belief_engine,
+)
+from utils.model_labels import label_model as _label_model
+from utils.model_labels import label_strategy as _label_strategy
+from utils.outcome_labels import label_outcome_short
+from utils.qmd_utils import fmt_float, fmt_math, label_for, load_labels
+
+
+EVAL_ARTIFACT_ROOT = Path("../thesis/artifacts/evaluation")
+EMP_ARTIFACT_ROOT = Path("../thesis/artifacts/empirical")
+UNPERTURBED_OUT = EVAL_ARTIFACT_ROOT / "choice_validation" / "unperturbed"
+PERT_SUMMARY_ALL_PATH = EVAL_ARTIFACT_ROOT / "choice_validation" / "perturbed" / "all_outcomes_models_strategies.csv"
+PERTURBED_OUT = EVAL_ARTIFACT_ROOT / "choice_validation" / "perturbed"
+BELIEF_ARTIFACT_ROOT = EVAL_ARTIFACT_ROOT / "belief_update_validation"
+BELIEF_CANONICAL_ROOT = BELIEF_ARTIFACT_ROOT
+BELIEF_UNPERTURBED_ALTACCT_OUT = BELIEF_ARTIFACT_ROOT
+BELIEF_UNPERTURBED_TWO_CONSTRUCTS_OUT = BELIEF_ARTIFACT_ROOT
+BELIEF_REFERENCE_MODELING_DIR = EMP_ARTIFACT_ROOT / "modeling"
+BELIEF_UNPERTURBED_ENGINE_SOURCE_OVERRIDES: dict[str, Path] = {}
+REF_ICE_ROOT = EMP_ARTIFACT_ROOT / "decision_function" / "ref_ice" / "mutable_reduced"
+LEVER_CONFIG = Path("../config/levers.json")
+
+
+STRATEGY_ORDER = ["data_only", "third_person", "first_person", "multi_expert"]
+BELIEF_UNPERTURBED_STRATEGY_ORDER = ["data_only", "third_person", "first_person", "multi_expert"]
+BELIEF_UNPERTURBED_EXCLUDED_CONSTRUCTS = {
+    "vaccine_risk_avg",
+    "covax_legitimacy_scepticism_idx",
+}
+PERT_STRATEGY_ORDER = ["data_only", "third_person", "first_person", "multi_expert", "paired_profile"]
+PERT_STRATEGY_LABELS: dict[str, str] = {
+    "data_only": "Data-only",
+    "third_person": "Narrative (3rd)",
+    "first_person": "Narrative (1st)",
+    "multi_expert": "Multi-expert",
+    "paired_profile": "Paired contrast",
+}
+BLOCK_LABELS: dict[str, str] = dict(CHOICE_ENGINE_BLOCK_LABELS)
+OUTCOME_PANEL_W = 4.2
+DEFAULT_OUTCOME_ORDER = [
+    "vax_willingness_T12",
+    "flu_vaccinated_2023_2024",
+    "mask_when_pressure_high",
+    "mask_when_symptomatic_crowded",
+    "stay_home_when_symptomatic",
+]
+
+def _label_outcome_short_no_habit(outcome: str) -> str:
+    key = str(outcome).strip()
+    if key == "flu_vaccinated_2023_2024":
+        key = "flu_vaccinated_2023_2024_no_habit"
+    return label_outcome_short(key)
+
+
+_label = _label_outcome_short_no_habit
+_label_outcome_short = _label_outcome_short_no_habit
+_label_outcome = _label_outcome_short_no_habit
+_label_strategy_pert = lambda strategy: label_strategy_pert(strategy, PERT_STRATEGY_LABELS)
+_label_block = lambda block: label_block(block, BLOCK_LABELS)
+
+
+def _fmt_ci(value, lo, hi, digits=2):
+    if lo is None or hi is None:
+        return ""
+    try:
+        v = float(value)
+        lo_f = float(lo)
+        hi_f = float(hi)
+    except (TypeError, ValueError):
+        return ""
+    if not (np.isfinite(v) and np.isfinite(lo_f) and np.isfinite(hi_f)):
+        return ""
+    return f"{fmt_float(v, digits)} [{fmt_float(lo_f, digits)}, {fmt_float(hi_f, digits)}]"
+
+
+_fmt_gini_math_or_dash = lambda value, digits=2: (
+    "" if not np.isfinite(value) else fmt_math(rf"G \approx {fmt_float(float(value), digits)}")
+)
+_fmt_skill_math_or_dash = lambda value, digits=2: (
+    ""
+    if not np.isfinite(value)
+    else fmt_math(rf"\mathrm{{skill}} \approx {fmt_float(float(value), digits)}")
+)
+
+
+unpert_ctx = prepare_unperturbed_context(
+    unperturbed_out=UNPERTURBED_OUT,
+    default_outcome_order=DEFAULT_OUTCOME_ORDER,
+    perturbed_summary_path=PERT_SUMMARY_ALL_PATH,
+    strategy_order=STRATEGY_ORDER,
+    outcome_panel_w=OUTCOME_PANEL_W,
+    read_csv=_read_csv_fast,
+)
+OUTCOME_ORDER = unpert_ctx.outcome_order
+MODEL_ORDER = unpert_ctx.model_order
+cell_metrics = unpert_ctx.cell_metrics
+cell_metrics_heatmap = cell_metrics
+overall_gini = unpert_ctx.overall_gini
+overall_skill = unpert_ctx.overall_skill
+mean_gini_by_outcome = unpert_ctx.mean_gini_by_outcome
+GINI_VMIN, GINI_VMAX = unpert_ctx.gini_vmin, unpert_ctx.gini_vmax
+SKILL_VMIN, SKILL_VMAX = unpert_ctx.skill_vmin, unpert_ctx.skill_vmax
+
+choice_posthoc_all_path = UNPERTURBED_OUT / "posthoc_metrics_all.csv"
+if choice_posthoc_all_path.exists():
+    choice_posthoc_all = _read_csv_fast(choice_posthoc_all_path)
+    if not choice_posthoc_all.is_empty():
+        covax_y_fallback = (
+            choice_posthoc_all
+            .filter(pl.col("calibration_status") == "uncalibrated")
+            .filter(pl.col("outcome") == "vax_willingness_Y")
+            .group_by(["model", "strategy"])
+            .agg(pl.mean("pooled_gini").alias("gini"))
+            .with_columns(pl.lit("vax_willingness_T12").alias("outcome"))
+        )
+        covax_t12_present = (
+            cell_metrics
+            .filter(pl.col("outcome") == "vax_willingness_T12")
+            .select("model", "strategy")
+        )
+        covax_y_missing = covax_y_fallback.join(covax_t12_present, on=["model", "strategy"], how="anti")
+        if not covax_y_missing.is_empty():
+            cell_metrics_heatmap = pl.concat(
+                [
+                    cell_metrics,
+                    covax_y_missing.with_columns(pl.lit(None).cast(pl.Int64).alias("n")).select(
+                        "outcome",
+                        "model",
+                        "strategy",
+                        "n",
+                        "gini",
+                    ).with_columns(pl.lit(float("nan")).alias("skill_cal")),
+                ],
+                how="vertical",
+            )
+
+
+pert_ctx = prepare_perturbed_context(
+    perturbed_out=PERTURBED_OUT,
+    outcome_order=OUTCOME_ORDER,
+    ref_ice_root=REF_ICE_ROOT,
+    lever_config_path=LEVER_CONFIG,
+    read_csv=_read_csv_fast,
+)
+pert_summary = pert_ctx.pert_summary
+_REFERENCE_MODEL_BY_OUTCOME = pert_ctx.reference_model_by_outcome
+PERT_MODEL_ORDER = pert_ctx.pert_model_order
+MAIN_PERT_MODEL_ORDER = pert_ctx.main_pert_model_order
+pert_block_metrics = pert_ctx.pert_block_metrics
+block_sensitivity_df = pert_ctx.block_sensitivity_df
+_block_order_for_outcome = lambda outcome: pert_ctx.block_order_map.get(str(outcome), [])
+ORACLE_MEANINGFUL_DELTA = pert_ctx.oracle_meaningful_delta
+oracle_gini_uplift = pert_ctx.oracle_gini_uplift
+oracle_skill_uplift = pert_ctx.oracle_skill_uplift
+
+
+if pert_summary.is_empty():
+    display(Markdown("*No perturbed summary metrics found under* `thesis/artifacts/evaluation/choice_validation/perturbed/` *.*"))
+
+
+belief_frontier_path = BELIEF_ARTIFACT_ROOT / "frontier_metrics.csv"
+belief_frontier_df = _read_csv_fast(belief_frontier_path) if belief_frontier_path.exists() else pl.DataFrame()
+belief_signal_summary_path = BELIEF_ARTIFACT_ROOT / "all_models_signals.csv"
+belief_signal_summary = _read_csv_fast(belief_signal_summary_path) if belief_signal_summary_path.exists() else pl.DataFrame()
+belief_signal_model_order = (
+    sorted({str(v) for v in belief_signal_summary.get_column("model").to_list()})
+    if (not belief_signal_summary.is_empty() and "model" in belief_signal_summary.columns)
+    else []
+)
+belief_unperturbed_metrics_path = BELIEF_ARTIFACT_ROOT / "unperturbed_engine_metrics.csv"
+belief_unperturbed_metrics = (
+    _read_csv_fast(belief_unperturbed_metrics_path) if belief_unperturbed_metrics_path.exists() else pl.DataFrame()
+)
+belief_unperturbed_model_order = (
+    sorted({str(v) for v in belief_unperturbed_metrics.get_column("model").to_list()})
+    if (not belief_unperturbed_metrics.is_empty() and "model" in belief_unperturbed_metrics.columns)
+    else []
+)
+
+
+def _repeatability_summary(rows: list[dict[str, float]]) -> dict[str, float]:
+    if not rows:
+        return {
+            "n": 0.0,
+            "mean_within_sd": float("nan"),
+            "median_within_sd": float("nan"),
+            "mean_abs_bias": float("nan"),
+            "median_abs_bias": float("nan"),
+            "var_share": float("nan"),
+            "bias_share": float("nan"),
+        }
+    within_sd = np.asarray([row["within_sd"] for row in rows], dtype=float)
+    abs_bias = np.asarray([row["abs_bias"] for row in rows], dtype=float)
+    within_var = np.asarray([row["within_var"] for row in rows], dtype=float)
+    bias_sq = np.asarray([row["bias_sq"] for row in rows], dtype=float)
+    mse = np.asarray([row["mse"] for row in rows], dtype=float)
+    total_mse = float(np.sum(mse))
+    var_share = float(np.sum(within_var) / total_mse) if total_mse > 0.0 else float("nan")
+    bias_share = float(np.sum(bias_sq) / total_mse) if total_mse > 0.0 else float("nan")
+    return {
+        "n": float(len(rows)),
+        "mean_within_sd": float(np.mean(within_sd)),
+        "median_within_sd": float(np.median(within_sd)),
+        "mean_abs_bias": float(np.mean(abs_bias)),
+        "median_abs_bias": float(np.median(abs_bias)),
+        "var_share": var_share,
+        "bias_share": bias_share,
+    }
+
+
+def _repeatability_summary_by(rows: list[dict[str, float | str]], key: str) -> dict[str, dict[str, float]]:
+    grouped: dict[str, list[dict[str, float]]] = {}
+    for row in rows:
+        group_key = str(row.get(key, ""))
+        payload = {k: float(v) for k, v in row.items() if k != key}
+        grouped.setdefault(group_key, []).append(payload)
+    return {group_key: _repeatability_summary(group_rows) for group_key, group_rows in sorted(grouped.items())}
+
+
+def _choice_perturbed_pe_repeatability_summary(
+    perturbed_root: Path,
+    ref_ice_root: Path,
+) -> dict[str, dict[str, float]]:
+    compact_path = perturbed_root / "repeatability_summary.json"
+    if compact_path.exists():
+        try:
+            payload = json.loads(compact_path.read_text(encoding="utf-8"))
+            if isinstance(payload, dict):
+                overall = payload.get("overall", {})
+                by_strategy = payload.get("by_strategy", {})
+                if isinstance(overall, dict) and isinstance(by_strategy, dict):
+                    return {
+                        "overall": {str(k): float(v) for k, v in overall.items()},
+                        "by_strategy": {
+                            str(strategy): {str(k): float(v) for k, v in metrics.items()}
+                            for strategy, metrics in by_strategy.items()
+                            if isinstance(metrics, dict)
+                        },
+                    }
+        except (OSError, ValueError, TypeError, json.JSONDecodeError):
+            pass
+
+    rows: list[dict[str, float]] = []
+    for ice_path in perturbed_root.glob("*/*/*/uncalibrated/ice_llm.csv"):
+        outcome = str(ice_path.parts[-5])
+        strategy = str(ice_path.parts[-3])
+        ref_path = ref_ice_root / outcome / "ice_ref.csv"
+        if not ref_path.exists():
+            continue
+        llm_df = _read_csv_fast(ice_path)
+        ref_df = _read_csv_fast(ref_path)
+        required_llm = {"id", "target", "outcome", "ice_low_samples", "ice_high_samples"}
+        required_ref = {"id", "target", "outcome", "ice_low", "ice_high"}
+        if llm_df.is_empty() or ref_df.is_empty():
+            continue
+        if not required_llm.issubset(set(llm_df.columns)) or not required_ref.issubset(set(ref_df.columns)):
+            continue
+        merged = llm_df.select(
+            "id",
+            "target",
+            "outcome",
+            "ice_low_samples",
+            "ice_high_samples",
+        ).join(
+            ref_df.select(
+                "id",
+                "target",
+                "outcome",
+                pl.col("ice_low").alias("ice_low_ref"),
+                pl.col("ice_high").alias("ice_high_ref"),
+            ),
+            on=["id", "target", "outcome"],
+            how="inner",
+        )
+        for row in merged.iter_rows(named=True):
+            try:
+                low_vals = ast.literal_eval(str(row["ice_low_samples"]))
+                high_vals = ast.literal_eval(str(row["ice_high_samples"]))
+            except (ValueError, SyntaxError):
+                continue
+            low = np.asarray(low_vals, dtype=float)
+            high = np.asarray(high_vals, dtype=float)
+            low = low[np.isfinite(low)]
+            high = high[np.isfinite(high)]
+            n = min(low.size, high.size)
+            if n == 0:
+                continue
+            pe_samples = high[:n] - low[:n]
+            pe_ref = float(row["ice_high_ref"]) - float(row["ice_low_ref"])
+            pe_mean = float(np.mean(pe_samples))
+            within_var = float(np.mean((pe_samples - pe_mean) ** 2))
+            bias = float(pe_mean - pe_ref)
+            rows.append(
+                {
+                    "strategy": strategy,
+                    "within_var": within_var,
+                    "within_sd": float(np.sqrt(within_var)),
+                    "abs_bias": abs(bias),
+                    "bias_sq": float(bias**2),
+                    "mse": float(np.mean((pe_samples - pe_ref) ** 2)),
+                }
+            )
+    return {
+        "overall": _repeatability_summary([{k: float(v) for k, v in row.items() if k != "strategy"} for row in rows]),
+        "by_strategy": _repeatability_summary_by(rows, "strategy"),
+    }
+
+
+choice_pe_repeatability = _choice_perturbed_pe_repeatability_summary(PERTURBED_OUT, REF_ICE_ROOT)
+choice_pe_repeatability_paired = choice_pe_repeatability["by_strategy"].get(
+    "paired_profile",
+    _repeatability_summary([]),
+)
+```
+
+I report two complementary metrics, following recent behavioural-LLM evaluations that distinguish between *level accuracy* and *rank-based agreement* at the individual level [@xie_2025_befm; @li_2025_hugagent]. The first captures whether the LLM places predictions at the correct point on the response scale, while the second captures whether it correctly orders respondents from lower to higher predicted propensity. Both are benchmarked against simple baselines so that results remain comparable across outcomes and prompt forms.
+
+For level accuracy, I compare the LLM’s mean absolute error to that of a constant baseline and rescale the result as a *skill score*:
+$$
+ \mathrm{skill}=1-\frac{\mathrm{MAE}(f)}{\mathrm{MAE}(f_0)}.
+$$
+This scaling is easy to interpret: $\mathrm{skill}=1$ is perfect, $\mathrm{skill}=0$ means the model is no better than the baseline, and negative values indicate worse-than-baseline performance. For non-binary outcomes, the baseline $f_0$ predicts the sample median of $y$, which minimises MAE. For binary outcomes, it predicts the majority class.
+
+For ordering, I use a tie-aware concordance index $C$, which measures whether the model assigns a higher score to the respondent with the higher observed outcome, with $0.5$ credit for ties [@mayr_2016_sparse_survival_cindex]. I then convert this to a *Gini coefficient*,
+$$
+ G = 2C-1.
+$$
+
+For binary outcomes, $C$ is computed as AUC and then converted to $G$. Under this scaling, $G=1$ indicates perfect ordering, $G=0$ chance-level ordering, and $G<0$ inverted ordering [@fawcett_2006_roc].
+
+On this task, overall rank recovery is moderate (mean Gini `{python} _fmt_gini_math_or_dash(overall_gini)`). Most of the variation is across outcomes, with smaller differences across model families and prompt strategies (@tbl-unperturbed-difficulty). COVID willingness and masking under high pressure show the strongest rank recovery (mean `{python} _fmt_gini_math_or_dash(mean_gini_by_outcome.get("vax_willingness_T12", float("nan")))` and `{python} _fmt_gini_math_or_dash(mean_gini_by_outcome.get("mask_when_pressure_high", float("nan")))`). Staying home when symptomatic is substantially harder (mean `{python} _fmt_gini_math_or_dash(mean_gini_by_outcome.get("stay_home_when_symptomatic", float("nan")))`). This matches the reference equations: staying-home behaviour has the weakest empirical separability, and the LLM performs worst where the underlying signal is weakest. A likely reason is that the decision to stay home when symptomatic depends strongly on situational constraints and immediate context that are only partly observed in the survey profile.
+
+Level accuracy is weaker than ranking performance (mean `{python} _fmt_skill_math_or_dash(overall_skill)`). The gap is largest on the harder outcomes, where ordering remains partly informative even when predictions are misplaced on the response scale.
+
+Prompting effects are visible, but they do not alter the overall pattern. The multi-expert format is the most reliable on average, consistent with evidence that decomposed prompting can improve the stability and usefulness of LLM judgments [@long_2024_multiexpert], though it is also the most expensive in tokens and latency because it requires multiple intermediate judgments. The two narrative renderings perform only modestly worse even without explicit numerical detail. This suggests that the LLM is mainly picking up broad respondent-type signals, including trust and risk sensitivity, and is less sensitive to fine-grained tabular detail. Prompt design therefore matters at the margin, but it does not remove the underlying constraint: some behaviours are simply less separable from the available profile information than others. Additional strategy-level and MAE-skill results are reported in @sec-appendix-llm-micro-validation.
+
+```{python}
+#| echo: false
+#| label: tbl-unperturbed-difficulty
+#| tbl-cap: "**Outcome difficulty in unperturbed choice reconstructions**: mean Gini $G$ and mean MAE skill across all model × prompt cells within each outcome, with profile-level bootstrap $95\\%$ confidence intervals (resampling within each cell; $B=500$). Reference columns report the corresponding benchmark values from the survey-grounded choice equations."
+
+rows: list[list[str]] = []
+rows = build_unperturbed_difficulty_rows(
+    context=unpert_ctx,
+    label_outcome=_label_outcome,
+    fmt_ci=_fmt_ci,
+)
+
+if rows:
+    display(
+        _md_table(
+            [
+                "Outcome",
+                "LLM Gini $G$",
+                "LLM MAE skill",
+                "Reference equation Gini $G$",
+                "Reference equation MAE skill",
+            ],
+            rows,
+        )
+    )
+else:
+    display(Markdown("*No unperturbed outputs found for the difficulty table.*"))
+```
+
+```{python}
+#| echo: false
+#| label: fig-unperturbed-gini
+#| fig-cap: "**Unperturbed rank fidelity (Gini $G$; 0 = chance, 1 = perfect ordering) by model and prompt form, faceted by outcome.** Variation is driven more by outcome than by model or prompt family: COVID willingness and masking under high pressure show the strongest rank recovery, whereas staying home when symptomatic is hardest. Multi-expert prompting is often, though not uniformly, the strongest variant."
+#| fig-pos: "H"
+
+_msg = render_unperturbed_gini_heatmap(
+    cell_metrics=cell_metrics_heatmap,
+    outcome_order=OUTCOME_ORDER,
+    model_order=MODEL_ORDER,
+    strategy_order=STRATEGY_ORDER,
+    label_outcome=_label_outcome_short,
+    label_model=_label_model,
+    label_strategy=_label_strategy,
+    gini_vmin=GINI_VMIN,
+    gini_vmax=GINI_VMAX,
+    outcome_panel_w=OUTCOME_PANEL_W,
+    heatmap_rows=2,
+    panel_nrows=3,
+    panel_ncols=2,
+)
+if _msg:
+    display(Markdown(f"*{_msg}*"))
+```
+
+
+```{python}
+#| echo: false
+#| label: fig-block-importance-alignment
+#| fig-cap: "**Block-importance rank alignment for unperturbed choice reconstruction (median across model × prompt-family cells).** The x-axis shows the reference LOBO importance rank based on $\\Delta\\mathrm{BIC}$ (1 = most important), and the y-axis shows the corresponding LLM rank based on the drop in Gini after block removal ($\\Delta G$). Alignment is only partial: some outcomes lie close to the diagonal, while others show substantial block reordering, indicating that the LLM can recover baseline rankings without reproducing the same block weighting as the survey-grounded choice equations."
+#| fig-pos: "H"
+
+message = render_block_importance_alignment_gini(
+    outcome_order=OUTCOME_ORDER,
+    label_outcome_short=_label_outcome_short,
+    label_block=_label_block,
+    block_labels=BLOCK_LABELS,
+    block_order_for_outcome=_block_order_for_outcome,
+    reference_model_by_outcome=_REFERENCE_MODEL_BY_OUTCOME,
+    csv_reader=_read_csv_fast,
+    panel_nrows=3,
+    panel_ncols=2,
+)
+if message:
+    display(Markdown(f"*{message}*"))
+```
+
+Why does the LLM recover rankings more reliably than absolute levels? The main reason is central-tendency compression. Predictions are pulled toward the centre of the response scale: respondents with very low observed outcomes are systematically over-predicted, while those at the high end are systematically under-predicted. This inward compression depresses MAE skill and is not fully removed by monotone calibration. Appendix diagnostics quantify the same pattern, including its concentration in the tails and within-country strata (@tbl-unperturbed-diagnostics).
+
+The unperturbed ablations also clarify which information the LLM relies on. I measure block importance as the drop in rank recovery when a block is removed ($\Delta G$), and compare the resulting ordering with the reference LOBO ordering from the choice equations (@fig-block-importance-alignment). The alignment is only partial. Across outcomes, the LLM’s block-importance rankings are moderately close to the reference LOBO ordering, with a median rank correlation of about $\rho \approx 0.6$, but the agreement is uneven (@fig-block-importance-alignment). For most outcomes, the broad block structure is recovered reasonably well. The main exception is masking when symptomatic in crowded places, where the ranking alignment is close to zero and the relative weighting of blocks is substantially reordered. This means that baseline ranking success does not by itself show that the LLM is relying on the same empirical structure as the survey-grounded equations: it can order respondents reasonably well while still misweighting the underlying behavioural blocks.
+
+### Reconstructing psychological profile variables: can the LLM recover baseline profiles? {#sec-04-state-unperturbed}
+
+I next consider unperturbed reconstruction of psychological profile variables from the broader survey profile. This is a harder task than behavioural-outcome reconstruction because the target is multivariate: trust, stakes, and norms co-vary across respondent types, so the model must recover not only each variable separately but also their relative balance within the profile.
+
+To evaluate this profile structure directly, I complement variable-by-variable metrics with a standardised profile-vector cosine similarity score. For each respondent, I compare the predicted vector $\hat x$ to the survey-implied vector $x$ using cosine similarity, after standardising the psychological profile variables so that each dimension contributes comparably; the resulting score captures whether the LLM recovers the relative balance across profile variables [@manning2008introduction; @carlier2024profile].
+
+```{python}
+#| echo: false
+#| label: fig-belief-unperturbed-cosine-state
+#| fig-cap: "**Unperturbed reconstruction of psychological profile variables: standardised profile-vector cosine similarity by model and prompting strategy (0 = orthogonal, 1 = perfect directional alignment).** Cosine similarity is positive across most cells, indicating that the LLM often recovers the relative balance across profile variables; data-only and multi-expert prompting are the most stable formats."
+#| fig-pos: "H"
+
+_msg = render_belief_unperturbed_cosine_heatmap(
+    canonical_root=BELIEF_ARTIFACT_ROOT,
+    model_order=belief_unperturbed_model_order,
+    strategy_order=BELIEF_UNPERTURBED_STRATEGY_ORDER,
+    label_model=_label_model,
+    label_strategy=_label_strategy,
+    label_engine=label_belief_engine,
+    cosine_vmin=-1.0,
+    cosine_vmax=1.0,
+    excluded_constructs=BELIEF_UNPERTURBED_EXCLUDED_CONSTRUCTS,
+)
+if _msg:
+    display(Markdown(f"*{_msg}*"))
+```
+
+@fig-belief-unperturbed-cosine-state shows that unperturbed reconstruction of psychological profile variables is generally well aligned across model-prompt cells: standardised profile-vector cosine similarity is positive in most cases. Alignment is strongest under data-only and multi-expert prompting. The clearest failure mode is the first-person format, where cosine similarity for the smaller models falls close to zero. A likely reason is that first-person prompting weakens information discipline by inviting the model to produce a coherent self-presentation rather than simply reconstruct a fixed profile. In that setting, the model may partially blend the provided attributes with its own learned priors about identity, voice, and values, making the original profile structure less stable.
+
+```{python}
+#| echo: false
+#| label: tbl-belief-unperturbed-difficulty
+#| tbl-cap: "**Difficulty of unperturbed reconstruction for psychological profile variables**: mean Gini $G$ and mean MAE skill across all model × strategy cells within each variable, with cell-level bootstrap 95% CIs ($B=500$). Reference columns report the corresponding benchmark values from the survey-grounded regressions (predictors z-scored using survey-scale moments)."
+if belief_unperturbed_metrics.is_empty():
+    display(
+        Markdown(
+            f"*Belief unperturbed metrics not found under* `{BELIEF_ARTIFACT_ROOT / 'unperturbed_engine_metrics.csv'}`*."
+        )
+    )
+else:
+    rows_full = build_belief_unperturbed_difficulty_rows(
+        canonical_root=BELIEF_ARTIFACT_ROOT,
+        canonical_root_overrides_by_engine=BELIEF_UNPERTURBED_ENGINE_SOURCE_OVERRIDES,
+        reference_modeling_dir=(
+            BELIEF_REFERENCE_MODELING_DIR if BELIEF_REFERENCE_MODELING_DIR.exists() else None
+        ),
+        model_order=belief_unperturbed_model_order,
+        strategy_order=BELIEF_UNPERTURBED_STRATEGY_ORDER,
+        label_engine=label_belief_engine,
+        fmt_ci=_fmt_ci,
+        boot_b=500,
+        excluded_constructs=BELIEF_UNPERTURBED_EXCLUDED_CONSTRUCTS,
+    )
+    rows = [[r[0], r[2], r[3], r[4], r[5]] for r in rows_full if len(r) >= 6]
+    if rows:
+        display(
+            _md_table(
+                [
+                    "Psychological profile variable",
+                    "Mean $G$ (95% CI)",
+                    "Mean MAE skill (95% CI)",
+                    "Reference equation $G$ (95% CI)",
+                    "Reference equation MAE skill (95% CI)",
+                ],
+                rows,
+            )
+        )
+    else:
+        display(Markdown("*No psychological-profile rows available for the difficulty table.*"))
+```
+
+Cosine similarity is scale-invariant, so it can remain positive even when predicted profiles are compressed toward the population centre. The variable-level diagnostics show exactly this pattern. @tbl-belief-unperturbed-difficulty indicates that rank structure (Gini) is generally positive across psychological profile variables, but this does not translate into reliable level recovery; the full cell grids show the same result (@fig-belief-unperturbed-gini-heatmap; @fig-belief-unperturbed-skill-heatmap). Stakes are the hardest profile variable for the LLM to discriminate, which is consistent with stakes depending more heavily on situational appraisal signals that are only weakly identified by baseline covariates alone. Trust-related variables show more stable ordering, but their predicted magnitudes are still compressed.
+
+I summarise this central-tendency compression with a single dispersion statistic that is directly comparable across tasks,
+$$
+\mathrm{compression\ ratio}=\frac{\mathrm{IQR}(\hat y)}{\mathrm{IQR}(y)},
+$$
+
+```{python}
+#| echo: false
+def _iqr_ratio(y_true: np.ndarray, y_pred: np.ndarray) -> float | None:
+    mask = np.isfinite(y_true) & np.isfinite(y_pred)
+    if int(mask.sum()) < 5:
+        return None
+    yt = y_true[mask]
+    yp = y_pred[mask]
+    iqr_true = float(np.quantile(yt, 0.75) - np.quantile(yt, 0.25))
+    iqr_pred = float(np.quantile(yp, 0.75) - np.quantile(yp, 0.25))
+    if not np.isfinite(iqr_true) or not np.isfinite(iqr_pred) or iqr_true <= 0.0:
+        return None
+    return float(iqr_pred / iqr_true)
+
+
+def _fmt_or_dash(value: float, digits: int = 3) -> str:
+    if not np.isfinite(value):
+        return "—"
+    return fmt_float(float(value), digits)
+
+
+def _fmt_int_or_dash(value: float) -> str:
+    if not np.isfinite(value):
+        return "—"
+    return str(int(round(float(value))))
+
+
+_fmt_math_or_dash = lambda value, digits=3: (
+    fmt_math(fmt_float(float(value), digits)) if np.isfinite(value) else "—"
+)
+_fmt_n_math_or_dash = lambda value: (
+    fmt_math(rf"n = {_fmt_int_or_dash(float(value))}") if np.isfinite(value) else "—"
+)
+
+
+choice_compression_median = float("nan")
+choice_compression_n_cells = float("nan")
+choice_compression_obs_per_cell_median = float("nan")
+
+choice_posthoc_path = UNPERTURBED_OUT / "posthoc_metrics_all.csv"
+if choice_posthoc_path.exists():
+    choice_posthoc = _read_csv_fast(choice_posthoc_path)
+    if not choice_posthoc.is_empty():
+        choice_cells = (
+            choice_posthoc.with_columns(
+                pl.col("dispersion_ratio_iqr").cast(pl.Float64, strict=False),
+                pl.col("n").cast(pl.Float64, strict=False),
+            )
+            .filter(pl.col("calibration_status") == "uncalibrated")
+            .filter(pl.col("dispersion_ratio_iqr").is_finite())
+        )
+        if not choice_cells.is_empty():
+            choice_vals = choice_cells.get_column("dispersion_ratio_iqr").to_numpy()
+            choice_compression_median = float(np.median(choice_vals))
+            choice_compression_n_cells = float(choice_cells.height)
+            n_obs = choice_cells.get_column("n").to_numpy()
+            n_obs = n_obs[np.isfinite(n_obs)]
+            if n_obs.size > 0:
+                choice_compression_obs_per_cell_median = float(np.median(n_obs))
+
+
+belief_compression_median = float("nan")
+belief_compression_n_cells = float("nan")
+belief_compression_obs_per_cell_median = float("nan")
+
+belief_comp_path = BELIEF_ARTIFACT_ROOT / "unperturbed_compression.csv"
+belief_comp = _read_csv_fast(belief_comp_path) if belief_comp_path.exists() else pl.DataFrame()
+if not belief_comp.is_empty():
+    belief_vals = belief_comp.get_column("ratio").to_numpy()
+    belief_compression_median = float(np.median(belief_vals))
+    belief_compression_n_cells = float(belief_comp.height)
+    belief_n_obs = belief_comp.get_column("n_rows").to_numpy()
+    belief_n_obs = belief_n_obs[np.isfinite(belief_n_obs)]
+    if belief_n_obs.size > 0:
+        belief_compression_obs_per_cell_median = float(np.median(belief_n_obs))
+```
+
+where values below 1 indicate that the predicted distribution is narrower than the observed one. Reconstruction of psychological profile variables yields a median compression ratio of `{python} _fmt_math_or_dash(belief_compression_median, digits=3)` (`{python} _fmt_n_math_or_dash(belief_compression_n_cells)`), compared with `{python} _fmt_math_or_dash(choice_compression_median, digits=3)` for behavioural outcomes (`{python} _fmt_n_math_or_dash(choice_compression_n_cells)`).
+
+The difference is small, but compression in psychological profile variables has more important downstream consequences. In the behavioural-outcome task, compression affects a single predicted outcome while the underlying survey profile remains fixed. In the psychological-profile task, compression acts directly on the state variables that carry heterogeneity into the ABM. The result is a narrower initial profile distribution, with too little mass in the tails. If agents begin the simulation too similar to one another, treatment heterogeneity is weakened and nonlinear responses are dampened, even when the downstream behavioural mapping remains directionally reasonable.
+
+A likely reason is that psychological profile variables are harder for the LLM to place at the correct distance from the centre. Behaviours such as vaccination or masking have more familiar base-rate structure and clearer narrative anchors in natural text. By contrast, psychological profile variables are survey-scaled constructs, and the available covariates provide only limited information about which respondents should lie at the extremes. When the prompt under-identifies those tails, the model defaults toward more moderate profiles.
+
+## Counterfactual response: perturbed micro-validation {#sec-04-perturbed}
+
+I now evaluate whether LLM responses remain coherent when one relevant part of the profile is shifted. In both task families, I summarise the induced change using the perturbation effect introduced in @sec-03-decision-function, the difference between the model output under a typical high value and under a typical low value of the perturbed input, holding the rest of the profile fixed. The question is whether the model reproduces the empirical response pattern: which perturbation-target combinations should move, in what direction, and by how much, while leaving near-null combinations essentially unchanged. Throughout this section, I call a perturbation-target combination an active cell when the reference model implies a non-trivial effect ($|PE_{\mathrm{ref}}| \geq 0.03$) and a placebo cell when the reference effect is near zero ($|PE_{\mathrm{ref}}| < 0.03$). Directional agreement rate (DAR) then denotes the share of active cells for which the model matches the sign of the reference perturbation effect. Success also requires containment on placebo cells: when the perturbed input has little or no empirical effect on a given target, the model should leave that target essentially unchanged. I summarise this as $1-\text{false-positive movement}$, where false-positive movement is the share of placebo cells in which the model produces a non-negligible perturbation effect.
+
+### Perturbed behavioural response: can the LLM reproduce counterfactual effects? {#sec-04-choice-perturbed}
+
+```{python}
+#| echo: false
+#| label: fig-perturbed-pareto-by-model
+#| fig-cap: "**Median perturbation-effect ordering, effect-size accuracy, and placebo containment by model × prompt family.** Each point aggregates one model × prompt-family configuration across outcomes. The shared x-axis is median perturbation-effect Gini on active cells; Panel A compares it with median perturbation-effect $\\mathrm{skill}$ on active cells and Panel B with containment on placebo cells. Marker size denotes directional agreement rate (DAR), colour prompt family, and shape model. The dominant pattern is a trade-off: paired-contrast prompting improves ordering and directional agreement on active cells, but it weakens containment on placebo cells."
+#| fig-pos: "H"
+
+if pert_summary.is_empty():
+    display(Markdown("*No perturbed outputs found for the global performance map.*"))
+else:
+    err = render_perturbed_pareto_by_model(
+        pert_summary=pert_summary,
+        pert_model_order=PERT_MODEL_ORDER,
+        pert_strategy_order=PERT_STRATEGY_ORDER,
+        outcome_order=OUTCOME_ORDER,
+        label_strategy=_label_strategy_pert,
+        label_model=_label_model,
+    )
+    if err:
+        display(Markdown(f"*{err}*"))
+```
+
+@fig-perturbed-pareto-by-model highlights a clear trade-off between sharper discrimination and weaker containment. Paired-contrast prompting performs best on active cells, combining stronger ordering with higher directional agreement, but it does not systematically improve effect-size accuracy and performs poorly on placebo cells. Making the low-versus-high comparison explicit therefore seems to improve comparative sensitivity while reducing restraint.
+
+Prompt-level replicates make it possible to separate perturbation-effect error into a variance component and a bias component:
+$$
+\operatorname{MSE}(\widehat{PE}, PE_{\mathrm{ref}}) =
+\operatorname{Var}(\widehat{PE})
++
+ \left(\mathbb{E}[\widehat{PE}] - PE_{\mathrm{ref}}\right)^2.
+$$
+
+Here the variance term measures instability across repeated calls for the same cell, while the squared-bias term measures systematic deviation from the reference perturbation effect.
+
+Across the full perturbed choice task, about `{python} fmt_float(100.0 * choice_pe_repeatability["overall"]["var_share"], 1)`% of repeated-sample PE error comes from within-prompt variance and `{python} fmt_float(100.0 * choice_pe_repeatability["overall"]["bias_share"], 1)`% from squared bias, with mean within-cell PE standard deviation `{python} fmt_float(choice_pe_repeatability["overall"]["mean_within_sd"], 2)` and mean absolute PE bias `{python} fmt_float(choice_pe_repeatability["overall"]["mean_abs_bias"], 2)`. Under paired contrast, mean PE standard deviation falls to `{python} fmt_float(choice_pe_repeatability_paired["mean_within_sd"], 2)`. Squared bias then accounts for most of the remaining PE error (`{python} fmt_float(100.0 * choice_pe_repeatability_paired["bias_share"], 1)`%), which indicates that paired prompting reduces stochastic noise more strongly than it reduces systematic miscalibration. Paired prompting therefore improves repeatability, but it does not resolve the broader problem of mis-scaled responses.
+
+```{=latex}
+\Needspace{0.68\textheight}
+```
+
+```{python}
+#| echo: false
+#| label: fig-perturbed-gini-block
+#| fig-cap: "**Median perturbation-effect ordering by block and outcome on active cells.** Recovery is strongest for CoVax legitimacy and norms, while most other block-outcome cells remain close to zero."
+#| fig-pos: "H"
+
+if pert_block_metrics.is_empty():
+    display(Markdown("*No block-level perturbed metrics available for the recovery heatmap.*"))
+else:
+    msg = render_block_metric_heatmap(
+        pert_block_metrics=pert_block_metrics,
+        outcome_order=OUTCOME_ORDER,
+        main_pert_model_order=MAIN_PERT_MODEL_ORDER,
+        pert_model_order=PERT_MODEL_ORDER,
+        label_block=_label_block,
+        label_outcome_short=_label_outcome_short,
+        metric_col="gini_block_median",
+        colorbar_label="Median PE magnitude Gini ($G_{\\mathrm{mag}}$)",
+        base_vmin=GINI_VMIN,
+        base_vmax=GINI_VMAX,
+    )
+    if msg is not None:
+        display(Markdown(f"*{msg}*"))
+```
+
+```{python}
+#| echo: false
+#| label: fig-perturbed-skill-block
+#| fig-cap: "**Median perturbation-effect magnitude skill by block and outcome on active cells.** Skill is mostly negative, with the strongest failures concentrated in NPI outcomes and the stakes block."
+#| fig-pos: "H"
+
+if pert_block_metrics.is_empty():
+    display(Markdown("*No block-level perturbed metrics available for the skill heatmap.*"))
+else:
+    msg = render_block_metric_heatmap(
+        pert_block_metrics=pert_block_metrics,
+        outcome_order=OUTCOME_ORDER,
+        main_pert_model_order=MAIN_PERT_MODEL_ORDER,
+        pert_model_order=PERT_MODEL_ORDER,
+        label_block=_label_block,
+        label_outcome_short=_label_outcome_short,
+        metric_col="skill_block_median",
+        colorbar_label="Median PE $\\mathrm{skill}$",
+        base_vmin=SKILL_VMIN,
+        base_vmax=1.0,
+    )
+    if msg is not None:
+        display(Markdown(f"*{msg}*"))
+```
+
+To see where perturbed performance succeeds or fails, I break the results down by outcome and perturbed block. @fig-perturbed-gini-block and @fig-perturbed-skill-block show a structured but uneven picture. Median perturbation-effect ordering ($G$) is close to zero across most cells, yet the LLMs do show selective ordering ability for some vaccination-related blocks. In particular, CoVax legitimacy and norms produce non-trivial Gini scores. The clearest failure is stakes: the models do not recover ordering for that block, even though it is central in the survey-grounded behavioural outcome equations.
+
+One interpretation is that the models respond more readily to socio-institutional vaccination cues than to clinical risk appraisal. Legitimacy and norms are relatively easy to render in natural language, whereas perceived disease stakes are more weakly identified by the prompt and harder to separate cleanly from neighbouring constructs.
+
+Magnitude accuracy (median perturbation-effect $\mathrm{skill}$) is much worse, especially for the NPI outcomes. For masking and staying home, skill is strongly negative across most outcome-block cells. The models assign effects that are too large and spread them across too many respondents, rather than concentrating them in the smaller subset with real headroom to move. In the reference equations, these responses are constrained by saturation; the LLMs do not reproduce that pattern and instead overshoot the empirically bounded response [@zey_2021_message_framing_ceiling].
+
+```{python}
+#| echo: false
+#| label: fig-perturbed-block-sensitivity-lobo
+#| fig-cap: "**Block-sensitivity alignment with reference LOBO importance on active cells (median across model × prompt-family cells).** Panels are outcomes; each point is a retained block. The x-axis is the reference median absolute perturbation effect for that block, and the y-axis is the corresponding LLM median absolute perturbation effect. Point size encodes the reference block-importance share from LOBO. Blocks near the diagonal have similar sensitivity in the reference equations and the LLM; LOBO-important blocks far from the diagonal indicate that the LLM is weighting the empirical block structure differently from the survey-grounded benchmark."
+#| fig-pos: "H"
+
+msg, diagnostics = render_primary_block_sensitivity(
+    block_sensitivity_df=block_sensitivity_df,
+    outcome_order=OUTCOME_ORDER,
+    label_outcome_short=_label_outcome_short,
+    label_block=_label_block,
+    default_block_color_order=[],
+    block_order_for_outcome=_block_order_for_outcome,
+    primary_model=None,
+    primary_strategy="all_model_strategy_median",
+    panel_nrows=3,
+    panel_ncols=2,
+)
+if msg is not None:
+    display(Markdown(f"*{msg}*"))
+diag_vax_stakes_ref = diagnostics["diag_vax_stakes_ref"]
+diag_vax_stakes_llm = diagnostics["diag_vax_stakes_llm"]
+diag_clip_x_cap = diagnostics["diag_clip_x_cap"]
+diag_clip_raw_ref = diagnostics["diag_clip_raw_ref"]
+diag_clip_llm = diagnostics["diag_clip_llm"]
+diag_npi_trust_ref = diagnostics["diag_npi_trust_ref"]
+diag_npi_trust_llm_min = diagnostics["diag_npi_trust_llm_min"]
+diag_npi_trust_llm_max = diagnostics["diag_npi_trust_llm_max"]
+```
+
+@fig-perturbed-block-sensitivity-lobo compares the LLM’s block sensitivities with the reference LOBO structure, so points far from the diagonal indicate that the empirical mechanism is being reweighted rather than merely predicted noisily.
+
+The main distortion is systematic sensitivity reallocation across blocks. For vaccination willingness, stakes are among the most important blocks in the reference equations, yet their perturbation sensitivity is strongly attenuated in the LLM (reference `{python} fmt_math(rf"\approx {fmt_float(diag_vax_stakes_ref, 2)}")` vs LLM `{python} fmt_math(rf"\approx {fmt_float(diag_vax_stakes_llm, 2)}")` in $\mathrm{median}(|PE|)$), while trust- and legitimacy-related sensitivities are comparatively preserved. For the non-pharmaceutical outcomes, most points lie above the diagonal, indicating systematic over-sensitivity relative to the reference. The sharpest distortion appears for institutional trust: the reference median sensitivity is small (`{python} fmt_math(rf"\approx {fmt_float(diag_npi_trust_ref, 2)}")`), but the LLM produces consistently larger shifts (`{python} fmt_math(rf"\approx {fmt_float(diag_npi_trust_llm_min, 2)}")`–`{python} fmt_math(rf"{fmt_float(diag_npi_trust_llm_max, 2)}")`). If carried directly into an LLM-based ABM, this would systematically reweight policy effects across blocks: vaccination would appear insufficiently responsive to stakes, while trust and legitimacy would appear too dominant.
+
+### Perturbed psychological-profile response: can the LLM reproduce profile shifts? {#sec-04-state-perturbed}
+
+I now turn to the perturbed task on the psychological-profile side. The question is whether the LLM reproduces the profile shifts implied by the reference regressions when one broader covariate block is changed.
+
+```{python}
+#| echo: false
+#| label: fig-belief-frontier
+#| fig-cap: "**Two-panel summary of perturbed psychological-profile performance by model × prompt family.** Each point aggregates one model × prompt-family configuration by its median performance across profile-perturbation tasks. Panel A plots median cosine similarity on the active set against median skill on the active set, so moving right indicates better recovery of the multivariate direction of the profile update and moving upward indicates better magnitude accuracy where a real response is expected. Panel B plots the same active-set cosine similarity against containment on non-target dimensions, defined as $1-\\text{leakage}$; moving upward there indicates better ability to leave unrelated parts of the profile unchanged. Marker size encodes directional agreement rate (DAR), colour denotes prompt family, and marker shape denotes model. The dominant pattern is a trade-off: configurations that better match the intended direction of profile change often do so by allowing more spillover into non-target dimensions."
+#| fig-pos: "H"
+
+if belief_frontier_df.is_empty():
+    display(Markdown(f"*Belief frontier strategy summaries not found under* `{BELIEF_CANONICAL_ROOT}`*."))
+else:
+    _msg = render_belief_frontier(
+        frontier_df=belief_frontier_df,
+        label_strategy=_label_strategy,
+        label_model=_label_model,
+    )
+    if _msg:
+        display(Markdown(f"*{_msg}*"))
+```
+
+@fig-belief-frontier shows the same basic pattern as in the perturbed behavioural-outcome task: configurations that better match the intended direction of profile change often do so by allowing more spillover into dimensions that should have remained stable. This benchmark is demanding because the reference psychological profile regressions imply selective updates: a shift in one broader covariate block may move perceived stakes, for example, without inducing equally large changes in trust or norms. The LLMs do not preserve that scope. Changing one profile dimension appears to trigger a broader reinterpretation of the respondent, so related dimensions move together instead of remaining tightly localised [@mooney_2025_coherence].
+
+```{python}
+#| echo: false
+#| label: fig-belief-signal-block-sensitivity-alignment
+#| fig-cap: "**Broader-block sensitivity alignment on active cells, aggregated across available models and prompt families.** Each point is a broader covariate block. The x-axis shows the reference median absolute standardised sensitivity, and the y-axis shows the corresponding LLM median absolute standardised sensitivity, both computed only on active cells with $|PE_{\\mathrm{ref,std}}| > 0.03$. Points above the diagonal indicate that the LLM is more sensitive than the reference benchmark for the same block. The dominant pattern is systematic oversensitivity across blocks, especially for accessibility-related inputs."
+#| fig-pos: "H"
+
+_msg = render_belief_signal_block_sensitivity_alignment(
+    canonical_root=BELIEF_CANONICAL_ROOT,
+    model=None,
+    strategy=None,
+    signal_bucket_map=BELIEF_SIGNAL_MECHANISM_BUCKET_MAP,
+    signal_bucket_order=BELIEF_SIGNAL_MECHANISM_BUCKET_ORDER,
+    label_signal_bucket=lambda bucket: BELIEF_SIGNAL_MECHANISM_BUCKET_LABELS.get(str(bucket), str(bucket)),
+)
+if _msg:
+    display(Markdown(f"*{_msg}*"))
+```
+
+Leakage is only part of the problem. @fig-belief-signal-block-sensitivity-alignment shows that the LLM is systematically over-responsive to perturbations in broader covariate blocks. Every block lies above the diagonal, so for the same class of input shift the model produces larger profile changes than the reference benchmark. The pattern is broad-based: accessibility is the clearest case, but the same oversensitivity appears for institutional credibility, disease-stakes salience, and interpersonal signals. The psychological-profile task therefore fails on both scope and gain: updates spill into non-target dimensions, and even the targeted dimensions are shifted too strongly.
+
+The results draw a clear boundary around what current LLMs can and cannot do reliably as behavioural components in this ABM. In the unperturbed tasks, the models often recover meaningful cross-sectional structure. They can rank baseline behaviours moderately well and recover part of the relative shape of baseline psychological profiles. Their main weakness is central-tendency compression: level recovery is weaker than ranking, and tail profiles are under-represented.
+
+The perturbed tasks are more problematic. In the behavioural-outcome task, the models sometimes recover the sign of a response and part of the ordering of who should move more under a controlled shift, especially with paired-contrast prompting, but effect-size accuracy and containment remain weak. In the psychological-profile task, the failures are stronger still: updates are too diffuse and too large relative to the survey-grounded benchmark. Off-the-shelf LLMs are therefore not reliable enough to serve as the behavioural update mechanism in this ABM. The next chapter accordingly returns to the estimated survey equations and carries those forward into the simulator design.

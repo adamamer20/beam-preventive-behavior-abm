@@ -1,0 +1,3165 @@
+{
+  "encodings": {
+    "duration_socialmedia": {
+      "Never": 1,
+      "Less than 2 hours per week": 2,
+      "Not every day, but more than 2 hours per week": 3,
+      "Every day, for at most 1 hour a day": 4,
+      "Every day, for more than 1 hour a day": 5
+    },
+    "vax_freq": {
+      "Never": 1,
+      "Less than once a month": 2,
+      "Once or more per month": 3,
+      "Once or more per week": 4,
+      "Daily": 5
+    }
+  },
+  "old_columns": [
+    {
+      "id": "sex",
+      "section": "quotas",
+      "question": "What is your sex?",
+      "new_question": "Are you a Female?",
+      "answer": [
+        "Male",
+        "Female"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": {
+            "Male": false,
+            "Female": true
+          }
+        }
+      ],
+      "category": "Demographics & Background",
+      "subcategory": "Sex"
+    },
+    {
+      "id": "age",
+      "section": "quotas",
+      "question": "How old are you?",
+      "answer": "Age in years",
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Demographics & Background",
+      "subcategory": "Age"
+    },
+    {
+      "id": "M_education",
+      "section": "quotas",
+      "question": "What is the highest level of education you have achieved so far?",
+      "answer": [
+        "ED0-2",
+        "ED5-8",
+        "ED3-4"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Demographics & Background",
+      "subcategory": "Education (highest)"
+    },
+    {
+      "id": "marital_status",
+      "section": "socio-demo-econ-health",
+      "question": "What is your official marital status?",
+      "new_question": "Are you married?",
+      "answer": [
+        "I prefer not to answer",
+        "Widowed",
+        "Separated",
+        "Divorced or civil union dissolved",
+        "Never married or in civil union",
+        "Married or in civil union"
+      ],
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Demographics & Background",
+      "subcategory": "Marital status"
+    },
+    {
+      "id": "minority",
+      "section": "socio-demo-econ-health",
+      "question": "Where you live, do you consider yourself to be part of any of the following minority groups: ethnic, disability, sexual (such as gay, lesbian, or bisexual), religious, or any other minority group?",
+      "answer": [
+        "Any other minority group:",
+        "I prefer not to answer",
+        "I'm not sure",
+        "An ethnic minority",
+        "A minority in terms of disability",
+        "lesbian",
+        "or bisexual)",
+        "A sexual minority (like being gay",
+        "A religious minority",
+        "None of the above"
+      ],
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Demographics & Background",
+      "subcategory": "Minority identification"
+    },
+    {
+      "id": "politics",
+      "section": "socio-demo-econ-health",
+      "question": "Which political party do you currently feel closest to?",
+      "answer": "Name of the political party",
+      "missing_percentage": 20,
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Demographics & Background",
+      "subcategory": "Party closeness"
+    },
+    {
+      "id": "M_religion",
+      "section": "socio-demo-econ-health",
+      "question": "Which religion do you currently feel closest to?",
+      "new_question": "Do you currently feel closest to a Christian religion?",
+      "answer": [
+        "Jewish",
+        "Christian Orthodox",
+        "Eastern Religions",
+        "Other non Christian",
+        "Muslim",
+        "I prefer not to answer",
+        "Other Christian",
+        "Christian Protestant",
+        "Atheist Agnostic",
+        "Christian Catholic"
+      ],
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Demographics & Background",
+      "subcategory": "Religious affiliation"
+    },
+    {
+      "id": "M_income",
+      "section": "socio-demo-econ-health",
+      "question": "Approximately, what is the quantile of your household's total monthly income, after tax and compulsory deductions, from all sources?",
+      "answer": [
+        "I prefer not to answer",
+        "Quintile 1",
+        "Quintile 4",
+        "Quintile 5",
+        "Quintile 3",
+        "Quintile 2"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Socioeconomics & Employment",
+      "subcategory": "Income quantile (household)"
+    },
+    {
+      "id": "transport",
+      "section": "socio-demo-econ-health",
+      "question": "On an average weekday, which mode of transportation do you usually use?",
+      "answer": [
+        "Other",
+        "Bicycle",
+        "Walking",
+        "Public transport (subway, bus, tram, train, etc.)",
+        "Car or motorbike/scooter"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$ONE-HOT"
+        }
+      ],
+      "category": "Mobility & Access",
+      "subcategory": "Usual weekday transport"
+    },
+    {
+      "id": "cohabitant_num",
+      "section": "socio-demo-econ-health",
+      "question": "How many cohabitants do you have?",
+      "question_group": "people_num",
+      "question_entity": "Cohabitants",
+      "answer": "Number of cohabitants",
+      "missing_percentage": 21,
+      "n_outliers": {
+        "high": 82,
+        "max": 10
+      },
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Household Composition",
+      "subcategory": "Cohabitants: count"
+    },
+    {
+      "id": "noncohabitant_num",
+      "section": "socio-demo-econ-health",
+      "question": "How many NON-COHABITING close family members do you have?",
+      "question_group": "people_num",
+      "question_entity": "Non-cohabiting Family Members",
+      "answer": "Number of non-cohabiting close family members (1-10)",
+      "missing_percentage": 32,
+      "n_outliers": {
+        "high": 797,
+        "max": 10
+      },
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Family Network (Non-cohabiting)",
+      "subcategory": "Count"
+    },
+    {
+      "id": "health_status",
+      "section": "socio-demo-econ-health",
+      "question": "How do you currently rate your overall health status? (1-5)",
+      "answer": [
+        "I prefer not to answer",
+        "Very bad",
+        "Bad",
+        "Very Good",
+        "Fair",
+        "Good"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Health Status & Comorbidities",
+      "subcategory": "Self-rated health"
+    },
+    {
+      "id": "medical_conditions",
+      "section": "socio-demo-econ-health",
+      "question": "Have you been diagnosed with any of the following illnesses or conditions: chronic kidney disease requiring dialysis, impaired liver function, a serious heart condition (other than high blood pressure), severe obesity, chronic lung disease or moderate to severe asthma, diabetes, hypertension (high blood pressure), immunocompromised status?",
+      "question_group": "medical_conditions",
+      "question_entity": "You",
+      "answer": [
+        "Chronic kidney disease requiring dialysis",
+        "Impaired liver function",
+        "I prefer not to answer",
+        "Immunocompromised",
+        "A serious heart condition (other than high blood pressure)",
+        "Severe obesity",
+        "Chronic lung disease or moderate to severe asthma",
+        "Diabetes",
+        "Other chronic conditions",
+        "Hypertension/high blood pressure",
+        "None of the above"
+      ],
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Health Status & Comorbidities",
+      "subcategory": "Comorbidities (self)"
+    },
+    {
+      "id": "medical_conditions_c",
+      "section": "socio-demo-econ-health",
+      "question": "Were any of your cohabitants diagnosed with any of the illnesses or conditions listed above?",
+      "question_group": "medical_conditions",
+      "question_entity": "Cohabitants",
+      "answer": [
+        "I prefer not to answer",
+        "I don't know",
+        "Yes",
+        "No"
+      ],
+      "missing_percentage": 21,
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Health Status & Comorbidities",
+      "subcategory": "Comorbidities (cohabitants)"
+    },
+    {
+      "id": "covid_num",
+      "section": "covid_experience",
+      "question": "As far as you know, how many times have you contracted COVID-19?",
+      "question_group": "covid_num",
+      "question_entity": "You",
+      "answer": "Single choice (1-10)",
+      "missing_percentage": 39,
+      "n_outliers": {
+        "high": 333,
+        "max": 10
+      },
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "COVID-19 Experience",
+      "subcategory": "Infections: self (count)"
+    },
+    {
+      "id": "covid_treat",
+      "section": "covid_experience",
+      "question": "Considering all the COVID-19 infections you have had, what kinds of medical treatment have you been prescribed in order to recover?",
+      "new_question": "Have you been prescribed medical treatment for COVID-19?",
+      "answer": [
+        "I prefer not to answer",
+        "I have been prescribed medical treatment to be carried out at home,I have been hospitalized",
+        "I have been hospitalized",
+        "I have been prescribed medical treatment to be carried out at home",
+        "I have not been prescribed any medical treatment"
+      ],
+      "missing_percentage": 48,
+      "validation_category": "input",
+      "transformations": [],
+      "category": "COVID-19 Experience",
+      "subcategory": "Treatment severity (self)"
+    },
+    {
+      "id": "covid_other",
+      "section": "covid_experience",
+      "question": "Do you personally know anyone who has been hospitalized for or died from COVID-19?",
+      "answer": [
+        "I prefer not to answer",
+        "I don't know/I don't remember",
+        "Yes, I personally know someone who has been hospitalized for COVID-19,Yes, I personally know someone who died from COVID-19",
+        "Yes, I personally know someone who died from COVID-19",
+        "Yes, I personally know someone who has been hospitalized for COVID-19",
+        "No, I do not personally know anyone who has been hospitalized for or died from COVID-19"
+      ],
+      "validation_category": "input",
+      "transformations": [],
+      "category": "COVID-19 Experience",
+      "subcategory": "Severe case in social circle"
+    },
+    {
+      "id": "covax_num",
+      "section": "covid_experience",
+      "question": "How many doses of COVID-19 vaccine have you received?",
+      "question_group": "covax_num",
+      "question_entity": "You",
+      "answer": [
+        "1",
+        "4 or more",
+        "2",
+        "3"
+      ],
+      "missing_percentage": 16,
+      "validation_category": "output",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "COVID-19 Vaccination History",
+      "subcategory": "Doses received (self)"
+    },
+    {
+      "id": "risk_1_1",
+      "section": "covid_experience",
+      "question": "How dangerous did you think COVID-19 was to your health when you were offered the FIRST and SECOND dose of vaccine? (1-5)",
+      "question_group": "risk_1",
+      "question_entity": "When you were offered the first and second dose of vaccine",
+      "answer": [
+        "Not at all",
+        "Extremely",
+        "Not very",
+        "Very",
+        "Quite"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "COVID-19 Risk Perception",
+      "subcategory": "Timepoint: 1st\u20132nd dose"
+    },
+    {
+      "id": "risk_2_1",
+      "section": "covid_experience",
+      "question": "How willing were you to be vaccinated against COVID-19 when you were offered the FIRST and SECOND dose of vaccine? (1-5)",
+      "question_group": "risk_2",
+      "question_entity": "When you were offered the first and second dose of vaccine",
+      "answer": [
+        "Not very",
+        "Quite",
+        "Very",
+        "Extremely",
+        "Not at all"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "COVID-19 Vaccination Willingness",
+      "subcategory": "Timepoint: 1st\u20132nd dose"
+    },
+    {
+      "id": "risk_1_2",
+      "section": "covid_experience",
+      "question": "How dangerous did you think COVID-19 was to your health when you were offered the THIRD dose of vaccine? (1-5)",
+      "question_group": "risk_1",
+      "question_entity": "When you were offered the third dose of vaccine",
+      "answer": [
+        "Extremely",
+        "Not at all",
+        "Very",
+        "Not very",
+        "Quite"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "COVID-19 Risk Perception",
+      "subcategory": "Timepoint: 3rd dose"
+    },
+    {
+      "id": "risk_2_2",
+      "section": "covid_experience",
+      "question": "How willing were you to be vaccinated against COVID-19 when you were offered the THIRD dose of vaccine? (1-5)",
+      "question_group": "risk_2",
+      "question_entity": "When you were offered the third dose of vaccine",
+      "answer": [
+        "Not very",
+        "Extremely",
+        "Not at all",
+        "Quite",
+        "Very"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "COVID-19 Vaccination Willingness",
+      "subcategory": "Timepoint: 3rd dose"
+    },
+    {
+      "id": "risk_1_3",
+      "section": "covid_experience",
+      "question": "How dangerous did you think COVID-19 was to your health when you were offered the FOURTH dose of vaccine? (1-5)",
+      "question_group": "risk_1",
+      "question_entity": "When you were offered the fourth dose",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Not at all",
+        "Quite",
+        "Not very"
+      ],
+      "missing_percentage": 16,
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "COVID-19 Risk Perception",
+      "subcategory": "Timepoint: 4th dose"
+    },
+    {
+      "id": "risk_2_3",
+      "section": "covid_experience",
+      "question": "How willing were you to be vaccinated against COVID-19 when you were offered the FOURTH dose of vaccine? (1-5)",
+      "question_group": "risk_2",
+      "question_entity": "When you were offered the fourth dose",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Not very",
+        "Quite",
+        "Not at all"
+      ],
+      "missing_percentage": 16,
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "COVID-19 Vaccination Willingness",
+      "subcategory": "Timepoint: 4th dose"
+    },
+    {
+      "id": "risk_1_5",
+      "section": "covid_experience",
+      "question": "How dangerous did you think COVID-19 was to your health yesterday? (1-5)",
+      "question_group": "risk_1",
+      "question_entity": "Yesterday",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Quite",
+        "Not very",
+        "Not at all"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "COVID-19 Risk Perception",
+      "subcategory": "Timepoint: Yesterday"
+    },
+    {
+      "id": "risk_2_5",
+      "section": "covid_experience",
+      "question": "How willing were you to be vaccinated against COVID-19 yesterday? (1-5)",
+      "question_group": "risk_2",
+      "question_entity": "Yesterday",
+      "answer": [
+        "Very",
+        "Extremely",
+        "Quite",
+        "Not very",
+        "Not at all"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "COVID-19 Vaccination Willingness",
+      "subcategory": "Timepoint: Yesterday"
+    },
+    {
+      "id": "knowledge_illness",
+      "section": "other_illness",
+      "question": "In your opinion, which of the following illnesses can be prevented through vaccination?",
+      "answer": [
+        "Diabetes",
+        "None of the above",
+        "I don't know",
+        "HIV",
+        "Hepatitis A",
+        "Hepatitis C",
+        "Hepatitis B",
+        "Meningitis",
+        "Chickenpox",
+        "COVID-19",
+        "Flu",
+        "Measles"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$knowledge_illness"
+        },
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Vaccine Knowledge & Beliefs",
+      "subcategory": "Illnesses preventable by vaccines"
+    },
+    {
+      "id": "risk_infection_1",
+      "section": "other_illness",
+      "question": "In your opinion, how likely are you to contract COVID-19 today? (1-5)",
+      "question_group": "risk_infection",
+      "question_entity": "COVID-19",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Not at all",
+        "Quite",
+        "Not very"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Disease Risk Perception (current)",
+      "subcategory": "COVID-19"
+    },
+    {
+      "id": "risk_infection_2",
+      "section": "other_illness",
+      "question": "In your opinion, how likely are you to contract Flu today? (1-5)",
+      "question_group": "risk_infection",
+      "question_entity": "Flu",
+      "answer": [
+        "Extremely",
+        "Not at all",
+        "Very",
+        "Not very",
+        "Quite"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Disease Risk Perception (current)",
+      "subcategory": "Influenza"
+    },
+    {
+      "id": "risk_infection_3",
+      "section": "other_illness",
+      "question": "In your opinion, how likely are you to contract Measles today? (1-5)",
+      "question_group": "risk_infection",
+      "question_entity": "Measles",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Quite",
+        "Not very",
+        "Not at all"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Disease Risk Perception (current)",
+      "subcategory": "Measles"
+    },
+    {
+      "id": "risk_infection_4",
+      "section": "other_illness",
+      "question": "In your opinion, how likely are you to contract Meningitis today? (1-5)",
+      "question_group": "risk_infection",
+      "question_entity": "Meningitis",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Quite",
+        "Not at all",
+        "Not very"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Disease Risk Perception (current)",
+      "subcategory": "Meningitis"
+    },
+    {
+      "id": "risk_illness_1",
+      "section": "other_illness",
+      "question": "In your opinion, how likely are you to experience serious health consequences if you contract COVID-19? (1-5)",
+      "question_group": "risk_illness",
+      "question_entity": "COVID-19",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Not at all",
+        "Quite",
+        "Not very"
+      ],
+      "missing_percentage": 23,
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Disease Severity Perception (if infected)",
+      "subcategory": "COVID-19"
+    },
+    {
+      "id": "risk_illness_2",
+      "section": "other_illness",
+      "question": "In your opinion, how likely are you to experience serious health consequences if you contract the Flu? (1-5)",
+      "question_group": "risk_illness",
+      "question_entity": "Flu",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Not at all",
+        "Quite",
+        "Not very"
+      ],
+      "missing_percentage": 9,
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Disease Severity Perception (if infected)",
+      "subcategory": "Influenza"
+    },
+    {
+      "id": "knowledge_vax",
+      "section": "other_illness",
+      "question": "Among the following statements about vaccines, please select the ones that are TRUE according to you:",
+      "answer": [
+        "None of the above",
+        "No vaccines are recommended to the adult population",
+        "I don\u2019t know",
+        "The administration of COVID-19 vaccines to pregnant women is not recommended",
+        "Herd immunity helps reduce the spread of viruses",
+        "vaccines have eliminated serious diseases",
+        "In the past"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$knowledge_vax"
+        },
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Vaccine Knowledge & Beliefs",
+      "subcategory": "Statements about vaccines (true/false per respondent)"
+    },
+    {
+      "id": "risk_vax_1",
+      "section": "other_illness",
+      "question": "In your opinion, how likely are you to experience health consequences if you receive the COVID-19 vaccine? (1-5)",
+      "question_group": "risk_vax",
+      "question_entity": "COVID-19",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Not at all",
+        "Quite",
+        "Not very"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Vaccine Risk Perception (by disease)",
+      "subcategory": "COVID-19 vaccine"
+    },
+    {
+      "id": "risk_vax_2",
+      "section": "other_illness",
+      "question": "In your opinion, how likely are you to experience health consequences if you receive the Flu vaccine? (1-5)",
+      "question_group": "risk_vax",
+      "question_entity": "Flu",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Quite",
+        "Not at all",
+        "Not very"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Vaccine Risk Perception (by disease)",
+      "subcategory": "Influenza vaccine"
+    },
+    {
+      "id": "risk_vax_3",
+      "section": "other_illness",
+      "question": "In your opinion, how likely are you to experience health consequences if you receive the Measles vaccine? (1-5)",
+      "question_group": "risk_vax",
+      "question_entity": "Measles",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Quite",
+        "Not at all",
+        "Not very"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Vaccine Risk Perception (by disease)",
+      "subcategory": "Measles vaccine"
+    },
+    {
+      "id": "risk_vax_4",
+      "section": "other_illness",
+      "question": "In your opinion, how likely are you to experience health consequences if you receive the Meningitis vaccine? (1-5)",
+      "question_group": "risk_vax",
+      "question_entity": "Meningitis",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Quite",
+        "Not at all",
+        "Not very"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Vaccine Risk Perception (by disease)",
+      "subcategory": "Meningitis vaccine"
+    },
+    {
+      "id": "emotion_illness_1",
+      "section": "other_illness",
+      "question": "How much do you fear COVID-19? (1-5)",
+      "question_group": "emotion_illness",
+      "question_entity": "COVID-19",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Quite",
+        "Not at all",
+        "Not very"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Emotional Response: Disease fear",
+      "subcategory": "COVID-19"
+    },
+    {
+      "id": "emotion_illness_2",
+      "section": "other_illness",
+      "question": "How much do you fear Flu? (1-5)",
+      "question_group": "emotion_illness",
+      "question_entity": "Flu",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Quite",
+        "Not at all",
+        "Not very"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Emotional Response: Disease fear",
+      "subcategory": "Influenza"
+    },
+    {
+      "id": "emotion_illness_3",
+      "section": "other_illness",
+      "question": "How much do you fear Measles? (1-5)",
+      "question_group": "emotion_illness",
+      "question_entity": "Measles",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Quite",
+        "Not very",
+        "Not at all"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Emotional Response: Disease fear",
+      "subcategory": "Measles"
+    },
+    {
+      "id": "emotion_illness_4",
+      "section": "other_illness",
+      "question": "How much do you fear Meningitis? (1-5)",
+      "question_group": "emotion_illness",
+      "question_entity": "Meningitis",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Not at all",
+        "Quite",
+        "Not very"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Emotional Response: Disease fear",
+      "subcategory": "Meningitis"
+    },
+    {
+      "id": "emotion_vax_1",
+      "section": "other_illness",
+      "question": "How much do you fear the COVID-19 vaccine? (1-5)",
+      "question_group": "emotion_vax",
+      "question_entity": "COVID-19",
+      "answer": [
+        "Very",
+        "Extremely",
+        "Quite",
+        "Not very",
+        "Not at all"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Emotional Response: Vaccine fear",
+      "subcategory": "COVID-19 vaccine"
+    },
+    {
+      "id": "emotion_vax_2",
+      "section": "other_illness",
+      "question": "How much do you fear the Flu vaccine? (1-5)",
+      "question_group": "emotion_vax",
+      "question_entity": "Flu",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Quite",
+        "Not very",
+        "Not at all"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Emotional Response: Vaccine fear",
+      "subcategory": "Influenza vaccine"
+    },
+    {
+      "id": "emotion_vax_3",
+      "section": "other_illness",
+      "question": "How much do you fear the Measles vaccine? (1-5)",
+      "question_group": "emotion_vax",
+      "question_entity": "Measles",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Quite",
+        "Not very",
+        "Not at all"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Emotional Response: Vaccine fear",
+      "subcategory": "Measles vaccine"
+    },
+    {
+      "id": "emotion_vax_4",
+      "section": "other_illness",
+      "question": "How much do you fear the Meningitis vaccine? (1-5)",
+      "question_group": "emotion_vax",
+      "question_entity": "Meningitis",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Quite",
+        "Not very",
+        "Not at all"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Emotional Response: Vaccine fear",
+      "subcategory": "Meningitis vaccine"
+    },
+    {
+      "id": "exper_illness",
+      "section": "other_illness",
+      "question": "Have you ever been hospitalized or do you personally know anyone who has been hospitalized for or died from an infectious illness other than COVID-19?",
+      "answer": [
+        "I prefer not to answer",
+        "Yes, I have been hospitalized for an infectious illness other than COVID-19",
+        "Yes, I personally know someone who died from an infectious illness other than COVID-19",
+        "I don't know/I don't remember",
+        "Yes, I personally know someone who has been hospitalized for an infectious illness other than COVID-19",
+        "No, I have never been hospitalized for, nor do I know anyone who has been hospitalized for or died from an infectious illness other than COVID-19"
+      ],
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Other Infectious-Disease Experience",
+      "subcategory": "Severe case in social circle (non-COVID)"
+    },
+    {
+      "id": "fluvax_1",
+      "section": "other_illness",
+      "question": "Did you get vaccinated against flu at least once before the pandemic?",
+      "question_group": "fluvax",
+      "question_entity": "before the pandemic",
+      "answer": [
+        "I don't remember",
+        "Yes",
+        "No"
+      ],
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Flu Vaccination History",
+      "subcategory": "Before pandemic (ever)"
+    },
+    {
+      "id": "fluvax_2",
+      "section": "other_illness",
+      "question": "Did you get vaccinated against flu at least once in Autumn/winter 2020-2021",
+      "question_group": "fluvax",
+      "question_entity": "Autumn/Winter 2020-2021",
+      "answer": [
+        "I don't remember",
+        "Yes",
+        "No"
+      ],
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Flu Vaccination History",
+      "subcategory": "2020\u20132021"
+    },
+    {
+      "id": "fluvax_3",
+      "section": "other_illness",
+      "question": "Did you get vaccinated against flu at least once in Autumn/winter 2021-2022",
+      "question_group": "fluvax",
+      "question_entity": "Autumn/Winter 2021-2022",
+      "answer": [
+        "I don't remember",
+        "Yes",
+        "No"
+      ],
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Flu Vaccination History",
+      "subcategory": "2021\u20132022"
+    },
+    {
+      "id": "fluvax_4",
+      "section": "other_illness",
+      "question": "Did you get vaccinated against flu at least once in Autumn/winter 2022-2023",
+      "question_group": "fluvax",
+      "question_entity": "Autumn/Winter 2022-2023",
+      "answer": [
+        "I don't remember",
+        "Yes",
+        "No"
+      ],
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Flu Vaccination History",
+      "subcategory": "2022\u20132023"
+    },
+    {
+      "id": "fluvax_5",
+      "section": "other_illness",
+      "question": "Did you get vaccinated against flu at least once in Autumn/winter 2023-2024",
+      "question_group": "fluvax",
+      "question_entity": "Autumn/Winter 2023-2024",
+      "answer": [
+        "I don't remember",
+        "Yes",
+        "No"
+      ],
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Flu Vaccination History",
+      "subcategory": "2023\u20132024"
+    },
+    {
+      "id": "side_effects",
+      "section": "other_illness",
+      "question": "Have you ever experienced any side effects (apart from arm pain) after being administered a dose of any vaccine?",
+      "question_group": "side_effects",
+      "question_entity": "You",
+      "answer": [
+        "I prefer not to answer",
+        "Yes, severe (e.g., seizures, anaphylaxis)",
+        "I don't remember",
+        "Yes, mild (e.g., headache, fever)",
+        "No"
+      ],
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Vaccine Side Effects (Experience)",
+      "subcategory": "Personal (any vaccine)"
+    },
+    {
+      "id": "side_effects_other",
+      "section": "other_illness",
+      "question": "Do you personally know anyone who has ever experienced side effects (apart from arm pain) after being administered a dose of any vaccine?",
+      "question_group": "side_effects",
+      "question_entity": "Anyone you personally know",
+      "answer": [
+        "I prefer not to answer",
+        "Yes, mild (e.g., headache, fever),Yes, severe (e.g., seizures, anaphylaxis)",
+        "Yes, severe (e.g., seizures, anaphylaxis)",
+        "I don't remember",
+        "No",
+        "Yes, mild (e.g., headache, fever)"
+      ],
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Vaccine Side Effects (Experience)",
+      "subcategory": "Knowing others with side effects"
+    },
+    {
+      "id": "size_friend_group",
+      "section": "group",
+      "question": "How many friends do you have approximately?",
+      "answer": "Number of friends",
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "robust"
+        }
+      ],
+      "category": "Social Network Structure & Size",
+      "subcategory": "Friends: size"
+    },
+    {
+      "id": "friend_closure",
+      "section": "group",
+      "question": "Approximately, how many of your friends are also each others' friends? (1-7)",
+      "answer": [
+        "Almost all of them",
+        "All of them",
+        "None of them",
+        "About a half of them",
+        "Very few of them",
+        "Most of them",
+        "Some of them"
+      ],
+      "missing_percentage": 11,
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Social Network Structure & Size",
+      "subcategory": "Friend network closure"
+    },
+    {
+      "id": "vax_group_1",
+      "section": "group",
+      "question": "During the pandemic, with how many people in the cohabitants group did you have a conversation about vaccines/vaccination programs (in person, over the phone, or online)?",
+      "question_group": "vax_group",
+      "question_entity": "Cohabitants",
+      "answer": "Number of people",
+      "missing_percentage": 21,
+      "n_outliers": {
+        "high": 1459,
+        "max": 999999
+      },
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "robust"
+        }
+      ],
+      "category": "Vaccine Conversations (Pandemic)",
+      "subcategory": "Count: Cohabitants"
+    },
+    {
+      "id": "vax_group_6",
+      "section": "group",
+      "question": "During the pandemic, with how many people in the friends group did you have a conversation about vaccines/vaccination programs (in person, over the phone, or online)?",
+      "question_group": "vax_group",
+      "question_entity": "Friends",
+      "answer": "Number of people",
+      "missing_percentage": 5,
+      "n_outliers": {
+        "high": 1531,
+        "max": 29000
+      },
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "robust"
+        }
+      ],
+      "category": "Vaccine Conversations (Pandemic)",
+      "subcategory": "Count: Friends"
+    },
+    {
+      "id": "vax_group_7",
+      "section": "group",
+      "question": "During the pandemic, with how many people in the Other (school, neighbors, shopkeepers) group did you have a conversation about vaccines/vaccination programs (in person, over the phone, or online)?",
+      "question_group": "vax_group",
+      "question_entity": "Other (school, neighbors, shopkeepers)",
+      "answer": "Number of people",
+      "n_outliers": {
+        "high": 1761,
+        "max": 100000
+      },
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "robust"
+        }
+      ],
+      "category": "Vaccine Conversations (Pandemic)",
+      "subcategory": "Count: Others (school/neighbors/shopkeepers)"
+    },
+    {
+      "id": "vax_freq_1",
+      "section": "group",
+      "question": "During the pandemic, how often did you find yourself participating in a conversation about vaccines/vaccination programs (in person, over the phone, or online) with the cohabitants group?",
+      "question_group": "vax_freq",
+      "question_entity": "Cohabitants",
+      "answer": [
+        "Once or more per month",
+        "Less than once a month",
+        "Once or more per week",
+        "Daily"
+      ],
+      "missing_percentage": 31,
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Vaccine Conversations (Pandemic)",
+      "subcategory": "Frequency: Cohabitants"
+    },
+    {
+      "id": "vax_freq_6",
+      "section": "group",
+      "question": "During the pandemic, how often did you find yourself participating in a conversation about vaccines/vaccination programs (in person, over the phone, or online) with the friends group?",
+      "question_group": "vax_freq",
+      "question_entity": "Friends",
+      "answer": [
+        "Less than once a month",
+        "Daily",
+        "Once or more per month",
+        "Once or more per week"
+      ],
+      "missing_percentage": 24,
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Vaccine Conversations (Pandemic)",
+      "subcategory": "Frequency: Friends"
+    },
+    {
+      "id": "vax_freq_7",
+      "section": "group",
+      "question": "During the pandemic, how often did you find yourself participating in a conversation about vaccines/vaccination programs (in person, over the phone, or online) with the Other (school, neighbors, shopkeepers) group?",
+      "question_group": "vax_freq",
+      "question_entity": "Other (school, neighbors, shopkeepers)",
+      "answer": [
+        "Daily",
+        "Less than once a month",
+        "Once or more per month",
+        "Once or more per week"
+      ],
+      "missing_percentage": 41,
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Vaccine Conversations (Pandemic)",
+      "subcategory": "Frequency: Others (school/neighbors/shopkeepers)"
+    },
+    {
+      "id": "opinion_1",
+      "section": "opinion",
+      "question": "Vaccines are decisive for the protection of human health.",
+      "question_group": "opinion",
+      "question_entity": "Vaccines are decisive for the protection of human health",
+      "answer": [
+        "Moderately disagree",
+        "Strongly disagree",
+        "Slightly disagree",
+        "Neutral",
+        "Moderately agree",
+        "Slightly agree",
+        "Strongly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Sociopolitical Attitudes",
+      "subcategory": "Topic: Vaccine importance"
+    },
+    {
+      "id": "opinion_2",
+      "section": "opinion",
+      "question": "Climate change will have a bad impact on people across the world.",
+      "question_group": "opinion",
+      "question_entity": "Climate change will have a bad impact on people across the world",
+      "answer": [
+        "Moderately disagree",
+        "Strongly disagree",
+        "Slightly disagree",
+        "Neutral",
+        "Slightly agree",
+        "Moderately agree",
+        "Strongly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Sociopolitical Attitudes",
+      "subcategory": "Topic: Climate change harm"
+    },
+    {
+      "id": "opinion_3",
+      "section": "opinion",
+      "question": "Gay male and lesbian couples should have the same rights to adopt children as straight couples.",
+      "question_group": "opinion",
+      "question_entity": "Gay male and lesbian couples should have the same rights to adopt children as straight couples.",
+      "answer": [
+        "Moderately disagree",
+        "Slightly disagree",
+        "Strongly disagree",
+        "Slightly agree",
+        "Moderately agree",
+        "Neutral",
+        "Strongly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Sociopolitical Attitudes",
+      "subcategory": "Topic: LGBT adoption rights"
+    },
+    {
+      "id": "opinion_4",
+      "section": "opinion",
+      "question": "The fact that there are people immigrating from other countries is bad for the economy of the country of arrival.",
+      "question_group": "opinion",
+      "question_entity": "The fact that there are people immigrating from other countries is bad for the economy of the country of arrival.",
+      "answer": [
+        "Moderately disagree",
+        "Moderately agree",
+        "Strongly agree",
+        "Slightly disagree",
+        "Strongly disagree",
+        "Slightly agree",
+        "Neutral"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Sociopolitical Attitudes",
+      "subcategory": "Topic: Immigration & economy"
+    },
+    {
+      "id": "opinion_change_1",
+      "section": "opinion",
+      "question": "How has your opinion on 'Vaccines are decisive for the protection of human health' changed over the years?",
+      "question_group": "opinion_change",
+      "question_entity": "Vaccines are decisive for the protection of human health",
+      "answer": [
+        "I disagree more than some time ago",
+        "I agree more than some time ago",
+        "My opinion has stayed the same over time"
+      ],
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Attitude Change Over Time",
+      "subcategory": "Topic: Vaccine importance"
+    },
+    {
+      "id": "opinion_change_2",
+      "section": "opinion",
+      "question": "How has your opinion on 'Climate change will have a bad impact on people across the world' changed over the years?",
+      "question_group": "opinion_change",
+      "question_entity": "Climate change will have a bad impact on people across the world",
+      "answer": [
+        "I disagree more than some time ago",
+        "I agree more than some time ago",
+        "My opinion has stayed the same over time"
+      ],
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Attitude Change Over Time",
+      "subcategory": "Topic: Climate change harm"
+    },
+    {
+      "id": "opinion_change_3",
+      "section": "opinion",
+      "question": "How has your opinion on 'Gay male and lesbian couples should have the same rights to adopt children as straight couples' changed over the years?",
+      "question_group": "opinion_change",
+      "question_entity": "Gay male and lesbian couples should have the same rights to adopt children as straight couples",
+      "answer": [
+        "I disagree more than some time ago",
+        "I agree more than some time ago",
+        "My opinion has stayed the same over time"
+      ],
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Attitude Change Over Time",
+      "subcategory": "Topic: LGBT adoption rights"
+    },
+    {
+      "id": "opinion_change_4",
+      "section": "opinion",
+      "question": "How has your opinion on 'The fact that there are people immigrating from other countries is bad for the economy of the country of arrival' changed over the years?",
+      "question_group": "opinion_change",
+      "question_entity": "The fact that there are people immigrating from other countries is bad for the economy of the country of arrival",
+      "answer": [
+        "I disagree more than some time ago",
+        "I agree more than some time ago",
+        "My opinion has stayed the same over time"
+      ],
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Attitude Change Over Time",
+      "subcategory": "Topic: Immigration & economy"
+    },
+    {
+      "id": "opinion_other_1_6",
+      "section": "opinion",
+      "question": "To what extent do your friends agree with the statement 'Vaccines are decisive for the protection of human health'?",
+      "question_group": "opinion_other",
+      "question_entity": "Friends, Vaccines are decisive for the protection of human health",
+      "answer": [
+        "Strongly Disagree",
+        "Moderately Disagree",
+        "Slightly Disagree",
+        "I don't know",
+        "Slightly Agree",
+        "Strongly Agree",
+        "Neutral",
+        "Moderately Agree"
+      ],
+      "missing_percentage": 5,
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Perceived Social Norms (Friends)",
+      "subcategory": "Topic: Vaccine importance"
+    },
+    {
+      "id": "opinion_other_2_6",
+      "section": "opinion",
+      "question": "To what extent do your friends agree with the statement 'Climate change will have a bad impact on people across the world'?",
+      "question_group": "opinion_other",
+      "question_entity": "Friends, Climate change will have a bad impact on people across the world",
+      "answer": [
+        "Strongly Disagree",
+        "Moderately Disagree",
+        "Slightly Disagree",
+        "I don't know",
+        "Slightly Agree",
+        "Neutral",
+        "Moderately Agree",
+        "Strongly Agree"
+      ],
+      "missing_percentage": 5,
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Perceived Social Norms (Friends)",
+      "subcategory": "Topic: Climate change harm"
+    },
+    {
+      "id": "opinion_other_3_6",
+      "section": "opinion",
+      "question": "To what extent do your friends agree with the statement 'Gay male and lesbian couples should have the same rights to adopt children as straight couples'?",
+      "question_group": "opinion_other",
+      "question_entity": "Friends, Gay male and lesbian couples should have the same rights to adopt children as straight couples",
+      "answer": [
+        "Moderately Disagree",
+        "Strongly Disagree",
+        "Slightly Disagree",
+        "Slightly Agree",
+        "I don't know",
+        "Moderately Agree",
+        "Strongly Agree",
+        "Neutral"
+      ],
+      "missing_percentage": 5,
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Perceived Social Norms (Friends)",
+      "subcategory": "Topic: LGBT adoption rights"
+    },
+    {
+      "id": "opinion_other_4_6",
+      "section": "opinion",
+      "question": "To what extent do your friends agree with the statement 'The fact that there are people immigrating from other countries is bad for the economy of the country of arrival'?",
+      "question_group": "opinion_other",
+      "question_entity": "Friends, The fact that there are people immigrating from other countries is bad for the economy of the country of arrival",
+      "answer": [
+        "Moderately Disagree",
+        "Strongly Disagree",
+        "Slightly Disagree",
+        "Slightly Agree",
+        "Moderately Agree",
+        "Strongly Agree",
+        "I don't know",
+        "Neutral"
+      ],
+      "missing_percentage": 5,
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Perceived Social Norms (Friends)",
+      "subcategory": "Topic: Immigration & economy"
+    },
+    {
+      "id": "institut_trust_vax_1",
+      "section": "opinion",
+      "question": "How much do you trust the information about vaccines/vaccination programs shared by Local government?",
+      "question_group": "institut_trust_vax",
+      "question_entity": "Local government",
+      "answer": [
+        "Completely",
+        "Very",
+        "Not at all",
+        "Quite",
+        "A little"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Institutional Trust (Vaccine Info Source)",
+      "subcategory": "Local government"
+    },
+    {
+      "id": "institut_trust_vax_2",
+      "section": "opinion",
+      "question": "How much do you trust the information about vaccines/vaccination programs shared by National government?",
+      "answer": [
+        "Completely",
+        "Very",
+        "A little",
+        "Quite",
+        "Not at all"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Institutional Trust (Vaccine Info Source)",
+      "subcategory": "National government"
+    },
+    {
+      "id": "institut_trust_vax_3",
+      "section": "opinion",
+      "question": "How much do you trust the information about vaccines/vaccination programs shared by family doctor?",
+      "answer": [
+        "Not at all",
+        "A little",
+        "Completely",
+        "Very",
+        "Quite"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Institutional Trust (Vaccine Info Source)",
+      "subcategory": "Family doctor / GP"
+    },
+    {
+      "id": "institut_trust_vax_4",
+      "section": "opinion",
+      "question": "How much do you trust the information about vaccines/vaccination programs shared by local health authorities?",
+      "answer": [
+        "Completely",
+        "Not at all",
+        "Very",
+        "A little",
+        "Quite"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Institutional Trust (Vaccine Info Source)",
+      "subcategory": "Local health authorities"
+    },
+    {
+      "id": "institut_trust_vax_5",
+      "section": "opinion",
+      "question": "How much do you trust the information about vaccines/vaccination programs shared by national health institutions?",
+      "answer": [
+        "Completely",
+        "Not at all",
+        "A little",
+        "Very",
+        "Quite"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Institutional Trust (Vaccine Info Source)",
+      "subcategory": "National health institutions"
+    },
+    {
+      "id": "institut_trust_vax_6",
+      "section": "opinion",
+      "question": "How much do you trust the information about vaccines/vaccination programs shared by World Health Organization?",
+      "answer": [
+        "Completely",
+        "Not at all",
+        "A little",
+        "Very",
+        "Quite"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Institutional Trust (Vaccine Info Source)",
+      "subcategory": "World Health Organization"
+    },
+    {
+      "id": "institut_trust_vax_7",
+      "section": "opinion",
+      "question": "How much do you trust the information about vaccines/vaccination programs shared by religious leaders?",
+      "answer": [
+        "Completely",
+        "Very",
+        "Quite",
+        "A little",
+        "Not at all"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Institutional Trust (Vaccine Info Source)",
+      "subcategory": "Religious leaders"
+    },
+    {
+      "id": "institut_trust_vax_8",
+      "section": "opinion",
+      "question": "How much do you trust the information about vaccines/vaccination programs shared by influencers and other public personalities?",
+      "answer": [
+        "Completely",
+        "Very",
+        "Quite",
+        "A little",
+        "Not at all"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Institutional Trust (Vaccine Info Source)",
+      "subcategory": "Influencers/public personalities"
+    },
+    {
+      "id": "fiveC_1",
+      "section": "opinion",
+      "question": "I am completely confident that vaccines are safe.",
+      "answer": [
+        "Moderately disagree",
+        "Slightly disagree",
+        "Strongly disagree",
+        "Strongly agree",
+        "Moderately agree",
+        "Neutral",
+        "Slightly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "5C Antecedents of Vaccination",
+      "subcategory": "Confidence"
+    },
+    {
+      "id": "fiveC_2",
+      "section": "opinion",
+      "question": "Vaccination is unnecessary because vaccine preventable diseases are not common anymore.",
+      "answer": [
+        "Strongly agree",
+        "Moderately agree",
+        "Slightly agree",
+        "Slightly disagree",
+        "Moderately disagree",
+        "Neutral",
+        "Strongly disagree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "5C Antecedents of Vaccination",
+      "subcategory": "Complacency"
+    },
+    {
+      "id": "fiveC_3",
+      "section": "opinion",
+      "question": "Everyday stress prevents me from getting vaccinated.",
+      "answer": [
+        "Strongly agree",
+        "Moderately agree",
+        "Slightly agree",
+        "Slightly disagree",
+        "Neutral",
+        "Moderately disagree",
+        "Strongly disagree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "5C Antecedents of Vaccination",
+      "subcategory": "Constraints"
+    },
+    {
+      "id": "fiveC_4",
+      "section": "opinion",
+      "question": "When I think about getting vaccinated, I weigh benefits and risks to make the best decision possible",
+      "answer": [
+        "Moderately disagree",
+        "Strongly disagree",
+        "Slightly disagree",
+        "Neutral",
+        "Moderately agree",
+        "Strongly agree",
+        "Slightly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "5C Antecedents of Vaccination",
+      "subcategory": "Calculation"
+    },
+    {
+      "id": "fiveC_5",
+      "section": "opinion",
+      "question": "When everyone is vaccinated, I don't need to get vaccinated.",
+      "answer": [
+        "Moderately agree",
+        "Strongly agree",
+        "Slightly agree",
+        "Slightly disagree",
+        "Moderately disagree",
+        "Neutral",
+        "Strongly disagree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "5C Antecedents of Vaccination",
+      "subcategory": "Collective responsibility (reverse-worded)"
+    },
+    {
+      "id": "protective_behaviour_1",
+      "section": "opinion",
+      "question": "Safe and effective vaccines should be made mandatory for the entire population.",
+      "answer": [
+        "Moderately disagree",
+        "Slightly disagree",
+        "Strongly disagree",
+        "Moderately agree",
+        "Slightly agree",
+        "Neutral",
+        "Strongly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Protective Behaviors",
+      "subcategory": "Mandatory vaccination support"
+    },
+    {
+      "id": "protective_behaviour_2",
+      "section": "opinion",
+      "question": "I use masks in crowded places when experiencing respiratory symptoms.",
+      "answer": [
+        "Moderately disagree",
+        "Slightly disagree",
+        "Strongly disagree",
+        "Moderately agree",
+        "Neutral",
+        "Slightly agree",
+        "Strongly agree"
+      ],
+      "validation_category": "output",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Protective Behaviors",
+      "subcategory": "Mask when symptomatic (crowded)"
+    },
+    {
+      "id": "protective_behaviour_3",
+      "section": "opinion",
+      "question": "I stay at home when experiencing respiratory symptoms.",
+      "answer": [
+        "Strongly disagree",
+        "Moderately disagree",
+        "Slightly disagree",
+        "Strongly agree",
+        "Moderately agree",
+        "Neutral",
+        "Slightly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Protective Behaviors",
+      "subcategory": "Stay home when symptomatic"
+    },
+    {
+      "id": "protective_behaviour_4",
+      "section": "opinion",
+      "question": "When the epidemic pressure is high, I use masks in crowded places.",
+      "answer": [
+        "Moderately disagree",
+        "Slightly disagree",
+        "Strongly disagree",
+        "Neutral",
+        "Moderately agree",
+        "Slightly agree",
+        "Strongly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Protective Behaviors",
+      "subcategory": "Mask when epidemic pressure high"
+    },
+    {
+      "id": "booking",
+      "section": "accessibility",
+      "question": "To what extent do you feel able to independently book vaccination appointments for yourself or your family members?",
+      "answer": [
+        "Not at all",
+        "A little",
+        "Very",
+        "Quite",
+        "Completely"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Access to Vaccination",
+      "subcategory": "Self-efficacy: booking"
+    },
+    {
+      "id": "vax_hub",
+      "section": "accessibility",
+      "question": "How easy is it for you to independently reach the nearest vaccination facility?",
+      "answer": [
+        "Not at all",
+        "Not very",
+        "Quite",
+        "Very",
+        "Extremely"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Access to Vaccination",
+      "subcategory": "Proximity/ease to reach facility"
+    },
+    {
+      "id": "impediment",
+      "section": "accessibility",
+      "question": "Which of these contextual factors have in the past been a barrier to your access to vaccination? You may choose more than one answer.",
+      "new_question": "Have you ever faced any difficulties in accessing vaccination?",
+      "answer": [
+        "The vaccination center was too far away or not easily accessible",
+        "There were not enough dates and/or times available to get vaccinated",
+        "The vaccine was not available at the time I wanted to receive it",
+        "I could not leave my home for personal reasons (e.g., caring for a dependent person)",
+        "I could not bear the cost associated with the vaccination (e.g., cost of the vaccine itself, cost to get to the vaccination center, loss of work hours)",
+        "I could not get leave from work to go and get vaccinated",
+        "The information available to me about vaccination was insufficient and/or unreliable",
+        "Other:",
+        "I have never experienced any difficulties"
+      ],
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Access to Vaccination",
+      "subcategory": "Past access difficulties"
+    },
+    {
+      "id": "moral1_1",
+      "section": "moral",
+      "question": "When you decide whether something is right or wrong, to what extent is 'Whether or not someone suffered emotionally' relevant to your thinking? (1-6)",
+      "answer": [
+        "Not at all relevant",
+        "Not very relevant",
+        "Extremely relevant",
+        "Slightly relevant",
+        "Very relevant",
+        "Somewhat relevant"
+      ],
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Moral Foundations",
+      "subcategory": "Care/Harm (relevance)"
+    },
+    {
+      "id": "moral1_2",
+      "section": "moral",
+      "question": "When you decide whether something is right or wrong, to what extent is 'Whether or not some people were treated differently than others' relevant to your thinking? (1-6)",
+      "answer": [
+        "Not at all relevant",
+        "Not very relevant",
+        "Extremely relevant",
+        "Slightly relevant",
+        "Very relevant",
+        "Somewhat relevant"
+      ],
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Moral Foundations",
+      "subcategory": "Fairness/Cheating (relevance)"
+    },
+    {
+      "id": "moral1_3",
+      "section": "moral",
+      "question": "When you decide whether something is right or wrong, to what extent is 'Whether or not someone's action showed love for his or her country' relevant to your thinking? (1-6)",
+      "answer": [
+        "Extremely relevant",
+        "Not at all relevant",
+        "Not very relevant",
+        "Very relevant",
+        "Slightly relevant",
+        "Somewhat relevant"
+      ],
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Moral Foundations",
+      "subcategory": "Loyalty/Betrayal (relevance)"
+    },
+    {
+      "id": "moral1_4",
+      "section": "moral",
+      "question": "When you decide whether something is right or wrong, to what extent is 'Whether or not someone showed a lack of respect for authority' relevant to your thinking? (1-6)",
+      "answer": [
+        "Not at all relevant",
+        "Not very relevant",
+        "Extremely relevant",
+        "Slightly relevant",
+        "Very relevant",
+        "Somewhat relevant"
+      ],
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Moral Foundations",
+      "subcategory": "Authority/Subversion (relevance)"
+    },
+    {
+      "id": "moral1_5",
+      "section": "moral",
+      "question": "When you decide whether something is right or wrong, to what extent is 'Whether or not someone violated standards of purity and decency' relevant to your thinking? (1-6)",
+      "answer": [
+        "Not at all relevant",
+        "Not very relevant",
+        "Extremely relevant",
+        "Slightly relevant",
+        "Very relevant",
+        "Somewhat relevant"
+      ],
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Moral Foundations",
+      "subcategory": "Purity/Degradation (relevance)"
+    },
+    {
+      "id": "moral1_6",
+      "section": "moral",
+      "question": "When you decide whether something is right or wrong, to what extent is 'Whether or not someone was good at math' relevant to your thinking? (1-6)",
+      "answer": [
+        "Extremely relevant",
+        "Very relevant",
+        "Somewhat relevant",
+        "Slightly relevant",
+        "Not very relevant",
+        "Not at all relevant"
+      ],
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Moral Foundations",
+      "subcategory": "Control/Decoy (math; relevance)"
+    },
+    {
+      "id": "moral1_7",
+      "section": "moral",
+      "question": "When you decide whether something is right or wrong, to what extent is 'Whether or not someone cared for someone weak or vulnerable' relevant to your thinking? (1-6)",
+      "answer": [
+        "Not at all relevant",
+        "Not very relevant",
+        "Slightly relevant",
+        "Extremely relevant",
+        "Somewhat relevant",
+        "Very relevant"
+      ],
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Moral Foundations",
+      "subcategory": "Care/Harm (relevance)"
+    },
+    {
+      "id": "moral1_8",
+      "section": "moral",
+      "question": "When you decide whether something is right or wrong, to what extent is 'Whether or not someone cared for someone weak or vulnerable' relevant to your thinking? (1-6)",
+      "answer": [
+        "Not at all relevant",
+        "Not very relevant",
+        "Slightly relevant",
+        "Extremely relevant",
+        "Somewhat relevant",
+        "Very relevant"
+      ],
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Moral Foundations",
+      "subcategory": "Care/Harm (relevance; duplicate phrasing)"
+    },
+    {
+      "id": "moral1_9",
+      "section": "moral",
+      "question": "When you decide whether something is right or wrong, to what extent is 'Whether or not someone did something to betray his or her group' relevant to your thinking? (1-6)",
+      "answer": [
+        "Not at all relevant",
+        "Not very relevant",
+        "Slightly relevant",
+        "Extremely relevant",
+        "Somewhat relevant",
+        "Very relevant"
+      ],
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Moral Foundations",
+      "subcategory": "Loyalty/Betrayal (relevance)"
+    },
+    {
+      "id": "moral1_10",
+      "section": "moral",
+      "question": "When you decide whether something is right or wrong, to what extent is 'Whether or not someone conformed to the traditions of society' relevant to your thinking? (1-6)",
+      "answer": [
+        "Extremely relevant",
+        "Not at all relevant",
+        "Very relevant",
+        "Not very relevant",
+        "Slightly relevant",
+        "Somewhat relevant"
+      ],
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Moral Foundations",
+      "subcategory": "Authority/Tradition (relevance)"
+    },
+    {
+      "id": "moral1_11",
+      "section": "moral",
+      "question": "When you decide whether something is right or wrong, to what extent is 'Whether or not someone did something disgusting' relevant to your thinking? (1-6)",
+      "answer": [
+        "Not at all relevant",
+        "Not very relevant",
+        "Slightly relevant",
+        "Extremely relevant",
+        "Somewhat relevant",
+        "Very relevant"
+      ],
+      "validation_category": "input",
+      "transformations": [],
+      "category": "Moral Foundations",
+      "subcategory": "Purity/Degradation (relevance)"
+    },
+    {
+      "id": "moral2_1",
+      "section": "moral",
+      "question": "Please indicate your agreement or disagreement with the statement: 'Compassion for those who are suffering is the most crucial virtue.' (1-6)",
+      "answer": [
+        "Strongly disagree",
+        "Moderately disagree",
+        "Slightly disagree",
+        "Slightly agree",
+        "Strongly agree",
+        "Moderately agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Care/Harm (agreement)"
+    },
+    {
+      "id": "moral2_2",
+      "section": "moral",
+      "question": "Please indicate your agreement or disagreement with the statement: 'When the government makes laws, the number one principle should be ensuring that everyone is treated fairly.' (1-6)",
+      "answer": [
+        "Strongly disagree",
+        "Moderately disagree",
+        "Slightly disagree",
+        "Slightly agree",
+        "Moderately agree",
+        "Strongly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Fairness/Justice (agreement)"
+    },
+    {
+      "id": "moral2_3",
+      "section": "moral",
+      "question": "Please indicate your agreement or disagreement with the statement: 'I am proud of my country's history.' (1-6)",
+      "answer": [
+        "Strongly disagree",
+        "Moderately disagree",
+        "Slightly disagree",
+        "Strongly agree",
+        "Moderately agree",
+        "Slightly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Loyalty/National pride (agreement)"
+    },
+    {
+      "id": "moral2_4",
+      "section": "moral",
+      "question": "Please indicate your agreement or disagreement with the statement: 'Respect for authority is something all children need to learn.' (1-6)",
+      "answer": [
+        "Strongly disagree",
+        "Moderately disagree",
+        "Slightly disagree",
+        "Slightly agree",
+        "Moderately agree",
+        "Strongly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Authority/Respect (agreement)"
+    },
+    {
+      "id": "moral2_5",
+      "section": "moral",
+      "question": "Please indicate your agreement or disagreement with the statement: 'People should not do things that are disgusting, even if no one is harmed.' (1-6)",
+      "answer": [
+        "Strongly disagree",
+        "Moderately disagree",
+        "Slightly disagree",
+        "Slightly agree",
+        "Moderately agree",
+        "Strongly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Purity/Degradation (agreement)"
+    },
+    {
+      "id": "moral2_6",
+      "section": "moral",
+      "question": "Please indicate your agreement or disagreement with the statement: 'It is better to do good than to do bad.' (1-6)",
+      "answer": [
+        "Strongly disagree",
+        "Moderately disagree",
+        "Slightly disagree",
+        "Slightly agree",
+        "Moderately agree",
+        "Strongly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "General virtue (control)"
+    },
+    {
+      "id": "moral2_7",
+      "section": "moral",
+      "question": "Please indicate your agreement or disagreement with the statement: 'One of the worst things a person could do is hurt a defenseless animal.' (1-6)",
+      "answer": [
+        "Strongly disagree",
+        "Moderately disagree",
+        "Slightly disagree",
+        "Slightly agree",
+        "Moderately agree",
+        "Strongly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Care/Harm (agreement)"
+    },
+    {
+      "id": "moral2_8",
+      "section": "moral",
+      "question": "Please indicate your agreement or disagreement with the statement: 'Justice is the most important requirement for a society.' (1-6)",
+      "answer": [
+        "Strongly disagree",
+        "Moderately disagree",
+        "Slightly disagree",
+        "Slightly agree",
+        "Moderately agree",
+        "Strongly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Fairness/Justice (agreement)"
+    },
+    {
+      "id": "moral2_9",
+      "section": "moral",
+      "question": "Please indicate your agreement or disagreement with the statement: 'People should be loyal to their family members, even when they have done something wrong.' (1-6)",
+      "answer": [
+        "Strongly disagree",
+        "Moderately disagree",
+        "Slightly disagree",
+        "Strongly agree",
+        "Moderately agree",
+        "Slightly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Loyalty/Family loyalty (agreement)"
+    },
+    {
+      "id": "moral2_10",
+      "section": "moral",
+      "question": "Please indicate your agreement or disagreement with the statement: 'Men and women each have different roles to play in society.' (1-6)",
+      "answer": [
+        "Moderately disagree",
+        "Strongly disagree",
+        "Slightly disagree",
+        "Strongly agree",
+        "Moderately agree",
+        "Slightly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Authority/Traditional gender roles (agreement)"
+    },
+    {
+      "id": "moral2_11",
+      "section": "moral",
+      "question": "Please indicate your agreement or disagreement with the statement: 'I would call some acts wrong on the grounds that they are unnatural.' (1-6)",
+      "answer": [
+        "Strongly disagree",
+        "Moderately disagree",
+        "Strongly agree",
+        "Slightly disagree",
+        "Moderately agree",
+        "Slightly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Purity/Naturalness (agreement)"
+    },
+    {
+      "id": "origin",
+      "section": "metadata",
+      "question": "Tell us about your origin. Where were you and your parents born? Where do you currently live?",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$EMBEDDING",
+          "embedding_prompt": "$EMBEDDING_SYSTEM_PROMPT"
+        }
+      ],
+      "category": "Demographics & Background",
+      "subcategory": "Migration & residence"
+    },
+    {
+      "id": "occupation_full",
+      "section": "socio-demo-econ-health",
+      "question": "What is your occupation?",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$EMBEDDING",
+          "embedding_prompt": "$EMBEDDING_SYSTEM_PROMPT"
+        }
+      ],
+      "category": "Socioeconomics & Employment",
+      "subcategory": "Occupation (free text/category)"
+    },
+    {
+      "id": "covid_date_1",
+      "section": "covid_experience",
+      "question": "When did you first experience symptoms of COVID-19?",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME",
+          "datetime_format": "%Y-%m-%d"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME_TO_INTERVAL",
+          "datetime_format": "%Y-%m-%d",
+          "from_timestamp": "2020-01-01",
+          "unit": "days"
+        },
+        {
+          "type": "imputation",
+          "imputation_value": "$MAX"
+        },
+        {
+          "type": "scaling",
+          "scaling_type": "robust"
+        }
+      ],
+      "category": "COVID-19 Experience",
+      "subcategory": "Onset date (first infection)"
+    },
+    {
+      "id": "covax_reason",
+      "section": "covid_experience",
+      "question": "Why did or didn't you get vaccinated for COVID-19?",
+      "transformations": [],
+      "category": "Vaccination Motivations",
+      "subcategory": "Self-reported reasons (for/against)"
+    },
+    {
+      "id": "covax_date_1",
+      "section": "covid_experience",
+      "question": "Specify the month and year in which you received each dose of COVID-19 vaccine (First dose).",
+      "answer": "Month-Year",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME",
+          "datetime_format": "%Y-%m-%d"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME_TO_INTERVAL",
+          "datetime_format": "%Y-%m-%d",
+          "from_timestamp": "2020-01-01",
+          "unit": "days"
+        },
+        {
+          "type": "imputation",
+          "imputation_value": "$MAX"
+        },
+        {
+          "type": "scaling",
+          "scaling_type": "robust"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$EMBEDDING",
+          "embedding_prompt": "$EMBEDDING_SYSTEM_PROMPT"
+        }
+      ],
+      "category": "COVID-19 Vaccination History",
+      "subcategory": "Date: dose 1"
+    },
+    {
+      "id": "covax_date_2",
+      "section": "covid_experience",
+      "question": "Specify the month in which you received each dose of COVID-19 vaccine (Second dose).",
+      "answer": "Month-Year",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME",
+          "datetime_format": "%Y-%m-%d"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME_TO_INTERVAL",
+          "datetime_format": "%Y-%m-%d",
+          "from_timestamp": "2020-01-01",
+          "unit": "days"
+        },
+        {
+          "type": "imputation",
+          "imputation_value": "$MAX"
+        },
+        {
+          "type": "scaling",
+          "scaling_type": "robust"
+        }
+      ],
+      "category": "COVID-19 Vaccination History",
+      "subcategory": "Date: dose 2"
+    },
+    {
+      "id": "cohabitant_age",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitants: Age",
+      "answer": "Mean of cohabitants age",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "robust"
+        }
+      ],
+      "category": "Household Composition",
+      "subcategory": "Cohabitants: age"
+    },
+    {
+      "id": "cohabitant_covax_num",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitants: Number of vaccine doses received.",
+      "answer": "Mean of cohabitants vaccine",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "robust"
+        }
+      ],
+      "category": "Household Composition",
+      "subcategory": "Cohabitants: vaccine doses"
+    },
+    {
+      "id": "cohabitant_covid_num",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitants: Number of times contracted COVID-19.",
+      "answer": "Mean of cohabitants covid times",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "robust"
+        }
+      ],
+      "category": "Household Composition",
+      "subcategory": "Cohabitants: COVID infections"
+    },
+    {
+      "id": "noncohabitant_age",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family members: Age",
+      "answer": "Mean of age",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "robust"
+        }
+      ],
+      "category": "Family Network (Non-cohabiting)",
+      "subcategory": "Age"
+    },
+    {
+      "id": "noncohabitant_covax_num",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member: Number of vaccine doses received.",
+      "answer": "Mean of cohabitants vaccine",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "robust"
+        }
+      ],
+      "category": "Family Network (Non-cohabiting)",
+      "subcategory": "Vaccine doses"
+    },
+    {
+      "id": "noncohabitant_covid_num",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family members: Number of times contracted COVID-19.",
+      "answer": "Mean of noncohabitants covid times",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "robust"
+        }
+      ],
+      "category": "Family Network (Non-cohabiting)",
+      "subcategory": "COVID infections"
+    },
+    {
+      "id": "info_traditional",
+      "section": "info_source",
+      "question": "Select the traditional information channels that you primarily use.",
+      "answer": [
+        "Print newspapers or magazines",
+        "Television",
+        "Radio"
+      ],
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$COUNTING"
+        },
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Media Diet & Exposure",
+      "subcategory": "Primary channels: traditional"
+    },
+    {
+      "id": "info_online",
+      "section": "info_source",
+      "question": "Select the online information channels that you primarily use.",
+      "answer": [
+        "Online newspapers or magazines (including apps, blogs, scientific journals)",
+        "Wikipedia",
+        "Youtube",
+        "Podcast or radio podcast",
+        "Internet searches",
+        "Reddit"
+      ],
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$COUNTING"
+        },
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Media Diet & Exposure",
+      "subcategory": "Primary channels: online"
+    },
+    {
+      "id": "info_social",
+      "section": "info_source",
+      "question": "Select the interaction (including social media) channels that you primarily use.",
+      "answer": [
+        "Instagram",
+        "Facebook",
+        "X (Twitter)",
+        "LinkedIn",
+        "Telegram channels",
+        "TikTok"
+      ],
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$COUNTING"
+        },
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Media Diet & Exposure",
+      "subcategory": "Primary channels: social/interaction"
+    },
+    {
+      "id": "duration_infomedia",
+      "section": "info_source",
+      "question": "Thinking of your weekly routine, how much time do you usually spend on information channels?",
+      "answer": [
+        "Every day, for more than 1 hour a day",
+        "Every day, for at most 1 hour a day",
+        "Not every day, but more than 2 hours per week",
+        "Less than 2 hours per week"
+      ],
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "duration_socialmedia"
+        },
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Media Diet & Exposure",
+      "subcategory": "Time: information channels"
+    },
+    {
+      "id": "duration_socialmedia",
+      "section": "info_source",
+      "question": "Thinking of your weekly routine, how much time do you usually spend on social media?",
+      "answer": [
+        "Not every day, but more than 2 hours per week",
+        "Every day, for more than 1 hour a day",
+        "Less than 2 hours per week",
+        "Every day, for at most 1 hour a day"
+      ],
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "duration_socialmedia"
+        },
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Media Diet & Exposure",
+      "subcategory": "Time: social media"
+    },
+    {
+      "id": "size_colleagues_group",
+      "section": "group",
+      "question": "How many colleagues (co-workers/classmates) do you have approximately?",
+      "answer": "Number of colleagues (co-workers/classmates)",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "robust"
+        }
+      ],
+      "category": "Social Network Structure & Size",
+      "subcategory": "Colleagues/classmates: size"
+    },
+    {
+      "id": "yesterday_remote",
+      "section": "group",
+      "question": "Did you work / attend lectures remotely YESTERDAY?",
+      "answer": [
+        "Exclusively remotely",
+        "I did not work / I did not attend lectures (e.g., it was a holiday, I was on vacation, I was ill)",
+        "Completely or partially in-person"
+      ],
+      "transformations": [],
+      "category": "Social Network Structure & Size",
+      "subcategory": "Work/study modality yesterday (remote)"
+    },
+    {
+      "id": "contact_group_cohabitant",
+      "section": "group",
+      "question": "With how many different people in the cohabitants group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "robust"
+        }
+      ],
+      "category": "Social Contacts (Yesterday)",
+      "subcategory": "Direct contacts: Cohabitants"
+    },
+    {
+      "id": "contact_group_noncohabitant",
+      "section": "group",
+      "question": "With how many different people in the non-cohabitants group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "robust"
+        }
+      ],
+      "category": "Social Contacts (Yesterday)",
+      "subcategory": "Direct contacts: Non-cohabitants"
+    },
+    {
+      "id": "contact_group_colleagues",
+      "section": "group",
+      "question": "With how many different people in the co-workers group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "robust"
+        }
+      ],
+      "category": "Social Contacts (Yesterday)",
+      "subcategory": "Direct contacts: Colleagues"
+    },
+    {
+      "id": "contact_group_friends",
+      "section": "group",
+      "question": "With how many different people in the friends group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "robust"
+        }
+      ],
+      "category": "Social Contacts (Yesterday)",
+      "subcategory": "Direct contacts: Friends"
+    },
+    {
+      "id": "contact_group_others",
+      "section": "group",
+      "question": "With how many different people in the Other (school, neighbors, shopkeepers) group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "robust"
+        }
+      ],
+      "category": "Social Contacts (Yesterday)",
+      "subcategory": "Direct contacts: Others"
+    },
+    {
+      "id": "discussion_group_cohabitant",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the cohabitants group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "robust"
+        }
+      ],
+      "category": "Conversations (Last Week, Any Topic)",
+      "subcategory": "Cohabitants"
+    },
+    {
+      "id": "discussion_group_noncohabitant",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the non-cohabiting sibling, parents and/or grandparents group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "robust"
+        }
+      ],
+      "category": "Conversations (Last Week, Any Topic)",
+      "subcategory": "Non-cohabiting family"
+    },
+    {
+      "id": "discussion_group_colleagues",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the co-workers group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "robust"
+        }
+      ],
+      "category": "Conversations (Last Week, Any Topic)",
+      "subcategory": "Colleagues"
+    },
+    {
+      "id": "discussion_group_friends",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the friends group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "robust"
+        }
+      ],
+      "category": "Conversations (Last Week, Any Topic)",
+      "subcategory": "Friends"
+    },
+    {
+      "id": "discussion_group_others",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the Other (school, neighbors, shopkeepers) group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "robust"
+        }
+      ],
+      "category": "Conversations (Last Week, Any Topic)",
+      "subcategory": "Others"
+    },
+    {
+      "id": "vax_group_noncohabitant",
+      "section": "group",
+      "question": "During the pandemic, with how many people in the non-cohabiting group did you have a conversation about vaccines/vaccination programs (in person, over the phone, or online)?",
+      "answer": "Number of people",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "robust"
+        }
+      ],
+      "category": "Vaccine Conversations (Pandemic)",
+      "subcategory": "Count: Non-cohabiting family"
+    },
+    {
+      "id": "vax_group_colleagues",
+      "section": "group",
+      "question": "During the pandemic, with how many people in the colleagues (co-workers and classmates) group did you have a conversation about vaccines/vaccination programs (in person, over the phone, or online)?",
+      "answer": "Number of people",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "robust"
+        }
+      ],
+      "category": "Vaccine Conversations (Pandemic)",
+      "subcategory": "Count: Colleagues"
+    },
+    {
+      "id": "vax_freq_noncohabitant",
+      "section": "group",
+      "question": "During the pandemic, how often did you find yourself participating in a conversation about vaccines/vaccination programs (in person, over the phone, or online) with the non-cohabiting sibling, parents and/or grandparents group?",
+      "answer": "Average of frequency",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "vax_freq"
+        },
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Vaccine Conversations (Pandemic)",
+      "subcategory": "Frequency: Non-cohabiting family"
+    },
+    {
+      "id": "vax_freq_colleagues",
+      "section": "group",
+      "question": "During the pandemic, how often did you find yourself participating in a conversation about vaccines/vaccination programs (in person, over the phone, or online) with the colleagues (co-workers / classmates) group?",
+      "answer": "Average of frequency",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "vax_freq"
+        },
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Vaccine Conversations (Pandemic)",
+      "subcategory": "Frequency: Colleagues"
+    },
+    {
+      "id": "group_trust_vax",
+      "section": "group",
+      "question": "How much did you trust the information about vaccines/vaccination programs you received from others?",
+      "answer": "Average of trust",
+      "transformations": [],
+      "category": "Peer Trust (Vaccine Info)",
+      "subcategory": "Trust in info from social contacts"
+    },
+    {
+      "id": "opinion_other_1_family",
+      "section": "opinion",
+      "question": "To what extent does your family agree or disagree with the statement 'Vaccines are decisive for the protection of human health'?",
+      "answer": "Average of agreement",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Perceived Social Norms (Family)",
+      "subcategory": "Topic: Vaccine importance"
+    },
+    {
+      "id": "opinion_other_2_family",
+      "section": "opinion",
+      "question": "To what extent does your family agree or disagree with the statement 'Climate change will have a bad impact on people across the world'?",
+      "answer": "Average of agreement",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Perceived Social Norms (Family)",
+      "subcategory": "Topic: Climate change harm"
+    },
+    {
+      "id": "opinion_other_3_family",
+      "section": "opinion",
+      "question": "To what extent does your family agree or disagree with the statement 'Gay male and lesbian couples should have the same rights to adopt children as straight couples'?",
+      "answer": "Average of agreement",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Perceived Social Norms (Family)",
+      "subcategory": "Topic: LGBT adoption rights"
+    },
+    {
+      "id": "opinion_other_4_family",
+      "section": "opinion",
+      "question": "To what extent does your family agree or disagree with the statement 'The fact that there are people immigrating from other countries is bad for the economy of the country of arrival'?",
+      "answer": "Average of agreement",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Perceived Social Norms (Family)",
+      "subcategory": "Topic: Immigration & economy"
+    },
+    {
+      "id": "opinion_other_1_colleagues",
+      "section": "opinion",
+      "question": "To what extent do your colleagues (co-workers/classmates) agree or disagree with the statement 'Vaccines are decisive for the protection of human health'?",
+      "answer": "Average of agreement",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Perceived Social Norms (Colleagues)",
+      "subcategory": "Topic: Vaccine importance"
+    },
+    {
+      "id": "opinion_other_2_colleagues",
+      "section": "opinion",
+      "question": "To what extent do your colleagues (co-workers/classmates) agree or disagree with the statement 'Climate change will have a bad impact on people across the world'?",
+      "answer": "Average of agreement",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Perceived Social Norms (Colleagues)",
+      "subcategory": "Topic: Climate change harm"
+    },
+    {
+      "id": "opinion_other_3_colleagues",
+      "section": "opinion",
+      "question": "To what extent do your colleagues (co-workers/classmates) agree or disagree with the statement 'Gay male and lesbian couples should have the same rights to adopt children as straight couples'?",
+      "answer": "Average of agreement",
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Perceived Social Norms (Colleagues)",
+      "subcategory": "Topic: LGBT adoption rights"
+    },
+    {
+      "id": "opinion_other_4_colleagues",
+      "section": "opinion",
+      "question": "To what extent do your colleagues (co-workers/classmates) agree or disagree with the statement 'The fact that there are people immigrating from other countries is bad for the economy of the country of arrival'?",
+      "answer": [
+        "Moderately Disagree",
+        "Strongly Disagree",
+        "Slightly Disagree",
+        "Strongly Agree",
+        "Slightly Agree",
+        "Moderately Agree",
+        "I don't know",
+        "Neutral"
+      ],
+      "transformations": [
+        {
+          "type": "scaling",
+          "scaling_type": "minmax"
+        }
+      ],
+      "category": "Perceived Social Norms (Colleagues)",
+      "subcategory": "Topic: Immigration & economy"
+    }
+  ]
+}

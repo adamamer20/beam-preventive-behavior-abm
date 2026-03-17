@@ -1,0 +1,7 @@
+/.quarto/
+_book
+node_modules
+_generated/
+final_output/
+!artifacts/
+!artifacts/**

@@ -1,0 +1,381 @@
+# Methodology {#sec-03-methodology}
+
+This chapter documents the survey data, preprocessing, and modelling inputs used in later chapters; @fig-thesis-pipeline provides a visual map.
+
+::: {.content-visible when-format="pdf"}
+
+::: {#fig-thesis-pipeline fig-cap="Roadmap of the thesis: where empirical results are translated into modelling components (psychological profile variables, heterogeneity summaries, and behavioural outcome equations) and then evaluated via LLM perturbation tests and ABM simulation." fig-align="center" fig-pos="H"}
+
+![](_generated/mermaid/fig-thesis-pipeline.png){height=60%}
+
+:::
+
+:::
+
+::: {.content-visible when-format="html"}
+
+```{mermaid}
+%%| label: fig-thesis-pipeline
+%%| fig-cap: "Roadmap of the thesis: where empirical results are translated into modelling components (psychological profile variables, heterogeneity summaries, and behavioural outcome equations) and then evaluated via LLM perturbation tests and ABM simulation."
+%%{init: {
+  "securityLevel": "loose",
+  "theme": "base",
+  "flowchart": { "htmlLabels": true, "nodeSpacing": 35, "rankSpacing": 45, "curve": "basis" },
+  "themeVariables": {
+    "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
+    "fontSize": "14px",
+    "primaryColor": "#ffffff",
+    "primaryTextColor": "#111111",
+    "primaryBorderColor": "#c9c9c9",
+    "lineColor": "#b8b8b8",
+    "tertiaryColor": "#f4f4f4"
+  }
+}}%%
+flowchart TB
+  A["<i class='bi bi-database'></i> <b>Data</b><br/><span class='sub'>Survey (6 countries)</span>"]:::data
+  B["<i class='bi bi-bar-chart'></i> <b>Empirics</b><br/><span class='sub'>Ch4: effect-size map</span>"]:::emp
+  C["<i class='bi bi-diagram-3'></i> <b>Structure</b><br/><span class='sub'>Ch5: decision architecture</span>"]:::struct
+  D["<i class='bi bi-cpu'></i> <b>LLM tests</b><br/><span class='sub'>Ch6: perturbations</span>"]:::llm
+  E["<i class='bi bi-bounding-box'></i> <b>ABM</b><br/><span class='sub'>Ch7: generative simulation</span>"]:::abm
+  F["<i class='bi bi-box-seam'></i> <b>Outputs</b><br/><span class='sub'>Mechanisms + scenarios</span>"]:::out
+
+  A --> B --> C --> D --> E --> F
+
+  classDef data  fill:#EAF2FF,stroke:#9BB7FF,color:#111;
+  classDef emp   fill:#F1ECFF,stroke:#B6A2FF,color:#111;
+  classDef struct fill:#E9FAF1,stroke:#8DD7B3,color:#111;
+  classDef llm   fill:#FFECEF,stroke:#FF9CAB,color:#111;
+  classDef abm   fill:#E9FBFF,stroke:#87D7E8,color:#111;
+  classDef out   fill:#F3F4F6,stroke:#D1D5DB,color:#111;
+```
+
+:::
+
+::: {.content-visible when-format="docx"}
+
+::: {#fig-thesis-pipeline fig-cap="Roadmap of the thesis: where empirical results are translated into modelling components (psychological profile variables and behavioural outcome equations) and then evaluated via LLM perturbation tests and ABM simulation." fig-align="center" fig-pos="H"}
+
+![](_generated/mermaid/fig-thesis-pipeline.png){height=60%}
+
+:::
+
+:::
+
+
+
+
+## Statistical modelling methods {#sec-03-modelling-methods}
+
+@sec-03-decision-function moves from screening to **multivariate backbone modelling (coordinated GLMs)**, estimating regression families that compress the gradients in @sec-appendix-dd-methods into a portable empirical backbone of **behavioural outcome equations** and **psychological profile regressions** for profiling, micro-validation, and agent-based simulation. Predictors are introduced in a *conceptual order* from upstream context to downstream behavioural outcomes: demographic and health background, social embedding, and information environments relate to psychological antecedents (trust, risk perceptions, moral and descriptive norms, and 5C dimensions), which in turn relate to attitudes (e.g., perceived importance of vaccines) and behavioural outcomes (e.g., willingness, uptake, routine flu vaccination, and non-pharmaceutical protective actions). This ordering determines how blocks are grouped and which intermediate psychological profile variables are modelled before behaviour.
+
+### Model family and outcome types
+
+The behavioural outcomes span binary indicators, ordinal Likert-type items, and (where applicable) continuous composite measures. To match these measurement scales, I use generalised linear models (GLMs):
+
+- **Binary behavioural outcomes** (e.g., ever vs never vaccinated; adoption indicators) are modelled with **logistic regression**.
+- **Ordinal behavioural outcomes** (Likert-type responses) are modelled with **ordinal logistic regression** (proportional-odds specification for interpretability).
+- **Continuous behavioural outcomes / indices** are modelled with **linear regression** when the modelling representation is approximately continuous.
+
+Country fixed effects are included in all pooled models unless otherwise stated to absorb baseline cross-national differences while preserving the within-sample structure of associations between predictors and behavioural outcomes.
+
+Before estimation, all continuous and ordinal predictors are standardised using pooled z-scores (mean 0, SD 1) computed on the estimation sample. Binary indicators remain coded as 0/1, and categorical predictors are entered as dummy-coded contrasts with an explicit reference category. Coefficient magnitudes are therefore directly comparable only among the standardised continuous/ordinal predictors; binary and categorical coefficients are interpreted on their own contrasts.
+
+Results are reported on the natural scale implied by each link function (log-odds for logistic and ordinal models; linear coefficients for continuous behavioural outcomes), alongside uncertainty summaries. The modelling outputs are then used to (i) motivate a reduced “backbone” set of domains that repeatedly explain variation across preventive behavioural outcomes and (ii) define simulation-ready components that can be transported into the clustering and ABM stages.
+
+
+## LLM behavioural micro-validation {#sec-03-llm-micro-validation}
+
+@sec-04-llm-micro-validation tests whether large language models reproduce the **directional regularities** identified in the modelling chapter under controlled, on-manifold counterfactual manipulations. The aim is not to “predict the survey”, but to assess whether an LLM can act as a plausible behavioural component that preserves the same qualitative gradients estimated in @sec-03-decision-function.
+
+Micro-validation targets two ABM components.
+
+$$
+\begin{aligned}
+\textbf{Behavioural outcome task:}\quad & \hat y = \pi(z, x)
+&& \text{(validate via ICE contrasts under lever perturbations in } x\text{)}\\
+\textbf{Psychological-profile task:}\quad & z' = \mathcal{U}(z, s),\qquad \hat y'=\pi(z', x)
+&& \text{(validate profile response realism + downstream action consistency)}
+\end{aligned}
+$$
+
+
+**Calibration layer for LLM outputs**
+
+Empirically, LLM predictions preserve rank order more reliably than absolute levels. To avoid conflating these properties, I treat the LLM as a scoring function and add a separate, train-only calibration layer that maps the LLM scale onto the survey scale. Calibration is always fit on the training split and applied out-of-fold via cross-fitting, so every evaluation prediction is calibrated by a model that never saw that row. The calibration map is constrained to be monotone so that it adjusts levels without breaking ordering.
+
+For binary outcomes, I use a Platt-style logit calibration with a country intercept and global slope:
+$$
+\operatorname{logit}(p_{\text{true}})=a_c + b\,\operatorname{logit}(p_{\text{llm}}).
+$$
+For ordinal/continuous outcomes, I use a monotone rescaling with a country intercept, fit via isotonic regression:
+$$
+\hat y_{\text{cal}}=f_c\!\left(\hat y_{\text{llm}}\right),\qquad f_c\ \text{monotone}.
+$$
+
+**LLM sampling protocol**
+
+Unless otherwise stated, each prompt instance is evaluated using fixed, recommended model-family decoding settings and averaged over $K=4$ independent generations. For **openai/gpt-oss-20b** and **openai/gpt-oss-120b**, I use temperature $=1.0$ and top-$p=1.0$ (with no top-$k$ truncation). For **qwen/qwen3-32b**, I use temperature $=0.6$, top-$p=0.95$, top-$k=20$ and min-$p=0$, consistent with the recommended non-degenerate sampling regime for that model family. As a sensitivity check, I run a temperature sweep for **gpt-oss-20b** over (${0,\ 0.2,\ 0.4,\ 0.7}$). Point estimates (baseline levels and perturbation contrasts) are stable across temperatures, while higher temperature primarily increases within-cell dispersion rather than shifting the mean; all main results therefore use the default temperature setting and report uncertainty via bootstrap over generations and reference profiles.
+
+Malformed JSON or refusals are retried up to three times to obtain valid outputs; persistent failures are recorded and reported as a non-compliance rate,
+$$
+r_{\text{noncomp}} = \frac{N_{\text{fail}}}{N_{\text{attempt}}}.
+$$
+
+**Two evaluation regimes (levels vs effects).** I distinguish (i) **unperturbed score alignment** on observed profiles, which checks whether the LLM can represent baseline variation on the declared outcome scale, from (ii) **perturbation-effect alignment**, which is the ABM-relevant criterion and tests whether the LLM responds appropriately to targeted counterfactual lever shifts holding the rest of the profile fixed.
+
+
+### Choice-policy micro-validation {#sec-03-choice-microvalidation}
+
+As a baseline diagnostic, I evaluate LLM outputs on **unperturbed (observed)** profiles to assess response-scale compliance, calibration quality, and whether the model preserves rank order on the declared outcome scale. These checks are informative but not sufficient for ABM use.
+
+Predictive accuracy on unperturbed profiles is not sufficient because many psychological profile variables co-vary with socio-demographics, political orientation, and country context. An LLM can therefore match baseline outcome levels by exploiting shortcut cues rather than the intended construct mapping; it can be "right for the wrong reasons". For instance, if perceived vaccine risk is correlated with willingness through education or country composition in the cross-section, a model may appear accurate on unperturbed profiles while responding weakly (or with the wrong sign) when we intervene *ceteris paribus* on perceived vaccine risk or institutional trust within the same profile.
+
+Unperturbed mismatches are also weakly diagnostic about why an LLM fails. Deviations from the backbone can arise because relevant determinants are missing or compressed in the prompt representation, because the output scale is mis-calibrated, or because the model applies different behavioural logic even when the required information is present. Conversely, good baseline fit does not imply correct construct-to-action mapping. For ABM purposes, the key property is **counterfactual fidelity**: outputs should move appropriately when a specific behavioural lever is shifted while holding the rest of the profile fixed.
+
+**Unperturbed baseline diagnostics (rank and level)**
+
+For each outcome $Y$, the unperturbed benchmark evaluates predictions on observed profiles $z$, with the LLM output aggregated as the mean over $K$ generations under strategy $s$, written $\hat y_{\text{llm}}^{(s)}(z)$. I report two generic accuracy summaries that I reuse later for perturbation contrasts:
+
+**Perturbation-based validation (primary): ICE contrasts under matched shocks**
+
+I treat perturbation-based validation as primary. For each outcome $Y$ and validation target $X$, I test whether an LLM preserves the direction and relative strength of the behavioural gradients estimated by the fitted statistical models by applying controlled counterfactual perturbations.
+
+
+Perturbation effects are discrete ICE contrasts computed on a two- or three-point grid .
+
+**Perturbation design (discrete ICE grid)**
+
+Because mapping and clipping can shrink the effective change between grid points, I track the realised perturbation size
+$$
+\Delta_X = x_{\text{high}}-x_{\text{low}},
+$$
+and its standardised shock size
+
+
+**Perturbation effect definition**
+
+Fix an outcome $Y$, a target $X$, a profile $z$, and a prompting strategy $s$. Let $f_{\text{ref}}(x,z)$ denote the fitted backbone prediction for $Y$ on the declared scale when $X=x$ and all non-target covariates are held at $z$. Let $f_{\text{llm}}^{(s)}(x,z)$ denote the LLM's expected output on the same scale under strategy $s$, approximated by the sample mean over $K$ generations.
+
+The reference perturbation effect is
+
+and the LLM perturbation effect is
+$$
+PE_{\text{llm}}^{(s)}(X;z)=f_{\text{llm}}^{(s)}(x_{\text{high}},z)-f_{\text{llm}}^{(s)}(x_{\text{low}},z).
+
+PE_{\text{llm,std}}^{(s)}(X;z)=\frac{PE_{\text{llm}}^{(s)}(X;z)}{\Delta z_X}.
+$$
+
+**Why there are two sets: active vs containment, and what each is used for**
+
+A single perturbation cell $(X,z)$ can be uninformative for strength comparisons if the backbone effect is essentially zero. I therefore split perturbation cells into two sets that support different claims:
+
+* The **containment set** $\mathcal{S}_0$ is used to quantify *false movement*: the LLM should not invent sizeable effects when the backbone predicts negligible movement.
+* The **active set** $\mathcal{S}_1$ is used to evaluate *counterfactual fidelity*: when the backbone moves, the LLM should move in the same direction and preserve effect strength.
+
+Formally,
+$$
+\mathcal{S}_0=\{(X,z): |PE_{\text{ref,std}}(X;z)|\le \epsilon_{\text{ref}}\},
+\qquad
+\mathcal{S}_1=\{(X,z): |PE_{\text{ref,std}}(X;z)|> \epsilon_{\text{ref}}\},
+$$
+with main configuration $\epsilon_{\text{ref}}=0.03$ on the standardised scale.
+
+**Active-set diagnostics ($\mathcal{S}_1$): direction, ordering, magnitude**
+
+* **Directional Agreement (DA).** On a non-tie set,
+  $$
+  DA^{(s)}(X;z)=\mathbb{1}\!\left\{\operatorname{sign}\!\big(PE_{\text{llm}}^{(s)}(X;z)\big)
+  =\operatorname{sign}\!\big(PE_{\text{ref}}(X;z)\big)\right\}.
+  $$
+  No-signal cases (intervals containing zero) are classified using the uncertainty operators described above and reported explicitly. Aggregating $DA^{(s)}(X;z)$ over $\mathcal{S}_1$ yields a Directional Agreement Rate (DAR) with uncertainty intervals.
+
+* **Strength ordering via magnitude concordance (Gini).** To assess whether the LLM preserves the ordering of effect magnitudes across perturbation cells, I compute Gini on $|PE_{\text{ref,std}}|$ versus $|PE_{\text{llm,std}}^{(s)}|$ using the same tie-aware concordance definition given above, yielding $G_{\text{mag}}\in[-1,1]$ (reported on $\mathcal{S}_1$).
+
+* **Magnitude accuracy via zero-baseline MAE skill.** To measure absolute accuracy of standardised effects (not just ordering), I report an MAE skill against a no-effect baseline ($PE\equiv 0$):
+  $$
+  \mathrm{skill}_0
+  =1-\frac{\mathbb{E}\!\left[\left|PE_{\text{llm,std}}^{(s)}-PE_{\text{ref,std}}\right|\right]}
+  {\mathbb{E}\!\left[\left|PE_{\text{ref,std}}\right|\right]},
+  $$
+  computed over $\mathcal{S}_1$. Here $\mathrm{skill}_0=0$ corresponds to predicting zero effect everywhere.
+
+**Containment diagnostics ($\mathcal{S}_0$): false movement**
+
+On $\mathcal{S}_0$, the target is containment rather than matching a gradient. I report the false-movement rate
+$$
+FM=\Pr\!\left(\left|PE_{\text{llm,std}}^{(s)}\right|>\epsilon_{\text{move}}
+\ \middle|\ (X,z)\in\mathcal{S}_0\right),
+$$
+with $\epsilon_{\text{move}}=k\,\epsilon_{\text{ref}}$ (main configuration $k=3$), alongside the median $|PE_{\text{llm,std}}^{(s)}|$ within $\mathcal{S}_0$.
+
+All perturbation diagnostics are computed at the profile level and summarised by the median within each outcome $Y$ and target $X$ reporting cell.
+
+When a three-point grid is available, I additionally compute segment-level agreement. Writing $\Delta_{L\to M}^{(\text{ref})}$ and $\Delta_{L\to M}^{(\text{llm})}$ for the low-to-mid contrasts and $\Delta_{M\to H}^{(\text{ref})}$, $\Delta_{M\to H}^{(\text{llm})}$ for the mid-to-high contrasts,
+$$
+\begin{aligned}
+DA_{L\to M}^{(s)}(X;z) &= \mathbb{1}\!\left\{\operatorname{sign}\!\big(\Delta_{L\to M}^{(\text{llm})}\big)=\operatorname{sign}\!\big(\Delta_{L\to M}^{(\text{ref})}\big)\right\},\\
+DA_{M\to H}^{(s)}(X;z) &= \mathbb{1}\!\left\{\operatorname{sign}\!\big(\Delta_{M\to H}^{(\text{llm})}\big)=\operatorname{sign}\!\big(\Delta_{M\to H}^{(\text{ref})}\big)\right\}.
+\end{aligned}
+$$
+Curvature is summarised by the discrete second difference
+$$
+\kappa^{(f)}(X;z) = f(x_{\text{high}},z) - 2f(x_{\text{mid}},z) + f(x_{\text{low}},z),
+$$
+computed for both the backbone and the LLM to flag strong shape mismatches that can make a two-point contrast misleading.
+
+**Block-level diagnostics: sensitivity alignment (perturbed) and importance alignment (unperturbed)**
+
+Beyond local perturbations on individual predictors, I test whether the LLM preserves (a) the relative counterfactual sensitivity of predictor blocks under matched perturbations, and (b) predictive reliance across blocks under the observed joint distribution.
+
+For **block sensitivity alignment** (perturbed), let $b\in\mathcal{B}$ index predictor blocks and define the standardised block-wise perturbation magnitudes
+$$
+m_{b,\text{ref}}(z)=\big|PE_{\text{ref,std}}(b;z)\big|,
+\qquad
+m_{b,\text{llm}}^{(s)}(z)=\big|PE_{\text{llm,std}}^{(s)}(b;z)\big|.
+$$
+With medians over reference profiles,
+$$
+\tilde m_{b,\text{ref}}=\operatorname{median}_{z\in\mathcal{Z}} m_{b,\text{ref}}(z),\qquad
+\tilde m_{b,\text{llm}}^{(s)}=\operatorname{median}_{z\in\mathcal{Z}} m_{b,\text{llm}}^{(s)}(z).
+$$
+Block Sensitivity Alignment (BSA) is the Spearman rank correlation between $\left(\tilde m_{b,\text{ref}}\right)_{b\in\mathcal{B}}$ and $\left(\tilde m_{b,\text{llm}}^{(s)}\right)_{b\in\mathcal{B}}$, supplemented with Top-$k$ overlap and highest-quartile concordance.
+
+For **block importance alignment** (unperturbed), I compute LLM reliance by **prompt ablation** and compare it to reference reliance via **LOBO**. For each outcome $Y$, first compute unperturbed performance under the full prompt $(G_{\text{full}}, \mathrm{skill}_{\text{full}})$. Then, for each block $b$, remove block $b$ from the prompt and recompute $(G_{\text{KO}(b)}, \mathrm{skill}_{\text{KO}(b)})$. The LLM block-importance scores are the corresponding performance drops:
+$$
+I_{b,G}^{\text{llm}}(Y)=G_{\text{full}}(Y)-G_{\text{KO}(b)}(Y),\qquad
+I_{b,\mathrm{skill}}^{\text{llm}}(Y)=\mathrm{skill}_{\text{full}}(Y)-\mathrm{skill}_{\text{KO}(b)}(Y).
+$$
+On the reference side, block importance is defined as the **drop in pseudo-$R^2$** when refitting the backbone model with block $b$ removed:
+$$
+I_b^{\text{ref}}(Y)
+=\Delta \mathrm{p}R^2_b(Y)
+=\mathrm{p}R^2_{\text{full}}(Y)-\mathrm{p}R^2_{\text{LOBO}(b)}(Y),
+$$
+where $\mathrm{p}R^2$ is the outcome-appropriate pseudo-$R^2$ computed on the held-out set. Larger $\Delta \mathrm{p}R^2_b$ indicates greater predictive reliance on block $b$. This is a reliance diagnostic, not a causal effect. Importance alignment is summarised, per outcome, by a scatter of $I_b^{\text{ref}}(Y)$ versus $I_{b,\cdot}^{\text{llm}}(Y)$ across blocks and a rank correlation across blocks (headline "same blocks" diagnostic), supplemented with Top-$k$ and highest-quartile concordance.
+
+### Psychological-profile micro-validation {#sec-03-belief-update-microvalidation}
+
+This component evaluates LLMs as a **constrained psychological-profile update kernel** inside the ABM. Given a psychological profile $z$ and a controlled informational or social exposure $e$, the LLM implements
+$$
+U_\phi:\ (z,e)\ \mapsto\ z',
+$$
+where $z'$ is returned on bounded, survey-aligned construct scales. Because the empirical base is cross-sectional, there are no observed trajectories to fit. The objective is therefore **micro-level plausibility**: updates should respect a small set of invariants that are sufficient for safe simulation use.
+
+**Profiles and mutable psychological profile variables**
+
+Each psychological-profile prompt contains a fixed context block treated as non-mutable (e.g., country and basic demographics). The kernel may modify only a predefined mutable psychological-profile vector
+$$
+z = (z_{\text{trust}}, z_{\text{legit}}, z_{\text{risk}}, z_{\text{stakes}}, z_{\text{norms}}, z_{\text{constraints}}, z_{\text{ingroup}}),
+$$
+corresponding to institutional trust, legitimacy/process scepticism, vaccine-risk perceptions, perceived disease stakes, vaccination norms, perceived constraints/actionability, and group-based trust around vaccination. All other profile attributes are held fixed.
+
+**Signals and expected response structure**
+
+Signals are drawn from a structured catalogue that makes the expected response pattern explicit. Each signal specifies:
+
+* which constructs are intended to move (primary targets, optionally secondary/weak targets),
+* which constructs should remain stable (“none” targets, plus optional explicit controls),
+* the intended direction of change on each targeted construct (up/down/none),
+* paired **intensity variants** (mild vs strong),
+* optional **moderation expectations** (inequalities that should hold across moderator tiers),
+* an expected *relative sensitivity structure* encoded as target tiers (primary/secondary/weak/none).
+
+The full machine-readable signal specification is provided as a JSON catalogue.^[Signal specification (permalink): `https://github.com/adamamer20/beam-abm/blob/cf90d95c04db7a60648b61e45aed000b343526d7/evaluation/specs/belief_update_targets.json`]
+
+**Updates, bounds, and scale normalization**
+
+Let $\Delta(z,e)=z'-z$ denote the within-prompt update vector. Each construct is evaluated on its bounded survey-aligned range; out-of-range outputs are treated as boundedness violations.
+
+To compare magnitudes across constructs with different spans, updates are also expressed on a **range-normalized** scale:
+$$
+|\Delta_v|_{\text{norm}}=\frac{|\Delta_v|}{hi_v-lo_v},
+$$
+when bounds $(lo_v,hi_v)$ are available.
+
+Near-zero movement is handled through a tolerance $\epsilon$ on the normalized scale. Unless stated otherwise, a construct is treated as meaningfully moved only when
+$$
+|\Delta_v|_{\text{norm}}>\epsilon,\qquad \epsilon=0.03,
+$$
+which corresponds to small shifts on the dominant bounded psychological-profile scales and prevents scoring “direction” on effectively indeterminate changes.
+
+**Core invariants and metrics**
+
+Validation follows three invariants aligned with ABM-relevant failure modes:
+
+**Scope (containment).**
+
+Intended constructs should change while constructs designated as “none” (and explicit controls) remain stable. We report:
+
+* **none-stability rate:** share of “none” constructs with $|\Delta_v|_{\text{norm}}\le \epsilon$,
+* **control-stability rate:** share of control constructs with $|\Delta_v|_{\text{norm}}\le \epsilon$,
+* **drift on none:** mean of $|\Delta_v|_{\text{norm}}$ over “none” constructs.
+
+**Dose response.**
+
+Stronger variants should not yield weaker responses than mild variants. Mild–strong monotonicity is evaluated on paired profile prompts for constructs expected to move (direction $\neq$ none) using
+$$
+|\Delta^{\text{strong}}_v|\ \ge\ |\Delta^{\text{mild}}_v| + m,
+$$
+with a small non-negative margin $m$ to avoid counting negligible numerical differences as violations. The dose-response score is the fraction of tested pairs satisfying the inequality, aggregated across expected-moving constructs.
+
+**Directional sense, separated from activation.**
+
+Apparent sign failures can arise either from moving in the wrong direction or from producing no detectable movement. Directional scoring is therefore conditional on *activation*.
+
+Let $T$ denote the set of primary targets for a signal. Define a prompt as *activated* on the primary targets if any primary target clears the tolerance:
+$$
+\text{mover}_T = \mathbb{1}\Big[\ \exists v\in T:\ |\Delta_v|_{\text{norm}}>\epsilon\ \Big].
+$$
+We report:
+
+* **Activation (primary):** $\mathbb{E}[\text{mover}_T]$ across prompts for the signal.
+* **Sign(primary | mover):** sign agreement on primary targets computed only on prompts with $\text{mover}_T=1$.
+
+This separation makes “wrong-way movement” distinguishable from attenuation/indeterminacy.
+
+**Strength alignment via Kendall $\tau_b$**
+
+Many signals also encode an expected *relative sensitivity structure* across constructs through tier labels (primary/secondary/weak/none). For each prompt row, tiers are mapped to expected strength scores
+$$
+s_v \in \{0,1,2,3\}\quad\text{for}\quad \{\text{none},\text{weak},\text{secondary},\text{primary}\}.
+$$
+We then compare the expected ordering implied by $s_v$ to the observed ordering of $|\Delta_v|$ across constructs using Kendall’s $\tau_b$. This **strength alignment** score is computed per prompt row and summarised within signals and within primary constructs.
+
+**Movement–containment frontier and ABM lever typology**
+
+To translate diagnostics into ABM-ready levers, each signal is positioned on a movement–containment plane using range-normalized magnitudes:
+
+* $x$ (primary movement): mean of $|\Delta_v|_{\text{norm}}$ over primary targets,
+* $y$ (off-target drift): mean of $|\Delta_v|_{\text{norm}}$ over “none” constructs.
+
+Signals are then classified with interpretability anchors:
+
+* minimum meaningful primary movement: $x_0 = 0.125$,
+* drift anchor: $y_0 = 0.03$,
+* leakage slope: $\lambda = y_0/x_0 = 0.24$,
+* spillover ceiling: $y_{\max}=0.06$.
+
+A signal is treated as “safe” with respect to scope control when
+$$
+x \ge x_0
+\quad\text{and}\quad
+y \le \min(\lambda x,\ y_{\max}).
+$$
+This yields four regimes used as an ABM shock library:
+
+* **Safe targeted shock:** $x\ge x_0$ and satisfies the safe boundary.
+* **Leaky shock:** $x\ge x_0$ but violates proportional leakage ($y>\lambda x$) or the ceiling ($y>y_{\max}$).
+* **Cross-talk / reinterpretation:** $x<x_0$ and $y\ge y_0$ (broad motion without a dominant primary lever).
+* **Stable low-signal:** $x<x_0$ and $y<y_0$ (contained but weak).
+
+**Model/strategy selection and uncertainty summaries**
+
+Psychological-profile update kernels are compared across models and prompting strategies using a gate score that prioritises ABM safety and shape constraints:
+$$
+\text{gate} = \text{none-stability} + \text{control-stability} + \text{mild–strong monotonicity}.
+$$
+Unless stated otherwise, signal-level summaries pool mild and strong variants, while model–strategy frontiers are summarised by robust across-signal statistics. Uncertainty summaries are reported via bootstrap with $B=500$, aligned to the level of aggregation used in the corresponding table or figure.
+
+**Behavioural implications under the choice model**
+
+Finally, psychological-profile perturbations are connected to behaviour by composing the update kernel with the survey-anchored **behavioural outcome equation** used elsewhere in the thesis. For each updated profile $z'$, we evaluate the implied behavioural change $\Delta y$ under the behavioural outcome equation and check whether the direction and relative pattern of $\Delta y$ agree with the behavioural gradients implied by the statistical backbone for the variables targeted by the signal.

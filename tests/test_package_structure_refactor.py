@@ -1,0 +1,74 @@
+from __future__ import annotations
+
+import re
+from pathlib import Path
+
+FORBIDDEN_IMPORT_RE = re.compile(
+    r"\bbeam_abm\.(analysis|microvalidation|llm_behaviour|preprocessing|config|load_df|utils)\b"
+)
+FORBIDDEN_PIPELINE_PATH_RE = re.compile(r"\b(0_preprocessing|1_dataset_analysis|3_llm_microvalidation|4_abm)\b")
+FORBIDDEN_SRC_SCRIPT_IMPORT_RE = re.compile(
+    r"^\s*(?:from|import)\s+(?:evaluation|empirical|preprocess|abm)\.scripts(?:\.|\b)",
+    re.MULTILINE,
+)
+FORBIDDEN_EVAL_LIBRARY_CLI_RE = re.compile(
+    r"^\s*import\s+argparse\b|^\s*from\s+argparse\s+import\b|^\s*def\s+main\s*\(",
+    re.MULTILINE,
+)
+
+
+def _iter_checked_files(root: Path) -> list[Path]:
+    files: list[Path] = []
+    for base in [
+        root / "src",
+        root / "tests",
+        root / "preprocess" / "scripts",
+        root / "empirical" / "scripts",
+        root / "evaluation" / "scripts",
+        root / "abm" / "scripts",
+        root / "scripts",
+    ]:
+        if not base.exists():
+            continue
+        files.extend(p for p in base.rglob("*") if p.is_file() and p.suffix in {".py", ".sh"})
+    files.append(root / "Makefile")
+    return files
+
+
+def test_forbidden_legacy_imports_and_paths_absent() -> None:
+    root = Path(__file__).resolve().parents[1]
+    offenders: list[str] = []
+
+    for path in _iter_checked_files(root):
+        if path.name == "test_package_structure_refactor.py":
+            continue
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if FORBIDDEN_IMPORT_RE.search(text) or FORBIDDEN_PIPELINE_PATH_RE.search(text):
+            offenders.append(str(path.relative_to(root)))
+
+    assert offenders == []
+
+
+def test_src_library_does_not_import_external_scripts() -> None:
+    root = Path(__file__).resolve().parents[1]
+    offenders: list[str] = []
+
+    for path in (root / "src" / "beam_abm").rglob("*.py"):
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if FORBIDDEN_SRC_SCRIPT_IMPORT_RE.search(text):
+            offenders.append(str(path.relative_to(root)))
+
+    assert offenders == []
+
+
+def test_evaluation_library_has_no_cli_entrypoints() -> None:
+    root = Path(__file__).resolve().parents[1]
+    offenders: list[str] = []
+
+    eval_root = root / "src" / "beam_abm" / "evaluation"
+    for path in eval_root.rglob("*.py"):
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if FORBIDDEN_EVAL_LIBRARY_CLI_RE.search(text):
+            offenders.append(str(path.relative_to(root)))
+
+    assert offenders == []

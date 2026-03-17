@@ -1,0 +1,330 @@
+# ABM specification {#sec-appendix-abm-specification}
+
+The equations below give the mathematical specification of the agent-based model used in @sec-05-agent-based-model.
+
+Throughout, agents are indexed by $i \in \{1,\dots,N\}$ and monthly ticks by $t \in \{0,\dots,T-1\}$. Each agent carries fixed attributes $a_i$, mutable behavioural states $s_i(t)$, and behavioural outcomes $y_i(t)$. The $u$-th state component is written $s_{i,u}(t)$, and the $g$-th outcome component is written $y_{i,g}(t)$. When a construct-specific index is needed in the equations below, I use $c$ for the corresponding state component. Time-varying exogenous context or scenario inputs are denoted $r_i(t)$.
+
+## Agent representation and empirical initialization
+
+The ABM is anchored to the survey, but agents are not initialised by uniform sampling from the raw respondent pool. Instead, each simulated agent is drawn from a local anchor-country neighbourhood. This preserves empirically coherent profiles while making the initial population less dependent on the idiosyncrasies of a single raw subsample and consistent with the anchor-based representation used in the evaluation pipeline.
+
+Each agent first draws an anchor prototype conditional on country:
+$$
+A_i \sim \operatorname{Categorical}(\pi_{\cdot \mid c_i}).
+$$
+
+A donor respondent is then drawn from the neighbourhood $\mathcal N(A_i,c_i)$ using inverse-rank weights:
+$$
+w(r)\propto \frac{1}{\max\{1,\operatorname{rank}(r)\}},
+\qquad
+R_i\sim \operatorname{Categorical}(w(\cdot)).
+$$
+
+The donor row is copied into the simulated population:
+$$
+(a_i,s_i(0),y_i(0))\leftarrow (a_{R_i},s_{R_i},y_{R_i}).
+$$
+
+This resampling step keeps the initial population on-manifold by construction.
+
+Beyond their fixed attributes $a_i$, initial behavioural states $s_i(0)$, and initial behavioural outcomes $y_i(0)$, agents also receive a small set of fixed response parameters. These capture persistent differences in how strongly agents react inside the social-influence layer:
+
+- $\lambda_i$ (social susceptibility): how strongly the agent updates descriptive vaccination norms in response to observed behaviour.
+- $\alpha_i$ (social attention): how likely the agent is to notice and register prevention behaviour in realised contacts.
+- $\phi_i$ (exposure intensity): how much the agent is exposed to opportunities for observing others’ behaviour.
+- $\theta_i$ (norm threshold): the exposure level at which descriptive norms begin to move substantially; lower values imply easier activation, higher values imply greater resistance.
+
+The first three parameters are survey-anchored. The last, $\theta_i$, is prior-drawn.
+
+The survey anchors are built from three empirical drivers. Two are low-dimensional axes extracted from the survey, and the third is a raw conversation-count measure.
+
+The first axis, social activity, summarizes how socially connected and conversation-active the respondent is. It is the first principal component of:
+
+- number of vaccine conversations with friends,
+- number of vaccine conversations with cohabitants,
+- number of vaccine conversations with others,
+- friend-group size,
+- colleague-group size.
+
+The second axis, media exposure, summarizes media use and trust in online or social information channels. It is the first principal component of:
+
+- time spent on social media,
+- time spent on information media,
+- trust in social media,
+- trust in online information.
+
+Using these survey-derived quantities, the runtime defines three drivers:
+$$
+d_i^{(\lambda)} = \text{social activity}_i + \text{media exposure}_i,
+$$
+$$
+d_i^{(\alpha)} = \text{media exposure}_i + 0.5\,\text{social activity}_i,
+$$
+$$
+d_i^{(\phi)} = \text{conversation count}_i,
+$$
+where conversation count is the raw total
+$$
+\text{conversation count}_i
+\begin{aligned}
+&= \text{conversations with friends}_i \\
+&\quad + \text{conversations with cohabitants}_i \\
+&\quad + \text{conversations with others}_i.
+\end{aligned}
+$$
+
+The $\lambda_i$ driver combines social activity and media exposure because norm susceptibility should be higher for agents who are both more socially embedded and more exposed to circulating behavioural signals. The $\alpha_i$ driver puts greater weight on media exposure because attention to others’ behaviour depends more directly on information intake, while still allowing socially active agents to register more cues. The $\phi_i$ driver is tied to raw conversation count because exposure opportunities are most directly proxied by the volume of vaccine-related interpersonal exchange.
+
+Each driver is then mapped into a percentile using an empirical CDF fitted on the survey:
+$$
+u_i^{(\lambda)}=\widehat F_{\lambda}\!\left(d_i^{(\lambda)}\right),\qquad
+u_i^{(\alpha)}=\widehat F_{\alpha}\!\left(d_i^{(\alpha)}\right),\qquad
+u_i^{(\phi)}=\widehat F_{\phi}\!\left(d_i^{(\phi)}\right).
+$$
+
+These percentiles are then transformed into the runtime coefficients $\lambda_i$, $\alpha_i$, and $\phi_i$.
+
+The remaining parameter, $\theta_i$, which determines how much observed adoption is needed before norms start to shift, is drawn from a symmetric Beta prior:
+$$
+u_i^{(\theta)}\sim \operatorname{Beta}(a_\theta,a_\theta),
+$$
+and then mapped into the admissible range,
+$$
+\theta_i=\theta_{\min}+(\theta_{\max}-\theta_{\min})u_i^{(\theta)}.
+$$
+
+## Time-varying state targets and partial-adjustment dynamics
+
+The dynamic part of the ABM is carried by the mutable behavioural states. Rather than changing discontinuously between periods, each construct adjusts only partially toward a time-varying target.
+
+For constructs equipped with a state reference model, the simulator first computes a reference level from the agent’s fixed attributes, current exogenous context inputs, and current state values:
+$$
+s^\star_{ic}(t)=f_c\big(a_i,r_i(t),s_i(t)\big).
+$$
+
+Because the initialized donor state value may lie above or below this fitted reference, the simulator stores the baseline deviation
+$$
+u_{ic}=s_{ic}(0)-s^\star_{ic}(0),
+$$
+and adds it back to the moving reference:
+$$
+\tilde s^\star_{ic}(t)=s^\star_{ic}(t)+u_{ic}.
+$$
+
+The target for construct $c$ is then defined as
+$$
+T_{ic}(t)=
+\begin{cases}
+\tilde s^\star_{ic}(t), & \text{if a state reference model is available},\\[4pt]
+s_{ic}(0), & \text{otherwise},
+\end{cases}
+$$
+with any active incidence-feedback shifts, scenario offsets, or direct state-target overrides applied on top of this baseline target.
+
+State evolution then follows a partial-adjustment law:
+$$
+\hat s_{ic}(t+1)
+=
+s_{ic}(t)+\rho_c\big(T_{ic}(t)-s_{ic}(t)\big),
+$$
+where $\rho_c$ is a construct-specific adjustment rate, taking a fast or slow value depending on the class of behavioural state.
+
+Finally, the updated value is clipped to the admissible range:
+$$
+s_{ic}(t+1)=\operatorname{clip}_c\big(\hat s_{ic}(t+1)\big).
+$$
+
+After the primitive behavioural states are updated, any derived composites are recomputed deterministically. For example, a pro-vaccination index is rebuilt as the mean of its component constructs.
+
+## Social interaction
+
+The ABM also includes social interaction, operating through recurring and one-shot contacts. Social influence enters through two separate channels. One channel pulls connected agents toward one another on selected states. The other updates descriptive norms from observed preventive behaviour. Because social interaction is assumed to evolve faster than the monthly state update, these social processes operate weekly, so each monthly tick contains four social-interaction rounds.
+
+### Recurring contacts
+
+Each agent inherits a locality identifier from the respondent’s NUTS-level location recorded in the survey. Conditional on these locality assignments, the simulator builds a static recurring-contact scaffold with two components.
+
+The first component is a layer of non-household recurring contacts. Its target degree is initialized from a survey-anchored group-size score. Let $g_i$ denote the respondent’s normalized group-size score, derived from friend- and colleague-group sizes. The corresponding non-household core degree is
+$$
+d_i
+=
+\operatorname{clip}_{[4,30]}\!\left(
+\operatorname{round}\!\left(4+26\,g_i\right)
+\right).
+$$
+
+The second component is a layer of household ties, built separately from the household-size information. The full recurring-contact set is the union of the two layers:
+$$
+\mathcal N_i^{\text{rec}}=(\mathcal N_i^{\text{core}}\cup \mathcal N_i^{\text{hh}}).
+$$
+
+Neighbour assignments are then sampled without replacement under the locality-mixing rule shared by the static network construction: with probability $1-b$, a candidate is drawn from the same locality, and with probability $b$, from the full population.
+
+### Pairwise peer pull
+
+Peer pull operates on stable social ties in the recurring-contact layer. It applies only to a restricted subset of behavioural states: trust and credibility channels plus the vaccine-risk appraisal channel. Descriptive norms are excluded from peer pull, because they are updated separately from observed behaviour, and broader disease-stakes constructs are also excluded, since they move through the incidence-feedback mechanism.
+
+The probability of interaction with recurring contacts is weighted by homophily. The homophily score is based on a distance metric that combines differences in trust-related and moral-value-related positioning:
+$$
+D_{ij}=w_T|T_j-T_i|+w_M|M_j-M_i|,
+\qquad
+W_{ij}=e^{-\gamma_h D_{ij}}.
+$$
+
+Here, $T_i$ denotes the agent’s trust-related position and $M_i$ the agent’s moral-value position. Smaller distances imply more similar agents and therefore higher interaction weight.
+
+For each peer-pulled construct $c$, the interaction updates both agents symmetrically:
+$$
+s_{ic}' = s_{ic}+g_c(s_{jc}-s_{ic}),
+\qquad
+s_{jc}' = s_{jc}+g_c(s_{ic}-s_{jc}).
+$$
+
+### Observed adoption and descriptive-norm updating
+
+Descriptive norms are updated from observed behaviour in the agent’s local social environment. The model distinguishes two separate norm channels: one for vaccination and one for non-pharmaceutical prevention (NPI).
+
+For the vaccination channel, the observed-adoption index is simply the normalized vaccination-willingness outcome:
+$$
+p_i^{\text{vax}}(t)=\tilde y_{i,\text{vax}}(t).
+$$
+
+For the NPI channel, the observed-adoption index is the mean of the three normalized NPI outcomes:
+$$
+p_i^{\text{npi}}(t)
+=
+\frac{1}{3}\Big(
+\tilde y_{i,\text{mask symptomatic}}(t)
++
+\tilde y_{i,\text{stay home symptomatic}}(t)
++
+\tilde y_{i,\text{mask high pressure}}(t)
+\Big).
+$$
+
+Let $\hat p_i^{\text{vax}}(t)$ and $\hat p_i^{\text{npi}}(t)$ denote the resulting exposure estimates for the vaccination and NPI channels, respectively. Each is formed from observed behaviour in the agent’s recurring and one-shot contacts, and each is normalized to $(0,1)$.
+
+Observed exposure is converted into a target descriptive norm in two steps. First, the model asks whether the observed level of adoption is high enough to count as socially meaningful for agent $i$. This is governed by the agent-specific threshold $\theta_i$: lower values mean that even modest visible uptake can shift norms, while higher values require stronger visible uptake. The parameter $\kappa$ controls how sharply the response turns on around that threshold.
+
+For each channel, the normalized exposure estimate $\hat p_i(t)$ is therefore passed through a threshold-style logistic transform:
+$$
+q_i(t)
+=
+\sigma\!\left(
+\kappa\big(\operatorname{logit}(\hat p_i(t))-\operatorname{logit}(\theta_i)\big)
+\right).
+$$
+
+The resulting quantity $q_i(t)\in(0,1)$ can be read as the level of socially perceived adoption after thresholding. It is then mapped back into the scale of the descriptive-norm construct:
+$$
+T_i(t)=\underline s+(\bar s-\underline s)\,q_i(t),
+$$
+
+As with the other constructs above, the descriptive norm does not jump directly to this target; it moves only part of the way toward it at each update:
+
+$$
+s_i(t+1)
+=
+\operatorname{clip}\!\left(
+s_i(t)
++
+\lambda_i^{\text{eff}}\big(T_i(t)-s_i(t)\big)
++
+\varepsilon_i(t)
+\right),
+$$
+where
+$$
+\lambda_i^{\text{eff}}=\operatorname{clip}(\lambda_i\,k_{\text{social}},0,1),
+\qquad
+\varepsilon_i(t)\sim\mathcal N(0,\sigma_{\text{social}}^2).
+$$
+
+Here $\lambda_i^{\text{eff}}$ is the effective adjustment rate, obtained by scaling the agent’s baseline social susceptibility $\lambda_i$ introduced above. Larger values make the agent more responsive to visible behaviour in the social environment, while smaller values make norm updating more inertial. The noise term $\varepsilon_i(t)$ allows small idiosyncratic variation around this deterministic pull toward the target.
+
+## Endogenous incidence feedback
+
+The ABM closes the behavioural loop through a group-level incidence signal defined on the same territorial grouping used in the network layer. Let $g(i)$ denote the locality group of agent $i$, inherited from the respondent’s NUTS-level location in the survey.
+
+Incidence evolves at the level of these groups according to a bounded growth-with-decay process:
+$$
+I_{g}(t+1)
+=
+\operatorname{clip}_{[0,1]}\!\Big(
+(1-\gamma)I_{g}(t)+\beta I_{g}(t)(1-I_{g}(t))M_{g}(t)+F_{g}(t)
+\Big),
+$$
+
+The mitigation factor depends on average protective propensity within group $g$:
+$$
+M_g(t)
+=
+\operatorname{clip}_{[0,1]}\!\left(
+1-\alpha_v\bar v_g(t)-\alpha_p\bar p_g(t)
+\right).
+$$
+
+The first term carries forward part of the previous incidence level, with $\gamma$ governing how quickly incidence decays. The second term is a logistic-style growth component, where $\beta$ sets the baseline growth rate and $M_g(t)$ scales that growth down when local protective propensity is higher.
+
+Here $\bar v_{g}(t)$ is mean normalized vaccination willingness in group $g$, $\bar p_{g}(t)$ is mean normalized NPI uptake in group $g$, and $F_{g}(t)$ is the exogenous forcing specified by the current scenario, including importation floors, pulses, or local bumps.
+
+Because the survey target is vaccination willingness rather than realised uptake, $\bar v_g(t)$ should be interpreted as an uptake-propensity proxy. Its use in the incidence equation is therefore a modelling choice that prioritises behavioural anchoring over epidemiological realism.
+
+Local incidence feeds back into the behavioural state through a stakes offset:
+$$
+\Delta_i^{\text{stakes}}(t)=k_{\text{fb}}\big(I_{g(i)}(t)-I_0\big),
+$$
+where $I_{g(i)}(t)$ is the incidence level in agent $i$'s group, $I_0$ is the baseline incidence anchor, and $k_{\text{fb}}$ controls how strongly deviations from that baseline are translated into behavioural salience.
+
+## Monthly runtime schedule
+
+Each monthly tick follows the same sequence.
+
+1. Activate the current scenario inputs.
+   The simulator applies the policy or information signals that are active in the current month.
+
+2. Predict current behavioural outcomes.
+   Using the current fixed attributes, behavioural states, and exogenous context inputs, the simulator evaluates the choice module and obtains the current behavioural outcomes $y_i(t)$.
+
+3. Update group-level incidence.
+   The predicted behaviours are aggregated to the locality group level and used to update incidence through the incidence-feedback equation.
+
+4. Run weekly social-interaction rounds.
+   Within the same monthly tick, the simulator performs four social-interaction rounds. In each round it:
+   - samples recurring and one-shot contacts;
+   - applies peer pull on the eligible recurring-contact ties;
+   - updates descriptive norms from observed behaviour in recurring and one-shot contacts.
+
+5. Update the remaining behavioural states.
+   After the weekly social rounds are completed, the simulator updates the remaining behavioural states through partial adjustment toward their current targets.
+
+6. Finalize the next-period state.
+   The updated behavioural states become the starting point for the next monthly tick.
+
+## Runtime parameter envelope
+
+The simulator operates over the following parameter families. Parameters are grouped by the ABM component in which they enter. The table reports the full runtime bounds, the baseline default value, and the main provenance category. More specific calibration anchors are summarized below.
+
+| Component | Parameter | Runtime bounds | Default | Provenance | Role in calibration |
+|---|---|---:|---:|---|---|
+| Social-response heterogeneity | Norm threshold prior $a_\theta$ | $(0,20]$ | $2.0$ | design | Governs the dispersion of agent-specific norm thresholds drawn from the Beta prior. |
+| Social-response heterogeneity | Norm threshold bounds $\theta_{\min},\theta_{\max}$ | each in $[0,1]$ | $(0.05,0.95)$ | design | Set the admissible range for descriptive-norm thresholds. |
+| State dynamics | Fast relaxation $\rho_{\text{fast}}$ | $[0,1]$ | $0.081$ | design | Governs the speed of partial adjustment for faster-moving constructs. |
+| State dynamics | Slow relaxation $\rho_{\text{slow}}$ | $[0,1]$, with $\rho_{\text{slow}}\le \rho_{\text{fast}}$ | $0.025$ | design | Governs the speed of partial adjustment for slower-moving constructs. |
+| Social interaction | Social convergence scaling $k_{\text{social}}$ | $[0,2]$ | $0.3$ | survey-anchored | Governs the strength of descriptive-norm updating by scaling the baseline social susceptibility $\lambda_i$. |
+| Social interaction | Norm response slope $\kappa$ | $(0,25]$ | $8.0$ | design | Controls how sharply descriptive-norm updating turns on around the threshold $\theta_i$. |
+| Social interaction | State-update noise $\sigma_{\text{social}}$ | $[0,0.04]$ | $0.006$ | design | Gaussian noise scale used in social and descriptive-norm updates. |
+| Social interaction | Homophily decay $\gamma_h$ | $[0,10]$ | $1.5$ | calibrated | Controls how sharply peer-pull interactions are concentrated among similar agents. |
+| Social interaction | Cross-locality bridging probability $b$ | $[0,1]$ | $0.08$ | calibrated | Controls how often static network ties are assigned outside the agent’s own locality. |
+| Incidence feedback | Incidence memory $\gamma$ | $[0,1]$ | $0.58$ | calibrated | Controls how quickly incidence decays in the absence of continued growth. |
+| Incidence feedback | Incidence growth rate $\beta$ | $[0,4]$ | $1.26$ | calibrated | Sets the baseline growth rate of the bounded incidence process before behavioural mitigation. |
+| Incidence feedback | Vaccine mitigation weight $\alpha_v$ | $[0,1]$ | $0.42$ | external empirical | Scales how group-level vaccination uptake reduces local incidence growth. |
+| Incidence feedback | NPI mitigation weight $\alpha_p$ | $[0,1]$ | $0.52$ | external empirical | Scales how group-level NPI uptake reduces local incidence growth. |
+| Incidence feedback | Incidence baseline $I_0$ | $[0,1]$ | $0.05$ | design | Baseline incidence anchor used in the feedback from local incidence to perceived stakes. |
+| Incidence feedback | Incidence-to-stakes elasticity $k_{\text{fb}}$ | $[0,2]$ | $1.35$ | calibrated | Controls how strongly local incidence deviations are translated into behavioural salience. |
+
+In this table, survey-anchored denotes parameters tied to survey-derived quantities or survey-motivated behavioural timescales; external empirical denotes parameters anchored to evidence outside the survey, such as vaccine- and NPI-effectiveness estimates; calibrated denotes parameters chosen to reproduce plausible aggregate wave growth, decay, or network-mixing behaviour under the survey-grounded dynamics; and design denotes parameters set as modelling choices to define admissible ranges or prior distributions.
+
+$k_{\text{social}}$ is anchored to a monthly social-convergence timescale informed by small-effect social-norm evidence. $\beta$ and $\gamma$ are calibrated to reproduce plausible monthly epidemic-wave growth and decay patterns, using OWID-style case trajectories as an external envelope. $k_{\text{fb}}$ is calibrated as an effective incidence-to-stakes elasticity, informed by survey evidence linking epidemic conditions to danger and fear appraisals. $\gamma_h$ and $b$ are calibrated from generic homophily and small-world network reasoning. The mitigation weights $\alpha_v$ and $\alpha_p$ are anchored to external empirical evidence on the incidence-reducing effects of vaccination and bundled non-pharmaceutical interventions, respectively.
+
+Scenario forcing is specified separately through the exogenous term $F_g(t)$ rather than through a single scalar parameter. In the baseline configuration this includes an importation floor and, where activated by the scenario, optional local bumps or periodic pulses with user-defined amplitude, period, width, and start time. Because these quantities define intervention schedules rather than stable structural parameters, they are reported with the scenarios rather than in the main parameter table.

@@ -1,0 +1,219 @@
+# Example prompt templates for LLM micro-validation {#sec-appendix-llm-prompts}
+
+## Profile presentation formats {#sec-appendix-prompt-families}
+
+The first source of variation concerns how the respondent profile is presented to the model. In the standard prompting families, the underlying information is held fixed and only the surface rendering changes. The examples below are only representative: the full profile shown to the model varies across tasks and outcomes, so additional fields may be present or some fields may differ.
+
+The data-only format presents the respondent as a structured list of attributes with explicit scales and values. This is the closest format to the underlying tabular survey record.
+
+```text
+Survey context: Country=Germany, Year=2024
+
+Attributes:
+
+Scale: 1–5 (1 = Not at all, 5 = Extremely)
+- Trust in vaccine information (by source):
+  - Institutions/public authorities (local/national gov, GP, health authorities, national health institutions, WHO): 3
+- Flu vaccine perceived risk: 1
+- Flu disease fear: 1
+
+Scale: 1–7 (1 = Strongly disagree, 7 = Strongly agree)
+- 5C pro-vaccine orientation index: 5.5
+- Perceived social norms: "vaccines are important": 5
+
+- Age: 68
+- Income (PPP-normalised) (scale 445.994–4795.962): 720.835
+- Education level (0 = ED0–2; 1 = ED3–4; 2 = ED5–8): 0
+- Any cohabitants have medical conditions: Yes
+- Experienced vaccine side effects (self): No
+```
+
+The third-person format renders the same profile as a short vignette. It preserves the same respondent information, but translates it into a compact descriptive narrative.
+
+```text
+It is 2024.
+They are a woman, in their 20s, with a higher level of formal education.
+Their health is not great; they have had COVID twice; vaccine side effects have affected them and people they know.
+Overall, they feel neutral about vaccine information; they trust traditional media much more than the national government.
+Vaccination comes up often in conversations at home.
+Overall, they feel mixed about vaccines; they are not very confident vaccines are safe; protecting others matters a lot to them here.
+People around them lean against vaccines.
+They endorse principles of loyalty, authority, and purity, and these matter somewhat when they judge right and wrong.
+```
+
+The first-person format renders the respondent profile as a self-description in the first person and injects it as an assistant message. The subsequent user prompt then asks for a prediction, while the system instruction requires the model to treat the injected self-description as its own prior statement and remain consistent with it.
+
+```text
+You are a human survey respondent answering in the first person.
+You are not an AI system, nor a chatbot.
+
+Do not use meta-language about being an AI, a model, or a system.
+
+You are answering as the same speaker across the conversation.
+Maintain strict self-consistency with what you have already stated about yourself, your beliefs, and your constraints in prior assistant messages.
+Do not add new biography, motives, or beliefs unless they have been stated already. If something is not stated, treat it as unknown.
+
+Treat prior narrative statements as your own prior statements.
+```
+
+A representative injected assistant message is:
+
+```text
+It is 2024.
+I am a woman, in my 20s, with a higher level of formal education.
+My health is not great; I have had COVID twice; vaccine side effects have affected me and people I know.
+Overall, I feel mixed about vaccines; I am not very confident vaccines are safe.
+These statements describe me; I stand by them for the next question.
+```
+
+The paired-profile format is used only in perturbed tasks. Instead of showing a single profile, it presents two versions of the same respondent, one at the low value of the focal lever and one at the high value, while all other attributes are held fixed.
+
+A representative paired-profile prompt is:
+
+```text
+Survey context: Country=Germany, Year=2024
+
+Common attributes:
+- Flu vaccine perceived risk: 1
+- Flu disease fear: 1
+
+Scale: 1–7 (1 = Strongly disagree, 7 = Strongly agree)
+- 5C pro-vaccine orientation index: 5.5
+- Perceived social norms: "vaccines are important": 5
+
+- Age: 68
+- Income (PPP-normalised) (scale 445.994–4795.962): 720.835
+- Education level (0 = ED0–2; 1 = ED3–4; 2 = ED5–8): 0
+- Any cohabitants have medical conditions: Yes
+- Experienced vaccine side effects (self): No
+
+Profile A (differences):
+- Institutional trust in vaccine information: 3.5
+
+Profile B (differences):
+- Institutional trust in vaccine information: 2.0
+
+Predict each outcome for Profile A and for Profile B separately.
+Output format: {"A": {...}, "B": {...}}
+```
+
+This format makes the counterfactual comparison explicit inside the prompt itself.
+
+## Prediction targets and output schemas {#sec-appendix-prompt-targets}
+
+The second source of variation concerns the prediction target. The same profile rendering can be paired with different output instructions depending on whether the model is asked to predict a behavioural outcome or a psychological profile variable. In both cases, the natural-language instruction was paired with a structured output constraint: the model was required to return only JSON, and the call also supplied a corresponding JSON Schema specifying the allowed keys and value types.
+
+In the behavioural-outcome tasks, the model predicts one or more preventive outcomes from a fixed survey-grounded respondent profile.
+
+A representative system instruction for a single-outcome behavioural-outcome task is:
+
+```text
+You are an expert survey psychometrician acting as a prediction function.
+
+Predict the truthful expected self-reported survey response for the person with the following attributes, not what is socially desirable or recommended.
+Fields not listed are unknown; treat them as unknown (do not assume typical values).
+
+Outcome semantics: Flu vaccinated (2023/2024) (0–1: 0 = No, 1 = Yes)
+
+Do not include reasoning or commentary.
+Return ONLY JSON: {"p_yes": <float in [0,1]>}.
+```
+
+In the psychological-profile tasks, the model predicts the respondent’s psychological profile variables from upstream signals and background traits.
+
+A representative system instruction is:
+
+```text
+You are an expert survey psychometrician acting as a prediction function.
+
+Predict the expected self-reported values of the psychological profile variables from the provided predictors.
+Fields not listed are unknown; treat them as unknown (do not assume typical values).
+
+Return ONLY valid JSON with keys from the psychological profile.
+Use floats for all values.
+Include ALL psychological profile keys in every response.
+Do not include any other keys, reasoning, or commentary.
+
+Variable semantics:
+- covid_perceived_danger_t12: COVID perceived disease danger when offered the first and second dose (scale: 1–5; 1 = Not at all, 5 = Extremely)
+- institutional_trust_avg: Trust in institutions/public authorities (local/national gov, GP, health authorities, national health institutions, WHO) (scale: 1–5; 1 = Not at all, 5 = Extremely)
+- ...
+```
+
+In the paired-profile versions, the prompt additionally makes clear that differences in predictors do not mechanically require differences in the predicted target:
+
+```text
+Differences in the predictors do not necessarily imply differences in the predicted psychological profile variables.
+```
+
+## Multi-expert decomposition {#sec-appendix-prompt-multi-expert}
+
+The multi-expert strategy differs from the other profile-presentation formats because it changes the elicitation procedure itself, not only the surface rendering of the respondent profile. Instead of asking for one direct prediction from a single prompt, the model is asked to produce several scoped partial judgements from different expert perspectives. Each expert is restricted to a specific mechanism and returns only the contribution attributable to that scope. The final prediction is then constructed from these scoped outputs.
+
+In the behavioural-outcome tasks, the same respondent profile was shown to three experts, each assigned to a different mechanism block. All experts followed the same prompt template. They were asked to use only the evidence within their assigned scope, to ignore all other profile information, and to return only the signed contribution of their block to the final outcome, measured in outcome-scale units relative to a neutral reference profile.
+
+The shared template was:
+
+```text
+You are a [EXPERT ROLE].
+
+Task:
+- Output ONLY the signed delta contribution of the [MECHANISM] channel to the given survey outcome, in outcome-scale units.
+
+Definition of delta_raw:
+- Consider a neutral reference profile where ONLY your scope predictors are at their scale midpoint (or 0 if z-scored). delta_raw is the expected change in the outcome when moving from that neutral profile to the observed profile, using ONLY your scope.
+
+Allowed evidence (scope):
+- [ALLOWED EVIDENCE]
+
+Forbidden (do NOT use):
+- [FORBIDDEN EVIDENCE]
+````
+
+The required output format was:
+
+```json
+{"delta_raw": <float>, "mechanism": "<=(8 words)", "fields_used": ["..."]}
+```
+
+If the relevant scope fields were absent or unknown, the expert returned `delta_raw = 0.0`.
+
+The three behavioural-outcome experts differed only in role and evidentiary scope. The first expert was framed as a *Behavioural Epidemiologist and Public Health scientist* and was responsible for the disease stakes / exposure channel.
+
+The second expert was framed as a *Social Psychologist specializing in social norms, moralized obligation, and legitimacy / authority acceptance* and was responsible for the norms / moral obligation / legitimacy channel.
+
+The third expert was framed as a *Behavioural Economist focused on practical frictions, constraints, and follow-through* and was responsible for the practical constraints / frictions channel.
+
+For the psychological-profile tasks, the decomposition followed the same general idea, but the target changed. Here the experts no longer contributed partial shifts to a behavioural outcome. Instead, each expert was assigned a subset of the psychological profile and asked to return only the signed post-minus-pre update induced by the signal for the variables in that subset.
+
+All experts again followed a shared template:
+
+```text
+You are a [EXPERT ROLE].
+
+Task:
+- Output ONLY the signed delta updates (post - pre) to the psychological profile variables in your scope caused by the signal.
+
+Your scope:
+[ALLOWED VARIABLES]
+
+Allowed evidence:
+[ALLOWED EVIDENCE]
+
+Forbidden:
+[FORBIDDEN EVIDENCE]
+```
+
+The required output format was:
+
+```json
+{"delta": {...}, "fields_used": ["..."]}
+```
+
+If the expert judged that the signal produced no meaningful change within its scope, it returned an empty delta object.
+
+The three psychological-profile experts again differed only in role, assigned dimensions, and evidentiary scope. The first expert was framed as a *Public Health and Risk Communication expert* and was responsible for the parts of the profile concerning institutional trust, vaccine-risk perceptions, and legitimacy-related scepticism.
+
+The second expert was framed as a *Social Psychologist specializing in social norms and interpersonal influence* and was responsible for the parts of the profile concerning perceived social norms and trust in vaccine-related information from close social contacts.
+
+The third expert was framed as a *Behavioural Epidemiologist and Behavioural Economist focused on disease stakes and practical frictions* and was responsible for the parts of the profile concerning perceived disease danger and low constraints on action.

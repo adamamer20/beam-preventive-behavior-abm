@@ -1,0 +1,60 @@
+.pipeline-legend {
+  margin-top: 0.6rem;
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.pipeline-legend .pill {
+  padding: 0.18rem 0.55rem;
+  border: 1px solid #bdbdbd;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  line-height: 1.2;
+}
+
+.pipeline-legend i {
+  margin-right: 0.25rem;
+}
+
+/* Mermaid label rescue (protect against global SVG text rules). */
+.mermaid svg text {
+  fill: #222 !important;
+  font-size: 14px !important;
+}
+
+.mermaid svg .label,
+.mermaid svg foreignObject * {
+  color: #222 !important;
+  font-size: 14px !important;
+}
+
+/* --- Thesis pipeline figure: make Mermaid fill width and look calmer --- */
+#fig-thesis-pipeline .mermaid {
+  margin: 0.25rem 0 0;
+}
+
+#fig-thesis-pipeline .mermaid > svg {
+  width: 100% !important;
+  height: auto !important;
+}
+
+#fig-thesis-pipeline .node rect {
+  rx: 10;
+  ry: 10;
+}
+
+#fig-thesis-pipeline .edgePath path {
+  stroke-width: 1.2px;
+}
+
+#fig-thesis-pipeline .sub {
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+#fig-thesis-pipeline i.bi {
+  margin-right: 0.4rem;
+  opacity: 0.9;
+}

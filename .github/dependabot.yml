@@ -1,0 +1,31 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "08:00"
+    labels: ["dependencies", "actions"]
+    reviewers:
+      - "adamamer20"
+
+  - package-ecosystem: pip
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "08:00"
+    groups:
+      dev-deps:
+        dependency-type: "development"
+        patterns:
+          - "ruff"
+          - "pytest*"
+          - "mkdocs*"
+          - "pre-commit"
+          - "typeguard"
+      prod-deps:
+        dependency-type: "production"
+    labels: ["dependencies", "python"]
+    reviewers:
+      - "adamamer20"

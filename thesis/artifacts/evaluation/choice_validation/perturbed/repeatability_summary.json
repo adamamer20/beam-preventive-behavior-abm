@@ -1,0 +1,58 @@
+{
+  "overall": {
+    "n": 53400.0,
+    "mean_within_sd": 0.5953986451978813,
+    "median_within_sd": 0.502245629650045,
+    "mean_abs_bias": 0.36030554043651347,
+    "median_abs_bias": 0.2758817804321774,
+    "var_share": 0.6976717526902289,
+    "bias_share": 0.30232824730977104
+  },
+  "by_strategy": {
+    "data_only": {
+      "n": 18000.0,
+      "mean_within_sd": 0.7675098461463533,
+      "median_within_sd": 0.749149177264394,
+      "mean_abs_bias": 0.3016051472520822,
+      "median_abs_bias": 0.23877175721197666,
+      "var_share": 0.8271404386378515,
+      "bias_share": 0.17285956136214845
+    },
+    "first_person": {
+      "n": 10500.0,
+      "mean_within_sd": 0.6340582151714503,
+      "median_within_sd": 0.5420566012623125,
+      "mean_abs_bias": 0.3804546266467728,
+      "median_abs_bias": 0.29301833468648475,
+      "var_share": 0.6985430162802242,
+      "bias_share": 0.30145698371977575
+    },
+    "multi_expert": {
+      "n": 6300.0,
+      "mean_within_sd": 0.5757318131665724,
+      "median_within_sd": 0.496824289616287,
+      "mean_abs_bias": 0.29811811733715665,
+      "median_abs_bias": 0.21546173543680244,
+      "var_share": 0.7405198342694786,
+      "bias_share": 0.25948016573052135
+    },
+    "paired_profile": {
+      "n": 8100.0,
+      "mean_within_sd": 0.2567443571308159,
+      "median_within_sd": 0.22776083947860754,
+      "mean_abs_bias": 0.5825534595023232,
+      "median_abs_bias": 0.5718880794744153,
+      "var_share": 0.17115998764184706,
+      "bias_share": 0.8288400123581531
+    },
+    "third_person": {
+      "n": 10500.0,
+      "mean_within_sd": 0.5347389950403105,
+      "median_within_sd": 0.4847679857416329,
+      "mean_abs_bias": 0.3066497588369829,
+      "median_abs_bias": 0.24421982518637364,
+      "var_share": 0.714703866962997,
+      "bias_share": 0.28529613303700285
+    }
+  }
+}

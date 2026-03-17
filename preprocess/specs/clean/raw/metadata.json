@@ -1,0 +1,270 @@
+{
+  "encodings": {},
+  "question_group": {
+    "people_num": "How many people of each group do you have?",
+    "medical_conditions": null,
+    "covid_num": "How many times on average has each of these groups contracted COVID-19?",
+    "covax_num": "How many doses of COVID-19 vaccine on average has each of these groups received?",
+    "risk_1": "How dangerous did you think COVID-19 was to your health in the following periods? (1-5)",
+    "risk_2": "How willing were you to be vaccinated against COVID-19 in the following periods? (1-5)",
+    "risk_infection": "In your opinion, how likely are you to contract the following infections today? (1-5)",
+    "risk_illness": "In your opinion, how likely are you to experience serious health consequences if you contract the following infections? (1-5)",
+    "risk_vax": "In your opinion, how likely are you to experience health consequences if you receive the vaccine for the following infections? (1-5)",
+    "emotion_illness": "How much do you fear the following infections? (1-5)",
+    "emotion_vax": "How much do you fear the vaccine for the following infections? (1-5)",
+    "fluvax": "Did you get vaccinated against the flu at least once in the following periods?",
+    "side_effects": "Has anyone in the following groups of people experienced any side effects (apart from arm pain) after being administered a dose of any vaccine?",
+    "vax_group": "During the pandemic, with how many people in the following groups did you have a conversation about vaccines/vaccination programs (in person, over the phone, or online)?",
+    "vax_freq": "During the pandemic, how often did you find yourself participating in a conversation about vaccines/vaccination programs (in person, over the phone, or online) with the following groups?",
+    "opinion": "How much do you agree with the following statements? (1-5)",
+    "opinion_change": "How has your opinion on the following statement changed?",
+    "institut_trust_vax": "How much do you trust the information about vaccines/vaccination programs shared by the following groups? (1-5)",
+    "pandemic_behaviour": "How much do you agree with the following statements? (1-7)",
+    "moral1": "When you decide whether something is right or wrong, to what extent are the following statements relevant to your thinking? (1-6)",
+    "moral2": "How much do you agree with the following statements? (1-5)",
+    "info": "Select the information channels you primarily use",
+    "contact_group": "With how many people in the following groups did you have a direct contact YESTERDAY?",
+    "discussion_group": "Thinking of LAST week, with how many different people in the following groups did you have a relevant conversation with?",
+    "opinion_other": "To what extent do the following groups agree or disagree with the provided statement? (1-7)"
+  },
+  "old_columns": [
+    {
+      "id": "country",
+      "section": "metadata",
+      "question": "In which country was the test taken?",
+      "answer": [
+        "UK",
+        "HU",
+        "FR",
+        "ES",
+        "DE",
+        "IT"
+      ],
+      "transformations": []
+    },
+    {
+      "id": "StartDate",
+      "section": "metadata",
+      "question": "When was the test started?",
+      "answer": "Datetime object of the start date of the test",
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "survey metadata"
+        }
+      ]
+    },
+    {
+      "id": "EndDate",
+      "section": "metadata",
+      "question": "When was the test ended?",
+      "answer": "Datetime object of the end date of the test",
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "survey metadata"
+        }
+      ]
+    },
+    {
+      "id": "RecordedDate",
+      "section": "metadata",
+      "question": "When was the test recorded?",
+      "answer": "Datetime object of the date when the test was recorded",
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "survey metadata"
+        }
+      ]
+    },
+    {
+      "id": "ResponseId",
+      "section": "metadata",
+      "question": "Unique identifier of the response",
+      "answer": "Unique identifier of the response",
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "survey metadata"
+        }
+      ]
+    },
+    {
+      "id": "metadata_Browser",
+      "section": "metadata",
+      "question": "What browser is the user using?",
+      "answer": "Name of the browser",
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "survey metadata"
+        }
+      ]
+    },
+    {
+      "id": "metadata_Operating.System",
+      "section": "metadata",
+      "question": "What OS is the user using?",
+      "answer": "Name of the operating system",
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "survey metadata"
+        }
+      ]
+    },
+    {
+      "id": "panel_status",
+      "section": "metadata",
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "survey metadata"
+        }
+      ]
+    },
+    {
+      "id": "F_inconsistent_coviddate",
+      "section": "metadata",
+      "missing_percentage": 47,
+      "n_outliers": {
+        "high": 239,
+        "max": 1
+      },
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "survey metadata"
+        }
+      ]
+    },
+    {
+      "id": "F_inconsistent_covaxdate",
+      "section": "metadata",
+      "n_outliers": {
+        "high": 903,
+        "max": 1
+      },
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "survey metadata"
+        }
+      ]
+    },
+    {
+      "id": "F_inconsistent_cohabitant_contact",
+      "section": "metadata",
+      "missing_percentage": 21,
+      "n_outliers": {
+        "high": 3550,
+        "max": 1
+      },
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "survey metadata"
+        }
+      ]
+    },
+    {
+      "id": "F_inconsistent_cohabitant_discussion",
+      "section": "metadata",
+      "missing_percentage": 21,
+      "n_outliers": {
+        "high": 3890,
+        "max": 1
+      },
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "survey metadata"
+        }
+      ]
+    },
+    {
+      "id": "F_inconsistent_noncohabitant_contact",
+      "section": "metadata",
+      "missing_percentage": 32,
+      "n_outliers": {
+        "high": 3680,
+        "max": 1
+      },
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "survey metadata"
+        }
+      ]
+    },
+    {
+      "id": "F_inconsistent_noncohabitant_discussion",
+      "section": "metadata",
+      "missing_percentage": 32,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "survey metadata"
+        }
+      ]
+    },
+    {
+      "id": "F_inconsistent_group",
+      "section": "metadata",
+      "missing_percentage": 8,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "survey metadata"
+        }
+      ]
+    },
+    {
+      "id": "F_inconsistent_student",
+      "section": "metadata",
+      "missing_percentage": 94,
+      "n_outliers": {
+        "high": 161,
+        "max": 1
+      },
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "survey metadata"
+        }
+      ]
+    },
+    {
+      "id": "F_JohnsonJohnson",
+      "section": "metadata",
+      "missing_percentage": 97,
+      "n_outliers": {
+        "high": 50,
+        "max": 1
+      },
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "survey metadata"
+        }
+      ]
+    },
+    {
+      "id": "F_gibberish_number",
+      "section": "metadata",
+      "missing_percentage": 0,
+      "n_outliers": {
+        "high": 61,
+        "max": 1
+      },
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "survey metadata"
+        }
+      ]
+    }
+  ],
+  "new_columns": []
+}

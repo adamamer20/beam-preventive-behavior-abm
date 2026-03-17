@@ -1,0 +1,13 @@
+model,strategy,vector_cosine_std
+gpt-oss-120b,data_only,0.287675909380456
+gpt-oss-120b,first_person,0.23143570128473323
+gpt-oss-120b,multi_expert,0.2814173290417085
+gpt-oss-120b,third_person,0.29182264931721563
+gpt-oss-20b,data_only,0.3108846265647997
+gpt-oss-20b,first_person,0.005829140657219337
+gpt-oss-20b,multi_expert,0.30856714712432565
+gpt-oss-20b,third_person,0.20915755841414732
+qwen_qwen3-32b,data_only,0.29672584298178134
+qwen_qwen3-32b,first_person,0.009578851523145025
+qwen_qwen3-32b,multi_expert,0.29628694580108267
+qwen_qwen3-32b,third_person,0.19114243475605217

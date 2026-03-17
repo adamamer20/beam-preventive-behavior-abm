@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>3&nbsp; Methodology – From Survey Data to Generative Behavioral ABMs: Validating Preventive Behavior Adoption by LLM Agents</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./04-statistical-analysis.html" rel="next">
+<link href="./02-literature-review.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-5b817a39b521f568c6faae939b323d31.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<meta name="mermaid-theme" content="neutral">
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+<script type="module">
+import elkLayouts from 'https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0/dist/mermaid-layout-elk.esm.min.mjs';
+window.addEventListener("DOMContentLoaded", () => {
+  if (window.mermaid?.registerLayoutLoaders) {
+    window.mermaid.registerLayoutLoaders(elkLayouts);
+  }
+});
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03-methodology.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Methodology</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">From Survey Data to Generative Behavioral ABMs: Validating Preventive Behavior Adoption by LLM Agents</a>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container">
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Abstract</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container">
+  <a href="./01-introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction &amp; Research Motivation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container">
+  <a href="./02-literature-review.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Literature Review</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container">
+  <a href="./03-methodology.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Methodology</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container">
+  <a href="./04-statistical-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Statistical Analysis</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container">
+  <a href="./05-modelling-decision-function.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Modelling the decision function</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container">
+  <a href="./06-llm-micro-validation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">LLM Micro-Validation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container">
+  <a href="./07-agent-based-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Agent-Based Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container">
+  <a href="./08-discussion-conclusion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Discussion &amp; Conclusion</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a>
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+          <li class="sidebar-item">
+  <div class="sidebar-item-container">
+  <a href="./appendix-decision-architecture.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Full decision-architecture network</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container">
+  <a href="./appendix-clustering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Clustering analysis of respondent heterogeneity</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container">
+  <a href="./appendix-belief-update-tables.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Belief update micro-validation tables</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+
+  <ul>
+  <li><a href="#sec-03-index-construction" id="toc-sec-03-index-construction" class="nav-link active" data-scroll-target="#sec-03-index-construction"><span class="header-section-number">3.1</span> Index construction and measurement quality</a>
+  <ul class="collapse">
+  <li><a href="#derived-household-and-social-contact-variables" id="toc-derived-household-and-social-contact-variables" class="nav-link" data-scroll-target="#derived-household-and-social-contact-variables"><span class="header-section-number">3.1.1</span> Derived household and social-contact variables</a></li>
+  <li><a href="#sec-03-media-use" id="toc-sec-03-media-use" class="nav-link" data-scroll-target="#sec-03-media-use"><span class="header-section-number">3.1.2</span> Media use and information diet</a></li>
+  <li><a href="#sec-03-composite-indices" id="toc-sec-03-composite-indices" class="nav-link" data-scroll-target="#sec-03-composite-indices"><span class="header-section-number">3.1.3</span> Composite psychological indices</a></li>
+  <li><a href="#sec-03-trust-indices" id="toc-sec-03-trust-indices" class="nav-link" data-scroll-target="#sec-03-trust-indices"><span class="header-section-number">3.1.4</span> Trust indices</a></li>
+  <li><a href="#sec-03-moral-foundations" id="toc-sec-03-moral-foundations" class="nav-link" data-scroll-target="#sec-03-moral-foundations"><span class="header-section-number">3.1.5</span> Moral foundations indices</a></li>
+  </ul></li>
+  <li><a href="#sec-03-modelling-methods" id="toc-sec-03-modelling-methods" class="nav-link" data-scroll-target="#sec-03-modelling-methods"><span class="header-section-number">3.2</span> Statistical modelling methods</a>
+  <ul class="collapse">
+  <li><a href="#model-family-and-outcome-types" id="toc-model-family-and-outcome-types" class="nav-link" data-scroll-target="#model-family-and-outcome-types"><span class="header-section-number">3.2.1</span> Model family and outcome types</a></li>
+  <li><a href="#block-structured-specifications-with-lobolobi-importance-scores" id="toc-block-structured-specifications-with-lobolobi-importance-scores" class="nav-link" data-scroll-target="#block-structured-specifications-with-lobolobi-importance-scores"><span class="header-section-number">3.2.2</span> Block-structured specifications with LOBO/LOBI importance scores</a></li>
+  </ul></li>
+  <li><a href="#sec-03-llm-micro-validation" id="toc-sec-03-llm-micro-validation" class="nav-link" data-scroll-target="#sec-03-llm-micro-validation"><span class="header-section-number">3.3</span> LLM behavioural micro-validation</a>
+  <ul class="collapse">
+  <li><a href="#sec-03-anchor-prototypes" id="toc-sec-03-anchor-prototypes" class="nav-link" data-scroll-target="#sec-03-anchor-prototypes"><span class="header-section-number">3.3.1</span> Anchor prototypes for on-manifold evaluation and sampling</a></li>
+  <li><a href="#sec-03-llm-models-and-prompts" id="toc-sec-03-llm-models-and-prompts" class="nav-link" data-scroll-target="#sec-03-llm-models-and-prompts"><span class="header-section-number">3.3.2</span> Models and prompting strategies</a></li>
+  <li><a href="#sec-03-shared-machinery" id="toc-sec-03-shared-machinery" class="nav-link" data-scroll-target="#sec-03-shared-machinery"><span class="header-section-number">3.3.3</span> Shared evaluation machinery</a></li>
+  <li><a href="#sec-03-choice-microvalidation" id="toc-sec-03-choice-microvalidation" class="nav-link" data-scroll-target="#sec-03-choice-microvalidation"><span class="header-section-number">3.3.4</span> Choice-policy micro-validation</a></li>
+  <li><a href="#sec-03-belief-update-microvalidation" id="toc-sec-03-belief-update-microvalidation" class="nav-link" data-scroll-target="#sec-03-belief-update-microvalidation"><span class="header-section-number">3.3.5</span> Belief-update micro-validation</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-03-methodology" class="quarto-section-identifier"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Methodology</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+
+
+
+  </div>
+
+
+
+</header>
+
+
+<p>This chapter documents the survey data, preprocessing, and modelling inputs used in later chapters; <a href="#fig-thesis-pipeline" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-thesis-pipeline</span></a> provides a visual map.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-thesis-pipeline" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-thesis-pipeline-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<pre class="mermaid mermaid-js" data-label="fig-thesis-pipeline">%%{init: {
+  "securityLevel": "loose",
+  "theme": "base",
+  "flowchart": { "htmlLabels": true, "nodeSpacing": 35, "rankSpacing": 45, "curve": "basis" },
+  "themeVariables": {
+    "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
+    "fontSize": "14px",
+    "primaryColor": "#ffffff",
+    "primaryTextColor": "#111111",
+    "primaryBorderColor": "#c9c9c9",
+    "lineColor": "#b8b8b8",
+    "tertiaryColor": "#f4f4f4"
+  }
+}}%%
+flowchart TB
+  A["&lt;i class='bi bi-database'&gt;&lt;/i&gt; &lt;b&gt;Data&lt;/b&gt;&lt;br/&gt;&lt;span class='sub'&gt;Survey (6 countries)&lt;/span&gt;"]:::data
+  B["&lt;i class='bi bi-bar-chart'&gt;&lt;/i&gt; &lt;b&gt;Empirics&lt;/b&gt;&lt;br/&gt;&lt;span class='sub'&gt;Ch4: effect-size map&lt;/span&gt;"]:::emp
+  C["&lt;i class='bi bi-diagram-3'&gt;&lt;/i&gt; &lt;b&gt;Structure&lt;/b&gt;&lt;br/&gt;&lt;span class='sub'&gt;Ch5: decision architecture&lt;/span&gt;"]:::struct
+  D["&lt;i class='bi bi-cpu'&gt;&lt;/i&gt; &lt;b&gt;LLM tests&lt;/b&gt;&lt;br/&gt;&lt;span class='sub'&gt;Ch6: perturbations&lt;/span&gt;"]:::llm
+  E["&lt;i class='bi bi-bounding-box'&gt;&lt;/i&gt; &lt;b&gt;ABM&lt;/b&gt;&lt;br/&gt;&lt;span class='sub'&gt;Ch7: generative simulation&lt;/span&gt;"]:::abm
+  F["&lt;i class='bi bi-box-seam'&gt;&lt;/i&gt; &lt;b&gt;Outputs&lt;/b&gt;&lt;br/&gt;&lt;span class='sub'&gt;Mechanisms + scenarios&lt;/span&gt;"]:::out
+
+  A --&gt; B --&gt; C --&gt; D --&gt; E --&gt; F
+
+  classDef data  fill:#EAF2FF,stroke:#9BB7FF,color:#111;
+  classDef emp   fill:#F1ECFF,stroke:#B6A2FF,color:#111;
+  classDef struct fill:#E9FAF1,stroke:#8DD7B3,color:#111;
+  classDef llm   fill:#FFECEF,stroke:#FF9CAB,color:#111;
+  classDef abm   fill:#E9FBFF,stroke:#87D7E8,color:#111;
+  classDef out   fill:#F3F4F6,stroke:#D1D5DB,color:#111;
+</pre>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-thesis-pipeline-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3.1: Roadmap of the thesis: where empirical results are translated into modelling components (state variables, heterogeneity summaries, and decision rules) and then evaluated via LLM perturbation tests and ABM simulation.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<section id="sec-03-index-construction" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="sec-03-index-construction"><span class="header-section-number">3.1</span> Index construction and measurement quality</h2>
+<p>Where possible, conceptually related items were aggregated by taking the <strong>mean across non-missing responses</strong>. Formally, for respondent <span class="math inline">\(i\)</span> and an index built from items <span class="math inline">\(j \in J_i\)</span> with observed (non-missing) responses <span class="math inline">\(x_{ij}\)</span>, the index is</p>
+<p><span class="math display">\[
+    \text{Index}_i = \frac{1}{\lvert J_i \rvert} \sum_{j \in J_i} x_{ij},
+\]</span></p>
+<p>where <span class="math inline">\(J_i\)</span> is the set of items with non-missing responses for that respondent. In practice, no additional minimum-item requirement is imposed beyond this available-item rule, so indices may be based on as few as one observed item; I therefore report the percentage coverage for each index and treat low coverage as a signal that missingness reduces the effective sample size for that composite.</p>
+<p>For multi-item composites intended to summarise a common latent construct, internal consistency was assessed using Cronbach’s alpha (<span class="math inline">\(\alpha\)</span>), which captures the average covariance among items relative to the variance of their composite score <span class="citation" data-cites="cronbach_1951_coefficient cortina_1993_what">(<a href="#ref-cronbach_1951_coefficient" role="doc-biblioref">Cronbach 1951</a>; <a href="#ref-cortina_1993_what" role="doc-biblioref">Cortina 1993</a>)</span>. It is reported as a descriptive reliability diagnostic rather than as evidence of unidimensionality or construct validity.</p>
+<p>For composites that are <strong>formative by design</strong>, such as the 5C pro-vaccine index, <span class="math inline">\(\alpha\)</span> is reported for transparency but is not used as a criterion for scale adequacy. No internal-consistency statistic is computed for aggregates that pool attributes of heterogeneous entities (such as household and social-contact summaries (cohabitants and non-cohabitants) or media-use duration baskets) since these variables are deterministic summaries rather than psychometric scales.</p>
+<section id="derived-household-and-social-contact-variables" class="level3" data-number="3.1.1">
+<h3 data-number="3.1.1" class="anchored" data-anchor-id="derived-household-and-social-contact-variables"><span class="header-section-number">3.1.1</span> Derived household and social-contact variables</h3>
+<p>The survey contains detailed information on up to ten <strong>cohabitants</strong> and up to ten <strong>non-cohabiting close contacts</strong>, including their age, COVID-19 vaccination status, and history of COVID-19 infection. To avoid an explosion of highly sparse columns, I summarise this information into a small set of continuous variables:</p>
+<ul>
+<li><strong>Average age of cohabitants/non-cohabitants</strong></li>
+<li><strong>Average number of COVID vaccine doses among cohabitants/non-cohabitants</strong></li>
+<li><strong>Average number of COVID infections among cohabitants/non-cohabitants</strong></li>
+</ul>
+</section>
+<section id="sec-03-media-use" class="level3" data-number="3.1.2">
+<h3 data-number="3.1.2" class="anchored" data-anchor-id="sec-03-media-use"><span class="header-section-number">3.1.2</span> Media use and information diet</h3>
+<p>Time spent with different online and social media is summarised into two duration indices:</p>
+<ul>
+<li><strong>Duration of Informational Media</strong> averages reported time on informational platforms such as Wikipedia, YouTube and Reddit.</li>
+<li><strong>Duration of Social Media</strong> averages time on social platforms (Instagram, Facebook, Telegram, Twitter/X, LinkedIn, TikTok).</li>
+</ul>
+</section>
+<section id="sec-03-composite-indices" class="level3" data-number="3.1.3">
+<h3 data-number="3.1.3" class="anchored" data-anchor-id="sec-03-composite-indices"><span class="header-section-number">3.1.3</span> Composite psychological indices</h3>
+<p><a id="sec-03-5c-pro-vaccine"></a></p>
+<p><strong>5C pro-vaccine index</strong></p>
+<p>To obtain a summary measure of <strong>pro-vaccine psychological orientation</strong>, I construct the 5C pro-vaccine index (<span class="math inline">\(\alpha \approx 0.72\)</span>) as the mean of four recoded 5C components:</p>
+<ul>
+<li>5C Confidence</li>
+<li>5C Complacency (reverse-coded)</li>
+<li>5C Constraints (reverse-coded)</li>
+<li>5C Collective Responsibility</li>
+</ul>
+<p><strong>Risk, safety, fear and comfort</strong></p>
+<p>Perceptions of infection risk and vaccine risk are captured using multi-item averages:</p>
+<ul>
+<li><strong>Average perceived infection likelihood</strong> across COVID-19, seasonal flu, measles and meningitis (<span class="math inline">\(\alpha \approx 0.74\)</span>).</li>
+<li><strong>Average perceived severity if infected</strong> across COVID-19 and flu (<span class="math inline">\(\alpha \approx 0.76;\ \text{coverage}\ 92.8\%\)</span>).</li>
+<li><strong>Average disease fear</strong> across COVID-19, seasonal flu, measles and meningitis (<span class="math inline">\(\alpha \approx 0.80\)</span>).</li>
+</ul>
+<p>Although baseline prevalence differs sharply across pathogens, the perceived infection likelihood composite is interpreted as a dispositional tendency to perceive infectious diseases as likely in general (rather than as a calibrated estimate of objective infection probabilities).</p>
+<p>The perceived severity index is likewise treated as a general severity sensitivity: how strongly respondents expect serious consequences conditional on infection, rather than a disease-specific clinical assessment.</p>
+<p>For vaccines:</p>
+<ul>
+<li><strong>Average perceived vaccine risk</strong> across COVID-19, flu, measles and meningitis vaccines (<span class="math inline">\(\alpha \approx 0.84\)</span>).</li>
+<li><strong>Average vaccine fear</strong> captures reported fear of the same four vaccines (<span class="math inline">\(\alpha \approx 0.87\)</span>).</li>
+</ul>
+<p><strong>COVID-19 vaccine rollout scepticism</strong></p>
+<p>To capture scepticism about the safety, motives, and mandate-related aspects of the COVID-19 vaccination campaign, I construct a COVID-19 vaccine rollout scepticism composite (<span class="math inline">\(\alpha \approx 0.77\)</span>) by averaging agreement with six statements covering safety concerns, perceived insufficient testing, side-effect worries, opposition to mandates, distrust in pharmaceutical motives, and preference for natural immunity.</p>
+<p><strong>Progressive attitudes and social norms</strong></p>
+<p>I construct a <strong>Progressive attitudes index</strong> (<span class="math inline">\(\alpha \approx 0.52\)</span>) which averages agreement with:</p>
+<ul>
+<li>concern about climate harm,</li>
+<li>support for LGBT adoption rights,</li>
+<li>tolerance towards immigration.</li>
+</ul>
+<p>Perceived <strong>vaccine-importance norms</strong> are measured separately as single items capturing how important respondents believe vaccination is to their <strong>family</strong>, <strong>friends</strong>, and <strong>colleagues</strong>.</p>
+<p>Three analogous <strong>progressive norms</strong> bundles capture perceived social climate among <strong>friends</strong> (<span class="math inline">\(\alpha \approx 0.32;\ \text{coverage}\ 87.2\%\)</span>), <strong>family</strong> (<span class="math inline">\(\alpha \approx 0.28;\ \text{coverage}\ 87.4\%\)</span>) and <strong>colleagues</strong> (<span class="math inline">\(\alpha \approx 0.26;\ \text{coverage}\ 56.8\%\)</span>) by averaging the same items within each reference group.</p>
+<p>The progressive attitudes composite has a <strong>modest</strong> internal consistency, as expected given its deliberate coverage of several policy domains. It should be interpreted as a broad value gradient rather than a narrow latent trait. Likewise, the progressive norms bundles are treated as descriptive composites (heterogeneous by design), and relatively low Cronbach’s alpha values for these bundles are not taken as evidence of measurement failure but as a reflection of their intentionally broad content.</p>
+<p>For vaccination specifically, I also combine the three vaccine-importance norm items into a single <strong>Perceived vaccine norms</strong> index, defined as their mean ( <span class="math inline">\(\alpha \approx 0.91;\ \text{coverage}\ 95.1\%\)</span> ). I do so because these three items display very high internal consistency, indicating that perceived vaccine importance is largely shared across respondents’ close reference groups rather than being sharply group-specific.</p>
+<p>Finally, to summarise a broader <strong>moral–progressive orientation</strong> that links progressive policy attitudes to individualising moral concerns (care and fairness), I construct a higher-order composite by averaging the <strong>Progressive attitudes</strong> index with the two individualising morality constructs (moral relevance and moral agreement). The resulting composite is reported with its internal-consistency diagnostic ( <span class="math inline">\(\alpha \approx 0.53\)</span> ).</p>
+<p><strong>Protective behaviour bundle</strong></p>
+<p>Protective behaviour index (<span class="math inline">\(\alpha \approx 0.78\)</span>) summarises three <strong>non-pharmaceutical</strong> behavioural items:</p>
+<ul>
+<li>wearing a mask in crowded places when symptomatic,</li>
+<li>staying at home when symptomatic,</li>
+<li>wearing a mask when “pressure” (infection risk) is high.</li>
+</ul>
+</section>
+<section id="sec-03-trust-indices" class="level3" data-number="3.1.4">
+<h3 data-number="3.1.4" class="anchored" data-anchor-id="sec-03-trust-indices"><span class="header-section-number">3.1.4</span> Trust indices</h3>
+<p>Trust in information sources is summarised at three levels:</p>
+<ul>
+<li><p><strong>Trust in traditional media</strong> (<span class="math inline">\(\alpha \approx 0.86;\ \text{coverage}\ 73.8\%\)</span>) Mean of trust in printed press, television, and radio as sources of vaccine information.</p></li>
+<li><p><strong>Trust in online information</strong> (<span class="math inline">\(\alpha \approx 0.73;\ \text{coverage}\ 72.6\%\)</span>) Average trust in online news websites, Wikipedia, YouTube and podcasts as vaccine information sources.</p></li>
+<li><p><strong>Trust in social media</strong> (<span class="math inline">\(\alpha \approx 0.66;\ \text{coverage}\ 74.1\%\)</span>) Average trust in Facebook, Instagram, Twitter/X, TikTok, Telegram and LinkedIn.</p></li>
+</ul>
+<p>Finally, <strong>Institutional trust index</strong> (<span class="math inline">\(\alpha \approx 0.91\)</span>) aggregates trust in:</p>
+<ul>
+<li>local and national governments,</li>
+<li>general practitioners,</li>
+<li>local and national health authorities,</li>
+<li>the WHO,</li>
+</ul>
+</section>
+<section id="sec-03-moral-foundations" class="level3" data-number="3.1.5">
+<h3 data-number="3.1.5" class="anchored" data-anchor-id="sec-03-moral-foundations"><span class="header-section-number">3.1.5</span> Moral foundations indices</h3>
+<p>Moral values were measured using an adapted version of the Moral Foundations Questionnaire (MFQ), which distinguishes between five moral foundations: care, fairness, loyalty, authority, and purity <span class="citation" data-cites="haidt_2004_intuitive graham_2011_mapping">(<a href="#ref-haidt_2004_intuitive" role="doc-biblioref">Haidt and Joseph 2004</a>; <a href="#ref-graham_2011_mapping" role="doc-biblioref">Graham et al. 2011</a>)</span>. Following standard practice, I construct separate indices for <strong>relevance</strong> and <strong>agreement</strong> items within each foundation, and further aggregate them into higher-order <strong>individualizing</strong> (care, fairness) and <strong>binding</strong> (loyalty, authority, purity) dimensions. These higher-order composites are used in the main analyses, while foundation-specific subscales are treated as exploratory.</p>
+<p>For each foundation, I construct:</p>
+<ul>
+<li><strong>Relevance subscales</strong> each averaging two items about how morally relevant a given consideration is (e.g., preventing emotional suffering, respecting authority):
+<ul>
+<li>Care relevance (<span class="math inline">\(\alpha \approx 0.71\)</span>),</li>
+<li>Fairness relevance (<span class="math inline">\(\alpha \approx 0.70\)</span>),</li>
+<li>Loyalty relevance (<span class="math inline">\(\alpha \approx 0.44\)</span>),</li>
+<li>Authority relevance (<span class="math inline">\(\alpha \approx 0.57\)</span>),</li>
+<li>Purity relevance (<span class="math inline">\(\alpha \approx 0.65\)</span>)</li>
+</ul></li>
+<li><strong>Agreement subscales</strong> each averaging two items about agreement with value statements:
+<ul>
+<li>Care agreement (<span class="math inline">\(\alpha \approx 0.59\)</span>),</li>
+<li>Fairness agreement (<span class="math inline">\(\alpha \approx 0.69\)</span>),</li>
+<li>Loyalty agreement (<span class="math inline">\(\alpha \approx 0.48\)</span>),</li>
+<li>Authority agreement (<span class="math inline">\(\alpha \approx 0.31\)</span>),</li>
+<li>Purity agreement (<span class="math inline">\(\alpha \approx 0.51\)</span>)</li>
+</ul></li>
+</ul>
+<p>To align with standard MFQ practice, I then form <strong>individualizing and binding higher-order indices</strong>: - Relevance - Individualizing index (<span class="math inline">\(\alpha \approx 0.79\)</span>) averages care and fairness relevance, - Relevance - Binding index (<span class="math inline">\(\alpha \approx 0.80\)</span>) averages loyalty, authority and purity relevance; - Agreement - Individualizing index (<span class="math inline">\(\alpha \approx 0.72\)</span>) averages care and fairness agreement, - Agreement - Binding index (<span class="math inline">\(\alpha \approx 0.70\)</span>) averages loyalty, authority and purity agreement.</p>
+<p>As is typical for two-item subscales, some foundation-specific reliability estimates are modest. The main analyses therefore rely primarily on the higher-order individualizing and binding composites, with foundation-level subscales interpreted as exploratory detail rather than as standalone, high-precision latent constructs.</p>
+</section>
+</section>
+<section id="sec-03-modelling-methods" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="sec-03-modelling-methods"><span class="header-section-number">3.2</span> Statistical modelling methods</h2>
+<p><a href="#sec-03-decision-function" class="quarto-xref"><span class="quarto-unresolved-ref">sec-03-decision-function</span></a> moves from screening to <strong>multivariate backbone modelling (coordinated GLMs)</strong>, estimating regression families that compress the gradients in <a href="#sec-04-statistical-analysis" class="quarto-xref"><span class="quarto-unresolved-ref">sec-04-statistical-analysis</span></a> into a small set of <strong>portable engines</strong> and <strong>decision rules</strong> for profiling, micro-validation, and agent-based simulation. Predictors are introduced in a <em>conceptual order</em> from upstream context to downstream outcomes: demographic and health background, social embedding, and information environments relate to psychological antecedents (trust, risk perceptions, moral and descriptive norms, and 5C dimensions), which in turn relate to attitudes (e.g., perceived importance of vaccines) and behavioural outcomes (e.g., willingness, uptake, routine flu vaccination, and non-pharmaceutical protective actions). This ordering determines how blocks are grouped and which intermediate constructs are modelled before behaviour.</p>
+<section id="model-family-and-outcome-types" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1" class="anchored" data-anchor-id="model-family-and-outcome-types"><span class="header-section-number">3.2.1</span> Model family and outcome types</h3>
+<p>The outcomes span binary indicators, ordinal Likert-type items, and (where applicable) continuous composite measures. To match these measurement scales, I use generalised linear models (GLMs):</p>
+<ul>
+<li><strong>Binary outcomes</strong> (e.g., ever vs never vaccinated; adoption indicators) are modelled with <strong>logistic regression</strong>.</li>
+<li><strong>Ordinal outcomes</strong> (Likert-type responses) are modelled with <strong>ordinal logistic regression</strong> (proportional-odds specification for interpretability).</li>
+<li><strong>Continuous outcomes / indices</strong> are modelled with <strong>linear regression</strong> when the modelling representation is approximately continuous.</li>
+</ul>
+<p>Country fixed effects are included in all pooled models unless otherwise stated to absorb baseline cross-national differences while preserving the within-sample structure of associations between predictors and outcomes.</p>
+<p>Before estimation, all continuous and ordinal predictors are standardised using pooled z-scores (mean 0, SD 1) computed on the estimation sample. Binary indicators remain coded as 0/1, and categorical predictors are entered as dummy-coded contrasts with an explicit reference category. Coefficient magnitudes are therefore directly comparable only among the standardised continuous/ordinal predictors; binary and categorical coefficients are interpreted on their own contrasts.</p>
+<p>Results are reported on the natural scale implied by each link function (log-odds for logistic and ordinal models; linear coefficients for continuous outcomes), alongside uncertainty summaries. The modelling outputs are then used to (i) motivate a reduced “backbone” set of domains that repeatedly explain variation across prevention outcomes and (ii) define simulation-ready components that can be transported into the clustering and ABM stages.</p>
+</section>
+<section id="block-structured-specifications-with-lobolobi-importance-scores" class="level3" data-number="3.2.2">
+<h3 data-number="3.2.2" class="anchored" data-anchor-id="block-structured-specifications-with-lobolobi-importance-scores"><span class="header-section-number">3.2.2</span> Block-structured specifications with LOBO/LOBI importance scores</h3>
+<p>To avoid ad-hoc covariate choices and keep comparisons interpretable, I use a <strong>block-structured specification scheme</strong>. A <em>block</em> is a pre-defined group of predictors capturing a semantically coherent domain (e.g., demographics and health background, institutional trust, 5C antecedents, risk perceptions, social norms, information exposure, and social contact structure). Blocks are defined once and reused across outcomes, so model variants are obtained by adding or removing entire domains rather than individual variables.</p>
+<p>This design improves interpretability, nested specifications correspond to substantive questions (e.g., “what changes once I add trust?”), and enables domain-level importance analysis without relying only on coefficient inspection. For each outcome, block contribution is summarised using two complementary diagnostics, both reported with a change-in-fit measure and a complexity-adjusted criterion. Fit changes are measured as <span class="math inline">\(\Delta\)</span> pseudo-<span class="math inline">\(R^2\)</span> for logistic/ordinal models (McFadden’s pseudo-<span class="math inline">\(R^2\)</span>) and <span class="math inline">\(\Delta R^2\)</span> for OLS <span class="citation" data-cites="mcfadden_1974_conditional">(<a href="#ref-mcfadden_1974_conditional" role="doc-biblioref">McFadden 1974</a>)</span> Complexity adjustment is measured with <span class="math inline">\(\Delta\)</span>BIC (Bayesian information criterion) <span class="citation" data-cites="schwarz_1978_estimating">(<a href="#ref-schwarz_1978_estimating" role="doc-biblioref">Schwarz 1978</a>)</span>. All quantities are oriented so that <strong>larger positive values indicate greater block contribution</strong>.</p>
+<ul>
+<li><p><strong>LOBO (Leave-One-Block-Out):</strong> starting from the reference model (the full block-saturated specification for the outcome), each block <span class="math inline">\(b\)</span> is removed in turn. Importance is summarised by the loss in fit <span class="math display">\[
+\Delta \text{fit}^{\text{LOBO}}_b = \text{fit}_{\text{full}} - \text{fit}_{-b},
+\]</span> and by the increase in BIC <span class="math display">\[
+\Delta \text{BIC}^{\text{LOBO}}_b = \text{BIC}_{-b} - \text{BIC}_{\text{full}},
+\]</span> where positive values indicate that removing the block worsens the model.</p></li>
+<li><p><strong>LOBI (Leave-One-Block-In):</strong> starting from a minimal baseline (typically country fixed effects and socio-demography), each block <span class="math inline">\(b\)</span> is added alone to assess its standalone contribution. Gains are summarised by <span class="math display">\[
+\Delta \text{fit}^{\text{LOBI}}_b = \text{fit}_{+b} - \text{fit}_{\text{base}},
+\]</span> and by the BIC improvement <span class="math display">\[
+\Delta \text{BIC}^{\text{LOBI}}_b = \text{BIC}_{\text{base}} - \text{BIC}_{+b},
+\]</span> where positive values indicate that introducing the block improves fit net of complexity.</p></li>
+</ul>
+</section>
+</section>
+<section id="sec-03-llm-micro-validation" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="sec-03-llm-micro-validation"><span class="header-section-number">3.3</span> LLM behavioural micro-validation</h2>
+<p><a href="#sec-06-llm-micro-validation" class="quarto-xref"><span class="quarto-unresolved-ref">sec-06-llm-micro-validation</span></a> tests whether large language models reproduce the <strong>directional regularities</strong> identified in the modelling chapter under controlled, on-manifold counterfactual manipulations. The aim is not to “predict the survey”, but to assess whether an LLM can act as a plausible behavioural engine that preserves the same qualitative gradients estimated in <a href="#sec-03-decision-function" class="quarto-xref"><span class="quarto-unresolved-ref">sec-03-decision-function</span></a>.</p>
+<p>Micro-validation targets two ABM components. The <strong>choice-policy track</strong> treats the LLM as a mapping from respondent state <span class="math inline">\(z\)</span> to an action or attitude output <span class="math inline">\(y\)</span> and tests <strong>counterfactual fidelity</strong> under lever perturbations against the backbone models. The <strong>belief-update track</strong> treats the LLM as a state-transition kernel <span class="math inline">\((z,s)\mapsto z'\)</span> in response to informational or social signals and tests whether updates are bounded, directionally plausible, and behaviourally consistent when propagated through the fixed decision rules.</p>
+<p><span class="math display">\[
+\begin{aligned}
+\textbf{Choice policy:}\quad &amp; \hat y = \pi(z, x)
+&amp;&amp; \text{(validate via ICE contrasts under lever perturbations in } x\text{)}\\
+\textbf{Belief update:}\quad &amp; z' = \mathcal{U}(z, s),\qquad \hat y'=\pi(z', x)
+&amp;&amp; \text{(validate update realism + downstream action consistency)}
+\end{aligned}
+\]</span></p>
+<section id="sec-03-anchor-prototypes" class="level3" data-number="3.3.1">
+<h3 data-number="3.3.1" class="anchored" data-anchor-id="sec-03-anchor-prototypes"><span class="header-section-number">3.3.1</span> Anchor prototypes for on-manifold evaluation and sampling</h3>
+<p>A recurring problem in downstream validation and simulation is that the behavioural state space <span class="math inline">\(Z_{\text{core}}\)</span> is <strong>high-dimensional and strongly correlated</strong>. If we probe an LLM (or initialise agents) using arbitrary or independently perturbed covariates, we quickly create unrealistic combinations. Earlier drafts explored clustering-based summaries, but the resulting partitions were not sufficiently stable to justify a fixed typology (details are relegated to <a href="#sec-appendix-clustering" class="quarto-xref"><span class="quarto-unresolved-ref">sec-appendix-clustering</span></a>). Instead, I adopt <strong>anchor prototypes</strong> (a small set of <strong>observed</strong> respondent profiles) which serve three operational roles: <strong>coverage</strong> (tiling the empirical manifold at manageable cost), <strong>locality</strong> (defining country-stratified neighbourhoods for resampling complete observed profiles), and <strong>discipline</strong> (using on-manifold reference states for lever perturbations with explicit off-manifold diagnostics).</p>
+<p>Let <span class="math inline">\(z_i\in\mathbb{R}^p\)</span> denote respondent <span class="math inline">\(i\)</span>’s vector of core behavioural drivers (the same engine space used throughout modelling, micro-validation, and simulation). To remove country-specific baselines while preserving within-country structure, each driver is normalised as <span class="math display">\[
+z'_{ij} = \frac{z_{ij} - \bar z_{c(i)j}}{s_j},
+\]</span></p>
+<p>where <span class="math inline">\(\bar z_{c(i)j}\)</span> is the mean of driver <span class="math inline">\(j\)</span> in respondent <span class="math inline">\(i\)</span>’s country and <span class="math inline">\(s_j\)</span> is a <strong>global</strong> scale (the pooled standard deviation computed after within-country demeaning). Drivers with very high missingness are excluded, and remaining missing values are imputed only for anchor construction and distance geometry, using a within-country kNN imputer so that distances are well-defined. Downstream analyses and resampling always use observed respondent profiles (no global imputation). This mirrors the intuition of donor-based (hot-deck / nearest-neighbour) approaches used in survey settings, where plausible values are borrowed from similar respondents <span class="citation" data-cites="andridge_2010_a">(<a href="#ref-andridge_2010_a" role="doc-biblioref">Andridge and Little 2010</a>)</span>.</p>
+<p>Distances are computed in a PCA-reduced representation of <span class="math inline">\(z'\)</span> <strong>for geometry only</strong>: PCA is fit on the imputed <span class="math inline">\(z'\)</span> matrix, components are retained to reach a variance target (<span class="math inline">\(0.97\)</span> in the main pipeline), and all interpretation and reporting remain on the original construct scales <span class="citation" data-cites="jolliffe_2002_principal">(<a href="#ref-jolliffe_2002_principal" role="doc-biblioref">Jolliffe 2002</a>)</span>.</p>
+<p>Anchors are selected as <strong>observed medoids</strong> in distance space using k-medoids with multiple random starts <span class="citation" data-cites="kaufman_2005_finding">(<a href="#ref-kaufman_2005_finding" role="doc-biblioref">Kaufman and Rousseeuw 2005</a>)</span>. To avoid anchors that behave as de facto country outliers, selection is regularised with a <strong>globality constraint</strong>: each anchor must have non-trivial support in at least <span class="math inline">\(C_{\min}\)</span> countries. Support in country <span class="math inline">\(c\)</span> is defined as <span class="math inline">\(\pi_{k\mid c}\ge \pi_{\min}\)</span> (main configuration: <span class="math inline">\(C_{\min}=3\)</span>, <span class="math inline">\(\pi_{\min}=0.05\)</span>).</p>
+<p>Using a preliminary temperature <span class="math inline">\(\tau_{\text{init}}\)</span>, I compute soft memberships as <span class="math display">\[
+w_{ik} = \frac{\exp\left(-d(\tilde z_i, a_k)/\tau\right)}{\sum_{\ell=1}^K \exp\left(-d(\tilde z_i, a_\ell)/\tau\right)},
+\qquad \sum_{k=1}^K w_{ik}=1,
+\]</span> and define the country prevalence of anchor <span class="math inline">\(k\)</span> by <span class="math display">\[
+\pi_{k\mid c} = \frac{1}{n_c}\sum_{i: c(i)=c} w_{ik}.
+\]</span> Among candidate k-medoids solutions, the final anchor set minimises the average within-cluster distance augmented by the globality penalty, favouring solutions that are both locally tight and cross-nationally supported.</p>
+<p>After anchors are selected, memberships are recomputed using a final temperature <span class="math inline">\(\tau\)</span>. In the main configuration, <span class="math inline">\(\tau\)</span> is calibrated to match a target effective number of anchors per respondent, <span class="math display">\[
+k_{\text{eff}}(i) = \frac{1}{\sum_{k=1}^K w_{ik}^2},
+\]</span> so that typical respondents are represented by a sparse mixture rather than being pushed into near-hard assignments or spread uniformly across all anchors.</p>
+<p>In practice, I set the initial kernel temperature <span class="math inline">\(\tau_{\text{init}}\)</span> to a typical local distance scale, estimated as the median 10-nearest-neighbour distance in PCA geometry space (computed on a random sample of <span class="math inline">\(n=5000\)</span> respondents). I then tune the final temperature <span class="math inline">\(\tau\)</span> so that the median effective number of anchors is <span class="math inline">\(k_{\text{eff}}=2\)</span>, yielding a representation where a typical respondent is captured by roughly two anchors.</p>
+<p>Anchors then induce <strong>country-stratified neighbourhoods</strong>. For each anchor <span class="math inline">\(k\)</span> and country <span class="math inline">\(c\)</span>, let <span class="math inline">\(\mathcal{N}_{k,c}\)</span> denote the set of nearest respondents <strong>within country <span class="math inline">\(c\)</span></strong> to anchor <span class="math inline">\(a_k\)</span> in distance space. These neighbourhoods support resampling of complete respondent profiles in <span class="math inline">\(Z_{\text{core}}\)</span>, preserving cross-domain correlations (e.g., trust–risk–norm coupling) by construction. For LLM micro-validation, I assemble a compact evaluation set by sampling a bounded number of respondents from each <span class="math inline">\(\mathcal{N}_{k,c}\)</span> while enforcing global uniqueness (so the same respondent is not repeatedly reused across anchor–country cells). The result is an evaluation grid that remains diverse across anchors and countries, yet stays computationally tractable.</p>
+<p><strong>Perturbed-profile plausibility (off-manifold rate).</strong></p>
+<p>Because counterfactual profiles (related to <a href="#sec-03-llm-micro-validation" class="quarto-xref"><span class="quarto-unresolved-ref">sec-03-llm-micro-validation</span></a>) edit only a subset of coordinates, they can in principle create implausible joint combinations even when baseline profiles are sampled from the respondent manifold. I therefore flag “off-manifold” perturbations using a nearest-neighbour distance check in the same anchoring feature space (and geometry) used for prototype construction. Within each country <span class="math inline">\(s\)</span>, I estimate a local distance scale by computing each respondent’s distance to its nearest other respondent, and set a plausibility threshold <span class="math inline">\(t_s\)</span> as the <span class="math inline">\(p=0.95\)</span> quantile of that distribution. After constructing the low/high perturbed profiles by replacing only the target coordinate (to the within-country <span class="math inline">\(q_{25}/q_{75}\)</span> on the normalised scale), a perturbed point is flagged as off-manifold if its nearest-neighbour distance to the observed respondent set exceeds <span class="math inline">\(t_s\)</span>. The off-manifold rate is the mean flag rate within each lever-country cell.</p>
+</section>
+<section id="sec-03-llm-models-and-prompts" class="level3" data-number="3.3.2">
+<h3 data-number="3.3.2" class="anchored" data-anchor-id="sec-03-llm-models-and-prompts"><span class="header-section-number">3.3.2</span> Models and prompting strategies</h3>
+<p>To separate variation due to <strong>model capability</strong> from variation due to <strong>prompt formulation</strong>, the evaluation varies both the LLM configuration and the prompt representation while holding the underlying respondent profile state fixed. Each prompting strategy is generated by a <strong>deterministic renderer</strong> from the same numeric profile state, so differences across strategies reflect the model’s sensitivity to representation rather than prompt-generation noise. Across strategies and models, the target outcome, response scale, perturbation design, and parsing rules are held constant.</p>
+<ol type="1">
+<li><p><strong>Data-only (structured) prompting:</strong> the model receives the respondent profile as a structured attribute vector and returns the target attitude or behaviour on the predefined outcome scale.</p></li>
+<li><p><strong>Narrative profile rendering (third-person, lossy):</strong> the same profile is deterministically rendered into a short vignette in the third person (e.g., “This person is…”). The rendering is intentionally <strong>compressive</strong> to test whether directional regularities persist when the model is not given fine-grained numeric inputs.</p></li>
+<li><p><strong>Narrative profile rendering (first-person, self-description framing):</strong> the same vignette is expressed in the first person (e.g., “You are…”) and framed as a self-description authored by the assistant. This tests whether a self-referential stance yields higher <strong>self-consistency</strong> and reduces “regression-to-the-mean” tendencies relative to third-person descriptions, while keeping content identical up to deterministic rewriting.</p></li>
+<li><p><strong>Three-expert decomposition (delta-over-baseline):</strong> The model first produces a baseline prediction <span class="math inline">\(\hat y_0\)</span> from the data-only representation. It is then prompted as three perspectives aligned with the decision architecture; each expert outputs a signed delta <span class="math inline">\(\delta_k\)</span> (in outcome-scale units) relative to <span class="math inline">\(\hat y_0\)</span>, using only evidence from its channel. The final prediction is obtained deterministically: <span class="math display">\[
+\hat y = \mathrm{Proj}_{\mathcal{Y}}\left(\hat y_0 + \sum_{k=1}^{3}\delta_k\right),
+\]</span> where <span class="math inline">\(\mathrm{Proj}_{\mathcal{Y}}\)</span> deterministically enforces the outcome’s response scale. For the choice task, the perspectives correspond to stakes/exposure, norms–legitimacy, and constraints; for belief updating, they correspond to institutions/safety–legitimacy, social influence, and stakes–constraints.</p></li>
+<li><p><strong>Paired contrast prompting (low/high and low–mid–high; only for track A):</strong> profiles at different perturbation levels are presented jointly and the model returns the corresponding outputs. This yields a lower-variance estimate of directional effects by making the counterfactual contrast explicit in-context.</p></li>
+</ol>
+<p>Apart from the last one, the same prompt families are reused across both tracks, with track-specific output schemas (choice outputs vs construct updates) and track-specific inputs described in <a href="#sec-03-choice-microvalidation" class="quarto-xref"><span class="quarto-unresolved-ref">sec-03-choice-microvalidation</span></a> and <a href="#sec-03-belief-update-microvalidation" class="quarto-xref"><span class="quarto-unresolved-ref">sec-03-belief-update-microvalidation</span></a>.</p>
+<p>The suite is run across multiple open-weight model configurations to test robustness to scale and deliberation settings. As a separate sensitivity check, I vary sampling temperature on a small subset to assess robustness to response stochasticity. The main workhorse model is <strong>openai/gpt-oss-20b</strong> with reasoning effort set to <strong>medium</strong>. To probe sensitivity to additional deliberation at fixed scale, I also evaluate <strong>openai/gpt-oss-20b</strong> with reasoning effort set to <strong>high</strong>. To test scaling effects within the same family, I include <strong>openai/gpt-oss-120b</strong>. Finally, to check generalisation across model families, I include <strong>qwen/qwen3-32b</strong>.</p>
+</section>
+<section id="sec-03-shared-machinery" class="level3" data-number="3.3.3">
+<h3 data-number="3.3.3" class="anchored" data-anchor-id="sec-03-shared-machinery"><span class="header-section-number">3.3.3</span> Shared evaluation machinery</h3>
+<p><strong>Declared common outcome scale</strong></p>
+<p>All predictions are evaluated on a declared, common numeric scale. For continuous GLMs, the reference prediction is the fitted linear predictor. For binary and ordinal GLMs, the reference prediction is the expected score <span class="math inline">\(E[Y]\)</span> computed from predicted category probabilities; in sensitivity analyses I also report thresholded probabilities <span class="math inline">\(P(Y\ge \tau)\)</span> for policy-relevant cutoffs. LLM outputs are forced onto the same scale via constrained JSON answers, and a deterministic projection operator <span class="math inline">\(\mathrm{Proj}_{\mathcal{Y}}(\cdot)\)</span> enforces the outcome’s allowed response range; categorical responses are mapped to identical ordinal codes prior to aggregation.</p>
+<p><strong>Calibration layer for LLM outputs</strong></p>
+<p>Empirically, LLM predictions preserve rank order more reliably than absolute levels. To avoid conflating these properties, I treat the LLM as a scoring function and add a separate, train-only calibration layer that maps the LLM scale onto the survey scale. Calibration is always fit on the training split and applied out-of-fold via cross-fitting, so every evaluation prediction is calibrated by a model that never saw that row. The calibration map is constrained to be monotone so that it adjusts levels without breaking ordering.</p>
+<p>For binary outcomes, I use a Platt-style logit calibration with a country intercept and global slope: <span class="math display">\[
+\operatorname{logit}(p_{\text{true}})=a_c + b\,\operatorname{logit}(p_{\text{llm}}).
+\]</span> For ordinal/continuous outcomes, I use a monotone rescaling with a country intercept, fit via isotonic regression: <span class="math display">\[
+\hat y_{\text{cal}}=f_c\!\left(\hat y_{\text{llm}}\right),\qquad f_c\ \text{monotone}.
+\]</span></p>
+<p><strong>LLM sampling protocol</strong></p>
+<p>Unless otherwise stated, each prompt instance is evaluated using fixed, recommended model-family decoding settings and averaged over <span class="math inline">\(K=4\)</span> independent generations. For <strong>openai/gpt-oss-20b</strong> and <strong>openai/gpt-oss-120b</strong>, I use temperature <span class="math inline">\(=1.0\)</span> and top-<span class="math inline">\(p=1.0\)</span> (with no top-<span class="math inline">\(k\)</span> truncation). For <strong>qwen/qwen3-32b</strong>, I use temperature <span class="math inline">\(=0.6\)</span>, top-<span class="math inline">\(p=0.95\)</span>, top-<span class="math inline">\(k=20\)</span> and min-<span class="math inline">\(p=0\)</span>, consistent with the recommended non-degenerate sampling regime for that model family. As a sensitivity check, I run a temperature sweep for <strong>gpt-oss-20b</strong> over (<span class="math inline">\({0,\ 0.2,\ 0.4,\ 0.7}\)</span>). Point estimates (baseline levels and perturbation contrasts) are stable across temperatures, while higher temperature primarily increases within-cell dispersion rather than shifting the mean; all main results therefore use the default temperature setting and report uncertainty via bootstrap over generations and reference profiles.</p>
+<p>Malformed JSON or refusals are retried up to three times to obtain valid outputs; persistent failures are recorded and reported as a non-compliance rate, <span class="math display">\[
+r_{\text{noncomp}} = \frac{N_{\text{fail}}}{N_{\text{attempt}}}.
+\]</span></p>
+<p><strong>Two evaluation regimes (levels vs effects).</strong> I distinguish (i) <strong>unperturbed score alignment</strong> on observed profiles, which checks whether the LLM can represent baseline variation on the declared outcome scale, from (ii) <strong>perturbation-effect alignment</strong>, which is the ABM-relevant criterion and tests whether the LLM responds appropriately to targeted counterfactual lever shifts holding the rest of the profile fixed.</p>
+</section>
+<section id="sec-03-choice-microvalidation" class="level3" data-number="3.3.4">
+<h3 data-number="3.3.4" class="anchored" data-anchor-id="sec-03-choice-microvalidation"><span class="header-section-number">3.3.4</span> Choice-policy micro-validation</h3>
+<p>As a baseline diagnostic, I evaluate LLM outputs on <strong>unperturbed (observed)</strong> profiles to assess response-scale compliance, calibration quality, and whether the model preserves rank order on the declared outcome scale. These checks are informative but not sufficient for ABM use.</p>
+<p>Predictive accuracy on unperturbed profiles is not sufficient because many psychological engines co-vary with socio-demographics, political orientation, and country context. An LLM can therefore match baseline outcome levels by exploiting shortcut cues rather than the intended construct mapping; it can be “right for the wrong reasons”. For instance, if perceived vaccine risk is correlated with willingness through education or country composition in the cross-section, a model may appear accurate on unperturbed profiles while responding weakly (or with the wrong sign) when we intervene <em>ceteris paribus</em> on perceived vaccine risk or institutional trust within the same profile.</p>
+<p>Unperturbed mismatches are also weakly diagnostic about why an LLM fails. Deviations from the backbone can arise because relevant determinants are missing or compressed in the prompt representation, because the output scale is mis-calibrated, or because the model applies different behavioural logic even when the required information is present. Conversely, good baseline fit does not imply correct construct-to-action mapping. For ABM purposes, the key property is <strong>counterfactual fidelity</strong>: outputs should move appropriately when a specific behavioural lever is shifted while holding the rest of the profile fixed.</p>
+<p><strong>Unperturbed baseline diagnostics (rank and level)</strong></p>
+<p>For each outcome <span class="math inline">\(Y\)</span>, the unperturbed benchmark evaluates predictions on observed profiles <span class="math inline">\(z\)</span>, with the LLM output aggregated as the mean over <span class="math inline">\(K\)</span> generations under strategy <span class="math inline">\(s\)</span>, written <span class="math inline">\(\hat y_{\text{llm}}^{(s)}(z)\)</span>. I report two generic accuracy summaries that I reuse later for perturbation contrasts:</p>
+<ul>
+<li><p><strong>Rank discrimination (Gini / concordance).</strong> Let <span class="math inline">\(C\)</span> denote a tie-aware concordance index computed over pairs <span class="math inline">\((i,j)\)</span> as the proportion of correctly ordered outcome pairs under the model scores (ties receive <span class="math inline">\(0.5\)</span> credit): <span class="math display">\[
+C=\frac{n_{\text{conc}}+0.5\,n_{\text{ties}}}{n_{\text{pairs}}},\qquad
+G=2C-1.
+\]</span> Here <span class="math inline">\(G=1\)</span> indicates perfect ranking and <span class="math inline">\(G=0\)</span> indicates chance-level ranking.</p></li>
+<li><p><strong>Level accuracy (MAE skill).</strong> Let <span class="math inline">\(\mathrm{MAE}(f)\)</span> be the mean absolute error of model <span class="math inline">\(f\)</span> on the declared outcome scale, and let <span class="math inline">\(f_0\)</span> be a simple baseline predictor (e.g., an unconditional mean on the appropriate scale). I report <span class="math display">\[
+\mathrm{skill}=1-\frac{\mathrm{MAE}(f)}{\mathrm{MAE}(f_0)},
+\]</span> so <span class="math inline">\(\mathrm{skill}=1\)</span> is perfect, <span class="math inline">\(\mathrm{skill}=0\)</span> matches the baseline, and negative values are worse than the baseline.</p></li>
+</ul>
+<p><strong>Perturbation-based validation (primary): ICE contrasts under matched shocks</strong></p>
+<p>I treat perturbation-based validation as primary. For each outcome <span class="math inline">\(Y\)</span> and validation target <span class="math inline">\(X\)</span>, I test whether an LLM preserves the direction and relative strength of the behavioural gradients estimated by the fitted statistical models by applying controlled counterfactual perturbations.</p>
+<p>For a fixed profile <span class="math inline">\(z\)</span> and model <span class="math inline">\(f\)</span>, the individual conditional expectation (ICE) curve is <span class="math display">\[
+\mathrm{ICE}_f(x;z)=f(x,z).
+\]</span> Perturbation effects are discrete ICE contrasts computed on a two- or three-point grid <span class="citation" data-cites="goldstein_2015_peeking friedman_2001_greedy">(<a href="#ref-goldstein_2015_peeking" role="doc-biblioref">Goldstein et al. 2015</a>; <a href="#ref-friedman_2001_greedy" role="doc-biblioref">Friedman 2001</a>)</span>.</p>
+<p><strong>Perturbation design (discrete ICE grid)</strong></p>
+<p>Fix a validation target <span class="math inline">\(X\)</span> and a reference profile <span class="math inline">\(z\)</span>. The perturbation design constructs <span class="math display">\[
+\mathcal{G}_X(z)=\{x_{\text{low}},x_{\text{mid}},x_{\text{high}}\},
+\]</span> with grid points chosen on the empirical scale of <span class="math inline">\(X\)</span> computed within the primary stratum <span class="math inline">\(\mathcal{S}^*\)</span> (country).</p>
+<p>For ordered / continuous targets, <span class="math display">\[
+x_{\text{low}} = Q_{25}(X), \quad x_{\text{mid}} = Q_{50}(X), \quad x_{\text{high}} = Q_{75}(X).
+\]</span> For binary targets, I use a two-point grid with <span class="math inline">\(x_{\text{low}}=0\)</span> and <span class="math inline">\(x_{\text{high}}=1\)</span>.</p>
+<p>Because mapping and clipping can shrink the effective change between grid points, I track the realised perturbation size <span class="math display">\[
+\Delta_X = x_{\text{high}}-x_{\text{low}},
+\]</span> and its standardised shock size <span class="math display">\[
+\Delta z_X = \frac{\Delta_X}{\sigma_X},
+\]</span> where <span class="math inline">\(\sigma_X\)</span> is the within-country standard deviation on the analysis scale (for binary <span class="math inline">\(X\)</span>, <span class="math inline">\(\sigma_X=\sqrt{p(1-p)}\)</span> with <span class="math inline">\(p=\Pr(X=1)\)</span>).</p>
+<p><strong>Perturbation effect definition</strong></p>
+<p>Fix an outcome <span class="math inline">\(Y\)</span>, a target <span class="math inline">\(X\)</span>, a profile <span class="math inline">\(z\)</span>, and a prompting strategy <span class="math inline">\(s\)</span>. Let <span class="math inline">\(f_{\text{ref}}(x,z)\)</span> denote the fitted backbone prediction for <span class="math inline">\(Y\)</span> on the declared scale when <span class="math inline">\(X=x\)</span> and all non-target covariates are held at <span class="math inline">\(z\)</span>. Let <span class="math inline">\(f_{\text{llm}}^{(s)}(x,z)\)</span> denote the LLM’s expected output on the same scale under strategy <span class="math inline">\(s\)</span>, approximated by the sample mean over <span class="math inline">\(K\)</span> generations.</p>
+<p>The reference perturbation effect is <span class="math display">\[
+PE_{\text{ref}}(X;z)=f_{\text{ref}}(x_{\text{high}},z)-f_{\text{ref}}(x_{\text{low}},z),
+\]</span> and the LLM perturbation effect is <span class="math display">\[
+PE_{\text{llm}}^{(s)}(X;z)=f_{\text{llm}}^{(s)}(x_{\text{high}},z)-f_{\text{llm}}^{(s)}(x_{\text{low}},z).
+\]</span> To compare magnitudes across heterogeneous target scales, I also report standardised effects (per 1 SD on <span class="math inline">\(X\)</span>) using the realised shock size <span class="math inline">\(\Delta z_X\)</span>: <span class="math display">\[
+PE_{\text{ref,std}}(X;z)=\frac{PE_{\text{ref}}(X;z)}{\Delta z_X},\qquad
+PE_{\text{llm,std}}^{(s)}(X;z)=\frac{PE_{\text{llm}}^{(s)}(X;z)}{\Delta z_X}.
+\]</span></p>
+<p><strong>Why there are two sets: active vs containment, and what each is used for</strong></p>
+<p>A single perturbation cell <span class="math inline">\((X,z)\)</span> can be uninformative for strength comparisons if the backbone effect is essentially zero. I therefore split perturbation cells into two sets that support different claims:</p>
+<ul>
+<li>The <strong>containment set</strong> <span class="math inline">\(\mathcal{S}_0\)</span> is used to quantify <em>false movement</em>: the LLM should not invent sizeable effects when the backbone predicts negligible movement.</li>
+<li>The <strong>active set</strong> <span class="math inline">\(\mathcal{S}_1\)</span> is used to evaluate <em>counterfactual fidelity</em>: when the backbone moves, the LLM should move in the same direction and preserve effect strength.</li>
+</ul>
+<p>Formally, <span class="math display">\[
+\mathcal{S}_0=\{(X,z): |PE_{\text{ref,std}}(X;z)|\le \epsilon_{\text{ref}}\},
+\qquad
+\mathcal{S}_1=\{(X,z): |PE_{\text{ref,std}}(X;z)|&gt; \epsilon_{\text{ref}}\},
+\]</span> with main configuration <span class="math inline">\(\epsilon_{\text{ref}}=0.03\)</span> on the standardised scale.</p>
+<p><strong>Active-set diagnostics (<span class="math inline">\(\mathcal{S}_1\)</span>): direction, ordering, magnitude</strong></p>
+<ul>
+<li><p><strong>Directional Agreement (DA).</strong> On a non-tie set, <span class="math display">\[
+DA^{(s)}(X;z)=\mathbb{1}\!\left\{\operatorname{sign}\!\big(PE_{\text{llm}}^{(s)}(X;z)\big)
+=\operatorname{sign}\!\big(PE_{\text{ref}}(X;z)\big)\right\}.
+\]</span> No-signal cases (intervals containing zero) are classified using the uncertainty operators in <a href="#sec-03-shared-machinery" class="quarto-xref"><span class="quarto-unresolved-ref">sec-03-shared-machinery</span></a> and reported explicitly. Aggregating <span class="math inline">\(DA^{(s)}(X;z)\)</span> over <span class="math inline">\(\mathcal{S}_1\)</span> yields a Directional Agreement Rate (DAR) with uncertainty intervals.</p></li>
+<li><p><strong>Strength ordering via magnitude concordance (Gini).</strong> To assess whether the LLM preserves the ordering of effect magnitudes across perturbation cells, I compute Gini on <span class="math inline">\(|PE_{\text{ref,std}}|\)</span> versus <span class="math inline">\(|PE_{\text{llm,std}}^{(s)}|\)</span> using the same tie-aware concordance definition given above, yielding <span class="math inline">\(G_{\text{mag}}\in[-1,1]\)</span> (reported on <span class="math inline">\(\mathcal{S}_1\)</span>).</p></li>
+<li><p><strong>Magnitude accuracy via zero-baseline MAE skill.</strong> To measure absolute accuracy of standardised effects (not just ordering), I report an MAE skill against a no-effect baseline (<span class="math inline">\(PE\equiv 0\)</span>): <span class="math display">\[
+\mathrm{skill}_0
+=1-\frac{\mathbb{E}\!\left[\left|PE_{\text{llm,std}}^{(s)}-PE_{\text{ref,std}}\right|\right]}
+{\mathbb{E}\!\left[\left|PE_{\text{ref,std}}\right|\right]},
+\]</span> computed over <span class="math inline">\(\mathcal{S}_1\)</span>. Here <span class="math inline">\(\mathrm{skill}_0=0\)</span> corresponds to predicting zero effect everywhere.</p></li>
+</ul>
+<p><strong>Containment diagnostics (<span class="math inline">\(\mathcal{S}_0\)</span>): false movement</strong></p>
+<p>On <span class="math inline">\(\mathcal{S}_0\)</span>, the target is containment rather than matching a gradient. I report the false-movement rate <span class="math display">\[
+FM=\Pr\!\left(\left|PE_{\text{llm,std}}^{(s)}\right|&gt;\epsilon_{\text{move}}
+\ \middle|\ (X,z)\in\mathcal{S}_0\right),
+\]</span> with <span class="math inline">\(\epsilon_{\text{move}}=k\,\epsilon_{\text{ref}}\)</span> (main configuration <span class="math inline">\(k=3\)</span>), alongside the median <span class="math inline">\(|PE_{\text{llm,std}}^{(s)}|\)</span> within <span class="math inline">\(\mathcal{S}_0\)</span>.</p>
+<p>All perturbation diagnostics are computed at the profile level and summarised by the median within each outcome <span class="math inline">\(Y\)</span> and target <span class="math inline">\(X\)</span> reporting cell.</p>
+<p>When a three-point grid is available, I additionally compute segment-level agreement. Writing <span class="math inline">\(\Delta_{L\to M}^{(\text{ref})}\)</span> and <span class="math inline">\(\Delta_{L\to M}^{(\text{llm})}\)</span> for the low-to-mid contrasts and <span class="math inline">\(\Delta_{M\to H}^{(\text{ref})}\)</span>, <span class="math inline">\(\Delta_{M\to H}^{(\text{llm})}\)</span> for the mid-to-high contrasts, <span class="math display">\[
+\begin{aligned}
+DA_{L\to M}^{(s)}(X;z) &amp;= \mathbb{1}\!\left\{\operatorname{sign}\!\big(\Delta_{L\to M}^{(\text{llm})}\big)=\operatorname{sign}\!\big(\Delta_{L\to M}^{(\text{ref})}\big)\right\},\\
+DA_{M\to H}^{(s)}(X;z) &amp;= \mathbb{1}\!\left\{\operatorname{sign}\!\big(\Delta_{M\to H}^{(\text{llm})}\big)=\operatorname{sign}\!\big(\Delta_{M\to H}^{(\text{ref})}\big)\right\}.
+\end{aligned}
+\]</span> Curvature is summarised by the discrete second difference <span class="math display">\[
+\kappa^{(f)}(X;z) = f(x_{\text{high}},z) - 2f(x_{\text{mid}},z) + f(x_{\text{low}},z),
+\]</span> computed for both the backbone and the LLM to flag strong shape mismatches that can make a two-point contrast misleading.</p>
+<p><strong>Block-level diagnostics: sensitivity alignment (perturbed) and importance alignment (unperturbed)</strong></p>
+<p>Beyond local perturbations on individual predictors, I test whether the LLM preserves (a) the relative counterfactual sensitivity of predictor blocks under matched perturbations, and (b) predictive reliance across blocks under the observed joint distribution.</p>
+<p>For <strong>block sensitivity alignment</strong> (perturbed), let <span class="math inline">\(b\in\mathcal{B}\)</span> index predictor blocks and define the standardised block-wise perturbation magnitudes <span class="math display">\[
+m_{b,\text{ref}}(z)=\big|PE_{\text{ref,std}}(b;z)\big|,
+\qquad
+m_{b,\text{llm}}^{(s)}(z)=\big|PE_{\text{llm,std}}^{(s)}(b;z)\big|.
+\]</span> With medians over reference profiles, <span class="math display">\[
+\tilde m_{b,\text{ref}}=\operatorname{median}_{z\in\mathcal{Z}} m_{b,\text{ref}}(z),\qquad
+\tilde m_{b,\text{llm}}^{(s)}=\operatorname{median}_{z\in\mathcal{Z}} m_{b,\text{llm}}^{(s)}(z).
+\]</span> Block Sensitivity Alignment (BSA) is the Spearman rank correlation between <span class="math inline">\(\left(\tilde m_{b,\text{ref}}\right)_{b\in\mathcal{B}}\)</span> and <span class="math inline">\(\left(\tilde m_{b,\text{llm}}^{(s)}\right)_{b\in\mathcal{B}}\)</span>, supplemented with Top-<span class="math inline">\(k\)</span> overlap and highest-quartile concordance.</p>
+<p>For <strong>block importance alignment</strong> (unperturbed), I compute LLM reliance by <strong>prompt ablation</strong> and compare it to reference reliance via <strong>LOBO</strong>. For each outcome <span class="math inline">\(Y\)</span>, first compute unperturbed performance under the full prompt <span class="math inline">\((G_{\text{full}}, \mathrm{skill}_{\text{full}})\)</span>. Then, for each block <span class="math inline">\(b\)</span>, remove block <span class="math inline">\(b\)</span> from the prompt and recompute <span class="math inline">\((G_{\text{KO}(b)}, \mathrm{skill}_{\text{KO}(b)})\)</span>. The LLM block-importance scores are the corresponding performance drops: <span class="math display">\[
+I_{b,G}^{\text{llm}}(Y)=G_{\text{full}}(Y)-G_{\text{KO}(b)}(Y),\qquad
+I_{b,\mathrm{skill}}^{\text{llm}}(Y)=\mathrm{skill}_{\text{full}}(Y)-\mathrm{skill}_{\text{KO}(b)}(Y).
+\]</span> On the reference side, block importance is defined as the <strong>drop in pseudo-<span class="math inline">\(R^2\)</span></strong> when refitting the backbone model with block <span class="math inline">\(b\)</span> removed: <span class="math display">\[
+I_b^{\text{ref}}(Y)
+=\Delta \mathrm{p}R^2_b(Y)
+=\mathrm{p}R^2_{\text{full}}(Y)-\mathrm{p}R^2_{\text{LOBO}(b)}(Y),
+\]</span> where <span class="math inline">\(\mathrm{p}R^2\)</span> is the outcome-appropriate pseudo-<span class="math inline">\(R^2\)</span> computed on the held-out set. Larger <span class="math inline">\(\Delta \mathrm{p}R^2_b\)</span> indicates greater predictive reliance on block <span class="math inline">\(b\)</span>. This is a reliance diagnostic, not a causal effect. Importance alignment is summarised, per outcome, by a scatter of <span class="math inline">\(I_b^{\text{ref}}(Y)\)</span> versus <span class="math inline">\(I_{b,\cdot}^{\text{llm}}(Y)\)</span> across blocks and a rank correlation across blocks (headline “same blocks” diagnostic), supplemented with Top-<span class="math inline">\(k\)</span> and highest-quartile concordance.</p>
+</section>
+<section id="sec-03-belief-update-microvalidation" class="level3" data-number="3.3.5">
+<h3 data-number="3.3.5" class="anchored" data-anchor-id="sec-03-belief-update-microvalidation"><span class="header-section-number">3.3.5</span> Belief-update micro-validation</h3>
+<p>This component evaluates LLMs as a <strong>constrained state-update kernel</strong> inside the ABM. Given a profile state <span class="math inline">\(z\)</span> and a controlled informational or social exposure <span class="math inline">\(e\)</span>, the LLM implements <span class="math display">\[
+U_\phi:\ (z,e)\ \mapsto\ z',
+\]</span> where <span class="math inline">\(z'\)</span> is returned on bounded, survey-aligned construct scales. Because the empirical base is cross-sectional, there are no observed trajectories to fit. The objective is therefore <strong>micro-level plausibility</strong>: updates should respect a small set of invariants that are sufficient for safe simulation use.</p>
+<p><strong>Profiles and mutable state</strong></p>
+<p>Each belief-update prompt contains a fixed context block treated as non-mutable (e.g., country and basic demographics). The kernel may modify only a predefined mutable construct vector <span class="math display">\[
+z = (z_{\text{trust}}, z_{\text{legit}}, z_{\text{risk}}, z_{\text{stakes}}, z_{\text{norms}}, z_{\text{constraints}}, z_{\text{ingroup}}),
+\]</span> corresponding to institutional trust, legitimacy/process scepticism, vaccine-risk perceptions, perceived disease stakes, vaccination norms, perceived constraints/actionability, and group-based trust around vaccination. All other profile attributes are held fixed.</p>
+<p><strong>Signals and expected response structure</strong></p>
+<p>Signals are drawn from a structured catalogue that makes the expected response pattern explicit. Each signal specifies:</p>
+<ul>
+<li>which constructs are intended to move (primary targets, optionally secondary/weak targets),</li>
+<li>which constructs should remain stable (“none” targets, plus optional explicit controls),</li>
+<li>the intended direction of change on each targeted construct (up/down/none),</li>
+<li>paired <strong>intensity variants</strong> (mild vs strong),</li>
+<li>optional <strong>moderation expectations</strong> (inequalities that should hold across moderator tiers),</li>
+<li>an expected <em>relative sensitivity structure</em> encoded as target tiers (primary/secondary/weak/none).</li>
+</ul>
+<p>The full machine-readable signal specification is provided as a JSON catalogue.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p><strong>Updates, bounds, and scale normalization</strong></p>
+<p>Let <span class="math inline">\(\Delta(z,e)=z'-z\)</span> denote the within-prompt update vector. Each construct is evaluated on its bounded survey-aligned range; out-of-range outputs are treated as boundedness violations.</p>
+<p>To compare magnitudes across constructs with different spans, updates are also expressed on a <strong>range-normalized</strong> scale: <span class="math display">\[
+|\Delta_v|_{\text{norm}}=\frac{|\Delta_v|}{hi_v-lo_v},
+\]</span> when bounds <span class="math inline">\((lo_v,hi_v)\)</span> are available.</p>
+<p>Near-zero movement is handled through a tolerance <span class="math inline">\(\epsilon\)</span> on the normalized scale. Unless stated otherwise, a construct is treated as meaningfully moved only when <span class="math display">\[
+|\Delta_v|_{\text{norm}}&gt;\epsilon,\qquad \epsilon=0.03,
+\]</span> which corresponds to small shifts on the dominant bounded belief scales and prevents scoring “direction” on effectively indeterminate changes.</p>
+<p><strong>Core invariants and metrics</strong></p>
+<p>Validation follows three invariants aligned with ABM-relevant failure modes:</p>
+<p><strong>Scope (containment).</strong></p>
+<p>Intended constructs should change while constructs designated as “none” (and explicit controls) remain stable. We report:</p>
+<ul>
+<li><strong>none-stability rate:</strong> share of “none” constructs with <span class="math inline">\(|\Delta_v|_{\text{norm}}\le \epsilon\)</span>,</li>
+<li><strong>control-stability rate:</strong> share of control constructs with <span class="math inline">\(|\Delta_v|_{\text{norm}}\le \epsilon\)</span>,</li>
+<li><strong>drift on none:</strong> mean of <span class="math inline">\(|\Delta_v|_{\text{norm}}\)</span> over “none” constructs.</li>
+</ul>
+<p><strong>Dose response.</strong></p>
+<p>Stronger variants should not yield weaker responses than mild variants. Mild–strong monotonicity is evaluated on paired profile prompts for constructs expected to move (direction <span class="math inline">\(\neq\)</span> none) using <span class="math display">\[
+|\Delta^{\text{strong}}_v|\ \ge\ |\Delta^{\text{mild}}_v| + m,
+\]</span> with a small non-negative margin <span class="math inline">\(m\)</span> to avoid counting negligible numerical differences as violations. The dose-response score is the fraction of tested pairs satisfying the inequality, aggregated across expected-moving constructs.</p>
+<p><strong>Directional sense, separated from activation.</strong></p>
+<p>Apparent sign failures can arise either from moving in the wrong direction or from producing no detectable movement. Directional scoring is therefore conditional on <em>activation</em>.</p>
+<p>Let <span class="math inline">\(T\)</span> denote the set of primary targets for a signal. Define a prompt as <em>activated</em> on the primary targets if any primary target clears the tolerance: <span class="math display">\[
+\text{mover}_T = \mathbb{1}\Big[\ \exists v\in T:\ |\Delta_v|_{\text{norm}}&gt;\epsilon\ \Big].
+\]</span> We report:</p>
+<ul>
+<li><strong>Activation (primary):</strong> <span class="math inline">\(\mathbb{E}[\text{mover}_T]\)</span> across prompts for the signal.</li>
+<li><strong>Sign(primary | mover):</strong> sign agreement on primary targets computed only on prompts with <span class="math inline">\(\text{mover}_T=1\)</span>.</li>
+</ul>
+<p>This separation makes “wrong-way movement” distinguishable from attenuation/indeterminacy.</p>
+<p><strong>Strength alignment via Kendall <span class="math inline">\(\tau_b\)</span></strong></p>
+<p>Many signals also encode an expected <em>relative sensitivity structure</em> across constructs through tier labels (primary/secondary/weak/none). For each prompt row, tiers are mapped to expected strength scores <span class="math display">\[
+s_v \in \{0,1,2,3\}\quad\text{for}\quad \{\text{none},\text{weak},\text{secondary},\text{primary}\}.
+\]</span> We then compare the expected ordering implied by <span class="math inline">\(s_v\)</span> to the observed ordering of <span class="math inline">\(|\Delta_v|\)</span> across constructs using Kendall’s <span class="math inline">\(\tau_b\)</span>. This <strong>strength alignment</strong> score is computed per prompt row and summarised within signals and within primary constructs.</p>
+<p><strong>Movement–containment frontier and ABM lever typology</strong></p>
+<p>To translate diagnostics into ABM-ready levers, each signal is positioned on a movement–containment plane using range-normalized magnitudes:</p>
+<ul>
+<li><span class="math inline">\(x\)</span> (primary movement): mean of <span class="math inline">\(|\Delta_v|_{\text{norm}}\)</span> over primary targets,</li>
+<li><span class="math inline">\(y\)</span> (off-target drift): mean of <span class="math inline">\(|\Delta_v|_{\text{norm}}\)</span> over “none” constructs.</li>
+</ul>
+<p>Signals are then classified with interpretability anchors:</p>
+<ul>
+<li>minimum meaningful primary movement: <span class="math inline">\(x_0 = 0.125\)</span>,</li>
+<li>drift anchor: <span class="math inline">\(y_0 = 0.03\)</span>,</li>
+<li>leakage slope: <span class="math inline">\(\lambda = y_0/x_0 = 0.24\)</span>,</li>
+<li>spillover ceiling: <span class="math inline">\(y_{\max}=0.06\)</span>.</li>
+</ul>
+<p>A signal is treated as “safe” with respect to scope control when <span class="math display">\[
+x \ge x_0
+\quad\text{and}\quad
+y \le \min(\lambda x,\ y_{\max}).
+\]</span> This yields four regimes used as an ABM shock library:</p>
+<ul>
+<li><strong>Safe targeted shock:</strong> <span class="math inline">\(x\ge x_0\)</span> and satisfies the safe boundary.</li>
+<li><strong>Leaky shock:</strong> <span class="math inline">\(x\ge x_0\)</span> but violates proportional leakage (<span class="math inline">\(y&gt;\lambda x\)</span>) or the ceiling (<span class="math inline">\(y&gt;y_{\max}\)</span>).</li>
+<li><strong>Cross-talk / reinterpretation:</strong> <span class="math inline">\(x&lt;x_0\)</span> and <span class="math inline">\(y\ge y_0\)</span> (broad motion without a dominant primary lever).</li>
+<li><strong>Stable low-signal:</strong> <span class="math inline">\(x&lt;x_0\)</span> and <span class="math inline">\(y&lt;y_0\)</span> (contained but weak).</li>
+</ul>
+<p><strong>Model/strategy selection and uncertainty summaries</strong></p>
+<p>Belief-update kernels are compared across models and prompting strategies using a gate score that prioritises ABM safety and shape constraints: <span class="math display">\[
+\text{gate} = \text{none-stability} + \text{control-stability} + \text{mild–strong monotonicity}.
+\]</span> Unless stated otherwise, signal-level summaries pool mild and strong variants, while model–strategy frontiers are summarised by robust across-signal statistics. Uncertainty summaries are reported via bootstrap with <span class="math inline">\(B=500\)</span>, aligned to the level of aggregation used in the corresponding table or figure.</p>
+<p><strong>Behavioural implications under the choice model</strong></p>
+<p>Finally, belief updates are connected to behaviour by composing the update kernel with the survey-anchored <strong>choice mapping</strong> used elsewhere in the thesis. For each updated state <span class="math inline">\(z'\)</span>, we evaluate the implied behavioural change <span class="math inline">\(\Delta y\)</span> under the choice model and check whether the direction and relative pattern of <span class="math inline">\(\Delta y\)</span> agree with the choice gradients implied by the statistical backbone for the constructs targeted by the signal.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-andridge_2010_a" class="csl-entry" role="listitem">
+Andridge, Rebecca R., and Roderick J. A. Little. 2010. <span>“A Review of Hot Deck Imputation for Survey Non-Response.”</span> <em>International Statistical Review</em> 78 (April): 40–64. <a href="https://doi.org/10.1111/j.1751-5823.2010.00103.x">https://doi.org/10.1111/j.1751-5823.2010.00103.x</a>.
+</div>
+<div id="ref-cortina_1993_what" class="csl-entry" role="listitem">
+Cortina, Jose M. 1993. <span>“What Is Coefficient Alpha? An Examination of Theory and Applications.”</span> <em>Journal of Applied Psychology</em> 78: 98–104. <a href="https://doi.org/10.1037/0021-9010.78.1.98">https://doi.org/10.1037/0021-9010.78.1.98</a>.
+</div>
+<div id="ref-cronbach_1951_coefficient" class="csl-entry" role="listitem">
+Cronbach, Lee J. 1951. <span>“Coefficient Alpha and the Internal Structure of Tests.”</span> <em>Psychometrika</em> 16 (September): 297–334. <a href="https://doi.org/10.1007/bf02310555">https://doi.org/10.1007/bf02310555</a>.
+</div>
+<div id="ref-friedman_2001_greedy" class="csl-entry" role="listitem">
+Friedman, Jerome H. 2001. <span>“Greedy Function Approximation: A Gradient Boosting Machine.”</span> <em>The Annals of Statistics</em> 29: 1189–1232.
+</div>
+<div id="ref-goldstein_2015_peeking" class="csl-entry" role="listitem">
+Goldstein, Alex, Adam Kapelner, Justin Bleich, and Emil Pitkin. 2015. <span>“Peeking Inside the Black Box: Visualizing Statistical Learning with Plots of Individual Conditional Expectation.”</span> <em>Journal of Computational and Graphical Statistics</em> 24: 44–65. <a href="https://doi.org/10.2307/43304932">https://doi.org/10.2307/43304932</a>.
+</div>
+<div id="ref-graham_2011_mapping" class="csl-entry" role="listitem">
+Graham, Jesse, Brian A. Nosek, Jonathan Haidt, Ravi Iyer, Spassena Koleva, and Peter H. Ditto. 2011. <span>“Mapping the Moral Domain.”</span> <em>Journal of Personality and Social Psychology</em> 101: 366–85. <a href="https://doi.org/10.1037/a0021847">https://doi.org/10.1037/a0021847</a>.
+</div>
+<div id="ref-haidt_2004_intuitive" class="csl-entry" role="listitem">
+Haidt, Jonathan, and Craig Joseph. 2004. <span>“Intuitive Ethics: How Innately Prepared Intuitions Generate Culturally Variable Virtues.”</span> <em>Daedalus</em> 133 (September): 55–66. <a href="https://doi.org/10.1162/0011526042365555">https://doi.org/10.1162/0011526042365555</a>.
+</div>
+<div id="ref-jolliffe_2002_principal" class="csl-entry" role="listitem">
+Jolliffe, I. T. 2002. <em>Principal Component Analysis</em>. Springer Series in Statistics; Springer-Verlag. <a href="https://doi.org/10.1007/b98835">https://doi.org/10.1007/b98835</a>.
+</div>
+<div id="ref-kaufman_2005_finding" class="csl-entry" role="listitem">
+Kaufman, Leonard, and Peter J Rousseeuw. 2005. <em>Finding Groups in Data : An Introduction to Cluster Analysis</em>. Wiley. <a href="https://www.wiley.com/en-us/Finding+Groups+in+Data%3A+An+Introduction+to+Cluster+Analysis-p-9780471735786">https://www.wiley.com/en-us/Finding+Groups+in+Data%3A+An+Introduction+to+Cluster+Analysis-p-9780471735786</a>.
+</div>
+<div id="ref-mcfadden_1974_conditional" class="csl-entry" role="listitem">
+McFadden, Daniel. 1974. <span>“Conditional Logit Analysis of Qualitative Choice Behavior.”</span> In, edited by Paul Zarembka, 105–42. Academic Press.
+</div>
+<div id="ref-schwarz_1978_estimating" class="csl-entry" role="listitem">
+Schwarz, Gideon. 1978. <span>“Estimating the Dimension of a Model.”</span> <em>The Annals of Statistics</em> 6: 461–64.
+</div>
+</div>
+</section>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>Signal specification (permalink): <code>https://github.com/adamamer20/beam-abm/blob/cf90d95c04db7a60648b61e45aed000b343526d7/evaluation/specs/belief_update_targets.json</code><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button,
+          { trigger: "manual",
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config);
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined;
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              }
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            }
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./02-literature-review.html" class="pagination-link" aria-label="Literature Review">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Literature Review</span></span>
+      </a>
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./04-statistical-analysis.html" class="pagination-link" aria-label="Statistical Analysis">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Statistical Analysis</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

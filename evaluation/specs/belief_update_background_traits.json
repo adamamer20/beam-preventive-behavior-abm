@@ -1,0 +1,125 @@
+{
+  "always_on_moderators": [
+    "country",
+    "age",
+    "politics",
+    "sex_female",
+    "M_education"
+  ],
+  "mutable_state": [
+    "institutional_trust_avg",
+    "covax_legitimacy_scepticism_idx",
+    "vaccine_risk_avg",
+    "covid_perceived_danger_T12",
+    "social_norms_vax_avg",
+    "fivec_low_constraints",
+    "group_trust_vax"
+  ],
+  "ref_state_models": {
+    "fivec_low_constraints": "P_5C_fivec_low_constraints_rev_REF",
+    "institutional_trust_avg": "P_TRUST_institutional_trust_REF",
+    "group_trust_vax": "P_TRUST_group_trust_vax_REF",
+    "covax_legitimacy_scepticism_idx": "P_LEGIT_covax_legitimacy_REF",
+    "vaccine_risk_avg": "P_RISK_vaccine_risk_REF",
+    "social_norms_vax_avg": "P_NORMS_social_norms_vax_avg_REF",
+    "covid_perceived_danger_T12": "P_STAKES_covid_perceived_danger_T12_REF"
+  },
+  "shock_defaults": {
+    "alpha_secondary": 0.33,
+    "epsilon_ref": 0.03,
+    "top_n_primary": 1
+  },
+  "signals": [
+    {
+      "id": "age_shift_up",
+      "text": "Age shifts from country-typical low to country-typical high.",
+      "shock": {
+        "type": "continuous",
+        "var": "age",
+        "from": "q25",
+        "to": "q75"
+      },
+      "moderation_tests": []
+    },
+    {
+      "id": "age_shift_down",
+      "text": "Age shifts from country-typical high to country-typical low.",
+      "shock": {
+        "type": "continuous",
+        "var": "age",
+        "from": "q75",
+        "to": "q25",
+        "direction": "decrease"
+      },
+      "moderation_tests": []
+    },
+    {
+      "id": "politics_shift_up",
+      "text": "Political positioning shifts from country-typical low to country-typical high.",
+      "shock": {
+        "type": "continuous",
+        "var": "politics",
+        "from": "q25",
+        "to": "q75"
+      },
+      "moderation_tests": []
+    },
+    {
+      "id": "politics_shift_down",
+      "text": "Political positioning shifts from country-typical high to country-typical low.",
+      "shock": {
+        "type": "continuous",
+        "var": "politics",
+        "from": "q75",
+        "to": "q25",
+        "direction": "decrease"
+      },
+      "moderation_tests": []
+    },
+    {
+      "id": "education_shift_up",
+      "text": "Education proxy shifts from country-typical low to country-typical high.",
+      "shock": {
+        "type": "continuous",
+        "var": "M_education",
+        "from": "q25",
+        "to": "q75"
+      },
+      "moderation_tests": []
+    },
+    {
+      "id": "education_shift_down",
+      "text": "Education proxy shifts from country-typical high to country-typical low.",
+      "shock": {
+        "type": "continuous",
+        "var": "M_education",
+        "from": "q75",
+        "to": "q25",
+        "direction": "decrease"
+      },
+      "moderation_tests": []
+    },
+    {
+      "id": "sex_female_on",
+      "text": "Sex indicator switches from 0 to 1.",
+      "shock": {
+        "type": "binary",
+        "var": "sex_female",
+        "from": 0,
+        "to": 1
+      },
+      "moderation_tests": []
+    },
+    {
+      "id": "sex_female_off",
+      "text": "Sex indicator switches from 1 to 0.",
+      "shock": {
+        "type": "binary",
+        "var": "sex_female",
+        "from": 1,
+        "to": 0
+      },
+      "moderation_tests": []
+    }
+  ]
+}

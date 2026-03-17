@@ -1,0 +1,235 @@
+# Dataset details {#sec-appendix-dataset-details}
+
+The survey was run in 2024 as a self-administered online questionnaire across Italy, Spain, France, Germany, Hungary, and the United Kingdom, using a common instrument translated into the five non-English study languages. Full fieldwork and sampling details are reported in @offeddu_2025_advancing_behavioural_epidemic_data. The published source reports 22,228 respondents after predefined data-quality filters. This thesis instead starts from the harmonised survey extract prior to that final published row-level exclusion and then applies the preprocessing and analysis-sample restrictions described below.
+
+The questionnaire is organised into eight core modules:
+
+1. Demographics, household, and health background: socio-demographics (including education, employment, and income), household composition, and health-risk context for respondent and close others.
+2. COVID-19 experience and vaccination history: infection history and COVID-19 vaccination uptake/timing, plus retrospective willingness at key rollout time points and stated motives/barriers.
+3. Other infectious diseases and vaccine beliefs: flu/measles/meningitis-related risk and severity perceptions, flu vaccination history, and a short vaccine-knowledge/beliefs module.
+4. Information ecosystem: primary media/social channels used, time spent, and trust in vaccine information by channel.
+5. Social network, contacts, and discussions: network size by role (e.g., coworkers/friends), a contact matrix for direct contacts yesterday by social group and age band, and a parallel matrix for discussion contacts last week.
+6. Attitudes, norms, and trust: political/value items and perceived norms in close groups; institutional trust in vaccine-related information; and the 5C antecedents of vaccination [@betsch_2018_beyond].
+7. Accessibility and barriers: self-efficacy and practical constraints for accessing vaccination (distance, availability, time/work conflicts, and related impediments).
+8. Moral foundations: adapted Moral Foundations batteries capturing relevance and agreement for the five foundations [@haidt_2004_intuitive; @graham_2011_mapping].
+
+
+## Data cleaning and dataset preparation {#sec-appendix-dd-data-cleaning}
+
+### Harmonisation and cross-country comparability
+
+Because the questionnaire combines binary items, ordered scales, counts, routed follow-up questions, and some country-specific response formats, the first preprocessing step harmonises these inputs into a common analytic representation. This mainly involved recoding categorical responses into consistent categories, aligning and reverse-coding ordered scales so that higher values had a common interpretation where appropriate, and aggregating conceptually related items into composite summaries, usually by averaging across non-missing responses.
+
+To support cross-country comparison, socio-economic variables were harmonised where possible onto comparable scales. Household income brackets were mapped to a continuous proxy and then converted into a PPP-adjusted numeric measure. Geographic information was likewise harmonised into Eurostat NUTS-style identifiers, with lower-level regional categories rolled up when they were too sparse for stable analysis.
+
+### Missing data and structural non-response
+
+Missing values are retained whenever they plausibly reflect genuine item non-response and may therefore remain analytically informative. The preprocessing workflow nevertheless applies a limited set of structural imputations in cases where survey routing implies a natural default and where leaving the value missing would create internal inconsistencies.
+
+For example, numeric counts derived from household or close-contact rosters are imputed to zero when missingness is consistent with the respondent having reported no such individuals. Similarly, media-use duration items are imputed to “Never” when missingness is consistent with routed non-use, after which they are encoded onto the ordinal duration scale and, where relevant, combined into summary indices. These imputations are intentionally narrow in scope, while other forms of missingness are left untouched.
+
+### Removing unusable variables and treating extremes
+
+Not all raw survey fields are suitable for downstream statistical modelling. Variables are therefore removed when they are redundant, purely administrative, free-text, or too sparse to support stable inference. This includes metadata fields, open-ended “other (specify)” responses, and highly incomplete routed follow-ups.
+
+For high-variance count variables, the preprocessing workflow also applies plausibility bounds and outlier checks so that a very small number of implausible responses do not dominate scale construction or model estimation. This affects variables such as household counts, non-cohabiting family counts, and infection- or contact-related totals, where the survey instrument already uses bounded response ranges and the clean analytic representation preserves those bounds.
+
+## Derived variables, index construction, and measurement quality {#sec-appendix-dd-index-construction}
+
+Many of the variables used in the empirical analyses are not single questionnaire items but derived summaries constructed from conceptually related responses. This section documents how those indices were built and how their measurement quality was assessed.
+
+```{python}
+#| echo: false
+from __future__ import annotations
+
+import csv
+from pathlib import Path
+
+from utils.analysis_utils import DESCRIPTIVES_RAW
+
+RELIABILITY_PATH = DESCRIPTIVES_RAW / "index_reliability.csv"
+COVERAGE_THRESHOLD = 99.5  # Show coverage when it falls >0.5pp below full sample
+
+
+def _load_reliability(path: Path) -> dict[str, dict[str, float]]:
+    with path.open() as handle:
+        data: dict[str, dict[str, float]] = {}
+        for row in csv.DictReader(handle):
+            if not row["cronbach_alpha"]:
+                continue  # skip coverage-only rows; alpha is intentionally omitted
+            data[row["index"]] = {
+                "alpha": float(row["cronbach_alpha"]),
+                "coverage": float(row["coverage_pct"]),
+            }
+        return data
+
+
+INDEX_RELIABILITY = _load_reliability(RELIABILITY_PATH)
+
+
+def alpha_value(index_name: str) -> str:
+    """Return the formatted Cronbach alpha for an index."""
+
+    stats = INDEX_RELIABILITY.get(index_name)
+    if stats is None:
+        raise KeyError(f"Missing reliability stats for '{index_name}'")
+    return f"{stats['alpha']:.2f}"
+
+
+def coverage_note(index_name: str, coverage_threshold: float = COVERAGE_THRESHOLD) -> str:
+    """Return coverage text when notably below full sample."""
+
+    stats = INDEX_RELIABILITY.get(index_name)
+    if stats is None:
+        raise KeyError(f"Missing reliability stats for '{index_name}'")
+    coverage = stats["coverage"]
+    if coverage < coverage_threshold:
+        return f"; coverage {coverage:.1f}%"
+    return ""
+
+
+def alpha_with_cov(index_name: str, coverage_threshold: float = COVERAGE_THRESHOLD) -> str:
+    """Return alpha plus coverage note in one string for inline display."""
+
+    return f"{alpha_value(index_name)}{coverage_note(index_name, coverage_threshold)}"
+
+
+from IPython.display import Markdown
+
+def alpha_md(index_name: str):
+    """Return alpha formatted as Markdown containing inline math."""
+    stats = INDEX_RELIABILITY.get(index_name)
+    if stats is None:
+        raise KeyError(f"Missing reliability stats for '{index_name}'")
+    val = alpha_value(index_name)
+    coverage = stats["coverage"]
+    if coverage < COVERAGE_THRESHOLD:
+        return Markdown(rf"$\alpha \approx {val};\ \text{{coverage}}\ {coverage:.1f}\%$")
+    return Markdown(rf"$\alpha \approx {val}$")
+```
+
+Where possible, conceptually related items were aggregated by taking the mean across non-missing responses. Formally, for respondent $i$ and an index built from items $j \in J_i$ with observed responses $x_{ij}$, the index is
+
+$$
+\text{Index}_i = \frac{1}{\lvert J_i \rvert} \sum_{j \in J_i} x_{ij},
+$$
+
+where $J_i$ denotes the set of non-missing items for that respondent. No additional minimum-item requirement is imposed beyond this available-item rule, so some indices may be based on as few as one observed item. I therefore report index coverage and treat lower coverage as an indication that missingness reduces the effective sample size for that composite.
+
+For multi-item composites intended to capture a common latent construct, I report Cronbach’s $\alpha$ as a descriptive reliability diagnostic. For formative composites, such as the 5C pro-vaccine index, $\alpha$ is included for transparency. No internal-consistency statistic is reported for aggregates built from heterogeneous entities, such as household/contact summaries or media-use baskets, because these are deterministic summaries rather than psychometric scales.
+
+### Derived household and social-contact variables
+
+The survey records detailed information on up to ten cohabitants and up to ten non-cohabiting close contacts, including age, COVID-19 vaccination status, and COVID-19 infection history. To avoid a proliferation of highly sparse columns, this information is summarised into a small set of continuous variables:
+
+* Average age of cohabitants/non-cohabitants
+* Average number of COVID vaccine doses among cohabitants/non-cohabitants
+* Average number of COVID infections among cohabitants/non-cohabitants
+
+### Media use and information diet {#sec-appendix-dd-media-use}
+
+Time spent with different online and social media is summarised into two duration indices:
+
+* Duration of Informational Media averages reported time on informational platforms such as Wikipedia, YouTube, and Reddit.
+* Duration of Social Media averages time on social platforms such as Instagram, Facebook, Telegram, Twitter/X, LinkedIn, and TikTok.
+
+### Composite psychological indices {#sec-appendix-dd-composite-indices}
+
+#### 5C pro-vaccine index
+
+To summarise pro-vaccine psychological orientation, I construct the 5C pro-vaccine index (`{python} alpha_md("fivec_pro_vax_idx")`) as the mean of four recoded 5C components:
+
+* 5C Confidence
+* 5C Complacency (reverse-coded)
+* 5C Constraints (reverse-coded)
+* 5C Collective Responsibility
+
+#### Risk, safety, fear and comfort
+
+Perceptions of infection risk and vaccine risk are captured using multi-item averages:
+
+* Average perceived infection likelihood across COVID-19, seasonal flu, measles, and meningitis (`{python} alpha_md("infection_likelihood_avg")`).
+* Average perceived severity if infected across COVID-19 and flu (`{python} alpha_md("severity_if_infected_avg")`).
+* Average disease fear across COVID-19, seasonal flu, measles, and meningitis (`{python} alpha_md("disease_fear_avg")`).
+
+Although baseline prevalence differs sharply across pathogens, the perceived infection likelihood composite is interpreted as a dispositional tendency to perceive infectious diseases as likely in general, rather than as a calibrated estimate of objective infection probabilities.
+
+The perceived severity index is likewise treated as a general severity sensitivity: how strongly respondents expect serious consequences conditional on infection, rather than a disease-specific clinical assessment.
+
+For vaccines:
+
+* Average perceived vaccine risk across COVID-19, flu, measles, and meningitis vaccines (`{python} alpha_md("vaccine_risk_avg")`).
+
+#### COVID-19 vaccine rollout scepticism
+
+To capture scepticism about the safety, motives, and mandate-related aspects of the COVID-19 vaccination campaign, I construct a COVID-19 vaccine rollout scepticism composite (`{python} alpha_md("covax_legitimacy_scepticism_idx")`) by averaging agreement across six statements covering safety concerns, perceived insufficient testing, side-effect worries, opposition to mandates, distrust in pharmaceutical motives, and preference for natural immunity.
+
+#### Progressive attitudes and social norms
+
+I construct a Progressive attitudes index (`{python} alpha_md("progressive_attitudes_nonvax_idx")`) by averaging agreement with:
+
+* concern about climate harm,
+* support for LGBT adoption rights,
+* tolerance towards immigration.
+
+Perceived vaccine-importance norms are measured separately as single items capturing how important respondents believe vaccination is to their family, friends, and colleagues.
+
+Three analogous progressive norms bundles capture perceived social climate among friends (`{python} alpha_md("friends_progressive_norms_nonvax_idx")`), family (`{python} alpha_md("family_progressive_norms_nonvax_idx")`), and colleagues (`{python} alpha_md("colleagues_progressive_norms_nonvax_idx")`) by averaging the same items within each reference group.
+
+The progressive attitudes composite has modest internal consistency, as expected given its deliberate coverage of multiple policy domains. It should therefore be interpreted as a broad value gradient rather than a narrow latent trait. Likewise, the progressive norms bundles are treated as descriptive composites rather than narrow psychometric scales, and relatively low Cronbach’s alpha values for these bundles are not taken as evidence of measurement failure but as a reflection of their intentionally broad content.
+
+For vaccination specifically, I also combine the three vaccine-importance norm items into a single Perceived vaccine norms index, defined as their mean (`{python} alpha_md("social_norms_vax_avg")`). I do so because these three items display very high internal consistency, indicating that perceived vaccine importance is largely shared across respondents’ close reference groups rather than being sharply group-specific.
+
+Finally, to summarise a broader moral–progressive orientation that links progressive policy attitudes to individualising moral concerns (care and fairness), I construct a higher-order composite by averaging the Progressive attitudes index with the two individualising morality constructs (moral relevance and moral agreement). The resulting composite is reported with its internal-consistency diagnostic (`{python} alpha_md("moral_progressive_orientation")`).
+
+#### Protective behaviour bundle
+
+The protective behaviour index (`{python} alpha_md("protective_behaviour_avg")`) summarises three non-pharmaceutical behavioural items:
+
+* wearing a mask in crowded places when symptomatic,
+* staying at home when symptomatic,
+* wearing a mask when “pressure” (infection risk) is high.
+
+### Trust indices {#sec-appendix-dd-trust-indices}
+
+Trust in information sources is summarised at three levels:
+
+* Trust in traditional media (`{python} alpha_md("trust_traditional")`)
+  Mean of trust in printed press, television, and radio as sources of vaccine information.
+* Trust in online information (`{python} alpha_md("trust_onlineinfo")`)
+  Average trust in online news websites, Wikipedia, YouTube, and podcasts as vaccine information sources.
+* Trust in social media (`{python} alpha_md("trust_social")`)
+  Average trust in Facebook, Instagram, Twitter/X, TikTok, Telegram, and LinkedIn.
+
+Finally, the Institutional trust index (`{python} alpha_md("institutional_trust_avg")`) averages trust in local and national governments, general practitioners, local and national health authorities, and the WHO.
+
+### Moral foundations indices {#sec-appendix-dd-moral-foundations}
+
+Moral values were measured using an adapted version of the Moral Foundations Questionnaire (MFQ), which distinguishes between five moral foundations: care, fairness, loyalty, authority, and purity [@haidt_2004_intuitive; @graham_2011_mapping]. Following standard practice, I construct separate indices for relevance and agreement items within each foundation, and further aggregate them into higher-order individualizing (care, fairness) and binding (loyalty, authority, purity) dimensions. These higher-order composites are used in the main analyses, while foundation-specific subscales are treated as exploratory.
+
+For each foundation, I construct:
+
+* Relevance subscales, each averaging two items about how morally relevant a given consideration is:
+
+  * Care relevance (`{python} alpha_md("mfq_relevance_care_idx")`),
+  * Fairness relevance (`{python} alpha_md("mfq_relevance_fairness_idx")`),
+  * Loyalty relevance (`{python} alpha_md("mfq_relevance_loyalty_idx")`),
+  * Authority relevance (`{python} alpha_md("mfq_relevance_authority_idx")`),
+  * Purity relevance (`{python} alpha_md("mfq_relevance_purity_idx")`)
+
+* Agreement subscales, each averaging two items about agreement with value statements:
+
+  * Care agreement (`{python} alpha_md("mfq_agreement_care_idx")`),
+  * Fairness agreement (`{python} alpha_md("mfq_agreement_fairness_idx")`),
+  * Loyalty agreement (`{python} alpha_md("mfq_agreement_loyalty_idx")`),
+  * Authority agreement (`{python} alpha_md("mfq_agreement_authority_idx")`),
+  * Purity agreement (`{python} alpha_md("mfq_agreement_purity_idx")`)
+
+To align with standard MFQ practice, I then form higher-order individualizing and binding indices:
+
+* Relevance–individualizing index (`{python} alpha_md("mfq_relevance_individualizing_idx")`) averages care and fairness relevance,
+* Relevance–binding index (`{python} alpha_md("mfq_relevance_binding_idx")`) averages loyalty, authority, and purity relevance,
+* Agreement–individualizing index (`{python} alpha_md("mfq_agreement_individualizing_idx")`) averages care and fairness agreement,
+* Agreement–binding index (`{python} alpha_md("mfq_agreement_binding_idx")`) averages loyalty, authority, and purity agreement.
+
+As is typical for two-item subscales, some foundation-specific reliability estimates are modest. The main analyses therefore rely primarily on the higher-order individualizing and binding composites.

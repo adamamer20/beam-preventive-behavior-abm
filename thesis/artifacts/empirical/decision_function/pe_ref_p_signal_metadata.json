@@ -1,0 +1,2015 @@
+{
+  "signal_meta": {
+    "booking_access_improves": {
+      "median_abs_pe_ref_p_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.25728251190956986,
+        "group_trust_vax": 0.0,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.0
+      },
+      "median_abs_pe_ref_p_std_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.15178944351838286,
+        "group_trust_vax": 0.0,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.0
+      },
+      "tier_by_var": {
+        "fivec_low_constraints": "primary",
+        "covax_legitimacy_scepticism_idx": "none",
+        "covid_perceived_danger_T12": "none",
+        "group_trust_vax": "none",
+        "institutional_trust_avg": "none",
+        "social_norms_vax_avg": "none",
+        "vaccine_risk_avg": "none"
+      },
+      "ranking": [
+        {
+          "var": "fivec_low_constraints",
+          "rank": 1,
+          "median_abs_pe_ref_p": 0.25728251190956986,
+          "median_abs_pe_ref_p_std": 0.15178944351838286,
+          "tier": "primary"
+        },
+        {
+          "var": "covax_legitimacy_scepticism_idx",
+          "rank": 2,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "covid_perceived_danger_T12",
+          "rank": 3,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "group_trust_vax",
+          "rank": 4,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "institutional_trust_avg",
+          "rank": 5,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "social_norms_vax_avg",
+          "rank": 6,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "vaccine_risk_avg",
+          "rank": 7,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        }
+      ],
+      "alpha_secondary": 0.33,
+      "epsilon_ref": 0.03,
+      "top_n_primary": 1
+    },
+    "booking_access_worsens": {
+      "median_abs_pe_ref_p_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.25728251190956986,
+        "group_trust_vax": 0.0,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.0
+      },
+      "median_abs_pe_ref_p_std_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.15178944351838286,
+        "group_trust_vax": 0.0,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.0
+      },
+      "tier_by_var": {
+        "fivec_low_constraints": "primary",
+        "covax_legitimacy_scepticism_idx": "none",
+        "covid_perceived_danger_T12": "none",
+        "group_trust_vax": "none",
+        "institutional_trust_avg": "none",
+        "social_norms_vax_avg": "none",
+        "vaccine_risk_avg": "none"
+      },
+      "ranking": [
+        {
+          "var": "fivec_low_constraints",
+          "rank": 1,
+          "median_abs_pe_ref_p": 0.25728251190956986,
+          "median_abs_pe_ref_p_std": 0.15178944351838286,
+          "tier": "primary"
+        },
+        {
+          "var": "covax_legitimacy_scepticism_idx",
+          "rank": 2,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "covid_perceived_danger_T12",
+          "rank": 3,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "group_trust_vax",
+          "rank": 4,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "institutional_trust_avg",
+          "rank": 5,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "social_norms_vax_avg",
+          "rank": 6,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "vaccine_risk_avg",
+          "rank": 7,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        }
+      ],
+      "alpha_secondary": 0.33,
+      "epsilon_ref": 0.03,
+      "top_n_primary": 1
+    },
+    "health_deterioration": {
+      "median_abs_pe_ref_p_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.0,
+        "group_trust_vax": 0.0,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.0
+      },
+      "median_abs_pe_ref_p_std_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.0,
+        "group_trust_vax": 0.0,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.0
+      },
+      "tier_by_var": {
+        "covax_legitimacy_scepticism_idx": "none",
+        "covid_perceived_danger_T12": "none",
+        "fivec_low_constraints": "none",
+        "group_trust_vax": "none",
+        "institutional_trust_avg": "none",
+        "social_norms_vax_avg": "none",
+        "vaccine_risk_avg": "none"
+      },
+      "ranking": [
+        {
+          "var": "covax_legitimacy_scepticism_idx",
+          "rank": 1,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "covid_perceived_danger_T12",
+          "rank": 2,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "fivec_low_constraints",
+          "rank": 3,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "group_trust_vax",
+          "rank": 4,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "institutional_trust_avg",
+          "rank": 5,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "social_norms_vax_avg",
+          "rank": 6,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "vaccine_risk_avg",
+          "rank": 7,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        }
+      ],
+      "alpha_secondary": 0.33,
+      "epsilon_ref": 0.03,
+      "top_n_primary": 1
+    },
+    "impediment_off": {
+      "median_abs_pe_ref_p_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.36410421443765006,
+        "group_trust_vax": 0.0,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.0
+      },
+      "median_abs_pe_ref_p_std_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.18145567147493857,
+        "group_trust_vax": 0.0,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.0
+      },
+      "tier_by_var": {
+        "fivec_low_constraints": "primary",
+        "covax_legitimacy_scepticism_idx": "none",
+        "covid_perceived_danger_T12": "none",
+        "group_trust_vax": "none",
+        "institutional_trust_avg": "none",
+        "social_norms_vax_avg": "none",
+        "vaccine_risk_avg": "none"
+      },
+      "ranking": [
+        {
+          "var": "fivec_low_constraints",
+          "rank": 1,
+          "median_abs_pe_ref_p": 0.36410421443765006,
+          "median_abs_pe_ref_p_std": 0.18145567147493857,
+          "tier": "primary"
+        },
+        {
+          "var": "covax_legitimacy_scepticism_idx",
+          "rank": 2,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "covid_perceived_danger_T12",
+          "rank": 3,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "group_trust_vax",
+          "rank": 4,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "institutional_trust_avg",
+          "rank": 5,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "social_norms_vax_avg",
+          "rank": 6,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "vaccine_risk_avg",
+          "rank": 7,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        }
+      ],
+      "alpha_secondary": 0.33,
+      "epsilon_ref": 0.03,
+      "top_n_primary": 1
+    },
+    "impediment_on": {
+      "median_abs_pe_ref_p_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.36410421443765006,
+        "group_trust_vax": 0.0,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.0
+      },
+      "median_abs_pe_ref_p_std_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.18145567147493857,
+        "group_trust_vax": 0.0,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.0
+      },
+      "tier_by_var": {
+        "fivec_low_constraints": "primary",
+        "covax_legitimacy_scepticism_idx": "none",
+        "covid_perceived_danger_T12": "none",
+        "group_trust_vax": "none",
+        "institutional_trust_avg": "none",
+        "social_norms_vax_avg": "none",
+        "vaccine_risk_avg": "none"
+      },
+      "ranking": [
+        {
+          "var": "fivec_low_constraints",
+          "rank": 1,
+          "median_abs_pe_ref_p": 0.36410421443765006,
+          "median_abs_pe_ref_p_std": 0.18145567147493857,
+          "tier": "primary"
+        },
+        {
+          "var": "covax_legitimacy_scepticism_idx",
+          "rank": 2,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "covid_perceived_danger_T12",
+          "rank": 3,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "group_trust_vax",
+          "rank": 4,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "institutional_trust_avg",
+          "rank": 5,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "social_norms_vax_avg",
+          "rank": 6,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "vaccine_risk_avg",
+          "rank": 7,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        }
+      ],
+      "alpha_secondary": 0.33,
+      "epsilon_ref": 0.03,
+      "top_n_primary": 1
+    },
+    "severe_illness_vicarious": {
+      "median_abs_pe_ref_p_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.13882109406284715,
+        "fivec_low_constraints": 0.0,
+        "group_trust_vax": 0.0,
+        "institutional_trust_avg": 0.06414163064471678,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.07502986161852368
+      },
+      "median_abs_pe_ref_p_std_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.06498824843037906,
+        "fivec_low_constraints": 0.0,
+        "group_trust_vax": 0.0,
+        "institutional_trust_avg": 0.030250249155674855,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.0353853181664176
+      },
+      "tier_by_var": {
+        "covid_perceived_danger_T12": "primary",
+        "vaccine_risk_avg": "secondary",
+        "institutional_trust_avg": "secondary",
+        "covax_legitimacy_scepticism_idx": "none",
+        "fivec_low_constraints": "none",
+        "group_trust_vax": "none",
+        "social_norms_vax_avg": "none"
+      },
+      "ranking": [
+        {
+          "var": "covid_perceived_danger_T12",
+          "rank": 1,
+          "median_abs_pe_ref_p": 0.13882109406284715,
+          "median_abs_pe_ref_p_std": 0.06498824843037906,
+          "tier": "primary"
+        },
+        {
+          "var": "vaccine_risk_avg",
+          "rank": 2,
+          "median_abs_pe_ref_p": 0.07502986161852368,
+          "median_abs_pe_ref_p_std": 0.0353853181664176,
+          "tier": "secondary"
+        },
+        {
+          "var": "institutional_trust_avg",
+          "rank": 3,
+          "median_abs_pe_ref_p": 0.06414163064471678,
+          "median_abs_pe_ref_p_std": 0.030250249155674855,
+          "tier": "secondary"
+        },
+        {
+          "var": "covax_legitimacy_scepticism_idx",
+          "rank": 4,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "fivec_low_constraints",
+          "rank": 5,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "group_trust_vax",
+          "rank": 6,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "social_norms_vax_avg",
+          "rank": 7,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        }
+      ],
+      "alpha_secondary": 0.33,
+      "epsilon_ref": 0.03,
+      "top_n_primary": 1
+    },
+    "side_effects_other_vicarious": {
+      "median_abs_pe_ref_p_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.0,
+        "group_trust_vax": 0.0,
+        "institutional_trust_avg": 0.11537840933405141,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.1710704281669181
+      },
+      "median_abs_pe_ref_p_std_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.0,
+        "group_trust_vax": 0.0,
+        "institutional_trust_avg": 0.054964142832900895,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.08149479181177266
+      },
+      "tier_by_var": {
+        "vaccine_risk_avg": "primary",
+        "institutional_trust_avg": "secondary",
+        "covax_legitimacy_scepticism_idx": "none",
+        "covid_perceived_danger_T12": "none",
+        "fivec_low_constraints": "none",
+        "group_trust_vax": "none",
+        "social_norms_vax_avg": "none"
+      },
+      "ranking": [
+        {
+          "var": "vaccine_risk_avg",
+          "rank": 1,
+          "median_abs_pe_ref_p": 0.1710704281669181,
+          "median_abs_pe_ref_p_std": 0.08149479181177266,
+          "tier": "primary"
+        },
+        {
+          "var": "institutional_trust_avg",
+          "rank": 2,
+          "median_abs_pe_ref_p": 0.11537840933405141,
+          "median_abs_pe_ref_p_std": 0.054964142832900895,
+          "tier": "secondary"
+        },
+        {
+          "var": "covax_legitimacy_scepticism_idx",
+          "rank": 3,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "covid_perceived_danger_T12",
+          "rank": 4,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "fivec_low_constraints",
+          "rank": 5,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "group_trust_vax",
+          "rank": 6,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "social_norms_vax_avg",
+          "rank": 7,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        }
+      ],
+      "alpha_secondary": 0.33,
+      "epsilon_ref": 0.03,
+      "top_n_primary": 1
+    },
+    "side_effects_self": {
+      "median_abs_pe_ref_p_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.20493036035907575,
+        "fivec_low_constraints": 0.0,
+        "group_trust_vax": 0.0,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.19745871997943448
+      },
+      "median_abs_pe_ref_p_std_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.10108340576505233,
+        "fivec_low_constraints": 0.0,
+        "group_trust_vax": 0.0,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.0983865056660668
+      },
+      "tier_by_var": {
+        "covid_perceived_danger_T12": "primary",
+        "vaccine_risk_avg": "secondary",
+        "covax_legitimacy_scepticism_idx": "none",
+        "fivec_low_constraints": "none",
+        "group_trust_vax": "none",
+        "institutional_trust_avg": "none",
+        "social_norms_vax_avg": "none"
+      },
+      "ranking": [
+        {
+          "var": "covid_perceived_danger_T12",
+          "rank": 1,
+          "median_abs_pe_ref_p": 0.20493036035907575,
+          "median_abs_pe_ref_p_std": 0.10108340576505233,
+          "tier": "primary"
+        },
+        {
+          "var": "vaccine_risk_avg",
+          "rank": 2,
+          "median_abs_pe_ref_p": 0.19745871997943448,
+          "median_abs_pe_ref_p_std": 0.0983865056660668,
+          "tier": "secondary"
+        },
+        {
+          "var": "covax_legitimacy_scepticism_idx",
+          "rank": 3,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "fivec_low_constraints",
+          "rank": 4,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "group_trust_vax",
+          "rank": 5,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "institutional_trust_avg",
+          "rank": 6,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "social_norms_vax_avg",
+          "rank": 7,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        }
+      ],
+      "alpha_secondary": 0.33,
+      "epsilon_ref": 0.03,
+      "top_n_primary": 1
+    },
+    "trust_gp_vax_info_shift": {
+      "median_abs_pe_ref_p_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.14425898815116753,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.05367453979616954,
+        "group_trust_vax": 0.12157627347841882,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.0
+      },
+      "median_abs_pe_ref_p_std_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.16371938002750186,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.0609151810317835,
+        "group_trust_vax": 0.13797679004294086,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.0
+      },
+      "tier_by_var": {
+        "covax_legitimacy_scepticism_idx": "primary",
+        "group_trust_vax": "secondary",
+        "fivec_low_constraints": "secondary",
+        "covid_perceived_danger_T12": "none",
+        "institutional_trust_avg": "none",
+        "social_norms_vax_avg": "none",
+        "vaccine_risk_avg": "none"
+      },
+      "ranking": [
+        {
+          "var": "covax_legitimacy_scepticism_idx",
+          "rank": 1,
+          "median_abs_pe_ref_p": 0.14425898815116753,
+          "median_abs_pe_ref_p_std": 0.16371938002750186,
+          "tier": "primary"
+        },
+        {
+          "var": "group_trust_vax",
+          "rank": 2,
+          "median_abs_pe_ref_p": 0.12157627347841882,
+          "median_abs_pe_ref_p_std": 0.13797679004294086,
+          "tier": "secondary"
+        },
+        {
+          "var": "fivec_low_constraints",
+          "rank": 3,
+          "median_abs_pe_ref_p": 0.05367453979616954,
+          "median_abs_pe_ref_p_std": 0.0609151810317835,
+          "tier": "secondary"
+        },
+        {
+          "var": "covid_perceived_danger_T12",
+          "rank": 4,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "institutional_trust_avg",
+          "rank": 5,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "social_norms_vax_avg",
+          "rank": 6,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "vaccine_risk_avg",
+          "rank": 7,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        }
+      ],
+      "alpha_secondary": 0.33,
+      "epsilon_ref": 0.03,
+      "top_n_primary": 1
+    },
+    "trust_gp_vax_info_shift_down": {
+      "median_abs_pe_ref_p_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.14425898815116753,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.05367453979616954,
+        "group_trust_vax": 0.12157627347841882,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.0
+      },
+      "median_abs_pe_ref_p_std_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.16371938002750186,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.0609151810317835,
+        "group_trust_vax": 0.13797679004294086,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.0
+      },
+      "tier_by_var": {
+        "covax_legitimacy_scepticism_idx": "primary",
+        "group_trust_vax": "secondary",
+        "fivec_low_constraints": "secondary",
+        "covid_perceived_danger_T12": "none",
+        "institutional_trust_avg": "none",
+        "social_norms_vax_avg": "none",
+        "vaccine_risk_avg": "none"
+      },
+      "ranking": [
+        {
+          "var": "covax_legitimacy_scepticism_idx",
+          "rank": 1,
+          "median_abs_pe_ref_p": 0.14425898815116753,
+          "median_abs_pe_ref_p_std": 0.16371938002750186,
+          "tier": "primary"
+        },
+        {
+          "var": "group_trust_vax",
+          "rank": 2,
+          "median_abs_pe_ref_p": 0.12157627347841882,
+          "median_abs_pe_ref_p_std": 0.13797679004294086,
+          "tier": "secondary"
+        },
+        {
+          "var": "fivec_low_constraints",
+          "rank": 3,
+          "median_abs_pe_ref_p": 0.05367453979616954,
+          "median_abs_pe_ref_p_std": 0.0609151810317835,
+          "tier": "secondary"
+        },
+        {
+          "var": "covid_perceived_danger_T12",
+          "rank": 4,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "institutional_trust_avg",
+          "rank": 5,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "social_norms_vax_avg",
+          "rank": 6,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "vaccine_risk_avg",
+          "rank": 7,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        }
+      ],
+      "alpha_secondary": 0.33,
+      "epsilon_ref": 0.03,
+      "top_n_primary": 1
+    },
+    "trust_national_gov_vax_info_shift": {
+      "median_abs_pe_ref_p_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.08977973936631595,
+        "covid_perceived_danger_T12": 0.44982355290280873,
+        "fivec_low_constraints": 0.11874789837760691,
+        "group_trust_vax": 0.10917063214626399,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.0
+      },
+      "median_abs_pe_ref_p_std_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.05190731502612725,
+        "covid_perceived_danger_T12": 0.2638856612379761,
+        "fivec_low_constraints": 0.06865563002613967,
+        "group_trust_vax": 0.0631184099487782,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.0
+      },
+      "tier_by_var": {
+        "covid_perceived_danger_T12": "primary",
+        "fivec_low_constraints": "weak",
+        "group_trust_vax": "weak",
+        "covax_legitimacy_scepticism_idx": "weak",
+        "institutional_trust_avg": "none",
+        "social_norms_vax_avg": "none",
+        "vaccine_risk_avg": "none"
+      },
+      "ranking": [
+        {
+          "var": "covid_perceived_danger_T12",
+          "rank": 1,
+          "median_abs_pe_ref_p": 0.44982355290280873,
+          "median_abs_pe_ref_p_std": 0.2638856612379761,
+          "tier": "primary"
+        },
+        {
+          "var": "fivec_low_constraints",
+          "rank": 2,
+          "median_abs_pe_ref_p": 0.11874789837760691,
+          "median_abs_pe_ref_p_std": 0.06865563002613967,
+          "tier": "weak"
+        },
+        {
+          "var": "group_trust_vax",
+          "rank": 3,
+          "median_abs_pe_ref_p": 0.10917063214626399,
+          "median_abs_pe_ref_p_std": 0.0631184099487782,
+          "tier": "weak"
+        },
+        {
+          "var": "covax_legitimacy_scepticism_idx",
+          "rank": 4,
+          "median_abs_pe_ref_p": 0.08977973936631595,
+          "median_abs_pe_ref_p_std": 0.05190731502612725,
+          "tier": "weak"
+        },
+        {
+          "var": "institutional_trust_avg",
+          "rank": 5,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "social_norms_vax_avg",
+          "rank": 6,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "vaccine_risk_avg",
+          "rank": 7,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        }
+      ],
+      "alpha_secondary": 0.33,
+      "epsilon_ref": 0.03,
+      "top_n_primary": 1
+    },
+    "trust_national_gov_vax_info_shift_down": {
+      "median_abs_pe_ref_p_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.08977973936631595,
+        "covid_perceived_danger_T12": 0.44982355290280873,
+        "fivec_low_constraints": 0.11874789837760691,
+        "group_trust_vax": 0.10917063214626399,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.0
+      },
+      "median_abs_pe_ref_p_std_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.05190731502612725,
+        "covid_perceived_danger_T12": 0.2638856612379761,
+        "fivec_low_constraints": 0.06865563002613967,
+        "group_trust_vax": 0.0631184099487782,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.0
+      },
+      "tier_by_var": {
+        "covid_perceived_danger_T12": "primary",
+        "fivec_low_constraints": "weak",
+        "group_trust_vax": "weak",
+        "covax_legitimacy_scepticism_idx": "weak",
+        "institutional_trust_avg": "none",
+        "social_norms_vax_avg": "none",
+        "vaccine_risk_avg": "none"
+      },
+      "ranking": [
+        {
+          "var": "covid_perceived_danger_T12",
+          "rank": 1,
+          "median_abs_pe_ref_p": 0.44982355290280873,
+          "median_abs_pe_ref_p_std": 0.2638856612379761,
+          "tier": "primary"
+        },
+        {
+          "var": "fivec_low_constraints",
+          "rank": 2,
+          "median_abs_pe_ref_p": 0.11874789837760691,
+          "median_abs_pe_ref_p_std": 0.06865563002613967,
+          "tier": "weak"
+        },
+        {
+          "var": "group_trust_vax",
+          "rank": 3,
+          "median_abs_pe_ref_p": 0.10917063214626399,
+          "median_abs_pe_ref_p_std": 0.0631184099487782,
+          "tier": "weak"
+        },
+        {
+          "var": "covax_legitimacy_scepticism_idx",
+          "rank": 4,
+          "median_abs_pe_ref_p": 0.08977973936631595,
+          "median_abs_pe_ref_p_std": 0.05190731502612725,
+          "tier": "weak"
+        },
+        {
+          "var": "institutional_trust_avg",
+          "rank": 5,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "social_norms_vax_avg",
+          "rank": 6,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "vaccine_risk_avg",
+          "rank": 7,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        }
+      ],
+      "alpha_secondary": 0.33,
+      "epsilon_ref": 0.03,
+      "top_n_primary": 1
+    },
+    "trust_onlineinfo_shift": {
+      "median_abs_pe_ref_p_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.0,
+        "group_trust_vax": 0.07376784500681055,
+        "institutional_trust_avg": 0.09803916793307152,
+        "social_norms_vax_avg": 0.0639538214302684,
+        "vaccine_risk_avg": 0.0
+      },
+      "median_abs_pe_ref_p_std_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.0,
+        "group_trust_vax": 0.07174426481147525,
+        "institutional_trust_avg": 0.09534978316687422,
+        "social_norms_vax_avg": 0.06219945695818227,
+        "vaccine_risk_avg": 0.0
+      },
+      "tier_by_var": {
+        "institutional_trust_avg": "primary",
+        "group_trust_vax": "secondary",
+        "social_norms_vax_avg": "secondary",
+        "covax_legitimacy_scepticism_idx": "none",
+        "covid_perceived_danger_T12": "none",
+        "fivec_low_constraints": "none",
+        "vaccine_risk_avg": "none"
+      },
+      "ranking": [
+        {
+          "var": "institutional_trust_avg",
+          "rank": 1,
+          "median_abs_pe_ref_p": 0.09803916793307152,
+          "median_abs_pe_ref_p_std": 0.09534978316687422,
+          "tier": "primary"
+        },
+        {
+          "var": "group_trust_vax",
+          "rank": 2,
+          "median_abs_pe_ref_p": 0.07376784500681055,
+          "median_abs_pe_ref_p_std": 0.07174426481147525,
+          "tier": "secondary"
+        },
+        {
+          "var": "social_norms_vax_avg",
+          "rank": 3,
+          "median_abs_pe_ref_p": 0.0639538214302684,
+          "median_abs_pe_ref_p_std": 0.06219945695818227,
+          "tier": "secondary"
+        },
+        {
+          "var": "covax_legitimacy_scepticism_idx",
+          "rank": 4,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "covid_perceived_danger_T12",
+          "rank": 5,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "fivec_low_constraints",
+          "rank": 6,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "vaccine_risk_avg",
+          "rank": 7,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        }
+      ],
+      "alpha_secondary": 0.33,
+      "epsilon_ref": 0.03,
+      "top_n_primary": 1
+    },
+    "trust_onlineinfo_shift_down": {
+      "median_abs_pe_ref_p_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.0,
+        "group_trust_vax": 0.07376784500681055,
+        "institutional_trust_avg": 0.09803916793307152,
+        "social_norms_vax_avg": 0.0639538214302684,
+        "vaccine_risk_avg": 0.0
+      },
+      "median_abs_pe_ref_p_std_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.0,
+        "group_trust_vax": 0.07174426481147525,
+        "institutional_trust_avg": 0.09534978316687422,
+        "social_norms_vax_avg": 0.06219945695818227,
+        "vaccine_risk_avg": 0.0
+      },
+      "tier_by_var": {
+        "institutional_trust_avg": "primary",
+        "group_trust_vax": "secondary",
+        "social_norms_vax_avg": "secondary",
+        "covax_legitimacy_scepticism_idx": "none",
+        "covid_perceived_danger_T12": "none",
+        "fivec_low_constraints": "none",
+        "vaccine_risk_avg": "none"
+      },
+      "ranking": [
+        {
+          "var": "institutional_trust_avg",
+          "rank": 1,
+          "median_abs_pe_ref_p": 0.09803916793307152,
+          "median_abs_pe_ref_p_std": 0.09534978316687422,
+          "tier": "primary"
+        },
+        {
+          "var": "group_trust_vax",
+          "rank": 2,
+          "median_abs_pe_ref_p": 0.07376784500681055,
+          "median_abs_pe_ref_p_std": 0.07174426481147525,
+          "tier": "secondary"
+        },
+        {
+          "var": "social_norms_vax_avg",
+          "rank": 3,
+          "median_abs_pe_ref_p": 0.0639538214302684,
+          "median_abs_pe_ref_p_std": 0.06219945695818227,
+          "tier": "secondary"
+        },
+        {
+          "var": "covax_legitimacy_scepticism_idx",
+          "rank": 4,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "covid_perceived_danger_T12",
+          "rank": 5,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "fivec_low_constraints",
+          "rank": 6,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "vaccine_risk_avg",
+          "rank": 7,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        }
+      ],
+      "alpha_secondary": 0.33,
+      "epsilon_ref": 0.03,
+      "top_n_primary": 1
+    },
+    "trust_social_shift": {
+      "median_abs_pe_ref_p_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.30858724692280726,
+        "group_trust_vax": 0.16177789186317526,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.09334166264289048,
+        "vaccine_risk_avg": 0.18023202994063153
+      },
+      "median_abs_pe_ref_p_std_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.18858350072791683,
+        "group_trust_vax": 0.09886552828144457,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.05704285475337163,
+        "vaccine_risk_avg": 0.11014320095348991
+      },
+      "tier_by_var": {
+        "fivec_low_constraints": "primary",
+        "vaccine_risk_avg": "secondary",
+        "group_trust_vax": "secondary",
+        "social_norms_vax_avg": "weak",
+        "covax_legitimacy_scepticism_idx": "none",
+        "covid_perceived_danger_T12": "none",
+        "institutional_trust_avg": "none"
+      },
+      "ranking": [
+        {
+          "var": "fivec_low_constraints",
+          "rank": 1,
+          "median_abs_pe_ref_p": 0.30858724692280726,
+          "median_abs_pe_ref_p_std": 0.18858350072791683,
+          "tier": "primary"
+        },
+        {
+          "var": "vaccine_risk_avg",
+          "rank": 2,
+          "median_abs_pe_ref_p": 0.18023202994063153,
+          "median_abs_pe_ref_p_std": 0.11014320095348991,
+          "tier": "secondary"
+        },
+        {
+          "var": "group_trust_vax",
+          "rank": 3,
+          "median_abs_pe_ref_p": 0.16177789186317526,
+          "median_abs_pe_ref_p_std": 0.09886552828144457,
+          "tier": "secondary"
+        },
+        {
+          "var": "social_norms_vax_avg",
+          "rank": 4,
+          "median_abs_pe_ref_p": 0.09334166264289048,
+          "median_abs_pe_ref_p_std": 0.05704285475337163,
+          "tier": "weak"
+        },
+        {
+          "var": "covax_legitimacy_scepticism_idx",
+          "rank": 5,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "covid_perceived_danger_T12",
+          "rank": 6,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "institutional_trust_avg",
+          "rank": 7,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        }
+      ],
+      "alpha_secondary": 0.33,
+      "epsilon_ref": 0.03,
+      "top_n_primary": 1
+    },
+    "trust_social_shift_down": {
+      "median_abs_pe_ref_p_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.30858724692280726,
+        "group_trust_vax": 0.16177789186317526,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.09334166264289048,
+        "vaccine_risk_avg": 0.18023202994063153
+      },
+      "median_abs_pe_ref_p_std_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.18858350072791683,
+        "group_trust_vax": 0.09886552828144457,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.05704285475337163,
+        "vaccine_risk_avg": 0.11014320095348991
+      },
+      "tier_by_var": {
+        "fivec_low_constraints": "primary",
+        "vaccine_risk_avg": "secondary",
+        "group_trust_vax": "secondary",
+        "social_norms_vax_avg": "weak",
+        "covax_legitimacy_scepticism_idx": "none",
+        "covid_perceived_danger_T12": "none",
+        "institutional_trust_avg": "none"
+      },
+      "ranking": [
+        {
+          "var": "fivec_low_constraints",
+          "rank": 1,
+          "median_abs_pe_ref_p": 0.30858724692280726,
+          "median_abs_pe_ref_p_std": 0.18858350072791683,
+          "tier": "primary"
+        },
+        {
+          "var": "vaccine_risk_avg",
+          "rank": 2,
+          "median_abs_pe_ref_p": 0.18023202994063153,
+          "median_abs_pe_ref_p_std": 0.11014320095348991,
+          "tier": "secondary"
+        },
+        {
+          "var": "group_trust_vax",
+          "rank": 3,
+          "median_abs_pe_ref_p": 0.16177789186317526,
+          "median_abs_pe_ref_p_std": 0.09886552828144457,
+          "tier": "secondary"
+        },
+        {
+          "var": "social_norms_vax_avg",
+          "rank": 4,
+          "median_abs_pe_ref_p": 0.09334166264289048,
+          "median_abs_pe_ref_p_std": 0.05704285475337163,
+          "tier": "weak"
+        },
+        {
+          "var": "covax_legitimacy_scepticism_idx",
+          "rank": 5,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "covid_perceived_danger_T12",
+          "rank": 6,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "institutional_trust_avg",
+          "rank": 7,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        }
+      ],
+      "alpha_secondary": 0.33,
+      "epsilon_ref": 0.03,
+      "top_n_primary": 1
+    },
+    "trust_traditional_shift": {
+      "median_abs_pe_ref_p_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.050773156714332135,
+        "group_trust_vax": 0.09116906458508467,
+        "institutional_trust_avg": 0.42226321163890285,
+        "social_norms_vax_avg": 0.22251680932707604,
+        "vaccine_risk_avg": 0.0
+      },
+      "median_abs_pe_ref_p_std_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.04249611519043587,
+        "group_trust_vax": 0.07630668095368656,
+        "institutional_trust_avg": 0.35342585026676077,
+        "social_norms_vax_avg": 0.18624211242517616,
+        "vaccine_risk_avg": 0.0
+      },
+      "tier_by_var": {
+        "institutional_trust_avg": "primary",
+        "social_norms_vax_avg": "secondary",
+        "group_trust_vax": "weak",
+        "fivec_low_constraints": "weak",
+        "covax_legitimacy_scepticism_idx": "none",
+        "covid_perceived_danger_T12": "none",
+        "vaccine_risk_avg": "none"
+      },
+      "ranking": [
+        {
+          "var": "institutional_trust_avg",
+          "rank": 1,
+          "median_abs_pe_ref_p": 0.42226321163890285,
+          "median_abs_pe_ref_p_std": 0.35342585026676077,
+          "tier": "primary"
+        },
+        {
+          "var": "social_norms_vax_avg",
+          "rank": 2,
+          "median_abs_pe_ref_p": 0.22251680932707604,
+          "median_abs_pe_ref_p_std": 0.18624211242517616,
+          "tier": "secondary"
+        },
+        {
+          "var": "group_trust_vax",
+          "rank": 3,
+          "median_abs_pe_ref_p": 0.09116906458508467,
+          "median_abs_pe_ref_p_std": 0.07630668095368656,
+          "tier": "weak"
+        },
+        {
+          "var": "fivec_low_constraints",
+          "rank": 4,
+          "median_abs_pe_ref_p": 0.050773156714332135,
+          "median_abs_pe_ref_p_std": 0.04249611519043587,
+          "tier": "weak"
+        },
+        {
+          "var": "covax_legitimacy_scepticism_idx",
+          "rank": 5,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "covid_perceived_danger_T12",
+          "rank": 6,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "vaccine_risk_avg",
+          "rank": 7,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        }
+      ],
+      "alpha_secondary": 0.33,
+      "epsilon_ref": 0.03,
+      "top_n_primary": 1
+    },
+    "trust_traditional_shift_down": {
+      "median_abs_pe_ref_p_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.050773156714332135,
+        "group_trust_vax": 0.09116906458508467,
+        "institutional_trust_avg": 0.42226321163890285,
+        "social_norms_vax_avg": 0.22251680932707604,
+        "vaccine_risk_avg": 0.0
+      },
+      "median_abs_pe_ref_p_std_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.04249611519043587,
+        "group_trust_vax": 0.07630668095368656,
+        "institutional_trust_avg": 0.35342585026676077,
+        "social_norms_vax_avg": 0.18624211242517616,
+        "vaccine_risk_avg": 0.0
+      },
+      "tier_by_var": {
+        "institutional_trust_avg": "primary",
+        "social_norms_vax_avg": "secondary",
+        "group_trust_vax": "weak",
+        "fivec_low_constraints": "weak",
+        "covax_legitimacy_scepticism_idx": "none",
+        "covid_perceived_danger_T12": "none",
+        "vaccine_risk_avg": "none"
+      },
+      "ranking": [
+        {
+          "var": "institutional_trust_avg",
+          "rank": 1,
+          "median_abs_pe_ref_p": 0.42226321163890285,
+          "median_abs_pe_ref_p_std": 0.35342585026676077,
+          "tier": "primary"
+        },
+        {
+          "var": "social_norms_vax_avg",
+          "rank": 2,
+          "median_abs_pe_ref_p": 0.22251680932707604,
+          "median_abs_pe_ref_p_std": 0.18624211242517616,
+          "tier": "secondary"
+        },
+        {
+          "var": "group_trust_vax",
+          "rank": 3,
+          "median_abs_pe_ref_p": 0.09116906458508467,
+          "median_abs_pe_ref_p_std": 0.07630668095368656,
+          "tier": "weak"
+        },
+        {
+          "var": "fivec_low_constraints",
+          "rank": 4,
+          "median_abs_pe_ref_p": 0.050773156714332135,
+          "median_abs_pe_ref_p_std": 0.04249611519043587,
+          "tier": "weak"
+        },
+        {
+          "var": "covax_legitimacy_scepticism_idx",
+          "rank": 5,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "covid_perceived_danger_T12",
+          "rank": 6,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "vaccine_risk_avg",
+          "rank": 7,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        }
+      ],
+      "alpha_secondary": 0.33,
+      "epsilon_ref": 0.03,
+      "top_n_primary": 1
+    },
+    "trust_who_vax_info_shift": {
+      "median_abs_pe_ref_p_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.2525157283356299,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.0,
+        "group_trust_vax": 0.0,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.0
+      },
+      "median_abs_pe_ref_p_std_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.1574273700495628,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.0,
+        "group_trust_vax": 0.0,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.0
+      },
+      "tier_by_var": {
+        "covax_legitimacy_scepticism_idx": "primary",
+        "covid_perceived_danger_T12": "none",
+        "fivec_low_constraints": "none",
+        "group_trust_vax": "none",
+        "institutional_trust_avg": "none",
+        "social_norms_vax_avg": "none",
+        "vaccine_risk_avg": "none"
+      },
+      "ranking": [
+        {
+          "var": "covax_legitimacy_scepticism_idx",
+          "rank": 1,
+          "median_abs_pe_ref_p": 0.2525157283356299,
+          "median_abs_pe_ref_p_std": 0.1574273700495628,
+          "tier": "primary"
+        },
+        {
+          "var": "covid_perceived_danger_T12",
+          "rank": 2,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "fivec_low_constraints",
+          "rank": 3,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "group_trust_vax",
+          "rank": 4,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "institutional_trust_avg",
+          "rank": 5,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "social_norms_vax_avg",
+          "rank": 6,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "vaccine_risk_avg",
+          "rank": 7,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        }
+      ],
+      "alpha_secondary": 0.33,
+      "epsilon_ref": 0.03,
+      "top_n_primary": 1
+    },
+    "trust_who_vax_info_shift_down": {
+      "median_abs_pe_ref_p_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.2525157283356299,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.0,
+        "group_trust_vax": 0.0,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.0
+      },
+      "median_abs_pe_ref_p_std_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.1574273700495628,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.0,
+        "group_trust_vax": 0.0,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.0
+      },
+      "tier_by_var": {
+        "covax_legitimacy_scepticism_idx": "primary",
+        "covid_perceived_danger_T12": "none",
+        "fivec_low_constraints": "none",
+        "group_trust_vax": "none",
+        "institutional_trust_avg": "none",
+        "social_norms_vax_avg": "none",
+        "vaccine_risk_avg": "none"
+      },
+      "ranking": [
+        {
+          "var": "covax_legitimacy_scepticism_idx",
+          "rank": 1,
+          "median_abs_pe_ref_p": 0.2525157283356299,
+          "median_abs_pe_ref_p_std": 0.1574273700495628,
+          "tier": "primary"
+        },
+        {
+          "var": "covid_perceived_danger_T12",
+          "rank": 2,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "fivec_low_constraints",
+          "rank": 3,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "group_trust_vax",
+          "rank": 4,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "institutional_trust_avg",
+          "rank": 5,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "social_norms_vax_avg",
+          "rank": 6,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "vaccine_risk_avg",
+          "rank": 7,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        }
+      ],
+      "alpha_secondary": 0.33,
+      "epsilon_ref": 0.03,
+      "top_n_primary": 1
+    },
+    "vax_conversation_freq_drop": {
+      "median_abs_pe_ref_p_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.0,
+        "group_trust_vax": 0.19922576620004695,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.098712981081159,
+        "vaccine_risk_avg": 0.0
+      },
+      "median_abs_pe_ref_p_std_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.0,
+        "group_trust_vax": 0.0919015576805472,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.04553565985807091,
+        "vaccine_risk_avg": 0.0
+      },
+      "tier_by_var": {
+        "group_trust_vax": "primary",
+        "social_norms_vax_avg": "secondary",
+        "covax_legitimacy_scepticism_idx": "none",
+        "covid_perceived_danger_T12": "none",
+        "fivec_low_constraints": "none",
+        "institutional_trust_avg": "none",
+        "vaccine_risk_avg": "none"
+      },
+      "ranking": [
+        {
+          "var": "group_trust_vax",
+          "rank": 1,
+          "median_abs_pe_ref_p": 0.19922576620004695,
+          "median_abs_pe_ref_p_std": 0.0919015576805472,
+          "tier": "primary"
+        },
+        {
+          "var": "social_norms_vax_avg",
+          "rank": 2,
+          "median_abs_pe_ref_p": 0.098712981081159,
+          "median_abs_pe_ref_p_std": 0.04553565985807091,
+          "tier": "secondary"
+        },
+        {
+          "var": "covax_legitimacy_scepticism_idx",
+          "rank": 3,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "covid_perceived_danger_T12",
+          "rank": 4,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "fivec_low_constraints",
+          "rank": 5,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "institutional_trust_avg",
+          "rank": 6,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "vaccine_risk_avg",
+          "rank": 7,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        }
+      ],
+      "alpha_secondary": 0.33,
+      "epsilon_ref": 0.03,
+      "top_n_primary": 1
+    },
+    "vax_conversation_freq_shift": {
+      "median_abs_pe_ref_p_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.0,
+        "group_trust_vax": 0.19922576620004695,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.098712981081159,
+        "vaccine_risk_avg": 0.0
+      },
+      "median_abs_pe_ref_p_std_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.0,
+        "group_trust_vax": 0.0919015576805472,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.04553565985807091,
+        "vaccine_risk_avg": 0.0
+      },
+      "tier_by_var": {
+        "group_trust_vax": "primary",
+        "social_norms_vax_avg": "secondary",
+        "covax_legitimacy_scepticism_idx": "none",
+        "covid_perceived_danger_T12": "none",
+        "fivec_low_constraints": "none",
+        "institutional_trust_avg": "none",
+        "vaccine_risk_avg": "none"
+      },
+      "ranking": [
+        {
+          "var": "group_trust_vax",
+          "rank": 1,
+          "median_abs_pe_ref_p": 0.19922576620004695,
+          "median_abs_pe_ref_p_std": 0.0919015576805472,
+          "tier": "primary"
+        },
+        {
+          "var": "social_norms_vax_avg",
+          "rank": 2,
+          "median_abs_pe_ref_p": 0.098712981081159,
+          "median_abs_pe_ref_p_std": 0.04553565985807091,
+          "tier": "secondary"
+        },
+        {
+          "var": "covax_legitimacy_scepticism_idx",
+          "rank": 3,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "covid_perceived_danger_T12",
+          "rank": 4,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "fivec_low_constraints",
+          "rank": 5,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "institutional_trust_avg",
+          "rank": 6,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "vaccine_risk_avg",
+          "rank": 7,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        }
+      ],
+      "alpha_secondary": 0.33,
+      "epsilon_ref": 0.03,
+      "top_n_primary": 1
+    },
+    "vax_hub_access_improves": {
+      "median_abs_pe_ref_p_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.2178375939592394,
+        "group_trust_vax": 0.0,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.0
+      },
+      "median_abs_pe_ref_p_std_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.11724942197195576,
+        "group_trust_vax": 0.0,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.0
+      },
+      "tier_by_var": {
+        "fivec_low_constraints": "primary",
+        "covax_legitimacy_scepticism_idx": "none",
+        "covid_perceived_danger_T12": "none",
+        "group_trust_vax": "none",
+        "institutional_trust_avg": "none",
+        "social_norms_vax_avg": "none",
+        "vaccine_risk_avg": "none"
+      },
+      "ranking": [
+        {
+          "var": "fivec_low_constraints",
+          "rank": 1,
+          "median_abs_pe_ref_p": 0.2178375939592394,
+          "median_abs_pe_ref_p_std": 0.11724942197195576,
+          "tier": "primary"
+        },
+        {
+          "var": "covax_legitimacy_scepticism_idx",
+          "rank": 2,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "covid_perceived_danger_T12",
+          "rank": 3,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "group_trust_vax",
+          "rank": 4,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "institutional_trust_avg",
+          "rank": 5,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "social_norms_vax_avg",
+          "rank": 6,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "vaccine_risk_avg",
+          "rank": 7,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        }
+      ],
+      "alpha_secondary": 0.33,
+      "epsilon_ref": 0.03,
+      "top_n_primary": 1
+    },
+    "vax_hub_access_worsens": {
+      "median_abs_pe_ref_p_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.2178375939592394,
+        "group_trust_vax": 0.0,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.0
+      },
+      "median_abs_pe_ref_p_std_by_var": {
+        "covax_legitimacy_scepticism_idx": 0.0,
+        "covid_perceived_danger_T12": 0.0,
+        "fivec_low_constraints": 0.11724942197195576,
+        "group_trust_vax": 0.0,
+        "institutional_trust_avg": 0.0,
+        "social_norms_vax_avg": 0.0,
+        "vaccine_risk_avg": 0.0
+      },
+      "tier_by_var": {
+        "fivec_low_constraints": "primary",
+        "covax_legitimacy_scepticism_idx": "none",
+        "covid_perceived_danger_T12": "none",
+        "group_trust_vax": "none",
+        "institutional_trust_avg": "none",
+        "social_norms_vax_avg": "none",
+        "vaccine_risk_avg": "none"
+      },
+      "ranking": [
+        {
+          "var": "fivec_low_constraints",
+          "rank": 1,
+          "median_abs_pe_ref_p": 0.2178375939592394,
+          "median_abs_pe_ref_p_std": 0.11724942197195576,
+          "tier": "primary"
+        },
+        {
+          "var": "covax_legitimacy_scepticism_idx",
+          "rank": 2,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "covid_perceived_danger_T12",
+          "rank": 3,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "group_trust_vax",
+          "rank": 4,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "institutional_trust_avg",
+          "rank": 5,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "social_norms_vax_avg",
+          "rank": 6,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        },
+        {
+          "var": "vaccine_risk_avg",
+          "rank": 7,
+          "median_abs_pe_ref_p": 0.0,
+          "median_abs_pe_ref_p_std": 0.0,
+          "tier": "none"
+        }
+      ],
+      "alpha_secondary": 0.33,
+      "epsilon_ref": 0.03,
+      "top_n_primary": 1
+    }
+  },
+  "model_status": {
+    "loaded": {
+      "institutional_trust_avg": "P_TRUST_institutional_trust_REF",
+      "covax_legitimacy_scepticism_idx": "P_LEGIT_covax_legitimacy_REF",
+      "vaccine_risk_avg": "P_RISK_vaccine_risk_REF",
+      "covid_perceived_danger_T12": "P_STAKES_covid_perceived_danger_T12_REF",
+      "social_norms_vax_avg": "P_NORMS_social_norms_vax_avg_REF",
+      "fivec_low_constraints": "P_5C_fivec_low_constraints_rev_REF",
+      "group_trust_vax": "P_TRUST_group_trust_vax_REF"
+    },
+    "missing": {}
+  },
+  "config": {
+    "alpha_secondary": 0.33,
+    "epsilon_ref": 0.03,
+    "top_n_primary": 1,
+    "id_col": "row_id",
+    "country_col": "country"
+  }
+}

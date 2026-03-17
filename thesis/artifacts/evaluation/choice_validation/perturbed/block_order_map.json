@@ -1,0 +1,47 @@
+{
+  "flu_vaccinated_2023_2024": [
+    "controls_demography_SES",
+    "habit_engine",
+    "trust_engine",
+    "disposition_engine",
+    "stakes_engine",
+    "norms_engine",
+    "missingness"
+  ],
+  "mask_when_pressure_high": [
+    "controls_demography_SES",
+    "disposition_engine",
+    "stakes_engine",
+    "trust_engine",
+    "norms_engine",
+    "moral_engine",
+    "missingness"
+  ],
+  "mask_when_symptomatic_crowded": [
+    "controls_demography_SES",
+    "disposition_engine",
+    "stakes_engine",
+    "trust_engine",
+    "norms_engine",
+    "moral_engine",
+    "missingness"
+  ],
+  "stay_home_when_symptomatic": [
+    "controls_demography_SES",
+    "disposition_engine",
+    "stakes_engine",
+    "trust_engine",
+    "norms_engine",
+    "moral_engine",
+    "missingness"
+  ],
+  "vax_willingness_T12": [
+    "controls_demography_SES",
+    "trust_engine",
+    "disposition_engine",
+    "stakes_engine",
+    "norms_engine",
+    "legitimacy_engine",
+    "missingness"
+  ]
+}

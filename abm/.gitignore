@@ -1,0 +1,28 @@
+baseline.parquet
+
+# Ignore ABM outputs by default. Keep only compact aggregate tables and
+# small sensitivity artifacts used directly by the thesis.
+/output/**
+
+!/output/
+!/output/report_summary.csv
+!/output/report_summary_canonical_effects.csv
+!/output/leaderboard_dynamics_summary.csv
+!/output/scenario_delta_auc_table.csv
+
+!/output/comprehensive_sensitivity/
+!/output/comprehensive_sensitivity/oat_results.parquet
+!/output/comprehensive_sensitivity/2d_results.parquet
+!/output/comprehensive_sensitivity/oat_ates.csv
+
+!/output/k_social_sensitivity/
+!/output/k_social_sensitivity/sensitivity_ates.csv
+
+!/output/full_sensitivity_pipeline/
+!/output/full_sensitivity_pipeline/sobol/
+!/output/full_sensitivity_pipeline/sobol/indices.csv
+!/output/full_sensitivity_pipeline/morris/
+!/output/full_sensitivity_pipeline/morris/indices_per_scenario.csv
+!/output/full_sensitivity_pipeline/morris/indices_aggregate.csv
+!/output/full_sensitivity_pipeline/lhc/
+!/output/full_sensitivity_pipeline/lhc/delta.parquet

@@ -1,0 +1,1522 @@
+{
+  "encodings": {
+    "categorical": {
+      "Not at all": 1,
+      "Very bad": 1,
+      "Not very": 2,
+      "Bad": 2,
+      "A little": 2,
+      "Fair": 3,
+      "Quite": 3,
+      "Good": 4,
+      "Very": 4,
+      "Very good": 5,
+      "Very Good": 5,
+      "Completely": 5,
+      "Extremely": 5,
+      "I never found information on vaccines on this channel": null,
+      "I prefer not to answer": null
+    },
+    "duration_socialmedia": {
+      "Never": 1,
+      "Less than 2 hours per week": 2,
+      "Not every day, but more than 2 hours per week": 3,
+      "Every day, for at most 1 hour a day": 4,
+      "Every day, for more than 1 hour a day": 5
+    }
+  },
+  "question_group": {
+    "people_num": "How many people of each group do you have?",
+    "medical_conditions": null,
+    "covid_num": "How many times on average has each of these groups contracted COVID-19?",
+    "covax_num": "How many doses of COVID-19 vaccine on average has each of these groups received?",
+    "risk_1": "How dangerous did you think COVID-19 was to your health in the following periods? (1-5)",
+    "risk_2": "How willing were you to be vaccinated against COVID-19 in the following periods? (1-5)",
+    "risk_infection": "In your opinion, how likely are you to contract the following infections today? (1-5)",
+    "risk_illness": "In your opinion, how likely are you to experience serious health consequences if you contract the following infections? (1-5)",
+    "risk_vax": "In your opinion, how likely are you to experience health consequences if you receive the vaccine for the following infections? (1-5)",
+    "emotion_illness": "How much do you fear the following infections? (1-5)",
+    "emotion_vax": "How much do you fear the vaccine for the following infections? (1-5)",
+    "fluvax": "Did you get vaccinated against the flu at least once in the following periods?",
+    "side_effects": "Has anyone in the following groups of people experienced any side effects (apart from arm pain) after being administered a dose of any vaccine?",
+    "vax_group": "During the pandemic, with how many people in the following groups did you have a conversation about vaccines/vaccination programs (in person, over the phone, or online)?",
+    "vax_freq": "During the pandemic, how often did you find yourself participating in a conversation about vaccines/vaccination programs (in person, over the phone, or online) with the following groups?",
+    "opinion": "How much do you agree with the following statements? (1-5)",
+    "opinion_change": "How has your opinion on the following statement changed?",
+    "institut_trust_vax": "How much do you trust the information about vaccines/vaccination programs shared by the following groups? (1-5)",
+    "pandemic_behaviour": "How much do you agree with the following statements? (1-7)",
+    "moral1": "When you decide whether something is right or wrong, to what extent are the following statements relevant to your thinking? (1-6)",
+    "moral2": "How much do you agree with the following statements? (1-5)",
+    "info": "Select the information channels you primarily use",
+    "contact_group": "With how many people in the following groups did you have a direct contact YESTERDAY?",
+    "discussion_group": "Thinking of LAST week, with how many different people in the following groups did you have a relevant conversation with?",
+    "opinion_other": "To what extent do the following groups agree or disagree with the provided statement? (1-7)"
+  },
+  "old_columns": [
+    {
+      "id": "info_general",
+      "section": "info_source",
+      "question": "Select the entertainment, interaction (including social media) and information channels that you primarily use.",
+      "answer": [
+        "Other:",
+        "Reddit",
+        "Telegram channels",
+        "LinkedIn",
+        "Podcast or radio podcast",
+        "X (Twitter)",
+        "Print newspapers or magazines",
+        "Online newspapers or magazines (including apps, blogs, scientific journals)",
+        "Wikipedia",
+        "TikTok",
+        "Radio",
+        "Instagram",
+        "Internet searches",
+        "Facebook",
+        "YouTube",
+        "Television"
+      ],
+      "transformations": [
+        {
+          "type": "splitting",
+          "split_in": {
+            "info_traditional": [
+              "Print newspapers or magazines",
+              "Television",
+              "Radio"
+            ],
+            "info_online": [
+              "Online newspapers or magazines (including apps, blogs, scientific journals)",
+              "Wikipedia",
+              "Youtube",
+              "Podcast or radio podcast",
+              "Internet searches",
+              "Reddit"
+            ],
+            "info_social": [
+              "Instagram",
+              "Facebook",
+              "X (Twitter)",
+              "LinkedIn",
+              "Telegram channels",
+              "TikTok"
+            ]
+          }
+        },
+        {
+          "type": "removal",
+          "removal_reason": "redundant",
+          "removal_redundant_col": "info_*"
+        }
+      ]
+    },
+    {
+      "id": "info_general_16_TEXT",
+      "section": "info_source",
+      "question": "Select the entertainment, interaction (including social media) and information channels that you primarily use.",
+      "answer": "Other channels not listed above",
+      "missing_percentage": 99,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "redundant",
+          "removal_redundant_col": "info_general"
+        }
+      ]
+    },
+    {
+      "id": "info_trust_vax_1",
+      "section": "info_source",
+      "question": "How much do you trust the information on vaccines/vaccination programs that you find on Print newspapers or magazines?",
+      "answer": [
+        "I never found information on vaccines on this channel",
+        "Completely",
+        "Not at all",
+        "Very",
+        "A little",
+        "Quite"
+      ],
+      "missing_percentage": 77,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "info_trust_vax_print"
+        }
+      ]
+    },
+    {
+      "id": "info_trust_vax_2",
+      "section": "info_source",
+      "question": "How much do you trust the information on vaccines/vaccination programs that you find on Online newspapers or magazines (including apps, blogs, scientific journals)?",
+      "answer": [
+        "I never found information on vaccines on this channel",
+        "Completely",
+        "Not at all",
+        "Very",
+        "A little",
+        "Quite"
+      ],
+      "missing_percentage": 70,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "info_trust_vax_online_news"
+        }
+      ]
+    },
+    {
+      "id": "info_trust_vax_3",
+      "section": "info_source",
+      "question": "How much do you trust the information on vaccines/vaccination programs that you find on Television?",
+      "answer": [
+        "I never found information on vaccines on this channel",
+        "Completely",
+        "Not at all",
+        "Very",
+        "A little",
+        "Quite"
+      ],
+      "missing_percentage": 32,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "info_trust_vax_television"
+        }
+      ]
+    },
+    {
+      "id": "info_trust_vax_4",
+      "section": "info_source",
+      "question": "How much do you trust the information on vaccines/vaccination programs that you find on Radio?",
+      "answer": [
+        "I never found information on vaccines on this channel",
+        "Completely",
+        "Not at all",
+        "Very",
+        "A little",
+        "Quite"
+      ],
+      "missing_percentage": 60,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "info_trust_vax_radio"
+        }
+      ]
+    },
+    {
+      "id": "info_trust_vax_5",
+      "section": "info_source",
+      "question": "How much do you trust the information on vaccines/vaccination programs that you find on Podcast or radio podcast?",
+      "answer": [
+        "Completely",
+        "I never found information on vaccines on this channel",
+        "Not at all",
+        "Very",
+        "A little",
+        "Quite"
+      ],
+      "missing_percentage": 83,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "info_trust_vax_podcast"
+        }
+      ]
+    },
+    {
+      "id": "info_trust_vax_6",
+      "section": "info_source",
+      "question": "How much do you trust the information on vaccines/vaccination programs that you find on Internet searches?",
+      "answer": [
+        "I never found information on vaccines on this channel",
+        "Completely",
+        "Not at all",
+        "Very",
+        "A little",
+        "Quite"
+      ],
+      "missing_percentage": 43,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "info_trust_vax_internet_searches"
+        }
+      ]
+    },
+    {
+      "id": "info_trust_vax_7",
+      "section": "info_source",
+      "question": "How much do you trust the information on vaccines/vaccination programs that you find on Wikipedia?",
+      "answer": [
+        "Completely",
+        "I never found information on vaccines on this channel",
+        "Not at all",
+        "Very",
+        "A little",
+        "Quite"
+      ],
+      "missing_percentage": 70,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "info_trust_vax_wikipedia"
+        }
+      ]
+    },
+    {
+      "id": "info_trust_vax_8",
+      "section": "info_source",
+      "question": "How much do you trust the information on vaccines/vaccination programs that you find on Instagram?",
+      "answer": [
+        "Completely",
+        "Very",
+        "I never found information on vaccines on this channel",
+        "Quite",
+        "Not at all",
+        "A little"
+      ],
+      "missing_percentage": 53,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "info_trust_vax_instagram"
+        }
+      ]
+    },
+    {
+      "id": "info_trust_vax_9",
+      "section": "info_source",
+      "question": "How much do you trust the information on vaccines/vaccination programs that you find on Facebook?",
+      "answer": [
+        "Completely",
+        "Very",
+        "I never found information on vaccines on this channel",
+        "Quite",
+        "A little",
+        "Not at all"
+      ],
+      "missing_percentage": 42,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "info_trust_vax_facebook"
+        }
+      ]
+    },
+    {
+      "id": "info_trust_vax_10",
+      "section": "info_source",
+      "question": "How much do you trust the information on vaccines/vaccination programs that you find on X (Twitter)?",
+      "answer": [
+        "Completely",
+        "I never found information on vaccines on this channel",
+        "Very",
+        "Quite",
+        "Not at all",
+        "A little"
+      ],
+      "missing_percentage": 80,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "info_trust_vax_twitter"
+        }
+      ]
+    },
+    {
+      "id": "info_trust_vax_11",
+      "section": "info_source",
+      "question": "How much do you trust the information on vaccines/vaccination programs that you find on LinkedIn?",
+      "answer": [
+        "Completely",
+        "Very",
+        "I never found information on vaccines on this channel",
+        "Not at all",
+        "A little",
+        "Quite"
+      ],
+      "missing_percentage": 88,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "info_trust_vax_linkedin"
+        }
+      ]
+    },
+    {
+      "id": "info_trust_vax_12",
+      "section": "info_source",
+      "question": "How much do you trust the information on vaccines/vaccination programs that you find on Telegram channels?",
+      "answer": [
+        "Completely",
+        "I never found information on vaccines on this channel",
+        "Very",
+        "Quite",
+        "Not at all",
+        "A little"
+      ],
+      "missing_percentage": 89,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "info_trust_vax_telegram"
+        }
+      ]
+    },
+    {
+      "id": "info_trust_vax_13",
+      "section": "info_source",
+      "question": "How much do you trust the information on vaccines/vaccination programs that you find on TikTok?",
+      "answer": [
+        "Completely",
+        "I never found information on vaccines on this channel",
+        "Very",
+        "Quite",
+        "Not at all",
+        "A little"
+      ],
+      "missing_percentage": 68,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "info_trust_vax_tiktok"
+        }
+      ]
+    },
+    {
+      "id": "info_trust_vax_14",
+      "section": "info_source",
+      "question": "How much do you trust the information on vaccines/vaccination programs that you find on YouTube?",
+      "answer": [
+        "Completely",
+        "I never found information on vaccines on this channel",
+        "Very",
+        "Not at all",
+        "Quite",
+        "A little"
+      ],
+      "missing_percentage": 39,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "info_trust_vax_youtube"
+        }
+      ]
+    },
+    {
+      "id": "info_trust_vax_15",
+      "section": "info_source",
+      "question": "How much do you trust the information on vaccines/vaccination programs that you find on Reddit?",
+      "answer": [
+        "Completely",
+        "I never found information on vaccines on this channel",
+        "Very",
+        "Not at all",
+        "Quite",
+        "A little"
+      ],
+      "missing_percentage": 94,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "info_trust_vax_reddit"
+        }
+      ]
+    },
+    {
+      "id": "info_trust_vax_16",
+      "section": "info_source",
+      "question": "How much do you trust the information on vaccines/vaccination programs that you find on Other?",
+      "answer": [
+        "Completely",
+        "Very",
+        "Quite",
+        "I never found information on vaccines on this channel",
+        "Not at all",
+        "A little"
+      ],
+      "missing_percentage": 99,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "info_trust_vax_other"
+        }
+      ]
+    },
+    {
+      "id": "duration_socialmedia_1",
+      "section": "info_source",
+      "question": "Thinking of your weekly routine, how much time do you usually spend on Wikipedia?",
+      "answer": [
+        "Every day, for more than 1 hour a day",
+        "Every day, for at most 1 hour a day",
+        "Not every day, but more than 2 hours per week",
+        "Less than 2 hours per week"
+      ],
+      "missing_percentage": 70,
+      "transformations": [
+        {
+          "type": "imputation",
+          "imputation_value": "Never"
+        },
+        {
+          "type": "encoding",
+          "encoding": "duration_socialmedia"
+        },
+        {
+          "type": "merging",
+          "merging_in": "duration_infomedia"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "duration_infomedia"
+        }
+      ]
+    },
+    {
+      "id": "duration_socialmedia_2",
+      "section": "info_source",
+      "question": "Thinking of your weekly routine, how much time do you usually spend on Instagram?",
+      "answer": [
+        "Not every day, but more than 2 hours per week",
+        "Every day, for more than 1 hour a day",
+        "Less than 2 hours per week",
+        "Every day, for at most 1 hour a day"
+      ],
+      "missing_percentage": 53,
+      "transformations": [
+        {
+          "type": "imputation",
+          "imputation_value": "Never"
+        },
+        {
+          "type": "encoding",
+          "encoding": "duration_socialmedia"
+        },
+        {
+          "type": "merging",
+          "merging_in": "duration_socialmedia"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "duration_socialmedia"
+        }
+      ]
+    },
+    {
+      "id": "duration_socialmedia_3",
+      "section": "info_source",
+      "question": "Thinking of your weekly routine, how much time do you usually spend on Facebook?",
+      "answer": [
+        "Not every day, but more than 2 hours per week",
+        "Every day, for more than 1 hour a day",
+        "Less than 2 hours per week",
+        "Every day, for at most 1 hour a day"
+      ],
+      "missing_percentage": 42,
+      "transformations": [
+        {
+          "type": "imputation",
+          "imputation_value": "Never"
+        },
+        {
+          "type": "encoding",
+          "encoding": "duration_socialmedia"
+        },
+        {
+          "type": "merging",
+          "merging_in": "duration_socialmedia"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "duration_socialmedia"
+        }
+      ]
+    },
+    {
+      "id": "duration_socialmedia_4",
+      "section": "info_source",
+      "question": "Thinking of your weekly routine, how much time do you usually spend on Telegram channels?",
+      "answer": [
+        "Every day, for more than 1 hour a day",
+        "Every day, for at most 1 hour a day",
+        "Not every day, but more than 2 hours per week",
+        "Less than 2 hours per week"
+      ],
+      "missing_percentage": 89,
+      "transformations": [
+        {
+          "type": "imputation",
+          "imputation_value": "Never"
+        },
+        {
+          "type": "encoding",
+          "encoding": "duration_socialmedia"
+        },
+        {
+          "type": "merging",
+          "merging_in": "duration_socialmedia"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "duration_socialmedia"
+        }
+      ]
+    },
+    {
+      "id": "duration_socialmedia_5",
+      "section": "info_source",
+      "question": "Thinking of your weekly routine, how much time do you usually spend on X (Twitter)?",
+      "answer": [
+        "Every day, for more than 1 hour a day",
+        "Not every day, but more than 2 hours per week",
+        "Every day, for at most 1 hour a day",
+        "Less than 2 hours per week"
+      ],
+      "missing_percentage": 80,
+      "transformations": [
+        {
+          "type": "imputation",
+          "imputation_value": "Never"
+        },
+        {
+          "type": "encoding",
+          "encoding": "duration_socialmedia"
+        },
+        {
+          "type": "merging",
+          "merging_in": "duration_socialmedia"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "duration_socialmedia"
+        }
+      ]
+    },
+    {
+      "id": "duration_socialmedia_6",
+      "section": "info_source",
+      "question": "Thinking of your weekly routine, how much time do you usually spend on LinkedIn?",
+      "answer": [
+        "Every day, for more than 1 hour a day",
+        "Every day, for at most 1 hour a day",
+        "Not every day, but more than 2 hours per week",
+        "Less than 2 hours per week"
+      ],
+      "missing_percentage": 88,
+      "transformations": [
+        {
+          "type": "imputation",
+          "imputation_value": "Never"
+        },
+        {
+          "type": "encoding",
+          "encoding": "duration_socialmedia"
+        },
+        {
+          "type": "merging",
+          "merging_in": "duration_socialmedia"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "duration_socialmedia"
+        }
+      ]
+    },
+    {
+      "id": "duration_socialmedia_7",
+      "section": "info_source",
+      "question": "Thinking of your weekly routine, how much time do you usually spend on TikTok?",
+      "answer": [
+        "Not every day, but more than 2 hours per week",
+        "Less than 2 hours per week",
+        "Every day, for at most 1 hour a day",
+        "Every day, for more than 1 hour a day"
+      ],
+      "missing_percentage": 68,
+      "transformations": [
+        {
+          "type": "imputation",
+          "imputation_value": "Never"
+        },
+        {
+          "type": "encoding",
+          "encoding": "duration_socialmedia"
+        },
+        {
+          "type": "merging",
+          "merging_in": "duration_socialmedia"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "duration_socialmedia"
+        }
+      ]
+    },
+    {
+      "id": "duration_socialmedia_8",
+      "section": "info_source",
+      "question": "Thinking of your weekly routine, how much time do you usually spend on Youtube?",
+      "answer": [
+        "Every day, for more than 1 hour a day",
+        "Every day, for at most 1 hour a day",
+        "Not every day, but more than 2 hours per week",
+        "Less than 2 hours per week"
+      ],
+      "missing_percentage": 39,
+      "transformations": [
+        {
+          "type": "imputation",
+          "imputation_value": "Never"
+        },
+        {
+          "type": "encoding",
+          "encoding": "duration_socialmedia"
+        },
+        {
+          "type": "merging",
+          "merging_in": "duration_infomedia"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "duration_infomedia"
+        }
+      ]
+    },
+    {
+      "id": "duration_socialmedia_9",
+      "section": "info_source",
+      "question": "Thinking of your weekly routine, how much time do you usually spend on Reddit?",
+      "answer": [
+        "Every day, for more than 1 hour a day",
+        "Every day, for at most 1 hour a day",
+        "Not every day, but more than 2 hours per week",
+        "Less than 2 hours per week"
+      ],
+      "missing_percentage": 94,
+      "transformations": [
+        {
+          "type": "imputation",
+          "imputation_value": "Never"
+        },
+        {
+          "type": "encoding",
+          "encoding": "duration_socialmedia"
+        },
+        {
+          "type": "merging",
+          "merging_in": "duration_infomedia"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "duration_infomedia"
+        }
+      ]
+    }
+  ],
+  "new_columns": [
+    {
+      "id": "duration_infomedia",
+      "section": "info_source",
+      "question": "Thinking of your weekly routine, how much time do you usually spend on information channels?",
+      "answer": [
+        "Every day, for more than 1 hour a day",
+        "Every day, for at most 1 hour a day",
+        "Not every day, but more than 2 hours per week",
+        "Less than 2 hours per week"
+      ],
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "duration_socialmedia_1",
+            "duration_socialmedia_8",
+            "duration_socialmedia_9"
+          ]
+        }
+      ],
+      "category": "Media Diet & Exposure",
+      "subcategory": "Time: information channels"
+    },
+    {
+      "id": "duration_socialmedia",
+      "section": "info_source",
+      "question": "Thinking of your weekly routine, how much time do you usually spend on social media?",
+      "answer": [
+        "Not every day, but more than 2 hours per week",
+        "Every day, for more than 1 hour a day",
+        "Less than 2 hours per week",
+        "Every day, for at most 1 hour a day"
+      ],
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "duration_socialmedia_2",
+            "duration_socialmedia_3",
+            "duration_socialmedia_4",
+            "duration_socialmedia_5",
+            "duration_socialmedia_6",
+            "duration_socialmedia_7"
+          ]
+        }
+      ],
+      "category": "Media Diet & Exposure",
+      "subcategory": "Time: social media"
+    },
+    {
+      "id": "time_wikipedia",
+      "question": "Alias of duration_socialmedia_1 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "duration_socialmedia_1"
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "time_instagram",
+      "question": "Alias of duration_socialmedia_2 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "duration_socialmedia_2"
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "time_facebook",
+      "question": "Alias of duration_socialmedia_3 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "duration_socialmedia_3"
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "time_telegram",
+      "question": "Alias of duration_socialmedia_4 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "duration_socialmedia_4"
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "time_twitter",
+      "question": "Alias of duration_socialmedia_5 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "duration_socialmedia_5"
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "time_linkedin",
+      "question": "Alias of duration_socialmedia_6 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "duration_socialmedia_6"
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "time_tiktok",
+      "question": "Alias of duration_socialmedia_7 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "duration_socialmedia_7"
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "time_youtube",
+      "question": "Alias of duration_socialmedia_8 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "duration_socialmedia_8"
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "time_reddit",
+      "question": "Alias of duration_socialmedia_9 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "duration_socialmedia_9"
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_trust_vax_print",
+      "question": "Alias of info_trust_vax_1 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "info_trust_vax_1"
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_trust_vax_online_news",
+      "question": "Alias of info_trust_vax_2 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "info_trust_vax_2"
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_trust_vax_television",
+      "question": "Alias of info_trust_vax_3 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "info_trust_vax_3"
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_trust_vax_radio",
+      "question": "Alias of info_trust_vax_4 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "info_trust_vax_4"
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_trust_vax_podcast",
+      "question": "Alias of info_trust_vax_5 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "info_trust_vax_5"
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_trust_vax_internet_searches",
+      "question": "Alias of info_trust_vax_6 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "info_trust_vax_6"
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_trust_vax_wikipedia",
+      "question": "Alias of info_trust_vax_7 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "info_trust_vax_7"
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_trust_vax_instagram",
+      "question": "Alias of info_trust_vax_8 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "info_trust_vax_8"
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_trust_vax_facebook",
+      "question": "Alias of info_trust_vax_9 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "info_trust_vax_9"
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_trust_vax_twitter",
+      "question": "Alias of info_trust_vax_10 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "info_trust_vax_10"
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_trust_vax_linkedin",
+      "question": "Alias of info_trust_vax_11 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "info_trust_vax_11"
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_trust_vax_telegram",
+      "question": "Alias of info_trust_vax_12 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "info_trust_vax_12"
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_trust_vax_tiktok",
+      "question": "Alias of info_trust_vax_13 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "info_trust_vax_13"
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_trust_vax_youtube",
+      "question": "Alias of info_trust_vax_14 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "info_trust_vax_14"
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_trust_vax_reddit",
+      "question": "Alias of info_trust_vax_15 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "info_trust_vax_15"
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_trust_vax_other",
+      "question": "Alias of info_trust_vax_16 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "info_trust_vax_16"
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "trust_traditional",
+      "question": "Average trust in traditional media vaccine information",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "info_trust_vax_print",
+            "info_trust_vax_television",
+            "info_trust_vax_radio"
+          ]
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "trust_onlineinfo",
+      "question": "Average trust in online informational sources (news, Wikipedia, long-form video/podcasts)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "info_trust_vax_online_news",
+            "info_trust_vax_wikipedia",
+            "info_trust_vax_youtube",
+            "info_trust_vax_podcast"
+          ]
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "trust_social",
+      "question": "Average trust in social platforms for vaccine information",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "info_trust_vax_facebook",
+            "info_trust_vax_instagram",
+            "info_trust_vax_twitter",
+            "info_trust_vax_tiktok",
+            "info_trust_vax_telegram",
+            "info_trust_vax_linkedin"
+          ]
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_general__other",
+      "question": "Information channel primarily used: Other:",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "info_general",
+          "values": [
+            "Other:"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "Other:": 1
+          }
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_general__reddit",
+      "question": "Information channel primarily used: Reddit",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "info_general",
+          "values": [
+            "Reddit"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "Reddit": 1
+          }
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_general__telegram_channels",
+      "question": "Information channel primarily used: Telegram channels",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "info_general",
+          "values": [
+            "Telegram channels"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "Telegram channels": 1
+          }
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_general__linkedin",
+      "question": "Information channel primarily used: LinkedIn",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "info_general",
+          "values": [
+            "LinkedIn"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "LinkedIn": 1
+          }
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_general__podcast_or_radio_podcast",
+      "question": "Information channel primarily used: Podcast or radio podcast",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "info_general",
+          "values": [
+            "Podcast or radio podcast"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "Podcast or radio podcast": 1
+          }
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_general__x_twitter",
+      "question": "Information channel primarily used: X (Twitter)",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "info_general",
+          "values": [
+            "X (Twitter)"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "X (Twitter)": 1
+          }
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_general__print_newspapers_or_magazines",
+      "question": "Information channel primarily used: Print newspapers or magazines",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "info_general",
+          "values": [
+            "Print newspapers or magazines"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "Print newspapers or magazines": 1
+          }
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_general__online_newspapers_or_magazines_including_apps_blogs_scientific_journals",
+      "question": "Information channel primarily used: Online newspapers or magazines (including apps, blogs, scientific journals)",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "info_general",
+          "values": [
+            "Online newspapers or magazines (including apps, blogs, scientific journals)"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "Online newspapers or magazines (including apps, blogs, scientific journals)": 1
+          }
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_general__wikipedia",
+      "question": "Information channel primarily used: Wikipedia",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "info_general",
+          "values": [
+            "Wikipedia"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "Wikipedia": 1
+          }
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_general__tiktok",
+      "question": "Information channel primarily used: TikTok",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "info_general",
+          "values": [
+            "TikTok"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "TikTok": 1
+          }
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_general__radio",
+      "question": "Information channel primarily used: Radio",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "info_general",
+          "values": [
+            "Radio"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "Radio": 1
+          }
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_general__instagram",
+      "question": "Information channel primarily used: Instagram",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "info_general",
+          "values": [
+            "Instagram"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "Instagram": 1
+          }
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_general__internet_searches",
+      "question": "Information channel primarily used: Internet searches",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "info_general",
+          "values": [
+            "Internet searches"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "Internet searches": 1
+          }
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_general__facebook",
+      "question": "Information channel primarily used: Facebook",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "info_general",
+          "values": [
+            "Facebook"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "Facebook": 1
+          }
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_general__youtube",
+      "question": "Information channel primarily used: YouTube",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "info_general",
+          "values": [
+            "YouTube"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "YouTube": 1
+          }
+        }
+      ],
+      "section": "info_source"
+    },
+    {
+      "id": "info_general__television",
+      "question": "Information channel primarily used: Television",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "info_general",
+          "values": [
+            "Television"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "Television": 1
+          }
+        }
+      ],
+      "section": "info_source"
+    }
+  ]
+}

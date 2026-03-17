@@ -1,0 +1,890 @@
+# Decision functions for preventive behaviour {#sec-03-decision-function}
+
+The literature review established a simple requirement for behavioural epidemic models: aggregate fit is not enough, because different micro-mechanisms can generate similar macro trajectories. This chapter therefore builds an empirical benchmark from cross-sectional survey regularities. The aim is not to recover a full causal theory of prevention, but to estimate the profile–outcome patterns that a credible behavioural mechanism should reproduce if it is later used in simulation.
+
+This chapter uses those observed regularities to build a compact empirical representation of prevention behaviour. It does so by reducing the questionnaire to a smaller set of theory-guided blocks and then using those blocks to estimate two equation families. First, *behavioural outcome equations* relate each preventive outcome to the retained block variables and controls. They identify which parts of the survey profile carry unique signal for each outcome. Second, *psychological profile regressions* relate a small set of key profile variables, including trust, legitimacy, perceived stakes, and norms, to the broader covariate block structure. These regressions describe how those psychological profile variables co-vary with the wider survey profile, helping place them within the broader block structure.
+
+The empirical base is a multi-country survey ($N \approx 22{,}246$; Italy, Spain, France, Germany, Hungary, and the United Kingdom), run in 2024, containing multiple prevention outcomes and a high-dimensional set of candidate correlates. Full details on survey design, preprocessing, index construction, and the preliminary descriptive and bivariate association analyses are reported in @sec-appendix-dataset-details.
+
+@tbl-core-outcomes summarises the five core outcomes used as behavioural targets: one COVID vaccination outcome tied to the first–second dose phase ($T_{12}$), three non-pharmaceutical prevention decisions (masking when symptomatic in crowded places, staying home when symptomatic, and masking under high epidemic pressure), and one routine vaccination outcome (flu vaccination in 2023/2024).^[Alternative outcomes were considered but not retained as core targets. Although the 2024 measure of current COVID willingness could reduce recall concerns, and “ever vaccinated” would provide a simple binary margin, I do not use either as a core target: current willingness largely reflects a later-stage booster decision and exhibits a pronounced floor effect, while ever-vaccinated status is heavily confounded by country- and phase-specific policy regimes. I also exclude policy attitudes such as mandate support because they are preferences about regulation rather than protective actions themselves.] Throughout the thesis, I refer to these three non-pharmaceutical prevention outcomes collectively as NPIs. I also use CoVax as shorthand for COVID vaccination-related constructs.
+
+```{python}
+#| echo: false
+import json
+from pathlib import Path
+from IPython.display import Markdown, display
+import polars as pl
+
+from utils.analysis_utils import outcome_type_map
+from utils.ch03_plot_tables import (
+    render_lobo_bic_block_outcome_heatmap,
+    render_reference_signal_magnitude,
+)
+from utils.ch04_plot_tables import render_belief_reference_signal_magnitude
+from utils.chapter_io import read_csv_fast
+from utils.engine_labels import (
+    BELIEF_SIGNAL_MECHANISM_BUCKET_LABELS,
+    BELIEF_SIGNAL_MECHANISM_BUCKET_MAP,
+    BELIEF_SIGNAL_MECHANISM_BUCKET_ORDER,
+    BELIEF_OUTCOME_ORDER as BELIEF_OUTCOME_ORDER_ENGINE,
+    CHOICE_ENGINE_BLOCK_LABELS,
+    label_belief_engine,
+)
+from utils.qmd_utils import fmt_int as _fmt_int
+from utils.qmd_utils import fmt_pct as _fmt_pct
+from utils.qmd_utils import label_for as _label_for
+from utils.qmd_utils import load_labels
+from utils.table_utils import (
+    effect_with_sig,
+    format_pseudo_r2,
+    format_pseudo_ratio,
+    load_coefficients,
+    load_pseudo_r2,
+    render_markdown_table,
+)
+
+ARTIFACT_EMPIRICAL = Path("../thesis/artifacts/empirical")
+DESCRIPTIVES = ARTIFACT_EMPIRICAL / "descriptives"
+MODELING = ARTIFACT_EMPIRICAL / "modeling"
+LABELS = load_labels(variant="short")
+OUTCOME_TYPES = outcome_type_map()
+REF_PLAN = MODELING / "model_plan_ref_choice.json"
+
+with REF_PLAN.open("r", encoding="utf-8") as f:
+    _plan_rows = json.load(f)
+
+REF_CHOICE_OUTCOMES: list[str] = list(dict.fromkeys(row["outcome"] for row in _plan_rows))
+COEFS = load_coefficients([MODELING / "model_coefficients_all.csv"])
+PSEUDO_R2 = load_pseudo_r2(MODELING / "model_summary.csv")
+
+
+def fetch(model: str, term: str) -> tuple[str, str, str]:
+    return COEFS.format_entry(model, term)
+
+
+def beta_z_md(model: str, term: str, *, signed: bool = False):
+    return COEFS.beta_z_md(model, term, signed=signed)
+
+
+def pseudo_r2(model: str, *, digits: int = 2) -> str:
+    return format_pseudo_r2(PSEUDO_R2, model, digits=digits)
+
+
+def pseudo_ratio(
+    numerator_model: str,
+    denominator_model: str,
+) -> str:
+    return format_pseudo_ratio(
+        PSEUDO_R2,
+        numerator_model=numerator_model,
+        denominator_model=denominator_model,
+    )
+
+# The ref-choice plan uses current willingness (`vax_willingness_Y`), but for the
+# thesis narrative we anchor the descriptive "core outcomes" table on willingness
+# at the initial offer stage (`vax_willingness_T12`).
+TABLE_OUTCOMES: list[str] = [
+    ("vax_willingness_T12" if o == "vax_willingness_Y" else o) for o in REF_CHOICE_OUTCOMES
+]
+
+binary_summary = read_csv_fast(DESCRIPTIVES / "binary_summary.csv")
+continuous_summary = read_csv_fast(DESCRIPTIVES / "continuous_summary.csv")
+ordinal_summary = read_csv_fast(DESCRIPTIVES / "ordinal_summary.csv")
+
+
+def label_for(var_name: str) -> str:
+    return _label_for(var_name, labels=LABELS)
+
+
+def _row_by_variable(df, variable: str) -> dict:
+    hit = df.filter(pl.col("variable") == variable)
+    if hit.height != 1:
+        raise KeyError(f"Expected exactly 1 row for variable='{variable}', got {hit.height}")
+    return hit.to_dicts()[0]
+
+
+def _fmt_n_missing(n: int, missing_pct: float) -> str:
+    return f"{_fmt_int(n)} ({_fmt_pct(missing_pct)})"
+
+
+def _ordinal_scale_for(var: str) -> str:
+    scales = {
+        "vax_willingness_T12": "1-5",
+        "stay_home_when_symptomatic": "1-7",
+        "mask_when_symptomatic_crowded": "1-7",
+        "mask_when_pressure_high": "1-7",
+    }
+    return scales.get(var, "")
+
+
+def _fmt_ordinal_distribution(median: float, iqr: float) -> str:
+    """Format ordinal distribution with an inline line break."""
+    return f"Median {median}<br>(IQR {iqr})"
+
+
+def _core_outcome_rows() -> list[list[str]]:
+    rows: list[list[str]] = []
+    for var in TABLE_OUTCOMES:
+        var_type = OUTCOME_TYPES.get(var)
+        if var_type == "binary":
+            stats = _row_by_variable(binary_summary, var)
+            rows.append(
+                [
+                    label_for(var),
+                    "Binary",
+                    _fmt_n_missing(int(stats["n"]), float(stats["missing_pct"])),
+                    f"{_fmt_int(stats['positive_count'])} ({_fmt_pct(float(stats['positive_pct']))})",
+                ]
+            )
+            continue
+        if var_type == "ordinal":
+            stats = _row_by_variable(ordinal_summary, var)
+            rows.append(
+                [
+                    label_for(var),
+                    f"Ordinal ({_ordinal_scale_for(var)})",
+                    _fmt_n_missing(int(stats["n"]), float(stats["missing_pct"])),
+                    _fmt_ordinal_distribution(stats["median"], stats["iqr"]),
+                ]
+            )
+            continue
+        if var_type == "continuous":
+            stats = _row_by_variable(continuous_summary, var)
+            rows.append(
+                [
+                    label_for(var),
+                    "Continuous",
+                    _fmt_n_missing(int(stats["n"]), float(stats["missing_pct"])),
+                    f"Mean {stats['mean']:.2f} (SD {stats['std']:.2f})",
+                ]
+            )
+            continue
+        raise KeyError(f"Unknown outcome type for '{var}': {var_type!r}")
+    return rows
+
+
+table_md = render_markdown_table(
+    ["Outcome", "Scale", "N (missing%)", "Distribution"],
+    _core_outcome_rows(),
+)
+
+display(Markdown(f"Table: Core outcomes used as behavioural targets {{#tbl-core-outcomes}}\n\n{table_md}"))
+```
+
+## From survey items to blocks {#sec-03-items-to-blocks}
+
+The questionnaire spans hundreds of items across multiple domains, but the behavioural layer used in the analysis must remain compact enough to interpret and model. Working directly with the full survey would make the behavioural layer too high-dimensional to interpret cleanly.
+
+Guided by the framework developed in the literature review [@rogers_1975_protection_motivation; @ajzen_1991_the; @macdonald_2015_vaccine_hesitancy], I group survey-derived variables into a small number of theory-guided blocks, including stakes, trust, legitimacy, norms, disposition, habit, and moral orientation. These blocks provide an interpretable representation of the main domains relevant to prevention, and they serve as the main units used for screening, ablation, and interpretation.
+
+I construct and screen these blocks through a workflow designed for the modelling goals of this thesis. The workflow proceeds in five steps:
+
+1. **Build survey-derived variables**
+
+    The first task is to reduce the high-dimensional questionnaire to a manageable set of derived variables. This involves recoding items where needed and aggregating related items into interpretable derived measures (averages and multi-item indices) that align with established constructs, following standard construct-development and item-reduction logic [@boateng_2018_best_practices]. For multi-item indices, internal consistency is assessed with Cronbach’s $\alpha$, which summarises how items co-vary relative to the variance of their composite score [@cronbach_1951_coefficient; @cortina_1993_what]. The aim is to retain interpretable derived variables and defer decisions about which to model until later screening.
+
+2. **Group variables into theory-guided blocks**
+
+    Next, I group the survey-derived variables into theory‑guided blocks such as stakes, trust, legitimacy, norms, disposition, habit and moral orientation. Each block collects variables from a common domain so they can be screened and interpreted together. Composition may vary across outcomes, particularly when disease‑specific measures are most relevant.
+
+3. **Estimate broad reference equations**
+
+    Once the blocks are defined, I estimate two equation families. *Behavioural outcome equations* model each preventive outcome as a function of country effects, a minimal set of demographic and socioeconomic controls, and the retained block members. *Psychological profile regressions* model a small set of psychological profile variables used later in the thesis, trust, legitimacy, perceived stakes, and norms, as functions of broader covariate blocks and controls.
+
+    I begin from deliberately broad specifications before imposing sparsity, so later selection is based on each block’s unique contribution conditional on the others. These relationships are estimated using generalized linear models matched to each outcome’s measurement scale [@mccullagh_nelder_1989], with a common missing-data policy to preserve row comparability across specifications (see @sec-appendix-missing-data). Continuous predictors are standardised before estimation to improve numerical stability and to make coefficient magnitudes more comparable within a model. This choice keeps the modelling layer explicit: coefficients encode how retained variables relate to each outcome, which supports mechanism-focused modelling and later counterfactual interpretation [@shmueli_2010_explain_predict]. More flexible black-box learners could improve predictive fit, but they would make the resulting behavioural layer harder to inspect and justify in a policy-facing simulator [@rudin_2019_stop_explaining].
+
+4. **Screen blocks for unique signal**
+
+    The broad starting specification is too inclusive to serve directly as the final behavioural representation. I therefore evaluate blocks with a *leave-one-block-out (LOBO)* diagnostic: remove one block at a time, refit the model, and record the change in fit. This block-level version of leave-one-covariate-out asks whether a block adds unique information once the others are in place [@lei_2018_distribution_free; @verdinelli_2024_decorrelated].
+
+    Fit changes are summarised by
+    $$
+    \Delta \mathrm{BIC}_b = \mathrm{BIC}(M_{-b}) - \mathrm{BIC}(M_{\mathrm{all}})
+    $$
+    where $M_{\mathrm{all}}$ denotes the model with all retained blocks and $M_{-b}$ is the same model with block $b$ omitted. A positive $\Delta \mathrm{BIC}_b$ indicates that omitting the block worsens fit, i.e. the block contributes unique signal conditional on the others.
+
+5. **Freeze the retained representation**
+
+    After block screening, I fix the retained representation used in the main analyses. When several variables capture closely related aspects of a conceptual block, I retain a small non‑overlapping subset and avoid stacking near‑duplicates. This keeps the representation compact and interpretable while limiting redundancy. The retained block members and their definitions are summarised in @tbl-construct-dictionary, while the full reference outcome backbone, including retained predictors and their standardised coefficients across behaviours, are reported in @tbl-appendix-predictors-estimate and @tbl-appendix-predictors-estimate-npi.
+
+```{python}
+#| echo: false
+#| label: tbl-construct-dictionary
+#| tbl-cap: "**Block dictionary.** Main blocks in the behavioural backbone and how they are measured in the survey."
+from IPython.display import Markdown, display
+
+from utils.table_utils import render_markdown_table
+
+
+def _fmt_blocks(items: list[str]) -> str:
+    if not items:
+        return "—"
+    return "; ".join(items)
+
+
+PROFILE_VARIABLE_SPECS = [
+    {
+        "variable": "Institutional trust",
+        "measured": "Trust in vaccine information sources tied to institutions and expert authorities.",
+    },
+    {
+        "variable": "Group trust",
+        "measured": "Trust in vaccine information from closer social contacts.",
+    },
+    {
+        "variable": "CoVax legitimacy",
+        "measured": "Perceived legitimacy of vaccination governance, captured by the approval-process and mandate-scepticism index.",
+    },
+    {
+        "variable": "Disposition (5C)",
+        "measured": "Pro-vaccine disposition captured by the 5C framework, using either the summary index or selected subcomponents depending on the outcome.",
+    },
+    {
+        "variable": "Stakes",
+        "measured": "Perceived disease stakes, captured by perceived COVID danger at first/second dose offer or by disease fear / likelihood / severity components where more appropriate.",
+    },
+    {
+        "variable": "Norms",
+        "measured": "Perceived vaccination norms and close-circle social climate, including family, friends, colleagues, and the vaccine-norm index where used.",
+    },
+    {
+        "variable": "Moral orientation",
+        "measured": "Moral-ideological orientation captured by progressive orientation and MFQ binding indices.",
+    },
+    {
+        "variable": "Habit",
+        "measured": "Behavioural inertia captured by past vaccination history, especially multi-season flu uptake.",
+    },
+    {
+        "variable": "Controls",
+        "measured": "Demographic and socioeconomic controls, including age, sex, education, income, minority status, and religion.",
+    }
+]
+
+
+# Broader covariate blocks used in psychological profile regressions.
+PROFILE_REGRESSION_BLOCKS_BY_VARIABLE: dict[str, list[str]] = {
+    "Institutional trust": [
+        "Information environment",
+        "Health history",
+        "Ideology",
+        "Norms",
+        "Moral orientation",
+        "Controls",
+    ],
+    "Group trust": [
+        "Institutional trust",
+        "Information environment",
+        "Social interaction",
+        "Moral orientation",
+    ],
+    "CoVax legitimacy": [
+        "Institutional trust",
+        "Ideology",
+    ],
+    "Disposition (5C)": [
+        "Institutional trust",
+        "Information environment",
+        "Accessibility",
+        "Norms",
+        "Moral orientation",
+        "Controls",
+    ],
+    "Stakes": [
+        "Health history",
+        "Ideology",
+        "Institutional trust",
+        "Controls",
+    ],
+    "Norms": [
+        "Information environment",
+        "Social interaction",
+        "Moral orientation",
+        "Controls",
+    ],
+    "Moral orientation": [],
+    "Habit": [],
+    "Controls (Demography/SES)": [],
+}
+
+rows = []
+for spec in PROFILE_VARIABLE_SPECS:
+    variable = spec["variable"]
+    # broader blocks column removed as per updated table design
+    rows.append(
+        [
+            variable,
+            spec["measured"],
+        ]
+    )
+
+# generate table markdown only (caption handled by chunk option)
+table_md = render_markdown_table(
+    ["Block", "Measurement"],
+    rows,
+)
+display(Markdown(table_md))
+```
+
+## Block structure across outcomes {#sec-03-behavioural-architecture}
+
+```{python}
+#| echo: false
+#| fig-pos: "H"
+#| label: fig-lobo-bic-block-outcome
+#| fig-cap: "**Block importance by outcome from leave-one-block-out (LOBO) ablation.** Cell values are relative importance weights based on the change in BIC when removing each block, $w_{k,o}=\\max(\\Delta\\mathrm{BIC}_{k,o},0)/\\sum_j\\max(\\Delta\\mathrm{BIC}_{j,o},0)$. COVID willingness at $T_{12}$ is weighted most strongly toward stakes, with additional contributions from legitimacy, trust, and disposition. Flu vaccination with habit is dominated by habit, while the no-habit flu column isolates the remaining behavioural blocks once inertia is excluded. The NPI outcomes are weighted most strongly toward moral orientation, with stakes remaining non-negligible. Hatched cells denote blocks not included for that outcome."
+from IPython.display import Markdown, display
+from utils.outcome_labels import EXTENDED_OUTCOME_ORDER, label_outcome_short
+
+_lobo_msg = render_lobo_bic_block_outcome_heatmap(
+    label_outcome=label_outcome_short,
+    extended_outcome_order=list(EXTENDED_OUTCOME_ORDER),
+    block_labels=CHOICE_ENGINE_BLOCK_LABELS,
+)
+if _lobo_msg:
+    display(Markdown(f"*{_lobo_msg}*"))
+```
+
+```{python}
+#| echo: false
+from pathlib import Path
+import polars as pl
+
+from utils.chapter_io import read_csv_fast
+
+_spearman_signed = read_csv_fast(Path("../thesis/artifacts/empirical/decision_function/spearman_signed_selected.csv"))
+_spearman_abs = read_csv_fast(Path("../thesis/artifacts/empirical/decision_function/spearman.csv"))
+_coef_all = read_csv_fast(MODELING / "model_coefficients_all.csv")
+
+
+def rho(var_x: str, var_y: str, *, digits: int = 2) -> str:
+    """Signed Spearman rho from exported compact pair summaries."""
+    hit = _spearman_signed.filter(
+        (
+            (pl.col("var_x") == var_x)
+            & (pl.col("var_y") == var_y)
+        )
+        | (
+            (pl.col("var_x") == var_y)
+            & (pl.col("var_y") == var_x)
+        )
+    )
+    if hit.height != 1:
+        return "NA"
+    return f"{float(hit.get_column('rho_signed')[0]):.{digits}f}"
+
+
+def rho_abs(var_x: str, var_y: str, *, digits: int = 2) -> str:
+    """Absolute Spearman effect-size export used in inferential views."""
+    hit = _spearman_abs.filter(
+        (
+            (pl.col("var_x") == var_x)
+            & (pl.col("var_y") == var_y)
+        )
+        | (
+            (pl.col("var_x") == var_y)
+            & (pl.col("var_y") == var_x)
+        )
+    )
+    if hit.height != 1:
+        return "NA"
+    return f"{float(hit.get_column('effect_size')[0]):.{digits}f}"
+
+
+def coef_est(model: str, term: str, *, digits: int = 4) -> str:
+    hit = _coef_all.filter((pl.col("model") == model) & (pl.col("term") == term))
+    if hit.height != 1:
+        return "NA"
+    return f"{float(hit.get_column('estimate')[0]):.{digits}f}"
+
+
+def coef_abs_beta(model: str, term: str, *, digits: int = 2) -> str:
+    hit = _coef_all.filter((pl.col("model") == model) & (pl.col("term") == term))
+    if hit.height != 1:
+        return "NA"
+    return f"{abs(float(hit.get_column('estimate')[0])):.{digits}f}"
+
+
+def coef_abs_beta_range(models: list[str], term: str, *, digits: int = 2) -> str:
+    vals: list[float] = []
+    for model in models:
+        hit = _coef_all.filter((pl.col("model") == model) & (pl.col("term") == term))
+        if hit.height == 1:
+            vals.append(abs(float(hit.get_column("estimate")[0])))
+    if not vals:
+        return "NA"
+    return f"{min(vals):.{digits}f}-{max(vals):.{digits}f}"
+
+
+def coef_abs_z(model: str, term: str, *, digits: int = 2) -> str:
+    hit = _coef_all.filter((pl.col("model") == model) & (pl.col("term") == term))
+    if hit.height != 1:
+        return "NA"
+    return f"{abs(float(hit.get_column('z_value')[0])):.{digits}f}"
+
+
+def coef_abs_z_range(models: list[str], term: str, *, digits: int = 2) -> str:
+    vals: list[float] = []
+    for model in models:
+        hit = _coef_all.filter((pl.col("model") == model) & (pl.col("term") == term))
+        if hit.height == 1:
+            vals.append(abs(float(hit.get_column("z_value")[0])))
+    if not vals:
+        return "NA"
+    return f"{min(vals):.{digits}f}-{max(vals):.{digits}f}"
+```
+
+I now turn to the retained block structure and its empirical implications across the main prevention outcomes. I distinguish between descriptive associations, summarised by Spearman’s rank correlation $\rho$, and model-based associations, summarised by predictor-level coefficient magnitudes $|\beta|$. For continuous predictors, larger $|\beta|$ indicates a stronger conditional association for a one-SD increase, holding the remaining predictors fixed; binary indicators retain their original coding. Block-level conditional importance is summarised by the LOBO results introduced above.
+
+For COVID vaccination willingness at $T_{12}$, the LOBO results in @fig-lobo-bic-block-outcome are weighted most strongly toward the stakes block, with additional contributions from the disposition (5C), institutional trust, and legitimacy blocks. This is consistent with a willingness outcome structured primarily by perceived need for protection, and secondarily by confidence in vaccines and the institutions promoting them.
+
+Age and health are salient in the willingness model (age $|\beta|\approx$ `{python} coef_abs_beta("B_COVID_MAIN_vax_willingness_T12", "age")`), but the psychological profile regressions indicate that much of this pattern runs through perceived disease stakes. Legitimacy-related considerations play a smaller role. Age and health indicators are most strongly associated with stakes-related variables, and only more weakly with legitimacy-related ones (age $|\beta|\approx$ `{python} coef_abs_beta("P_LEGIT_covax_legitimacy", "age")`). This matches the bivariate pattern: willingness rises with perceived COVID danger ($\rho \approx$ `{python} rho("vax_willingness_T12", "covid_perceived_danger_T12")`) and even more strongly with 5C confidence ($\rho \approx$ `{python} rho("vax_willingness_T12", "fivec_confidence")`). Perceived vaccine risk is negatively associated with willingness (vaccine risk $\rho \approx$ `{python} rho("vax_willingness_T12", "vaccine_risk_avg")`), but it adds limited incremental signal once the broader disposition block is included. The same overlap appears in the vaccine-risk regression, where 5C confidence has the largest standardised coefficient ($|\beta|\approx$ `{python} coef_abs_beta("P_RISK_vaccine_risk", "fivec_confidence")`).
+
+Institutional trust forms a second major axis. Willingness is positively associated with the institutional trust index ($\rho \approx$ `{python} rho("vax_willingness_T12", "institutional_trust_avg")`), with similar positive associations across major expert-system nodes such as the WHO, GPs, and national or local health institutions. Trust, confidence, and legitimacy nevertheless remain distinct. In the psychological profile regressions, institutional trust is tied most strongly to broader information-environment credibility and social climate, confidence is more closely tied to vaccine-specific information authority and side-effect concerns, and legitimacy is more strongly associated with political positioning. Legitimacy therefore captures a more procedural dimension that can depress willingness even when vaccine evaluation is otherwise favourable.
+
+For flu vaccination, the LOBO map is dominated by habit, matching the descriptive evidence that seasonal uptake is highly persistent across years [@ouellette_1998_habit_intention; @gardner_2014_habit_health]. Prior-season flu vaccination is by far the strongest correlate of current-season uptake. Because habit swamps the remaining blocks, I also report a second column, “flu vaccination (no habit),” to show which blocks still matter once inertia is excluded.
+
+In that no-habit specification, the profile shifts toward a more clinical risk-and-need pattern. Uptake is steeply stratified by age and health status, and the most salient psychological predictors are flu disease fear (strongly positive) and flu vaccine risk (strongly negative), with additional contributions from general vaccine disposition and trust in medical advice, especially GP vaccine information. Compared with COVID willingness, age and health play a more direct role here. For COVID, age appears mainly to work through stakes within a broader trust and legitimacy environment; for flu, once inertia is removed, age and health map more directly onto perceived clinical need and flu-specific appraisal.
+
+For the three non-pharmaceutical prevention outcomes (masking when symptomatic in crowds, staying home when symptomatic, and masking under high epidemic pressure), the LOBO results are weighted most strongly toward moral orientation, with stakes as a stable secondary block and only smaller residual roles for trust and disposition. The moral contribution is driven mainly by an individualising, prosocial orientation, while binding morality contributes positively but more modestly. Vaccine-specific appraisal is less central.
+
+A potentially surprising result is the relatively small incremental contribution of perceived norms once the other blocks are included. Close-circle norms do correlate with willingness and NPI outcomes, but this association is largely attenuated in the joint models because norm perceptions are strongly aligned both across reference groups and with respondents’ own orientations and choices.
+
+Two non-exclusive mechanisms may explain this overlap. One is homophily and shared environment: respondents often belong to social circles with aligned values and information diets, so perceived norms and behaviour genuinely co-vary [@mcpherson_2001_homophily]. The other is projection (false consensus): when asked what close others think, respondents may partly report a reflection of their own stance, mechanically inflating alignment [@ross_1977_false_consensus].
+
+A second counterintuitive pattern concerns information exposure. Raw time-spent measures in both information media and social media have only weak associations with prevention outcomes: time in information media is essentially flat for both COVID willingness and protective behaviour ($|\rho| \approx$ `{python} rho_abs("vax_willingness_T12", "duration_infomedia")`), and time in social media is small for willingness and near-zero for protective behaviour ($|\rho| \approx$ `{python} rho_abs("vax_willingness_T12", "duration_socialmedia")`). This points to a useful distinction between exposure and uptake of content. Time spent in media is therefore better interpreted as an exposure multiplier, with behavioural relevance increasing when the surrounding information environment is seen as credible and trustworthy.
+
+::: {#fig-equations-diagram fig-cap="**Behavioural blocks across prevention outcomes.** The figure highlights the dominant block–outcome relationships identified in the modelling chapter. Thick edges denote the main links emphasised in the text; thin edges show only a small number of secondary links retained for orientation." fig-pos="H"}
+
+::: {.content-visible when-format="html"}
+
+```{mermaid}
+%%| label: fig-equations-diagram
+---
+config:
+  layout: elk
+  flowchart:
+    curve: basis
+  theme: base
+  themeVariables:
+    background: "#ffffff"
+    lineColor: "#475569"
+    fontFamily: "Roboto, 'Segoe UI', sans-serif"
+    edgeLabelBackground: "#f8fafc"
+    clusterBkg: "#ffffff"
+    clusterBorder: "#cbd5e1"
+---
+flowchart TB
+
+  classDef block fill:#eff6ff,stroke:#60a5fa,stroke-width:1.2px,color:#172554;
+  classDef outcome fill:#fdf2f8,stroke:#f472b6,stroke-width:1.8px,color:#500724;
+
+  subgraph BLOCKS["Behavioural blocks"]
+    MORAL["Moral orientation"]
+    DISP["Disposition (5C)"]
+    TRUST["Institutional trust"]
+    LEGIT["CoVax legitimacy"]
+    STAKES["Stakes"]
+    HABIT["Habit"]
+  end
+
+  subgraph OUTCOMES["Behavioural outcomes"]
+    NPI["NPI behaviours"]
+    COVIDWILL["COVID vaccination willingness (T12)"]
+    FLU["Flu vaccination (2023/2024)"]
+  end
+
+  class MORAL,DISP,TRUST,LEGIT,STAKES,HABIT block;
+  class NPI,COVIDWILL,FLU outcome;
+
+  %% dominant links
+  MORAL ==> NPI
+  STAKES ==> COVIDWILL
+  HABIT ==> FLU
+
+  %% secondary links
+  STAKES --> NPI
+  DISP --> COVIDWILL
+  TRUST --> COVIDWILL
+  LEGIT --> COVIDWILL
+```
+
+:::
+
+::: {.content-visible when-format="pdf"}
+
+![](_generated/mermaid/fig-equations-diagram.png){fig-align="center"}
+
+:::
+
+::: {.content-visible when-format="docx"}
+
+![](_generated/mermaid/fig-equations-diagram.png){fig-align="center"}
+
+:::
+
+:::
+
+## Reference perturbation effects: which levers matter? {#sec-03-perturbation-effects}
+
+
+With the retained block structure in place, I next ask how much the fitted outcomes change when one retained variable is shifted in a realistic way while the rest of the profile is held fixed. The earlier results identify which blocks retain unique signal and which predictors are conditionally important, but not the scale of the implied outcome change under a plausible shift in one variable. That scale is central to the counterfactual use of the model. I therefore consider a simple one-step, *ceteris paribus* perturbation: move a retained variable from a typical low value to a typical high value and record the resulting change in the fitted outcome. This yields an interpretable measure of leverage within the fitted equations and shows which retained variables matter most over realistic ranges.
+
+I formalise this using the individual conditional expectation (ICE) function [@goldstein_2015_peeking; @friedman_2001_greedy]. Let the fitted rule be $f(x,z)$, where $x$ denotes the variable of interest and $z$ collects the remaining covariates. For a given respondent profile $z=z_i$, the ICE curve is
+$$
+\mathrm{ICE}_{f,i}(x)\equiv f(x,z_i), \qquad x \in \mathcal{X},
+$$
+which traces the model’s prediction as the variable of interest is varied. The difference between two points on this curve,
+$$
+\mathrm{ICE}_{f,i}(x_1)-\mathrm{ICE}_{f,i}(x_0)=f(x_1,z_i)-f(x_0,z_i),
+$$
+is therefore the model-implied change associated with moving that variable alone.
+
+I use it only to define a common low-to-high contrast across variables:
+$$
+PE(X;z) := f(x_{\text{high}},z)-f(x_{\text{low}},z),
+$$
+where $x_{\text{low}}$ and $x_{\text{high}}$ are survey-grounded low and high values of the variable of interest $X$. For ordered or continuous variables, I use the within-country 25th and 75th percentiles,
+$$
+x_{\text{low}} = Q_{25}(X), \qquad x_{\text{high}} = Q_{75}(X),
+$$
+and for binary variables,
+$$
+x_{\text{low}}=0, \qquad x_{\text{high}}=1.
+$$
+
+Because the size of that move differs across variables, I also report a scale-free version by expressing the low-to-high shift in SD units,
+$$
+\Delta x^{(\mathrm{SD})}=\frac{x_{\text{high}}-x_{\text{low}}}{\sigma_X},
+$$
+and then scaling the reference perturbation effect accordingly:
+$$
+PE_{\text{std}}(X;z)=\frac{PE(X;z)}{\Delta x^{(\mathrm{SD})}}.
+$$
+
+I report corresponding summaries for behavioural outcomes and for the psychological profile regressions. The first shows which retained variables have the largest model-implied leverage on behaviour. The second shows which broader parts of the survey profile are most strongly associated with movement in the profile variables.
+
+Derivations for the GLM case are reported in @sec-appendix-ice-glm-derivation.
+
+```{python}
+#| echo: false
+#| label: fig-mutable-ref
+#| fig-cap: "**Reference perturbation effects for retained variables by outcome.** For each outcome panel and retained variable, points summarise the absolute standardised perturbation effect, $|PE^{\\mathrm{choice}}_{\\mathrm{std}}|$. Dots indicate the median across respondents; thick segments show the interquartile range ($Q25$–$Q75$); thin segments show the 10th–90th percentile range. Across outcomes, leverage is highest for COVID vaccination willingness, where stakes and CoVax legitimacy stand out most clearly. The NPI outcomes show smaller but non-zero sensitivity concentrated in stakes, with secondary roles for institutional trust and disposition. Norms contribute relatively little incremental leverage once other retained variables are included, and flu vaccination is largely insensitive in the full model, with only small residual sensitivity when habit is excluded."
+#| fig-pos: "H"
+
+from pathlib import Path
+import json
+from IPython.display import Markdown, display
+import numpy as np
+import polars as pl
+
+from utils.chapter_io import read_csv_fast
+from utils.outcome_labels import label_outcome_short
+from utils.qmd_utils import label_for, load_labels
+
+LABELS_LOCAL = load_labels(variant="short")
+REF_ICE_ROOT_MUTABLE = Path("../thesis/artifacts/empirical/decision_function/ref_ice/mutable_full")
+BELIEF_REF_ROWS = Path("../thesis/artifacts/empirical/decision_function/pe_ref_p_rows.parquet")
+BELIEF_REF_SIGNAL_METADATA = Path("../thesis/artifacts/empirical/decision_function/pe_ref_p_signal_metadata.json")
+REF_MODEL_PLAN_PATH = MODELING / "model_plan_ref_choice.json"
+FULL_MODEL_PLAN_PATH = MODELING / "model_plan.json"
+
+BLOCK_COLOR_ORDER = [
+    "stakes_engine",
+    "disposition_engine",
+    "institutional_trust_engine",
+    "group_trust_engine",
+    "trust_engine",
+    "legitimacy_engine",
+    "norms_engine",
+    "moral_engine",
+    "habit_engine",
+    "controls_demography_SES",
+]
+BLOCK_LABELS = dict(CHOICE_ENGINE_BLOCK_LABELS)
+BLOCK_NORMALIZE_MAP = {}
+POLICY_BLOCKS = {
+    "stakes_engine",
+    "vaccine_cost_engine",
+    "disposition_engine",
+    "institutional_trust_engine",
+    "group_trust_engine",
+    "trust_engine",
+    "legitimacy_engine",
+    "norms_engine",
+}
+EXCLUDED_BLOCKS = {"missingness"}
+
+BELIEF_OUTCOME_ORDER = BELIEF_OUTCOME_ORDER_ENGINE
+
+SIGNAL_MECHANISM_BUCKET_MAP = dict(BELIEF_SIGNAL_MECHANISM_BUCKET_MAP)
+SIGNAL_MECHANISM_BUCKET_ORDER = list(BELIEF_SIGNAL_MECHANISM_BUCKET_ORDER)
+SIGNAL_MECHANISM_BUCKET_LABELS = dict(BELIEF_SIGNAL_MECHANISM_BUCKET_LABELS)
+
+
+def _norm_block(block: str) -> str:
+    key = str(block).strip()
+    return BLOCK_NORMALIZE_MAP.get(key, key)
+
+
+def _ref_entries(ref_ice_root: Path) -> list[dict[str, object]]:
+    plan_obj = json.loads(REF_MODEL_PLAN_PATH.read_text(encoding="utf-8"))
+    entries = [
+        row
+        for row in plan_obj
+        if isinstance(row, dict) and row.get("outcome") and row.get("model")
+    ]
+    extra_flu_outcome = "flu_vaccinated_2023_2024_no_habit"
+    extra_flu_model = "B_FLU_vaccinated_2023_2024_ENGINES"
+    if (ref_ice_root / extra_flu_outcome).exists() and not any(
+        str(row.get("outcome", "")).strip() == extra_flu_outcome for row in entries
+    ):
+        extra_predictors: dict[str, object] = {}
+        if FULL_MODEL_PLAN_PATH.exists():
+            raw_full = json.loads(FULL_MODEL_PLAN_PATH.read_text(encoding="utf-8"))
+            if isinstance(raw_full, list):
+                for row in raw_full:
+                    if not isinstance(row, dict):
+                        continue
+                    if (
+                        str(row.get("model", "")).strip() == extra_flu_model
+                        and str(row.get("outcome", "")).strip() == "flu_vaccinated_2023_2024"
+                    ):
+                        predictors = row.get("predictors")
+                        if isinstance(predictors, dict):
+                            extra_predictors = predictors
+                            break
+        entries.append({"outcome": extra_flu_outcome, "model": extra_flu_model, "predictors": extra_predictors})
+    return entries
+
+
+def _collect_choice_pe_std(ref_ice_root: Path, *, context_label: str) -> list[float]:
+    entries = _ref_entries(ref_ice_root)
+    target_rows: list[dict[str, str]] = []
+    all_blocks: list[str] = []
+    for entry in entries:
+        predictors = entry.get("predictors")
+        outcome = str(entry.get("outcome", "")).strip()
+        if not isinstance(predictors, dict) or not outcome:
+            continue
+        for block, cols in predictors.items():
+            if not isinstance(block, str):
+                continue
+            block_norm = _norm_block(block)
+            all_blocks.append(block_norm)
+            if not isinstance(cols, list):
+                continue
+            for col in cols:
+                target = str(col).strip()
+                if target:
+                    target_rows.append({"outcome": outcome, "target": target, "block": block_norm})
+
+    target_map = (
+        pl.DataFrame(target_rows).unique(subset=["outcome", "target"], keep="first")
+        if target_rows
+        else pl.DataFrame()
+    )
+
+    frames: list[pl.DataFrame] = []
+    for entry in entries:
+        outcome = str(entry.get("outcome", "")).strip()
+        model_ref = str(entry.get("model", "")).strip()
+        if not outcome or not model_ref:
+            continue
+        outcome_dir = ref_ice_root / outcome
+        candidate_paths = [
+            outcome_dir / f"ice_ref__{model_ref}.csv",
+            outcome_dir / "ice_ref__linear.csv",
+            outcome_dir / "ice_ref.csv",
+        ]
+        ref_path = next((p for p in candidate_paths if p.exists()), None)
+        if ref_path is None:
+            continue
+        df = read_csv_fast(ref_path)
+        if not {"target", "ice_low", "ice_high", "delta_z"}.issubset(set(df.columns)):
+            continue
+        df = df.with_columns(
+            pl.lit(outcome).alias("outcome"),
+            pl.col("target").cast(pl.Utf8),
+            (pl.col("ice_high").cast(pl.Float64) - pl.col("ice_low").cast(pl.Float64)).alias("pe_ref"),
+            pl.col("delta_z").cast(pl.Float64),
+        ).with_columns(
+            pl.when(pl.col("delta_z").is_finite() & (pl.col("delta_z") != 0))
+            .then((pl.col("pe_ref") / pl.col("delta_z")).abs())
+            .otherwise(float("nan"))
+            .alias("pe_ref_std")
+        )
+        frames.append(df.select("outcome", "target", "pe_ref_std"))
+
+    if not frames:
+        return []
+
+    ref_all = pl.concat(frames, how="diagonal").filter(pl.col("pe_ref_std").is_finite())
+    if ref_all.is_empty():
+        return []
+
+    if not target_map.is_empty():
+        ref_all = ref_all.join(target_map, on=["outcome", "target"], how="inner")
+    if ref_all.is_empty():
+        return []
+
+    block_universe = list(dict.fromkeys(all_blocks))
+    if "mutable" in context_label:
+        block_universe = [b for b in block_universe if b in POLICY_BLOCKS]
+    elif "fixed" in context_label:
+        block_universe = [b for b in block_universe if b not in POLICY_BLOCKS]
+    block_universe = [b for b in block_universe if b not in EXCLUDED_BLOCKS]
+    if block_universe:
+        ref_all = ref_all.filter(pl.col("block").is_in(block_universe))
+
+    return [float(v) for v in ref_all.get_column("pe_ref_std").to_list()]
+
+
+def _collect_belief_q90_std() -> list[float]:
+    if not BELIEF_REF_ROWS.exists():
+        return []
+    raw = pl.read_parquet(BELIEF_REF_ROWS)
+    if not {"signal_id", "state_var", "pe_ref_p_std"}.issubset(set(raw.columns)):
+        return []
+
+    work = (
+        raw.select(
+            pl.col("signal_id").cast(pl.Utf8).alias("signal_id"),
+            pl.col("state_var").cast(pl.Utf8).alias("state_var"),
+            pl.col("pe_ref_p_std").cast(pl.Float64).alias("pe_ref_p_std"),
+        )
+        .with_columns(pl.col("pe_ref_p_std").abs().alias("abs_ref_std"))
+        .drop_nulls(["signal_id", "state_var", "abs_ref_std"])
+        .filter(pl.col("abs_ref_std").is_finite())
+    )
+    if work.is_empty():
+        return []
+
+    if BELIEF_REF_SIGNAL_METADATA.exists():
+        meta = json.loads(BELIEF_REF_SIGNAL_METADATA.read_text(encoding="utf-8"))
+        signal_meta = meta.get("signal_meta") if isinstance(meta, dict) else None
+        allowed: set[tuple[str, str]] = set()
+        if isinstance(signal_meta, dict):
+            for sid, payload in signal_meta.items():
+                if not isinstance(payload, dict):
+                    continue
+                tier_by_var = payload.get("tier_by_var")
+                if not isinstance(tier_by_var, dict):
+                    continue
+                for state_var, tier in tier_by_var.items():
+                    if str(tier).strip() in {"primary", "secondary"}:
+                        allowed.add((str(sid), str(state_var)))
+        if allowed:
+            allowed_df = pl.DataFrame(
+                {
+                    "signal_id": [x[0] for x in allowed],
+                    "state_var": [x[1] for x in allowed],
+                }
+            )
+            work = work.join(allowed_df, on=["signal_id", "state_var"], how="inner")
+            if work.is_empty():
+                return []
+
+    work = work.with_columns(
+        pl.col("signal_id")
+        .map_elements(lambda sid: SIGNAL_MECHANISM_BUCKET_MAP.get(str(sid)), return_dtype=pl.Utf8)
+        .alias("signal_bucket"),
+        pl.col("state_var").alias("belief_block"),
+    ).drop_nulls(["signal_bucket"]).filter(pl.col("belief_block").is_in(BELIEF_OUTCOME_ORDER))
+
+    if work.is_empty():
+        return []
+
+    bucket_summary = (
+        work.group_by(["signal_bucket", "state_var", "belief_block"])
+        .agg(
+            pl.col("abs_ref_std").quantile(0.10, "nearest").alias("q10"),
+            pl.col("abs_ref_std").quantile(0.25, "nearest").alias("q25"),
+            pl.col("abs_ref_std").quantile(0.50, "nearest").alias("q50"),
+            pl.col("abs_ref_std").quantile(0.75, "nearest").alias("q75"),
+            pl.col("abs_ref_std").quantile(0.90, "nearest").alias("q90"),
+        )
+        .drop_nulls(["q90"])
+        .filter(pl.col("q90").is_finite())
+    )
+    if bucket_summary.is_empty():
+        return []
+    return [float(v) for v in bucket_summary.get_column("q90").to_list()]
+
+
+_x_vals = [
+    *[abs(v) for v in _collect_choice_pe_std(REF_ICE_ROOT_MUTABLE, context_label="mutable-engine")],
+    *[abs(v) for v in _collect_belief_q90_std()],
+]
+if _x_vals:
+    CH3_SHARED_PE_STD_XMAX = max(0.05, float(np.quantile(np.asarray(_x_vals, dtype=float), 0.995)))
+else:
+    CH3_SHARED_PE_STD_XMAX = 0.5
+
+_mutable_msg = render_reference_signal_magnitude(
+    ref_ice_root=REF_ICE_ROOT_MUTABLE,
+    context_label="mutable-engine",
+    label_outcome=label_outcome_short,
+    ref_model_plan_path=REF_MODEL_PLAN_PATH,
+    full_model_plan_path=FULL_MODEL_PLAN_PATH,
+    policy_blocks=POLICY_BLOCKS,
+    block_labels=BLOCK_LABELS,
+    block_color_order=BLOCK_COLOR_ORDER,
+    block_normalize_map=BLOCK_NORMALIZE_MAP,
+    excluded_blocks=EXCLUDED_BLOCKS,
+    x_max_override=CH3_SHARED_PE_STD_XMAX,
+    panel_nrows=3,
+    panel_ncols=2,
+    outcome_order=[
+        "vax_willingness_T12",
+        "flu_vaccinated_2023_2024",
+        "flu_vaccinated_2023_2024_no_habit",
+        "mask_when_pressure_high",
+        "mask_when_symptomatic_cro0wded",
+        "stay_home_when_symptomatic",
+    ],
+)
+if _mutable_msg:
+    display(Markdown(f"*{_mutable_msg}*"))
+```
+
+```{python}
+#| echo: false
+#| label: fig-upstream-ref
+#| fig-cap: "**Reference perturbation effects for broader covariate blocks.** For each psychological profile variable panel and broader covariate block, points summarise the absolute standardised perturbation effect, $|PE^{\\mathrm{profile}}_{\\mathrm{std}}|$. Dots indicate the median across respondents; thick segments show the interquartile range ($Q25$–$Q75$); thin segments show the 10th–90th percentile range. Institutional trust is most responsive to information-environment credibility, while CoVax legitimacy is associated most strongly with institutional credibility. Stakes also show substantial movement, again led mainly by institutional credibility, with smaller contributions from vaccine-risk and disease-salience covariates. Disposition (5C) is the clearest multi-source case, with meaningful sensitivity to accessibility and interpersonal blocks in addition to institutional credibility. Group trust and norms show smaller magnitudes overall, though both remain responsive to specific parts of the broader survey profile."
+#| fig-pos: "H"
+_belief_ref_msg = render_belief_reference_signal_magnitude(
+    pe_ref_rows_path=BELIEF_REF_ROWS,
+    label_construct=lambda state_var: label_belief_engine(str(state_var)),
+    max_signals=0,
+    signal_metadata_path=BELIEF_REF_SIGNAL_METADATA,
+    x_max_override=CH3_SHARED_PE_STD_XMAX,
+    signal_bucket_map=SIGNAL_MECHANISM_BUCKET_MAP,
+    signal_bucket_order=SIGNAL_MECHANISM_BUCKET_ORDER,
+    belief_block_order=BELIEF_OUTCOME_ORDER,
+    append_unordered_belief_blocks=False,
+    panel_nrows=3,
+    panel_ncols=2,
+    show_signal_block_legend=False,
+    label_signal_bucket=lambda bucket: SIGNAL_MECHANISM_BUCKET_LABELS.get(str(bucket), str(bucket)),
+    label_belief_block=lambda state_var: label_belief_engine(str(state_var)),
+)
+if _belief_ref_msg:
+    display(Markdown(f"*{_belief_ref_msg}*"))
+```
+
+In the perturbation results for the behavioural outcome equations (@fig-mutable-ref), the stakes block is the most consistently high-leverage retained component. Typical low-to-high shifts in stakes yield large changes in COVID willingness and smaller but still non-trivial changes in the NPI outcomes. The wide dispersion for the NPI outcomes instead reflects differences in headroom. Many respondent profiles are already near the top or bottom of the predicted response scale, so shifting one retained variable has limited effect. Larger changes arise mainly for respondents whose baseline profiles place them in the middle of the response range, where the fitted outcome can still move appreciably.
+
+Norms and several credibility-related variables show tighter and lower-magnitude perturbation distributions once the rest of the profile is held fixed. They remain predictive, but they contribute more limited incremental leverage in this comparison. This is broadly consistent with the LOBO results: blocks that retain clearer unique signal also tend to produce larger model-implied changes under realistic perturbations, whereas blocks that are more redundant in the fitted equations tend to yield smaller shifts.
+
+The perturbations from the psychological profile regressions in @fig-upstream-ref show which broader covariate blocks are most strongly associated with movement in each psychological profile variable. The pattern differs by variable. Institutional trust is most responsive to information-environment credibility, with smaller additional associations from vaccine-risk and disease-stakes covariates. CoVax legitimacy is associated most strongly with institutional credibility. Stakes also show substantial movement, again led mainly by institutional credibility, with smaller contributions from vaccine-risk and disease-salience covariates. Disposition (5C) is the clearest multi-source case, with meaningful associations not only with institutional credibility but also with interpersonal and accessibility-related blocks. Group trust and norms show smaller perturbation magnitudes overall, though both remain responsive to specific parts of the broader survey profile.
+
+Flu uptake, when habit is included, is inertia-dominated, so short-run shifts in appraisal or trust have relatively limited leverage unless they accumulate over time or relax persistent frictions.
+
+A practical caveat is that ceteris paribus perturbations can create unrealistic profile combinations when variables are strongly correlated. If one variable is shifted from a typically low to a typically high value while all other covariates are held fixed, the resulting profile may no longer resemble combinations actually observed in the survey. To check this, I evaluate whether the perturbed value of the variable of interest remains consistent with the rest of the respondent’s profile within country.
+
+Formally, for a variable of interest $X$ and the remaining covariates $z$, I estimate the country-specific conditional distribution $\hat F(X \mid z)$, that is, the distribution of $X$ among respondents with similar values of the other observed characteristics. I then ask whether the perturbed low or high value of that variable falls in an extreme conditional tail. Perturbations that do so are treated as off-manifold and excluded when recomputing the ordering of blocks by perturbation effect magnitude. Full details are given in @sec-appendix-offmanifold-conditional-percentile.
+
+The realism screen leaves the vaccination results essentially unchanged, which suggests that their perturbation patterns are not driven by off-manifold profile combinations. The masking results are less stable, because trust and several 5C components are more tightly predicted by the rest of the profile. The masking rankings should therefore be read more cautiously, as they depend more strongly on restricting attention to empirically plausible perturbations.
+
+The block-structure and perturbation results therefore jointly identify a compact, outcome-specific empirical structure for prevention behaviour. COVID willingness is organised mainly by stakes and vaccine evaluation within a broader trust and legitimacy context, flu uptake is dominated by habit, and the NPI outcomes are shaped mainly by moral orientation and stakes. This empirical structure provides the benchmark used in the next chapter.

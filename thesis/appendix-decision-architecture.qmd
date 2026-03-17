@@ -1,0 +1,170 @@
+# Full decision-architecture network {#sec-appendix-full-diagram}
+
+The figure below restores the full decision-architecture network used throughout @sec-03-decision-function, including minor and non-significant paths. Thick solid edges indicate backbone pillars, thin solid edges indicate secondary but substantively relevant links, and dotted edges display weaker or non-significant pathways that remain useful for completeness.
+
+::: {.content-visible when-format="html"}
+
+```{mermaid}
+%%| label: fig-full-equations-diagram
+%%| fig-cap: "Full decision-architecture network with coefficient annotations. Thick = backbone pillars, thin = secondary significant paths, dotted = weak or non-significant paths. Edges summarise conditional associations from the coordinated regression family (P/B/S models), not a single jointly-estimated SEM."
+---
+config:
+    layout: elk
+    flowchart:
+        curve: basis
+    theme: base
+    themeVariables:
+        lineColor: "#475569"
+        tertiaryColor: "#94a3b8"
+        fontFamily: "Roboto, 'Segoe UI', sans-serif"
+        edgeLabelBackground: "#f8fafc"
+---
+flowchart TB
+
+    %% ================= STYLING =================
+    classDef upstream     fill:#e0f2fe,stroke:#1d4ed8,stroke-width:1px,color:#0f172a;
+    classDef disp         fill:#eef2ff,stroke:#4f46e5,stroke-width:1px,color:#111827;
+    classDef exper        fill:#fae8ff,stroke:#db2777,stroke-width:1px,color:#4a044e;
+    classDef risk         fill:#fef3c7,stroke:#f59e0b,stroke-width:1px,color:#78350f;
+    classDef disease      fill:#fee2e2,stroke:#b91c1c,stroke-width:1px,color:#7f1d1d;
+    classDef attitudes    fill:#ecfdf3,stroke:#22c55e,stroke-width:1px,color:#022c22;
+    classDef behaviour    fill:#fdf2ff,stroke:#a855f7,stroke-width:2px,color:#4c1d95;
+    classDef habit        fill:#f3e8ff,stroke:#6b21a8,stroke-width:1px,color:#3b0764;
+    classDef norms        fill:#fffdf7,stroke:#ea580c,stroke-width:1px,color:#7c2d12;
+
+    %% ================= NODES =================
+    %% Use explicit label/id form to ensure the subgraph title renders
+    subgraph UP["Upstream ideology & institutions"]
+        SMTRUST["Trust in social media"]
+        PROG["Progressive attitudes"]
+        INST["Institutional trust"]
+    end
+    class PROG,INST,SMTRUST upstream;
+
+    subgraph DISP["Vaccine-specific dispositions"]
+        PVAX["Pro-vaccine 5C index"]
+    end
+    class PVAX disp;
+    style DISP fill:#f8fafc,stroke:#4f46e5,stroke-width:1px,color:#0f172a;
+
+    subgraph EXP["Experiential narratives"]
+        SIDEFX["Side effects (self / others)"]
+    end
+    class SIDEFX exper;
+    style EXP fill:#fff7fb,stroke:#db2777,stroke-width:1px,color:#4a044e;
+
+    subgraph RISK["Risk perceptions & fear"]
+        VRISK["Vaccine risk"]
+        VFEAR["Vaccine fear"]
+        DFEAR["Disease fear"]
+    end
+    class VRISK,VFEAR risk;
+    class DFEAR disease;
+    style RISK fill:#e8f1fa,stroke:#0f172a,stroke-width:1px,color:#0f172a;
+
+    subgraph ATT["Attitudes toward vaccination"]
+        VIMP["Vaccine importance"]
+    end
+    class VIMP attitudes;
+    style ATT fill:#edf7f2,stroke:#22c55e,stroke-width:1px,color:#022c22;
+
+    subgraph HAB["Habit"]
+        PAST["Pre-pandemic Flu habit"]
+    end
+    class PAST habit;
+    style HAB fill:#f8f2ff,stroke:#6b21a8,stroke-width:1px,color:#3b0764;
+
+    subgraph BEH["Prevention behaviours"]
+        FLU["Flu vaccination"]
+        COVIDWILL["COVID booster willingness"]
+        NPI["NPIs (Masking/Home stay)"]
+    end
+    class FLU,COVIDWILL,NPI behaviour;
+    style UP fill:#e7effb,stroke:#1d4ed8,stroke-width:1px,color:#0f172a;
+    style BEH fill:#e7ecf8,stroke:#111827,stroke-width:1px,color:#0f172a;
+
+    subgraph NORM["Norms & moral commitments"]
+        FAMNORM["Family progressive climate"]
+        FRIENDNORM["Friends progressive climate"]
+        COLNORM["Colleagues progressive climate"]
+        MORAL["Care/Fairness (MFQ)"]
+    end
+    class FAMNORM,FRIENDNORM,COLNORM,MORAL norms;
+    style NORM fill:#fffdf7,stroke:#ea580c,stroke-width:1px,color:#7c2d12;
+
+    %% ================= LINKS =================
+    %% Key:
+    %% ==> (Thick) = Backbone / Dominant Effects
+    %% --> (Thin) = Standard Significant Effects
+    %% -.-> (Dotted) = Weak / Non-Significant
+
+    %% --- 1. Upstream -> Dispositions ---
+    PROG -->|"PROG → PVAX (β = 0.25)"| PVAX
+    SMTRUST -->|"SMTRUST → PVAX (β = -0.17)"| PVAX
+    INST -->|"INST → PVAX (β = 0.11)"| PVAX
+
+    %% --- 2. Dispositions to Risk (The Safety Channel) ---
+    PVAX   -->|"PVAX → VRISK (β = -0.23)"| VRISK
+    PVAX   -->|"PVAX → VFEAR (β = -0.19)"| VFEAR
+
+    %% Side effects and Media (Secondary inputs)
+    SMTRUST -.->|"SMTRUST → VRISK (β = 0.09)"| VRISK
+    SIDEFX -.->|"SIDEFX → VRISK (β = 0.22)"| VRISK
+    SIDEFX -.->|"SIDEFX → VFEAR (β = 0.07)"| VFEAR
+
+    %% Internal Risk Structure
+    VRISK  ==>|"VRISK → VFEAR (β = 0.46)"| VFEAR
+
+    %% --- 3. The Disease Fear Pillar ---
+    %% Note: Driven by context, drives all behaviors
+    PROG -->|"PROG → DFEAR (β = 0.17)"| DFEAR
+    SMTRUST -.->|"SMTRUST → DFEAR (β = 0.20)"| DFEAR
+    DFEAR ==>|"DFEAR → COVIDWILL (β = 0.32)"| COVIDWILL
+    DFEAR ==>|"DFEAR → FLU (β = 0.34)"| FLU
+    DFEAR -->|"DFEAR → NPI (β = 0.19)"| NPI
+
+    %% --- 4. Attitudes (The Ideological Channel) ---
+    %% Progressive -> Importance is massive (1.64)
+    PROG  ==>|"PROG → VIMP (β = 1.62)"| VIMP
+    PVAX  ==>|"PVAX → VIMP (β = 0.67)"| VIMP
+    INST  -->|"INST → VIMP (β = 0.41)"| VIMP
+    VRISK -->|"VRISK → VIMP (β = -0.21)"| VIMP
+
+    %% --- 5. Behavioural Outputs ---
+    %% Importance drives COVID, but not Flu
+    VIMP  -->|"VIMP → COVIDWILL (β = 0.27)"| COVIDWILL
+    VIMP  -.->|"VIMP → FLU (ns)"| FLU
+
+    %% Fear blocks Flu specifically
+    VFEAR ==>|"VFEAR → FLU (β = -0.49)"| FLU
+
+    %% --- 6. The Habit Pillar (The Flu Driver) ---
+    PAST ===>|"PAST → FLU (β = 2.09)"| FLU
+
+    %% --- 7. NPI Specifics ---
+    %% NPIs are driven by Safety, Fear, and Ideology
+    PROG -->|"PROG → NPI (β = 0.12)"| NPI
+    VRISK -->|"VRISK → NPI (β = -0.05)"| NPI
+    FRIENDNORM -.->|"Friends norms → NPI (β = 0.04)"| NPI
+    MORAL -->|"Care/Fairness → NPI (β = 0.17)"| NPI
+
+    %% --- 8. Norms structure ---
+    PROG ==>|"PROG → Family norms (β = 0.55)"| FAMNORM
+    PROG ==>|"PROG → Friends norms (β = 0.49)"| FRIENDNORM
+    PROG ==>|"PROG → Colleague norms (β = 0.46)"| COLNORM
+    FAMNORM -->|"Family norms → COVIDWILL (β = 0.11)"| COVIDWILL
+```
+
+:::
+
+::: {.content-visible when-format="pdf"}
+
+![](_generated/mermaid/fig-full-equations-diagram.png){#fig-full-equations-diagram fig-cap="Full decision-architecture network with coefficient annotations. Thick = backbone pillars, thin = secondary significant paths, dotted = weak or non-significant paths. Edges summarise conditional associations from the coordinated regression family (P/B/S models), not a single jointly-estimated SEM." fig-align="center" fig-pos="H"}
+
+:::
+
+::: {.content-visible when-format="docx"}
+
+![](_generated/mermaid/fig-full-equations-diagram.png){#fig-full-equations-diagram fig-cap="Full decision-architecture network with coefficient annotations. Thick = backbone pillars, thin = secondary significant paths, dotted = weak or non-significant paths. Edges summarise conditional associations from the coordinated regression family (P/B/S models), not a single jointly-estimated SEM." fig-align="center" fig-pos="H"}
+
+:::

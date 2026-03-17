@@ -1,0 +1,488 @@
+{
+  "labels": {
+    "covax_0_1": "COVID-19 vaccinated (ever)",
+    "flu_vaccinated_2023_2024": "Flu vaccinated (2023/2024)",
+    "flu_vaccinated_2023_2024_no_habit": "Flu vaccinated (2023/2024, no habit)",
+    "protective_behaviour_avg": "Protective behaviour index",
+    "vax_willingness_Y": "Current COVID vaccination willingness",
+    "vax_willingness_T12": "COVID vaccination willingness (first/second dose offer)",
+    "vax_willingness_T3": "COVID vaccination willingness (T3)",
+    "vax_willingness_T4": "COVID vaccination willingness (T4)",
+    "support_mandatory_vaccination": "Support for mandatory vaccination",
+    "country": "Country of residence",
+    "region_final": "Region of residence",
+    "birth": "Country of birth (respondent)",
+    "birth_m": "Country of birth (mother)",
+    "birth_f": "Country of birth (father)",
+    "covid_treat": "COVID medical treatment",
+    "covid_num": "Number of COVID infections",
+    "income_ppp_norm": "Income (PPP-normalised)",
+    "M_education": "Education level (0=ED0–2, 1=ED3–4, 2=ED5–8)",
+    "covax_num": "COVID-19 doses received",
+    "covid_perceived_danger_T12": "Perceived COVID danger (T12)",
+    "duration_infomedia": "Information-media duration (Wikipedia, YouTube, Reddit)",
+    "duration_socialmedia": "Social media time (Instagram, Facebook, Telegram, X/Twitter, LinkedIn, TikTok)",
+    "att_vaccines_importance": "Vaccines are important (attitude)",
+    "trust_gp_vax_info": "Trust: GP (vaccine info)",
+    "trust_local_health_authorities_vax_info": "Trust: local health authorities (vaccine info)",
+    "trust_influencers_vax_info": "Trust: influencers (vaccine info)",
+    "trust_religious_leaders_vax_info": "Trust: religious leaders (vaccine info)",
+    "discussion_group_cohabitant": "COVID discussion count: cohabitant",
+    "discussion_group_noncohabitant": "COVID discussion count: non-cohabitant",
+    "discussion_group_friends": "COVID discussion count: friends",
+    "discussion_group_colleagues": "COVID discussion count: colleagues",
+    "discussion_group_others": "COVID discussion count: others",
+    "friend_closure": "Friend-group closure",
+    "trust_traditional": "Trust in vaccine info from traditional media (print, TV, radio)",
+    "trust_social": "Trust in vaccine info from social media (Facebook, Instagram, X/Twitter, TikTok, Telegram, LinkedIn)",
+    "trust_onlineinfo": "Trust in vaccine info from online sources (online news, Wikipedia, YouTube, podcasts)",
+    "trust_national_health_institutions_vax_info": "Trust: national health institutions (vaccine info)",
+    "trust_who_vax_info": "Trust: WHO (vaccine info)",
+    "trust_socialmedia_duration": "Social media duration",
+    "progressive_attitudes_nonvax_idx": "Progressive attitudes index",
+    "disease_fear_avg": "Disease fear",
+    "side_effects": "Experienced vaccine side effects (self)",
+    "side_effects_other": "Knows someone with vaccine side effects",
+    "sex_female[T.True]": "Female (sex)",
+    "age": "Age",
+    "M_religion": "Religious affiliation is Christian or atheist/agnostic",
+    "C(politics, Treatment(reference='No Affiliation / Prefer not to answer'))[T.Conservative / Christian-Democratic]": "Mainstream party ID",
+    "C(politics, Treatment(reference='No Affiliation / Prefer not to answer'))[T.Radical-Right / Nationalist / Populist-Right]": "Radical-right / nationalist vote",
+    "C(country, Treatment(reference='IT'))[T.UK]": "Country: UK vs Italy",
+    "C(country, Treatment(reference='IT'))[T.FR]": "Country: France vs Italy",
+    "C(country, Treatment(reference='IT'))[T.HU]": "Country: Hungary vs Italy",
+    "C(country, Treatment(reference='IT'))[T.DE]": "Country: Germany vs Italy",
+    "fivec_confidence": "I am completely confident that vaccines are safe.",
+    "fivec_collective_responsibility": "Even if everyone is vaccinated, I still need to get vaccinated.",
+    "fivec_low_complacency": "Vaccination is necessary because vaccine preventable diseases are still common.",
+    "fivec_low_constraints": "Everyday stress does not prevent me from getting vaccinated.",
+    "fivec_pro_vax_idx": "5C pro-vaccine orientation index",
+    "vaccine_risk_avg": "Perceived vaccine risk (mean across COVID/flu/measles/meningitis)",
+    "vaccine_fear_avg": "Vaccine fear (avg)",
+    "flu_vaccine_risk": "Flu vaccine risk",
+    "flu_disease_fear": "Flu disease fear",
+    "flu_vaccine_fear": "Flu vaccine fear",
+    "flu_vaccinated_2020_2021": "Flu vaccinated (2020/2021)",
+    "flu_vaccinated_2021_2022": "Flu vaccinated (2021/2022)",
+    "flu_vaccinated_2022_2023": "Flu vaccinated (2022/2023)",
+    "family_progressive_norms_nonvax_idx": "Perceived political progressiveness of family (climate harm, LGBT adoption rights, immigration tolerance)",
+    "friends_progressive_norms_nonvax_idx": "Perceived political progressiveness of friends (climate harm, LGBT adoption rights, immigration tolerance)",
+    "colleagues_progressive_norms_nonvax_idx": "Perceived political progressiveness of colleagues (climate harm, LGBT adoption rights, immigration tolerance)",
+    "exper_illness": "Personally knows someone hospitalized or who died due to an infectious disease (not COVID)",
+    "flu_vaccinated_pre_pandemic": "Flu vaccination (pre-2020)",
+    "institutional_trust_avg": "Institutional trust in vaccine info (local/national gov, GP, health authorities, national health institutions, WHO)",
+    "group_trust_vax": "Trust in vaccine info from social contacts (cohabitants, family, partner/children, coworkers, classmates, friends, neighbors/other)",
+    "infection_likelihood_avg": "Perceived infection likelihood (mean across COVID/flu/measles/meningitis)",
+    "severity_if_infected_avg": "Perceived severity if infected (mean across COVID/flu)",
+    "mfq_agreement_individualizing_idx": "MFQ Agreement: Care/Fairness",
+    "mfq_agreement_binding_idx": "MFQ Agreement: Authority/Loyalty",
+    "mfq_relevance_individualizing_idx": "MFQ Relevance: Individualizing (Care/Fairness)",
+    "mfq_relevance_binding_idx": "MFQ Relevance: Binding (Loyalty/Authority/Purity)",
+    "minority": "Belongs to a minority group",
+    "medical_conditions_c": "Any cohabitants have medical conditions",
+    "sex_female": "Female (sex)",
+    "health_poor": "Self-rated poor health",
+    "mask_when_symptomatic_crowded": "Would wear a mask in crowded places when symptomatic",
+    "stay_home_when_symptomatic": "Would stay home when symptomatic",
+    "mask_when_pressure_high": "Would wear a mask in crowded places when epidemic pressure is high",
+    "family_vaccines_importance": "Perceived social norm (family): vaccines are important",
+    "friends_vaccines_importance": "Perceived social norm (friends): vaccines are important",
+    "colleagues_vaccines_importance": "Perceived social norm (colleagues): vaccines are important",
+    "size_friend_group": "Friend group size",
+    "size_colleagues_group": "Colleague group size",
+    "covax_legitimacy_scepticism_idx": "COVID vaccine legitimacy/scepticism index",
+    "covid_perceived_danger_Y": "Perceived COVID danger (current)",
+    "social_norms_vax_avg": "Perceived social norms: vaccines are important (avg)",
+    "politics": "Political party closeness",
+    "moral_progressive_orientation": "Moral + progressive orientation (avg)"
+  },
+  "short_labels": {
+    "vax_willingness_Y": "CoVax willingness",
+    "vax_willingness_T12": "CoVax willingness (1st/2nd offer)",
+    "flu_vaccinated_2023_2024": "Flu vaccinated (2023/2024)",
+    "flu_vaccinated_2023_2024_no_habit": "Flu vaccinated (2023/2024, no habit)",
+    "mask_when_pressure_high": "Masking (high pressure)",
+    "mask_when_symptomatic_crowded": "Masking (symptomatic, crowded)",
+    "stay_home_when_symptomatic": "Stay home (symptomatic)",
+    "institutional_trust_avg": "Trust: institutions",
+    "social_norms_vax_avg": "Pro-vax norms",
+    "vaccine_risk_avg": "Vaccine risk",
+    "group_trust_vax": "Trust: social",
+    "disease_fear_avg": "Disease fear",
+    "covid_num": "COVID episodes",
+    "covid_perceived_danger_T12": "COVID danger (T12)",
+    "duration_socialmedia": "Social media time",
+    "M_education": "Education",
+    "M_religion": "Religiosity",
+    "sex_female[T.True]": "Female",
+    "C(country, Treatment(reference='IT'))[T.DE]": "Country: DE",
+    "C(country, Treatment(reference='IT'))[T.ES]": "Country: ES",
+    "C(country, Treatment(reference='IT'))[T.FR]": "Country: FR",
+    "C(country, Treatment(reference='IT'))[T.HU]": "Country: HU",
+    "C(country, Treatment(reference='IT'))[T.UK]": "Country: UK",
+    "fivec_confidence": "5C confidence",
+    "fivec_low_complacency": "Low complacency (5C)",
+    "fivec_collective_responsibility": "5C collective responsibility",
+    "infection_likelihood_avg": "Infection likelihood",
+    "severity_if_infected_avg": "Infection severity",
+    "covid_perceived_danger_Y": "Current COVID danger",
+    "fivec_low_constraints": "Low constraints (5C)",
+    "fivec_pro_vax_idx": "5C pro-vax",
+    "covax_legitimacy_scepticism_idx": "CoVax legitimacy scepticism",
+    "income_ppp_norm": "Income (PPP)",
+    "progressive_attitudes_nonvax_idx": "Progressive attitudes",
+    "family_progressive_norms_nonvax_idx": "Family progressive norms",
+    "friends_progressive_norms_nonvax_idx": "Friends progressive norms",
+    "colleagues_progressive_norms_nonvax_idx": "Colleagues progressive norms",
+    "moral_progressive_orientation": "Moral-progressive",
+    "mfq_agreement_binding_idx": "MFQ binding (agree)",
+    "mfq_relevance_binding_idx": "MFQ binding (relevance)",
+    "flu_disease_fear": "Disease fear (flu)",
+    "flu_vaccine_risk": "Flu vax risk",
+    "flu_vaccinated_2020_2021": "Flu vax 2020/21",
+    "flu_vaccinated_2021_2022": "Flu vax 2021/22",
+    "flu_vaccinated_2022_2023": "Flu vax 2022/23",
+    "flu_vaccinated_pre_pandemic": "Flu vax pre-2020",
+    "health_good": "Poor health",
+    "medical_conditions_c": "Cohabitant conditions",
+    "side_effects": "Side effects (self)",
+    "side_effects_other": "Side effects (others)",
+    "exper_illness": "Severe illness exposure",
+    "age": "Age",
+    "minority": "Minority",
+    "trust_traditional": "Trust: traditional media",
+    "trust_social": "Trust: social media",
+    "credible_authority_safety": "Credible authority",
+    "misinfo_side_effects": "Misinfo: side effects",
+    "local_outbreak": "Local outbreak",
+    "peer_norms_pro_vax": "Peer norms pro-vax",
+    "peer_norms_anti_vax": "Peer norms anti-vax",
+    "regulatory_scandal": "Regulatory scandal",
+    "independent_audit_clears_process": "Audit clears process",
+    "personal_side_effect_story_close_contact": "Close-contact side effects",
+    "benefit_evidence_reduces_severe_outcomes": "Benefits reduce severe outcomes",
+    "friend_hospitalized_covid": "Friend hospitalized (COVID)",
+    "cases_declining_low_salience": "Cases declining (low salience)",
+    "workplace_norms_compliance": "Workplace norms",
+    "group_trust_rises_peer_reliability": "Peer reliability rises",
+    "group_trust_falls_peer_misleading": "Peer misleading rises",
+    "constraints_access_eases": "Access eases",
+    "constraints_access_tightens": "Access tightens"
+  },
+  "groups": {
+    "progressive_norms_nonvax": {
+      "title": "Perceived political progressiveness (climate harm, LGBT adoption rights, immigration tolerance)",
+      "members": {
+        "family_progressive_norms_nonvax_idx": "Family",
+        "friends_progressive_norms_nonvax_idx": "Friends",
+        "colleagues_progressive_norms_nonvax_idx": "Colleagues"
+      }
+    },
+    "vax_norms_importance": {
+      "title": "Perceived social norm: vaccines are important",
+      "members": {
+        "family_vaccines_importance": "Family",
+        "friends_vaccines_importance": "Friends",
+        "colleagues_vaccines_importance": "Colleagues"
+      }
+    },
+    "mfq_binding": {
+      "title": "MFQ (loyalty/authority/purity/tradition)",
+      "scale_inline": true,
+      "members": {
+        "mfq_agreement_binding_idx": "Agreement",
+        "mfq_relevance_binding_idx": "Relevance"
+      }
+    },
+    "trust_vax_info_sources": {
+      "title": "Trust in vaccine information (by source)",
+      "members": {
+        "institutional_trust_avg": "Institutions/public authorities (local/national gov, GP, health authorities, national health institutions, WHO)",
+        "group_trust_vax": "Social contacts",
+        "trust_traditional": "Traditional media",
+        "trust_onlineinfo": "Online sources",
+        "trust_social": "Social media"
+      }
+    }
+  },
+  "core_outcomes": [
+    "covax_0_1",
+    "flu_vaccinated_2023_2024",
+    "vax_willingness_Y",
+    "support_mandatory_vaccination",
+    "protective_behaviour_avg"
+  ],
+  "outcome_groups": {
+    "vaccination_histories": [
+      "covax_0_1",
+      "flu_vaccinated_2023_2024"
+    ],
+    "prospective_attitudinal": [
+      "vax_willingness_Y",
+      "support_mandatory_vaccination"
+    ],
+    "monotone_targets": [
+      "vax_willingness_Y",
+      "support_mandatory_vaccination",
+      "protective_behaviour_avg"
+    ],
+    "trust_targets": [
+      "vax_willingness_Y",
+      "protective_behaviour_avg"
+    ]
+  },
+  "table1_specs": [
+    [
+      "Institutional trust",
+      "P_TRUST_institutional_trust",
+      "trust_traditional"
+    ],
+    [
+      "Institutional trust",
+      "P_TRUST_institutional_trust",
+      "side_effects_other"
+    ],
+    [
+      "Institutional trust",
+      "P_TRUST_institutional_trust",
+      "C(politics, Treatment(reference='No Affiliation / Prefer not to answer'))[T.Conservative / Christian-Democratic]"
+    ],
+    [
+      "Institutional trust",
+      "P_TRUST_institutional_trust",
+      "C(politics, Treatment(reference='No Affiliation / Prefer not to answer'))[T.Radical-Right / Nationalist / Populist-Right]"
+    ],
+    [
+      "Institutional trust",
+      "P_TRUST_institutional_trust",
+      "C(country, Treatment(reference='IT'))[T.UK]"
+    ],
+    [
+      "5C pro-vaccine orientation",
+      "P_5C_fivec_pro_vax",
+      "progressive_attitudes_nonvax_idx"
+    ],
+    [
+      "5C pro-vaccine orientation",
+      "P_5C_fivec_pro_vax",
+      "trust_social"
+    ],
+    [
+      "5C pro-vaccine orientation",
+      "P_5C_fivec_pro_vax",
+      "trust_traditional"
+    ],
+    [
+      "5C pro-vaccine orientation",
+      "P_5C_fivec_pro_vax",
+      "M_religion"
+    ],
+    [
+      "5C confidence",
+      "P_5C_fivec_confidence",
+      "trust_national_health_institutions_vax_info"
+    ],
+    [
+      "5C confidence",
+      "P_5C_fivec_confidence",
+      "trust_who_vax_info"
+    ],
+    [
+      "5C confidence",
+      "P_5C_fivec_confidence",
+      "side_effects_other"
+    ],
+    [
+      "5C confidence",
+      "P_5C_fivec_confidence",
+      "C(country, Treatment(reference='IT'))[T.FR]"
+    ],
+    [
+      "5C confidence",
+      "P_5C_fivec_confidence",
+      "C(country, Treatment(reference='IT'))[T.HU]"
+    ],
+    [
+      "5C low complacency",
+      "P_5C_fivec_low_complacency_rev",
+      "trust_social"
+    ],
+    [
+      "5C low complacency",
+      "P_5C_fivec_low_complacency_rev",
+      "duration_socialmedia"
+    ],
+    [
+      "5C low complacency",
+      "P_5C_fivec_low_complacency_rev",
+      "progressive_attitudes_nonvax_idx"
+    ],
+    [
+      "5C low constraints",
+      "P_5C_fivec_low_constraints_rev",
+      "age"
+    ],
+    [
+      "5C low constraints",
+      "P_5C_fivec_low_constraints_rev",
+      "C(country, Treatment(reference='IT'))[T.DE]"
+    ],
+    [
+      "5C low constraints",
+      "P_5C_fivec_low_constraints_rev",
+      "C(country, Treatment(reference='IT'))[T.UK]"
+    ],
+    [
+      "5C low constraints",
+      "P_5C_fivec_low_constraints_rev",
+      "trust_social"
+    ],
+    [
+      "5C collective responsibility",
+      "P_5C_fivec_collective_responsibility",
+      "progressive_attitudes_nonvax_idx"
+    ],
+    [
+      "5C collective responsibility",
+      "P_5C_fivec_collective_responsibility",
+      "sex_female[T.True]"
+    ],
+    [
+      "5C collective responsibility",
+      "P_5C_fivec_collective_responsibility",
+      "trust_social"
+    ],
+    [
+      "Vaccine risk",
+      "P_RISK_vaccine_risk",
+      "fivec_confidence"
+    ],
+    [
+      "Vaccine risk",
+      "P_RISK_vaccine_risk",
+      "side_effects"
+    ],
+    [
+      "Vaccine risk",
+      "P_RISK_vaccine_risk",
+      "side_effects_other"
+    ],
+    [
+      "Vaccine risk",
+      "P_RISK_vaccine_risk",
+      "trust_social"
+    ],
+    [
+      "Vaccine risk",
+      "P_RISK_vaccine_risk",
+      "C(country, Treatment(reference='IT'))[T.HU]"
+    ],
+    [
+      "Vaccine risk",
+      "P_RISK_vaccine_risk",
+      "sex_female[T.True]"
+    ],
+    [
+      "Vaccine fear",
+      "P_RISK_vaccine_fear",
+      "fivec_confidence"
+    ],
+    [
+      "Vaccine fear",
+      "P_RISK_vaccine_fear",
+      "trust_social"
+    ],
+    [
+      "Vaccine fear",
+      "P_RISK_vaccine_fear",
+      "side_effects"
+    ],
+    [
+      "Vaccine fear",
+      "P_RISK_vaccine_fear",
+      "sex_female[T.True]"
+    ],
+    [
+      "Perceived progressive climate: family",
+      "P_NORMS_family_norms",
+      "progressive_attitudes_nonvax_idx"
+    ],
+    [
+      "Perceived progressive climate: friends",
+      "P_NORMS_friends_norms",
+      "progressive_attitudes_nonvax_idx"
+    ],
+    [
+      "Perceived progressive climate: colleagues",
+      "P_NORMS_colleagues_norms",
+      "progressive_attitudes_nonvax_idx"
+    ],
+    [
+      "Perceived progressive climate: friends",
+      "P_NORMS_friends_norms",
+      "size_friend_group"
+    ],
+    [
+      "Perceived progressive climate: colleagues",
+      "P_NORMS_colleagues_norms",
+      "size_colleagues_group"
+    ]
+  ],
+  "table2_specs": [
+    [
+      "Importance",
+      "S_ATTCHAIN_att_vaccines_importance",
+      "progressive_attitudes_nonvax_idx"
+    ],
+    [
+      "Importance",
+      "S_ATTCHAIN_att_vaccines_importance",
+      "fivec_pro_vax_idx"
+    ],
+    [
+      "Importance",
+      "S_ATTCHAIN_att_vaccines_importance",
+      "institutional_trust_avg"
+    ],
+    [
+      "Importance",
+      "S_ATTCHAIN_att_vaccines_importance",
+      "vaccine_risk_avg"
+    ],
+    [
+      "Importance",
+      "S_ATTCHAIN_att_vaccines_importance",
+      "sex_female[T.True]"
+    ],
+    [
+      "Importance",
+      "S_ATTCHAIN_att_vaccines_importance",
+      "C(country, Treatment(reference='IT'))[T.FR]"
+    ],
+    [
+      "Fear",
+      "S_ATTCHAIN_vaccine_fear",
+      "vaccine_risk_avg"
+    ],
+    [
+      "Fear",
+      "S_ATTCHAIN_vaccine_fear",
+      "fivec_pro_vax_idx"
+    ],
+    [
+      "Fear",
+      "S_ATTCHAIN_vaccine_fear",
+      "progressive_attitudes_nonvax_idx"
+    ],
+    [
+      "Fear",
+      "S_ATTCHAIN_vaccine_fear",
+      "sex_female[T.True]"
+    ],
+    [
+      "Fear",
+      "S_ATTCHAIN_vaccine_fear",
+      "trust_social"
+    ]
+  ]
+}

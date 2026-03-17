@@ -1,0 +1,34 @@
+# Ignore evaluation outputs by default. Keep only compact summary tables
+# that feed thesis text/tables; canonical trees and run dumps stay local.
+/output/**
+
+!/output/
+!/output/choice_validation/
+!/output/choice_validation/unperturbed/
+!/output/choice_validation/unperturbed/_summary/
+!/output/choice_validation/unperturbed/_summary/**
+!/output/choice_validation/unperturbed_t12/
+!/output/choice_validation/unperturbed_t12/_summary/
+!/output/choice_validation/unperturbed_t12/_summary/**
+!/output/choice_validation/perturbed/
+!/output/choice_validation/perturbed/_summary/
+!/output/choice_validation/perturbed/_summary/**
+!/output/choice_validation/perturbed_knockout/
+!/output/choice_validation/perturbed_knockout/_summary/
+!/output/choice_validation/perturbed_knockout/_summary/**
+!/output/choice_validation/unperturbed_block_ablation/
+!/output/choice_validation/unperturbed_block_ablation/_summary/
+!/output/choice_validation/unperturbed_block_ablation/_summary/**
+!/output/choice_validation/unperturbed_block_ablation_canonical/
+!/output/choice_validation/unperturbed_block_ablation_canonical/_summary/
+!/output/choice_validation/unperturbed_block_ablation_canonical/_summary/**
+!/output/choice_validation/unperturbed_block_ablation_t12_flu_no_habit/
+!/output/choice_validation/unperturbed_block_ablation_t12_flu_no_habit/_summary/
+!/output/choice_validation/unperturbed_block_ablation_t12_flu_no_habit/_summary/**
+
+!/output/belief_update_validation/
+!/output/belief_update_validation/summary_metrics/
+!/output/belief_update_validation/summary_metrics/**
+!/output/belief_update_validation/unperturbed/
+!/output/belief_update_validation/unperturbed/summary_metrics/
+!/output/belief_update_validation/unperturbed/summary_metrics/**

@@ -1,0 +1,2426 @@
+{
+  "encodings": {
+    "binary": {
+      "None of the above": false,
+      "No": false,
+      "Yes": true,
+      "I don't know": null,
+      "I don't remember": null,
+      "I prefer not to answer": null,
+      "I don't know/I don't remember": null,
+      "I'm not sure": null,
+      "$DEFAULT": true
+    },
+    "categorical": {
+      "Not at all": 1,
+      "Very bad": 1,
+      "Not very": 2,
+      "Bad": 2,
+      "A little": 2,
+      "Fair": 3,
+      "Quite": 3,
+      "Good": 4,
+      "Very": 4,
+      "Very good": 5,
+      "Very Good": 5,
+      "Completely": 5,
+      "Extremely": 5,
+      "I never found information on vaccines on this channel": null,
+      "I prefer not to answer": null
+    }
+  },
+  "question_group": {
+    "people_num": "How many people of each group do you have?",
+    "medical_conditions": null,
+    "covid_num": "How many times on average has each of these groups contracted COVID-19?",
+    "covax_num": "How many doses of COVID-19 vaccine on average has each of these groups received?",
+    "risk_1": "How dangerous did you think COVID-19 was to your health in the following periods? (1-5)",
+    "risk_2": "How willing were you to be vaccinated against COVID-19 in the following periods? (1-5)",
+    "risk_infection": "In your opinion, how likely are you to contract the following infections today? (1-5)",
+    "risk_illness": "In your opinion, how likely are you to experience serious health consequences if you contract the following infections? (1-5)",
+    "risk_vax": "In your opinion, how likely are you to experience health consequences if you receive the vaccine for the following infections? (1-5)",
+    "emotion_illness": "How much do you fear the following infections? (1-5)",
+    "emotion_vax": "How much do you fear the vaccine for the following infections? (1-5)",
+    "fluvax": "Did you get vaccinated against the flu at least once in the following periods?",
+    "side_effects": "Has anyone in the following groups of people experienced any side effects (apart from arm pain) after being administered a dose of any vaccine?",
+    "vax_group": "During the pandemic, with how many people in the following groups did you have a conversation about vaccines/vaccination programs (in person, over the phone, or online)?",
+    "vax_freq": "During the pandemic, how often did you find yourself participating in a conversation about vaccines/vaccination programs (in person, over the phone, or online) with the following groups?",
+    "opinion": "How much do you agree with the following statements? (1-5)",
+    "opinion_change": "How has your opinion on the following statement changed?",
+    "institut_trust_vax": "How much do you trust the information about vaccines/vaccination programs shared by the following groups? (1-5)",
+    "pandemic_behaviour": "How much do you agree with the following statements? (1-7)",
+    "moral1": "When you decide whether something is right or wrong, to what extent are the following statements relevant to your thinking? (1-6)",
+    "moral2": "How much do you agree with the following statements? (1-5)",
+    "info": "Select the information channels you primarily use",
+    "contact_group": "With how many people in the following groups did you have a direct contact YESTERDAY?",
+    "discussion_group": "Thinking of LAST week, with how many different people in the following groups did you have a relevant conversation with?",
+    "opinion_other": "To what extent do the following groups agree or disagree with the provided statement? (1-7)"
+  },
+  "old_columns": [
+    {
+      "id": "knowledge_illness",
+      "section": "other_illness",
+      "question": "In your opinion, which of the following illnesses can be prevented through vaccination?",
+      "answer": [
+        "Diabetes",
+        "None of the above",
+        "I don't know",
+        "HIV",
+        "Hepatitis A",
+        "Hepatitis C",
+        "Hepatitis B",
+        "Meningitis",
+        "Chickenpox",
+        "COVID-19",
+        "Flu",
+        "Measles"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ],
+      "category": "Vaccine Knowledge & Beliefs",
+      "subcategory": "Illnesses preventable by vaccines"
+    },
+    {
+      "id": "risk_infection_1",
+      "section": "other_illness",
+      "question": "In your opinion, how likely are you to contract COVID-19 today? (1-5)",
+      "question_group": "risk_infection",
+      "question_entity": "COVID-19",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Not at all",
+        "Quite",
+        "Not very"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "covid_infection_likelihood_current"
+        }
+      ],
+      "category": "Disease Risk Perception (current)",
+      "subcategory": "COVID-19"
+    },
+    {
+      "id": "risk_infection_2",
+      "section": "other_illness",
+      "question": "In your opinion, how likely are you to contract Flu today? (1-5)",
+      "question_group": "risk_infection",
+      "question_entity": "Flu",
+      "answer": [
+        "Extremely",
+        "Not at all",
+        "Very",
+        "Not very",
+        "Quite"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "flu_infection_likelihood_current"
+        }
+      ],
+      "category": "Disease Risk Perception (current)",
+      "subcategory": "Influenza"
+    },
+    {
+      "id": "risk_infection_3",
+      "section": "other_illness",
+      "question": "In your opinion, how likely are you to contract Measles today? (1-5)",
+      "question_group": "risk_infection",
+      "question_entity": "Measles",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Quite",
+        "Not very",
+        "Not at all"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "measles_infection_likelihood_current"
+        }
+      ],
+      "category": "Disease Risk Perception (current)",
+      "subcategory": "Measles"
+    },
+    {
+      "id": "risk_infection_4",
+      "section": "other_illness",
+      "question": "In your opinion, how likely are you to contract Meningitis today? (1-5)",
+      "question_group": "risk_infection",
+      "question_entity": "Meningitis",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Quite",
+        "Not at all",
+        "Not very"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "meningitis_infection_likelihood_current"
+        }
+      ],
+      "category": "Disease Risk Perception (current)",
+      "subcategory": "Meningitis"
+    },
+    {
+      "id": "risk_illness_1",
+      "section": "other_illness",
+      "question": "In your opinion, how likely are you to experience serious health consequences if you contract COVID-19? (1-5)",
+      "question_group": "risk_illness",
+      "question_entity": "COVID-19",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Not at all",
+        "Quite",
+        "Not very"
+      ],
+      "missing_percentage": 23,
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "covid_severity_if_infected"
+        }
+      ],
+      "category": "Disease Severity Perception (if infected)",
+      "subcategory": "COVID-19"
+    },
+    {
+      "id": "risk_illness_2",
+      "section": "other_illness",
+      "question": "In your opinion, how likely are you to experience serious health consequences if you contract the Flu? (1-5)",
+      "question_group": "risk_illness",
+      "question_entity": "Flu",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Not at all",
+        "Quite",
+        "Not very"
+      ],
+      "missing_percentage": 9,
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "flu_severity_if_infected"
+        }
+      ],
+      "category": "Disease Severity Perception (if infected)",
+      "subcategory": "Influenza"
+    },
+    {
+      "id": "risk_illness_3",
+      "section": "other_illness",
+      "question": "In your opinion, how likely are you to experience serious health consequences if you contract Measles? (1-5)",
+      "question_group": "risk_illness",
+      "question_entity": "Measles",
+      "answer": [
+        "Extremely",
+        "Not at all",
+        "Very",
+        "Quite",
+        "Not very"
+      ],
+      "missing_percentage": 55,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "risk_illness_4",
+      "section": "other_illness",
+      "question": "In your opinion, how likely are you to experience serious health consequences if you contract Meningitis? (1-5)",
+      "answer": [
+        "Not at all",
+        "Extremely",
+        "Not very",
+        "Very",
+        "Quite"
+      ],
+      "missing_percentage": 33,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "knowledge_vax",
+      "section": "other_illness",
+      "question": "Among the following statements about vaccines, please select the ones that are TRUE according to you:",
+      "answer": [
+        "None of the above",
+        "No vaccines are recommended to the adult population",
+        "I don’t know",
+        "The administration of COVID-19 vaccines to pregnant women is not recommended",
+        "Herd immunity helps reduce the spread of viruses",
+        "vaccines have eliminated serious diseases",
+        "In the past"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ],
+      "category": "Vaccine Knowledge & Beliefs",
+      "subcategory": "Statements about vaccines (true/false per respondent)"
+    },
+    {
+      "id": "risk_vax_1",
+      "section": "other_illness",
+      "question": "In your opinion, how likely are you to experience health consequences if you receive the COVID-19 vaccine? (1-5)",
+      "question_group": "risk_vax",
+      "question_entity": "COVID-19",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Not at all",
+        "Quite",
+        "Not very"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "covid_vaccine_risk"
+        }
+      ],
+      "category": "Vaccine Risk Perception (by disease)",
+      "subcategory": "COVID-19 vaccine"
+    },
+    {
+      "id": "risk_vax_2",
+      "section": "other_illness",
+      "question": "In your opinion, how likely are you to experience health consequences if you receive the Flu vaccine? (1-5)",
+      "question_group": "risk_vax",
+      "question_entity": "Flu",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Quite",
+        "Not at all",
+        "Not very"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "flu_vaccine_risk"
+        }
+      ],
+      "category": "Vaccine Risk Perception (by disease)",
+      "subcategory": "Influenza vaccine"
+    },
+    {
+      "id": "risk_vax_3",
+      "section": "other_illness",
+      "question": "In your opinion, how likely are you to experience health consequences if you receive the Measles vaccine? (1-5)",
+      "question_group": "risk_vax",
+      "question_entity": "Measles",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Quite",
+        "Not at all",
+        "Not very"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "measles_vaccine_risk"
+        }
+      ],
+      "category": "Vaccine Risk Perception (by disease)",
+      "subcategory": "Measles vaccine"
+    },
+    {
+      "id": "risk_vax_4",
+      "section": "other_illness",
+      "question": "In your opinion, how likely are you to experience health consequences if you receive the Meningitis vaccine? (1-5)",
+      "question_group": "risk_vax",
+      "question_entity": "Meningitis",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Quite",
+        "Not at all",
+        "Not very"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "meningitis_vaccine_risk"
+        }
+      ],
+      "category": "Vaccine Risk Perception (by disease)",
+      "subcategory": "Meningitis vaccine"
+    },
+    {
+      "id": "emotion_illness_1",
+      "section": "other_illness",
+      "question": "How much do you fear COVID-19? (1-5)",
+      "question_group": "emotion_illness",
+      "question_entity": "COVID-19",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Quite",
+        "Not at all",
+        "Not very"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "covid_disease_fear"
+        }
+      ],
+      "category": "Emotional Response: Disease fear",
+      "subcategory": "COVID-19"
+    },
+    {
+      "id": "emotion_illness_2",
+      "section": "other_illness",
+      "question": "How much do you fear Flu? (1-5)",
+      "question_group": "emotion_illness",
+      "question_entity": "Flu",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Quite",
+        "Not at all",
+        "Not very"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "flu_disease_fear"
+        }
+      ],
+      "category": "Emotional Response: Disease fear",
+      "subcategory": "Influenza"
+    },
+    {
+      "id": "emotion_illness_3",
+      "section": "other_illness",
+      "question": "How much do you fear Measles? (1-5)",
+      "question_group": "emotion_illness",
+      "question_entity": "Measles",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Quite",
+        "Not very",
+        "Not at all"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "measles_disease_fear"
+        }
+      ],
+      "category": "Emotional Response: Disease fear",
+      "subcategory": "Measles"
+    },
+    {
+      "id": "emotion_illness_4",
+      "section": "other_illness",
+      "question": "How much do you fear Meningitis? (1-5)",
+      "question_group": "emotion_illness",
+      "question_entity": "Meningitis",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Not at all",
+        "Quite",
+        "Not very"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "meningitis_disease_fear"
+        }
+      ],
+      "category": "Emotional Response: Disease fear",
+      "subcategory": "Meningitis"
+    },
+    {
+      "id": "emotion_vax_1",
+      "section": "other_illness",
+      "question": "How much do you fear the COVID-19 vaccine? (1-5)",
+      "question_group": "emotion_vax",
+      "question_entity": "COVID-19",
+      "answer": [
+        "Very",
+        "Extremely",
+        "Quite",
+        "Not very",
+        "Not at all"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "covid_vaccine_fear"
+        }
+      ],
+      "category": "Emotional Response: Vaccine fear",
+      "subcategory": "COVID-19 vaccine"
+    },
+    {
+      "id": "emotion_vax_2",
+      "section": "other_illness",
+      "question": "How much do you fear the Flu vaccine? (1-5)",
+      "question_group": "emotion_vax",
+      "question_entity": "Flu",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Quite",
+        "Not very",
+        "Not at all"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "flu_vaccine_fear"
+        }
+      ],
+      "category": "Emotional Response: Vaccine fear",
+      "subcategory": "Influenza vaccine"
+    },
+    {
+      "id": "emotion_vax_3",
+      "section": "other_illness",
+      "question": "How much do you fear the Measles vaccine? (1-5)",
+      "question_group": "emotion_vax",
+      "question_entity": "Measles",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Quite",
+        "Not very",
+        "Not at all"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "measles_vaccine_fear"
+        }
+      ],
+      "category": "Emotional Response: Vaccine fear",
+      "subcategory": "Measles vaccine"
+    },
+    {
+      "id": "emotion_vax_4",
+      "section": "other_illness",
+      "question": "How much do you fear the Meningitis vaccine? (1-5)",
+      "question_group": "emotion_vax",
+      "question_entity": "Meningitis",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Quite",
+        "Not very",
+        "Not at all"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "meningitis_vaccine_fear"
+        }
+      ],
+      "category": "Emotional Response: Vaccine fear",
+      "subcategory": "Meningitis vaccine"
+    },
+    {
+      "id": "exper_illness",
+      "section": "other_illness",
+      "question": "Have you ever been hospitalized or do you personally know anyone who has been hospitalized for or died from an infectious illness other than COVID-19?",
+      "answer": [
+        "I prefer not to answer",
+        "Yes, I have been hospitalized for an infectious illness other than COVID-19",
+        "Yes, I personally know someone who died from an infectious illness other than COVID-19",
+        "I don't know/I don't remember",
+        "Yes, I personally know someone who has been hospitalized for an infectious illness other than COVID-19",
+        "No, I have never been hospitalized for, nor do I know anyone who has been hospitalized for or died from an infectious illness other than COVID-19"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": {
+            "$DEFAULT": true,
+            "No, I have never been hospitalized for, nor do I know anyone who has been hospitalized for or died from an infectious illness other than COVID-19": false,
+            "I prefer not to answer": null,
+            "I don't know/I don't remember": null
+          }
+        }
+      ],
+      "category": "Other Infectious-Disease Experience",
+      "subcategory": "Severe case in social circle (non-COVID)"
+    },
+    {
+      "id": "fluvax_1",
+      "section": "other_illness",
+      "question": "Did you get vaccinated against flu at least once before the pandemic?",
+      "question_group": "fluvax",
+      "question_entity": "before the pandemic",
+      "answer": [
+        "I don't remember",
+        "Yes",
+        "No"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "binary"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "flu_vaccinated_pre_pandemic"
+        }
+      ],
+      "category": "Flu Vaccination History",
+      "subcategory": "Before pandemic (ever)"
+    },
+    {
+      "id": "fluvax_2",
+      "section": "other_illness",
+      "question": "Did you get vaccinated against flu at least once in Autumn/winter 2020-2021",
+      "question_group": "fluvax",
+      "question_entity": "Autumn/Winter 2020-2021",
+      "answer": [
+        "I don't remember",
+        "Yes",
+        "No"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "binary"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "flu_vaccinated_2020_2021"
+        }
+      ],
+      "category": "Flu Vaccination History",
+      "subcategory": "2020–2021"
+    },
+    {
+      "id": "fluvax_3",
+      "section": "other_illness",
+      "question": "Did you get vaccinated against flu at least once in Autumn/winter 2021-2022",
+      "question_group": "fluvax",
+      "question_entity": "Autumn/Winter 2021-2022",
+      "answer": [
+        "I don't remember",
+        "Yes",
+        "No"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "binary"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "flu_vaccinated_2021_2022"
+        }
+      ],
+      "category": "Flu Vaccination History",
+      "subcategory": "2021–2022"
+    },
+    {
+      "id": "fluvax_4",
+      "section": "other_illness",
+      "question": "Did you get vaccinated against flu at least once in Autumn/winter 2022-2023",
+      "question_group": "fluvax",
+      "question_entity": "Autumn/Winter 2022-2023",
+      "answer": [
+        "I don't remember",
+        "Yes",
+        "No"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "binary"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "flu_vaccinated_2022_2023"
+        }
+      ],
+      "category": "Flu Vaccination History",
+      "subcategory": "2022–2023"
+    },
+    {
+      "id": "fluvax_5",
+      "section": "other_illness",
+      "question": "Did you get vaccinated against flu at least once in Autumn/winter 2023-2024",
+      "question_group": "fluvax",
+      "question_entity": "Autumn/Winter 2023-2024",
+      "answer": [
+        "I don't remember",
+        "Yes",
+        "No"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "binary"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "flu_vaccinated_2023_2024"
+        }
+      ],
+      "category": "Flu Vaccination History",
+      "subcategory": "2023–2024"
+    },
+    {
+      "id": "side_effects",
+      "section": "other_illness",
+      "question": "Have you ever experienced any side effects (apart from arm pain) after being administered a dose of any vaccine?",
+      "question_group": "side_effects",
+      "question_entity": "You",
+      "answer": [
+        "I prefer not to answer",
+        "Yes, severe (e.g., seizures, anaphylaxis)",
+        "I don't remember",
+        "Yes, mild (e.g., headache, fever)",
+        "No"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "binary"
+        }
+      ],
+      "category": "Vaccine Side Effects (Experience)",
+      "subcategory": "Personal (any vaccine)"
+    },
+    {
+      "id": "side_effects_other",
+      "section": "other_illness",
+      "question": "Do you personally know anyone who has ever experienced side effects (apart from arm pain) after being administered a dose of any vaccine?",
+      "question_group": "side_effects",
+      "question_entity": "Anyone you personally know",
+      "answer": [
+        "I prefer not to answer",
+        "Yes, mild (e.g., headache, fever),Yes, severe (e.g., seizures, anaphylaxis)",
+        "Yes, severe (e.g., seizures, anaphylaxis)",
+        "I don't remember",
+        "No",
+        "Yes, mild (e.g., headache, fever)"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "binary"
+        }
+      ],
+      "category": "Vaccine Side Effects (Experience)",
+      "subcategory": "Knowing others with side effects"
+    },
+    {
+      "id": "vax_child_1",
+      "section": "other_illness",
+      "question": "For your minor child/children, indicate whether you have consented to the recommended childhood vaccinations for a certain age group.",
+      "answer": [
+        "I don't know/I don't remember",
+        "No",
+        "Yes, but just to some",
+        "Yes, to all"
+      ],
+      "missing_percentage": 95,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "vax_child_2",
+      "section": "other_illness",
+      "question": "For your minor child/children, indicate whether you have consented to the recommended childhood vaccinations for a certain age group.",
+      "answer": [
+        "I don't know/I don't remember",
+        "No",
+        "Yes, but just to some",
+        "Yes, to all"
+      ],
+      "missing_percentage": 80,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "vax_child_3",
+      "section": "other_illness",
+      "question": "For your minor child/children, indicate whether you have consented to the recommended childhood vaccinations for a certain age group.",
+      "answer": [
+        "I don't know/I don't remember",
+        "No",
+        "Yes, but just to some",
+        "Yes, to all"
+      ],
+      "missing_percentage": 87,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "vax_child_4",
+      "section": "other_illness",
+      "question": "For your minor child/children, indicate whether you have consented to the recommended childhood vaccinations for a certain age group.",
+      "answer": [
+        "I don't know/I don't remember",
+        "No",
+        "Yes, but just to some",
+        "Yes, to all"
+      ],
+      "missing_percentage": 96,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "vax_child_5",
+      "section": "other_illness",
+      "question": "For your minor child/children, indicate whether you have consented to the recommended childhood vaccinations for a certain age group.",
+      "answer": [
+        "I don't know/I don't remember",
+        "No",
+        "Yes, but just to some",
+        "Yes, to all"
+      ],
+      "missing_percentage": 99,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "vax_child_6",
+      "section": "other_illness",
+      "question": "For your minor child/children, indicate whether you have consented to the recommended childhood vaccinations for a certain age group.",
+      "answer": [
+        "I don't know/I don't remember",
+        "No",
+        "Yes, but just to some",
+        "Yes, to all"
+      ],
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "vax_child_7",
+      "section": "other_illness",
+      "question": "For your minor child/children, indicate whether you have consented to the recommended childhood vaccinations for a certain age group.",
+      "answer": "Yes to all/Yes, but just to some/No/I don't know",
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "vax_child_8",
+      "section": "other_illness",
+      "question": "For your minor child/children, indicate whether you have consented to the recommended childhood vaccinations for a certain age group.",
+      "answer": [
+        "Yes, but just to some",
+        "Yes, to all"
+      ],
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "vax_child_9",
+      "section": "other_illness",
+      "question": "For your minor child/children, indicate whether you have consented to the recommended childhood vaccinations for a certain age group.",
+      "answer": [
+        "Yes, to all"
+      ],
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "vax_child_10",
+      "section": "other_illness",
+      "question": "For your minor child/children, indicate whether you have consented to the recommended childhood vaccinations for a certain age group.",
+      "answer": [
+        "No",
+        "Yes, to all"
+      ],
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "vax_child_11",
+      "section": "other_illness",
+      "question": "For your minor child/children, indicate whether you have consented to the recommended childhood vaccinations for a certain age group.",
+      "answer": [
+        "I don't know/I don't remember",
+        "Yes, but just to some",
+        "No",
+        "Yes, to all"
+      ],
+      "missing_percentage": 99,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "vax_child_12",
+      "section": "other_illness",
+      "question": "For your minor child/children, indicate whether you have consented to the recommended childhood vaccinations for a certain age group.",
+      "answer": [
+        "I don't know/I don't remember",
+        "Yes, but just to some",
+        "No",
+        "Yes, to all"
+      ],
+      "missing_percentage": 99,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "vax_child_13",
+      "section": "other_illness",
+      "question": "For your minor child/children, indicate whether you have consented to the recommended childhood vaccinations for a certain age group.",
+      "answer": [
+        "I don't know/I don't remember",
+        "Yes, but just to some",
+        "No",
+        "Yes, to all"
+      ],
+      "missing_percentage": 99,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "vax_child_14",
+      "section": "other_illness",
+      "question": "For your minor child/children, indicate whether you have consented to the recommended childhood vaccinations for a certain age group.",
+      "answer": [
+        "I don't know/I don't remember",
+        "Yes, but just to some",
+        "No",
+        "Yes, to all"
+      ],
+      "missing_percentage": 99,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "vax_child_15",
+      "section": "other_illness",
+      "question": "For your minor child/children, indicate whether you have consented to the recommended childhood vaccinations for a certain age group.",
+      "answer": [
+        "Yes, but just to some",
+        "I don't know/I don't remember",
+        "No",
+        "Yes, to all"
+      ],
+      "missing_percentage": 99,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "vax_child_16",
+      "section": "other_illness",
+      "question": "For your minor child/children, indicate whether you have consented to the recommended childhood vaccinations for a certain age group.",
+      "answer": [
+        "No",
+        "I don't know/I don't remember",
+        "Yes, but just to some",
+        "Yes, to all"
+      ],
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "vax_child_17",
+      "section": "other_illness",
+      "question": "For your minor child/children, indicate whether you have consented to the recommended childhood vaccinations for a certain age group.",
+      "answer": [
+        "No",
+        "Yes, but just to some",
+        "I don't know/I don't remember",
+        "Yes, to all"
+      ],
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "vax_child_18",
+      "section": "other_illness",
+      "question": "For your minor child/children, indicate whether you have consented to the recommended childhood vaccinations for a certain age group.",
+      "answer": [
+        "Yes, but just to some",
+        "I don't know/I don't remember",
+        "No",
+        "Yes, to all"
+      ],
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "vax_child_19",
+      "section": "other_illness",
+      "question": "For your minor child/children, indicate whether you have consented to the recommended childhood vaccinations for a certain age group.",
+      "answer": [
+        "I don't know/I don't remember",
+        "Yes, but just to some",
+        "No",
+        "Yes, to all"
+      ],
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "vax_child_20",
+      "section": "other_illness",
+      "question": "For your minor child/children, indicate whether you have consented to the recommended childhood vaccinations for a certain age group.",
+      "answer": [
+        "I don't know/I don't remember",
+        "No",
+        "Yes, but just to some",
+        "Yes, to all"
+      ],
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "vax_no_child",
+      "section": "other_illness",
+      "question": "Indicate the main reasons why your child/children did NOT receive one or more childhood vaccinations.",
+      "answer": "List of up to 5 reasons selected from provided options",
+      "missing_percentage": 91,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "vax_no_child_1_TEXT",
+      "section": "other_illness",
+      "question": "Indicate the main reasons why your child/children did NOT receive one or more childhood vaccinations.",
+      "answer": "Medical condition preventing from getting the vaccine",
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "vax_no_child_6_TEXT",
+      "section": "other_illness",
+      "question": "Indicate the main reasons why your child/children did NOT receive one or more childhood vaccinations.",
+      "answer": "Reason for being personally advised against it by a healthcare professional",
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "vax_no_child_7_TEXT",
+      "section": "other_illness",
+      "question": "Indicate the main reasons why your child/children did NOT receive one or more childhood vaccinations.",
+      "answer": "Reason for being personally advised against it by a trusted person",
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "vax_no_child_14_TEXT",
+      "section": "other_illness",
+      "question": "Indicate the main reasons why your child/children did NOT receive one or more childhood vaccinations.",
+      "answer": "Other reasons not listed above",
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    }
+  ],
+  "new_columns": [
+    {
+      "id": "covid_infection_likelihood_current",
+      "question": "Alias of risk_infection_1 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "risk_infection_1"
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "flu_infection_likelihood_current",
+      "question": "Alias of risk_infection_2 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "risk_infection_2"
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "measles_infection_likelihood_current",
+      "question": "Alias of risk_infection_3 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "risk_infection_3"
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "meningitis_infection_likelihood_current",
+      "question": "Alias of risk_infection_4 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "risk_infection_4"
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "covid_severity_if_infected",
+      "question": "Alias of risk_illness_1 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "risk_illness_1"
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "measles_vaccine_risk",
+      "question": "Alias of risk_vax_3 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "risk_vax_3"
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "covid_vaccine_fear",
+      "question": "Alias of emotion_vax_1 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "emotion_vax_1"
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "meningitis_disease_fear",
+      "question": "Alias of emotion_illness_4 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "emotion_illness_4"
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "covid_vaccine_risk",
+      "question": "Alias of risk_vax_1 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "risk_vax_1"
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "flu_vaccine_risk",
+      "question": "Alias of risk_vax_2 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "risk_vax_2"
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "meningitis_vaccine_risk",
+      "question": "Alias of risk_vax_4 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "risk_vax_4"
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "flu_vaccine_fear",
+      "question": "Alias of emotion_vax_2 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "emotion_vax_2"
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "measles_vaccine_fear",
+      "question": "Alias of emotion_vax_3 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "emotion_vax_3"
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "meningitis_vaccine_fear",
+      "question": "Alias of emotion_vax_4 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "emotion_vax_4"
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "covid_disease_fear",
+      "question": "Alias of emotion_illness_1 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "emotion_illness_1"
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "flu_disease_fear",
+      "question": "Alias of emotion_illness_2 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "emotion_illness_2"
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "measles_disease_fear",
+      "question": "Alias of emotion_illness_3 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "emotion_illness_3"
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "flu_severity_if_infected",
+      "question": "Alias of risk_illness_2 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "risk_illness_2"
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "measles_severity_if_infected",
+      "question": "Alias of risk_illness_3 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "risk_illness_3"
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "meningitis_severity_if_infected",
+      "question": "Alias of risk_illness_4 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "risk_illness_4"
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "flu_vaccinated_pre_pandemic",
+      "question": "Alias of fluvax_1 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "fluvax_1"
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "flu_vaccinated_2020_2021",
+      "question": "Alias of fluvax_2 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "fluvax_2"
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "flu_vaccinated_2021_2022",
+      "question": "Alias of fluvax_3 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "fluvax_3"
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "flu_vaccinated_2022_2023",
+      "question": "Alias of fluvax_4 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "fluvax_4"
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "flu_vaccinated_2023_2024",
+      "question": "Alias of fluvax_5 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "fluvax_5"
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "measles_vaccine_safety",
+      "question": "Measles vaccine safety (reverse of risk_vax_3)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "missing",
+          "merged_from": [
+            "risk_vax_3"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": "$reverse_1_to_5"
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "covid_vaccine_comfort",
+      "question": "COVID vaccine comfort (reverse of emotion_vax_1)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "missing",
+          "merged_from": [
+            "emotion_vax_1"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": "$reverse_1_to_5"
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "infection_likelihood_avg",
+      "question": "Perceived infection likelihood (avg across diseases)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "covid_infection_likelihood_current",
+            "flu_infection_likelihood_current",
+            "measles_infection_likelihood_current",
+            "meningitis_infection_likelihood_current"
+          ]
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "severity_if_infected_avg",
+      "question": "Perceived severity if infected (avg)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "covid_severity_if_infected",
+            "flu_severity_if_infected"
+          ]
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "vaccine_risk_avg",
+      "question": "Perceived vaccine risk (avg)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "covid_vaccine_risk",
+            "flu_vaccine_risk",
+            "measles_vaccine_risk",
+            "meningitis_vaccine_risk"
+          ]
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "vaccine_safety_avg",
+      "question": "Perceived vaccine safety (reverse of vaccine_risk_avg)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "missing",
+          "merged_from": [
+            "vaccine_risk_avg"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": "$reverse_1_to_5"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "redundant",
+          "removal_redundant_col": "vaccine_risk_avg"
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "vaccine_fear_avg",
+      "question": "Fear of vaccines (avg)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "covid_vaccine_fear",
+            "flu_vaccine_fear",
+            "measles_vaccine_fear",
+            "meningitis_vaccine_fear"
+          ]
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "vaccine_comfort_avg",
+      "question": "Comfort with vaccines (reverse of vaccine_fear_avg)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "missing",
+          "merged_from": [
+            "vaccine_fear_avg"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": "$reverse_1_to_5"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "redundant",
+          "removal_redundant_col": "vaccine_fear_avg"
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "disease_fear_avg",
+      "question": "Fear of diseases (avg)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "covid_disease_fear",
+            "flu_disease_fear",
+            "measles_disease_fear",
+            "meningitis_disease_fear"
+          ]
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "knowledge_illness__diabetes",
+      "question": "Believes illness prevented by vaccines: Diabetes",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "knowledge_illness",
+          "values": [
+            "Diabetes"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "Diabetes": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "knowledge_illness__none_of_the_above",
+      "question": "Believes illness prevented by vaccines: None of the above",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "knowledge_illness",
+          "values": [
+            "None of the above"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "None of the above": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "knowledge_illness__i_don_t_know",
+      "question": "Believes illness prevented by vaccines: I don't know",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "knowledge_illness",
+          "values": [
+            "I don't know"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I don't know": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "knowledge_illness__hiv",
+      "question": "Believes illness prevented by vaccines: HIV",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "knowledge_illness",
+          "values": [
+            "HIV"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "HIV": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "knowledge_illness__hepatitis_a",
+      "question": "Believes illness prevented by vaccines: Hepatitis A",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "knowledge_illness",
+          "values": [
+            "Hepatitis A"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "Hepatitis A": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "knowledge_illness__hepatitis_c",
+      "question": "Believes illness prevented by vaccines: Hepatitis C",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "knowledge_illness",
+          "values": [
+            "Hepatitis C"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "Hepatitis C": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "knowledge_illness__hepatitis_b",
+      "question": "Believes illness prevented by vaccines: Hepatitis B",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "knowledge_illness",
+          "values": [
+            "Hepatitis B"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "Hepatitis B": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "knowledge_illness__meningitis",
+      "question": "Believes illness prevented by vaccines: Meningitis",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "knowledge_illness",
+          "values": [
+            "Meningitis"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "Meningitis": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "knowledge_illness__chickenpox",
+      "question": "Believes illness prevented by vaccines: Chickenpox",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "knowledge_illness",
+          "values": [
+            "Chickenpox"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "Chickenpox": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "knowledge_illness__covid_19",
+      "question": "Believes illness prevented by vaccines: COVID-19",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "knowledge_illness",
+          "values": [
+            "COVID-19"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "COVID-19": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "knowledge_illness__flu",
+      "question": "Believes illness prevented by vaccines: Flu",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "knowledge_illness",
+          "values": [
+            "Flu"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "Flu": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "knowledge_illness__measles",
+      "question": "Believes illness prevented by vaccines: Measles",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "knowledge_illness",
+          "values": [
+            "Measles"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "Measles": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "knowledge_vax__none_of_the_above",
+      "question": "Believes vaccine statement is true: None of the above",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "knowledge_vax",
+          "values": [
+            "None of the above"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "None of the above": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "knowledge_vax__no_vaccines_are_recommended_to_the_adult_population",
+      "question": "Believes vaccine statement is true: No vaccines are recommended to the adult population",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "knowledge_vax",
+          "values": [
+            "No vaccines are recommended to the adult population"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "No vaccines are recommended to the adult population": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "knowledge_vax__i_don_t_know",
+      "question": "Believes vaccine statement is true: I don’t know",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "knowledge_vax",
+          "values": [
+            "I don’t know"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I don’t know": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "knowledge_vax__the_administration_of_covid_19_vaccines_to_pregnant_women_is_not_recommended",
+      "question": "Believes vaccine statement is true: The administration of COVID-19 vaccines to pregnant women is not recommended",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "knowledge_vax",
+          "values": [
+            "The administration of COVID-19 vaccines to pregnant women is not recommended"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "The administration of COVID-19 vaccines to pregnant women is not recommended": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "knowledge_vax__herd_immunity_helps_reduce_the_spread_of_viruses",
+      "question": "Believes vaccine statement is true: Herd immunity helps reduce the spread of viruses",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "knowledge_vax",
+          "values": [
+            "Herd immunity helps reduce the spread of viruses"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "Herd immunity helps reduce the spread of viruses": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "knowledge_vax__vaccines_have_eliminated_serious_diseases",
+      "question": "Believes vaccine statement is true: vaccines have eliminated serious diseases",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "knowledge_vax",
+          "values": [
+            "vaccines have eliminated serious diseases"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "vaccines have eliminated serious diseases": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "knowledge_vax__in_the_past",
+      "question": "Believes vaccine statement is true: In the past",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "knowledge_vax",
+          "values": [
+            "In the past"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "In the past": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "vax_no_child__i_am_opposed_to_mandatory_vaccination_for_children",
+      "question": "Childhood vaccine reason present: I am opposed to mandatory vaccination for children",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "vax_no_child",
+          "values": [
+            "I am opposed to mandatory vaccination for children"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I am opposed to mandatory vaccination for children": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "vax_no_child__i_believe_that_the_vaccines_are_not_effective_for_children",
+      "question": "Childhood vaccine reason present: I believe that the vaccines are not effective for children",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "vax_no_child",
+          "values": [
+            "I believe that the vaccines are not effective for children"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I believe that the vaccines are not effective for children": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "vax_no_child__i_believe_that_the_vaccines_are_not_safe_for_children",
+      "question": "Childhood vaccine reason present: I believe that the vaccines are not safe for children",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "vax_no_child",
+          "values": [
+            "I believe that the vaccines are not safe for children"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I believe that the vaccines are not safe for children": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "vax_no_child__i_feel_that_vaccinating_children_is_a_waste_of_money_for_the_benefit_of_the_big_",
+      "question": "Childhood vaccine reason present: I feel that vaccinating children is a waste of money for the benefit of the big pharmaceutical companies",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "vax_no_child",
+          "values": [
+            "I feel that vaccinating children is a waste of money for the benefit of the big pharmaceutical companies"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I feel that vaccinating children is a waste of money for the benefit of the big pharmaceutical companies": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "vax_no_child__i_lack_sufficient_information_about_pediatric_vaccines",
+      "question": "Childhood vaccine reason present: I lack sufficient information about pediatric vaccines",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "vax_no_child",
+          "values": [
+            "I lack sufficient information about pediatric vaccines"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I lack sufficient information about pediatric vaccines": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "vax_no_child__i_never_saw_pediatric_illnesses_as_a_serious_health_risk_for_my_child_children",
+      "question": "Childhood vaccine reason present: I never saw pediatric illnesses as a serious health risk for my child/children",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "vax_no_child",
+          "values": [
+            "I never saw pediatric illnesses as a serious health risk for my child/children"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I never saw pediatric illnesses as a serious health risk for my child/children": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "vax_no_child__i_think_it_is_better_for_children_to_develop_natural_immunity_to_pediatric_illne",
+      "question": "Childhood vaccine reason present: I think it is better for children to develop natural immunity to pediatric illnesses rather than to get vaccinated",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "vax_no_child",
+          "values": [
+            "I think it is better for children to develop natural immunity to pediatric illnesses rather than to get vaccinated"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I think it is better for children to develop natural immunity to pediatric illnesses rather than to get vaccinated": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "vax_no_child__i_was_personally_advised_against_them_by_a_health_care_professional_please_speci",
+      "question": "Childhood vaccine reason present: I was personally advised against them by a health care professional - please specify the reason:",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "vax_no_child",
+          "values": [
+            "I was personally advised against them by a health care professional - please specify the reason:"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I was personally advised against them by a health care professional - please specify the reason:": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "vax_no_child__i_was_personally_advised_against_them_by_a_trusted_person_please_specify_the_rea",
+      "question": "Childhood vaccine reason present: I was personally advised against them by a trusted person - please specify the reason:",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "vax_no_child",
+          "values": [
+            "I was personally advised against them by a trusted person - please specify the reason:"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I was personally advised against them by a trusted person - please specify the reason:": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "vax_no_child__i_worry_about_the_vaccines_side_effects_for_children",
+      "question": "Childhood vaccine reason present: I worry about the vaccines' side effects for children",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "vax_no_child",
+          "values": [
+            "I worry about the vaccines' side effects for children"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I worry about the vaccines' side effects for children": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "vax_no_child__my_child_children_don_t_need_the_vaccines_because_they_take_other_precautions_e_",
+      "question": "Childhood vaccine reason present: My child/children don't need the vaccines because they take other precautions (e.g. a good hygiene)",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "vax_no_child",
+          "values": [
+            "My child/children don't need the vaccines because they take other precautions (e.g. a good hygiene)"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "My child/children don't need the vaccines because they take other precautions (e.g. a good hygiene)": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "vax_no_child__my_child_children_have_a_medical_condition_that_prevents_them_from_getting_the_v",
+      "question": "Childhood vaccine reason present: My child/children have a medical condition that prevents them from getting the vaccine – please specify:",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "vax_no_child",
+          "values": [
+            "My child/children have a medical condition that prevents them from getting the vaccine – please specify:"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "My child/children have a medical condition that prevents them from getting the vaccine – please specify:": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "vax_no_child__other",
+      "question": "Childhood vaccine reason present: Other:",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "vax_no_child",
+          "values": [
+            "Other:"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "Other:": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    },
+    {
+      "id": "vax_no_child__the_vaccines_were_not_offered_to_my_child_children_at_a_convenient_place_time",
+      "question": "Childhood vaccine reason present: The vaccines were not offered to my child/children at a convenient place/time",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "vax_no_child",
+          "values": [
+            "The vaccines were not offered to my child/children at a convenient place/time"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "The vaccines were not offered to my child/children at a convenient place/time": 1
+          }
+        }
+      ],
+      "section": "other_illness"
+    }
+  ]
+}

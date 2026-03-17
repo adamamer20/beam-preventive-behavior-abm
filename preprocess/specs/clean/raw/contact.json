@@ -1,0 +1,65 @@
+{
+  "encodings": {},
+  "question_group": {
+    "people_num": "How many people of each group do you have?",
+    "medical_conditions": null,
+    "covid_num": "How many times on average has each of these groups contracted COVID-19?",
+    "covax_num": "How many doses of COVID-19 vaccine on average has each of these groups received?",
+    "risk_1": "How dangerous did you think COVID-19 was to your health in the following periods? (1-5)",
+    "risk_2": "How willing were you to be vaccinated against COVID-19 in the following periods? (1-5)",
+    "risk_infection": "In your opinion, how likely are you to contract the following infections today? (1-5)",
+    "risk_illness": "In your opinion, how likely are you to experience serious health consequences if you contract the following infections? (1-5)",
+    "risk_vax": "In your opinion, how likely are you to experience health consequences if you receive the vaccine for the following infections? (1-5)",
+    "emotion_illness": "How much do you fear the following infections? (1-5)",
+    "emotion_vax": "How much do you fear the vaccine for the following infections? (1-5)",
+    "fluvax": "Did you get vaccinated against the flu at least once in the following periods?",
+    "side_effects": "Has anyone in the following groups of people experienced any side effects (apart from arm pain) after being administered a dose of any vaccine?",
+    "vax_group": "During the pandemic, with how many people in the following groups did you have a conversation about vaccines/vaccination programs (in person, over the phone, or online)?",
+    "vax_freq": "During the pandemic, how often did you find yourself participating in a conversation about vaccines/vaccination programs (in person, over the phone, or online) with the following groups?",
+    "opinion": "How much do you agree with the following statements? (1-5)",
+    "opinion_change": "How has your opinion on the following statement changed?",
+    "institut_trust_vax": "How much do you trust the information about vaccines/vaccination programs shared by the following groups? (1-5)",
+    "pandemic_behaviour": "How much do you agree with the following statements? (1-7)",
+    "moral1": "When you decide whether something is right or wrong, to what extent are the following statements relevant to your thinking? (1-6)",
+    "moral2": "How much do you agree with the following statements? (1-5)",
+    "info": "Select the information channels you primarily use",
+    "contact_group": "With how many people in the following groups did you have a direct contact YESTERDAY?",
+    "discussion_group": "Thinking of LAST week, with how many different people in the following groups did you have a relevant conversation with?",
+    "opinion_other": "To what extent do the following groups agree or disagree with the provided statement? (1-7)"
+  },
+  "old_columns": [
+    {
+      "id": "recontact_2",
+      "section": "contact",
+      "question": "The questionnaire is about to conclude. If our topics are of interest to you and you have reconsidered being contacted for future studies, you can provide your consent here. I consent to be contacted again for scientific research purposes in the manner stated in the Participant information sheet.",
+      "answer": [
+        "Yes, I consent",
+        "No, I do not consent"
+      ],
+      "missing_percentage": 92,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "survey metadata"
+        }
+      ]
+    },
+    {
+      "id": "consent_social",
+      "section": "contact",
+      "question": "We would like to ask you to share your social media usernames with us. If you consent, your public social media data will be linked to the information you provided in this survey, so that we can understand how people with different beliefs about health choices use their social media. Your data will be processed as stated in the Participant information sheet, pseudonymized, and never used for commercial purposes. Your social media accounts will never be mentioned in any publication and/or presentation resulting from this survey. Do you consent to share your social media usernames with us for the purposes of this research project?",
+      "answer": [
+        "Yes, I consent",
+        "No, I do not consent"
+      ],
+      "missing_percentage": 15,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "survey metadata"
+        }
+      ]
+    }
+  ],
+  "new_columns": []
+}

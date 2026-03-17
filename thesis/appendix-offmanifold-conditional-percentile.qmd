@@ -1,0 +1,40 @@
+# Screening off-manifold perturbations {#sec-appendix-offmanifold-conditional-percentile}
+
+The country-specific conditional-tail diagnostic below screens perturbations for empirical plausibility. Because psychological profile variables are correlated in the observed profile space, setting a single lever $X$ to $x_{\text{low}}$ or $x_{\text{high}}$ while holding the remaining covariates $z_i$ fixed can generate combinations that are rarely observed in the survey. I flag such perturbed points using a conditional tail probability based on $\hat F(X \mid z)$.
+
+For each country $c$ and lever $X$, I estimate the conditional distribution of $X$ given the remaining profile:
+$$
+\hat F_c(x\mid z)=\Pr\bigl(X\le x \mid Z=z,\ \text{country}=c\bigr).
+$$
+
+Given an intervention value $x^*$ applied to respondent $i$ in country $c(i)$, I compute its conditional percentile $\pi_i(x^*)$. For continuous $X$, this is
+$$
+\pi_i(x^*)=\hat F_{c(i)}(x^*\mid z_i).
+$$
+
+For discrete $X$ (ordinal or binary), I use a mid-CDF percentile to avoid degeneracy at the endpoints:
+$$
+\pi_i(x^*)=\Pr(X<x^*\mid z_i,c(i))+\tfrac{1}{2}\Pr(X=x^*\mid z_i,c(i)).
+$$
+
+I then convert $\pi_i(x^*)$ into a two-sided conditional tail probability,
+$$
+\mathrm{tail}_i(x^*) = 2\min\{\pi_i(x^*),\,1-\pi_i(x^*)\},
+$$
+and I flag the perturbed point $(x^*,z_i)$ as off-manifold if
+$$
+\mathrm{tail}_i(x^*) < 0.05.
+$$
+
+Conditional on $z_i$ within country $c(i)$, the assigned value $x^*$ lies in the most extreme $2.5\%$ of the conditional distribution on at least one side.
+
+All conditional models are fit within country. For continuous levers, I estimate a grid of conditional quantiles and use monotone interpolation to approximate $\hat F_c(x \mid z)$. For ordinal levers, I use an ordered response model to recover the conditional probabilities entering the mid-CDF percentile. For binary levers, I use a logistic model and derive the same percentile measure from the predicted category probabilities.
+
+When I evaluate perturbation effects for lever $X$ on respondent $i$, I create two perturbed points, $(x_{\text{low}},z_i)$ and $(x_{\text{high}},z_i)$. I compute $\mathrm{tail}_i(x_{\text{low}})$ and $\mathrm{tail}_i(x_{\text{high}})$ and flag the perturbation as off-manifold if either endpoint is extreme:
+$$
+\mathrm{off\_manifold}_{i,X} = \mathbb{1}\left(
+\min\{\mathrm{tail}_i(x_{\text{low}}),\,\mathrm{tail}_i(x_{\text{high}})\} < 0.05
+\right).
+$$
+
+The screen is therefore conservative: a perturbation is retained only if both the low and high endpoint remain conditionally plausible given the rest of the respondent’s profile.

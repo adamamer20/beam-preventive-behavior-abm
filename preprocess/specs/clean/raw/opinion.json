@@ -1,0 +1,2548 @@
+{
+  "encodings": {
+    "categorical": {
+      "Not at all": 1,
+      "Very bad": 1,
+      "Not very": 2,
+      "Bad": 2,
+      "A little": 2,
+      "Fair": 3,
+      "Quite": 3,
+      "Good": 4,
+      "Very": 4,
+      "Very good": 5,
+      "Very Good": 5,
+      "Completely": 5,
+      "Extremely": 5,
+      "I never found information on vaccines on this channel": null,
+      "I prefer not to answer": null
+    },
+    "opinion": {
+      "I don't know": null,
+      "Strongly Disagree": 1,
+      "Strongly disagree": 1,
+      "Moderately Disagree": 2,
+      "Moderately disagree": 2,
+      "Slightly Disagree": 3,
+      "Slightly disagree": 3,
+      "Neutral": 4,
+      "Slightly Agree": 5,
+      "Slightly agree": 5,
+      "Moderately Agree": 6,
+      "Moderately agree": 6,
+      "Strongly Agree": 7,
+      "Strongly agree": 7
+    },
+    "opinion_change": {
+      "I disagree more than some time ago": -1.0,
+      "My opinion has stayed the same over time": 0.0,
+      "I agree more than some time ago": 1.0
+    }
+  },
+  "question_group": {
+    "people_num": "How many people of each group do you have?",
+    "medical_conditions": null,
+    "covid_num": "How many times on average has each of these groups contracted COVID-19?",
+    "covax_num": "How many doses of COVID-19 vaccine on average has each of these groups received?",
+    "risk_1": "How dangerous did you think COVID-19 was to your health in the following periods? (1-5)",
+    "risk_2": "How willing were you to be vaccinated against COVID-19 in the following periods? (1-5)",
+    "risk_infection": "In your opinion, how likely are you to contract the following infections today? (1-5)",
+    "risk_illness": "In your opinion, how likely are you to experience serious health consequences if you contract the following infections? (1-5)",
+    "risk_vax": "In your opinion, how likely are you to experience health consequences if you receive the vaccine for the following infections? (1-5)",
+    "emotion_illness": "How much do you fear the following infections? (1-5)",
+    "emotion_vax": "How much do you fear the vaccine for the following infections? (1-5)",
+    "fluvax": "Did you get vaccinated against the flu at least once in the following periods?",
+    "side_effects": "Has anyone in the following groups of people experienced any side effects (apart from arm pain) after being administered a dose of any vaccine?",
+    "vax_group": "During the pandemic, with how many people in the following groups did you have a conversation about vaccines/vaccination programs (in person, over the phone, or online)?",
+    "vax_freq": "During the pandemic, how often did you find yourself participating in a conversation about vaccines/vaccination programs (in person, over the phone, or online) with the following groups?",
+    "opinion": "How much do you agree with the following statements? (1-5)",
+    "opinion_change": "How has your opinion on the following statement changed?",
+    "institut_trust_vax": "How much do you trust the information about vaccines/vaccination programs shared by the following groups? (1-5)",
+    "pandemic_behaviour": "How much do you agree with the following statements? (1-7)",
+    "moral1": "When you decide whether something is right or wrong, to what extent are the following statements relevant to your thinking? (1-6)",
+    "moral2": "How much do you agree with the following statements? (1-5)",
+    "info": "Select the information channels you primarily use",
+    "contact_group": "With how many people in the following groups did you have a direct contact YESTERDAY?",
+    "discussion_group": "Thinking of LAST week, with how many different people in the following groups did you have a relevant conversation with?",
+    "opinion_other": "To what extent do the following groups agree or disagree with the provided statement? (1-7)"
+  },
+  "old_columns": [
+    {
+      "id": "opinion_1",
+      "section": "opinion",
+      "question": "Vaccines are decisive for the protection of human health. (1-5)",
+      "question_group": "opinion",
+      "question_entity": "Vaccines are decisive for the protection of human health",
+      "answer": [
+        "Moderately disagree",
+        "Strongly disagree",
+        "Slightly disagree",
+        "Neutral",
+        "Moderately agree",
+        "Slightly agree",
+        "Strongly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "att_vaccines_importance"
+        }
+      ],
+      "category": "Sociopolitical Attitudes",
+      "subcategory": "Topic: Vaccine importance"
+    },
+    {
+      "id": "opinion_2",
+      "section": "opinion",
+      "question": "Climate change will have a bad impact on people across the world. (1-5)",
+      "question_group": "opinion",
+      "question_entity": "Climate change will have a bad impact on people across the world",
+      "answer": [
+        "Moderately disagree",
+        "Strongly disagree",
+        "Slightly disagree",
+        "Neutral",
+        "Slightly agree",
+        "Moderately agree",
+        "Strongly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "att_climate_harm"
+        }
+      ],
+      "category": "Sociopolitical Attitudes",
+      "subcategory": "Topic: Climate change harm"
+    },
+    {
+      "id": "opinion_3",
+      "section": "opinion",
+      "question": "Gay male and lesbian couples should have the same rights to adopt children as straight couples. (1-5)",
+      "question_group": "opinion",
+      "question_entity": "Gay male and lesbian couples should have the same rights to adopt children as straight couples.",
+      "answer": [
+        "Moderately disagree",
+        "Slightly disagree",
+        "Strongly disagree",
+        "Slightly agree",
+        "Moderately agree",
+        "Neutral",
+        "Strongly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "att_lgbt_adoption_rights"
+        }
+      ],
+      "category": "Sociopolitical Attitudes",
+      "subcategory": "Topic: LGBT adoption rights"
+    },
+    {
+      "id": "opinion_4",
+      "section": "opinion",
+      "question": "The fact that there are people immigrating from other countries is bad for the economy of the country of arrival. (1-5)",
+      "question_group": "opinion",
+      "question_entity": "The fact that there are people immigrating from other countries is bad for the economy of the country of arrival.",
+      "answer": [
+        "Moderately disagree",
+        "Moderately agree",
+        "Strongly agree",
+        "Slightly disagree",
+        "Strongly disagree",
+        "Slightly agree",
+        "Neutral"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$reverse_1_to_7"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "att_immigration_tolerance"
+        }
+      ],
+      "category": "Sociopolitical Attitudes",
+      "subcategory": "Topic: Immigration & economy"
+    },
+    {
+      "id": "opinion_change_1",
+      "section": "opinion",
+      "question": "How has your opinion on 'Vaccines are decisive for the protection of human health' changed over the years?",
+      "question_group": "opinion_change",
+      "question_entity": "Vaccines are decisive for the protection of human health",
+      "answer": [
+        "I disagree more than some time ago",
+        "I agree more than some time ago",
+        "My opinion has stayed the same over time"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion_change"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "opinion_change_vaccines_importance"
+        }
+      ],
+      "category": "Attitude Change Over Time",
+      "subcategory": "Topic: Vaccine importance"
+    },
+    {
+      "id": "opinion_change_2",
+      "section": "opinion",
+      "question": "How has your opinion on 'Climate change will have a bad impact on people across the world' changed over the years?",
+      "question_group": "opinion_change",
+      "question_entity": "Climate change will have a bad impact on people across the world",
+      "answer": [
+        "I disagree more than some time ago",
+        "I agree more than some time ago",
+        "My opinion has stayed the same over time"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion_change"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "opinion_change_climate_harm"
+        }
+      ],
+      "category": "Attitude Change Over Time",
+      "subcategory": "Topic: Climate change harm"
+    },
+    {
+      "id": "opinion_change_3",
+      "section": "opinion",
+      "question": "How has your opinion on 'Gay male and lesbian couples should have the same rights to adopt children as straight couples' changed over the years?",
+      "question_group": "opinion_change",
+      "question_entity": "Gay male and lesbian couples should have the same rights to adopt children as straight couples",
+      "answer": [
+        "I disagree more than some time ago",
+        "I agree more than some time ago",
+        "My opinion has stayed the same over time"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion_change"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "opinion_change_lgbt_adoption_rights"
+        }
+      ],
+      "category": "Attitude Change Over Time",
+      "subcategory": "Topic: LGBT adoption rights"
+    },
+    {
+      "id": "opinion_change_4",
+      "section": "opinion",
+      "question": "How has your opinion on 'The fact that there are people immigrating from other countries is bad for the economy of the country of arrival' changed over the years?",
+      "question_group": "opinion_change",
+      "question_entity": "The fact that there are people immigrating from other countries is bad for the economy of the country of arrival",
+      "answer": [
+        "I disagree more than some time ago",
+        "I agree more than some time ago",
+        "My opinion has stayed the same over time"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion_change"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "opinion_change_immigration_harms_economy"
+        }
+      ],
+      "category": "Attitude Change Over Time",
+      "subcategory": "Topic: Immigration & economy"
+    },
+    {
+      "id": "opinion_other_1_1",
+      "section": "opinion",
+      "question": "To what extent do your children agree or disagree with the statement 'Vaccines are decisive for the protection of human health'?",
+      "answer": [
+        "Moderately Disagree",
+        "Strongly Disagree",
+        "Slightly Disagree",
+        "I don't know",
+        "Slightly Agree",
+        "Neutral",
+        "Moderately Agree",
+        "Strongly Agree"
+      ],
+      "missing_percentage": 62,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "merging",
+          "merging_in": "opinion_other_1_family"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "opinion_other_1_family"
+        }
+      ]
+    },
+    {
+      "id": "opinion_other_2_1",
+      "section": "opinion",
+      "question": "To what extent do your children agree or disagree with the statement 'Climate change will have a bad impact on people across the world'?",
+      "answer": [
+        "Moderately Disagree",
+        "Slightly Disagree",
+        "Strongly Disagree",
+        "I don't know",
+        "Neutral",
+        "Slightly Agree",
+        "Moderately Agree",
+        "Strongly Agree"
+      ],
+      "missing_percentage": 62,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "merging",
+          "merging_in": "opinion_other_2_family"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "opinion_other_2_family"
+        }
+      ]
+    },
+    {
+      "id": "opinion_other_3_1",
+      "section": "opinion",
+      "question": "To what extent do your children agree or disagree with the statement 'Gay male and lesbian couples should have the same rights to adopt children as straight couples'?",
+      "answer": [
+        "Moderately Disagree",
+        "Slightly Disagree",
+        "Strongly Disagree",
+        "Slightly Agree",
+        "Moderately Agree",
+        "I don't know",
+        "Neutral",
+        "Strongly Agree"
+      ],
+      "missing_percentage": 62,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "merging",
+          "merging_in": "opinion_other_3_family"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "opinion_other_3_family"
+        }
+      ]
+    },
+    {
+      "id": "opinion_other_4_1",
+      "section": "opinion",
+      "question": "To what extent do your children agree or disagree with the statement 'The fact that there are people immigrating from other countries is bad for the economy of the country of arrival'?",
+      "answer": [
+        "Moderately Disagree",
+        "Slightly Disagree",
+        "Strongly Disagree",
+        "Slightly Agree",
+        "Moderately Agree",
+        "I don't know",
+        "Strongly Agree",
+        "Neutral"
+      ],
+      "missing_percentage": 62,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "merging",
+          "merging_in": "opinion_other_4_family"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "opinion_other_4_family"
+        }
+      ]
+    },
+    {
+      "id": "opinion_other_1_2",
+      "section": "opinion",
+      "question": "To what extent do your partner agree or disagree with the statement 'Vaccines are decisive for the protection of human health'?",
+      "answer": [
+        "I don't know",
+        "Moderately Disagree",
+        "Slightly Disagree",
+        "Strongly Disagree",
+        "Slightly Agree",
+        "Neutral",
+        "Moderately Agree",
+        "Strongly Agree"
+      ],
+      "missing_percentage": 37,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "merging",
+          "merging_in": "opinion_other_1_family"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "opinion_other_1_family"
+        }
+      ]
+    },
+    {
+      "id": "opinion_other_2_2",
+      "section": "opinion",
+      "question": "To what extent do your partner agree or disagree with the statement 'Climate change will have a bad impact on people across the world'?",
+      "answer": [
+        "Moderately Disagree",
+        "Strongly Disagree",
+        "Slightly Disagree",
+        "I don't know",
+        "Neutral",
+        "Slightly Agree",
+        "Moderately Agree",
+        "Strongly Agree"
+      ],
+      "missing_percentage": 37,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "merging",
+          "merging_in": "opinion_other_2_family"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "opinion_other_2_family"
+        }
+      ]
+    },
+    {
+      "id": "opinion_other_3_2",
+      "section": "opinion",
+      "question": "To what extent do your partner agree or disagree with the statement 'Gay male and lesbian couples should have the same rights to adopt children as straight couples'?",
+      "answer": [
+        "Moderately Disagree",
+        "Slightly Disagree",
+        "I don't know",
+        "Strongly Disagree",
+        "Slightly Agree",
+        "Moderately Agree",
+        "Neutral",
+        "Strongly Agree"
+      ],
+      "missing_percentage": 37,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "merging",
+          "merging_in": "opinion_other_3_family"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "opinion_other_3_family"
+        }
+      ]
+    },
+    {
+      "id": "opinion_other_4_2",
+      "section": "opinion",
+      "question": "To what extent do your partner agree or disagree with the statement 'The fact that there are people immigrating from other countries is bad for the economy of the country of arrival'?",
+      "answer": [
+        "Moderately Disagree",
+        "I don't know",
+        "Slightly Disagree",
+        "Strongly Disagree",
+        "Slightly Agree",
+        "Moderately Agree",
+        "Neutral",
+        "Strongly Agree"
+      ],
+      "missing_percentage": 37,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "merging",
+          "merging_in": "opinion_other_4_family"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "opinion_other_4_family"
+        }
+      ]
+    },
+    {
+      "id": "opinion_other_1_5",
+      "section": "opinion",
+      "question": "To what extent do your grandparents agree or disagree with the statement 'Vaccines are decisive for the protection of human health'?",
+      "answer": [
+        "Moderately Disagree",
+        "Strongly Disagree",
+        "Slightly Disagree",
+        "I don't know",
+        "Slightly Agree",
+        "Neutral",
+        "Moderately Agree",
+        "Strongly Agree"
+      ],
+      "missing_percentage": 87,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "merging",
+          "merging_in": "opinion_other_1_family"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "opinion_other_1_family"
+        }
+      ]
+    },
+    {
+      "id": "opinion_other_2_5",
+      "section": "opinion",
+      "question": "To what extent do your grandparents agree or disagree with the statement 'Climate change will have a bad impact on people across the world'?",
+      "answer": [
+        "Strongly Disagree",
+        "Moderately Disagree",
+        "Slightly Disagree",
+        "Slightly Agree",
+        "I don't know",
+        "Moderately Agree",
+        "Neutral",
+        "Strongly Agree"
+      ],
+      "missing_percentage": 87,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "merging",
+          "merging_in": "opinion_other_2_family"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "opinion_other_2_family"
+        }
+      ]
+    },
+    {
+      "id": "opinion_other_3_5",
+      "section": "opinion",
+      "question": "To what extent do your grandparents agree or disagree with the statement 'Gay male and lesbian couples should have the same rights to adopt children as straight couples'?",
+      "answer": [
+        "Moderately Disagree",
+        "Slightly Agree",
+        "Slightly Disagree",
+        "Moderately Agree",
+        "Strongly Disagree",
+        "Strongly Agree",
+        "I don't know",
+        "Neutral"
+      ],
+      "missing_percentage": 87,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "merging",
+          "merging_in": "opinion_other_3_family"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "opinion_other_3_family"
+        }
+      ]
+    },
+    {
+      "id": "opinion_other_4_5",
+      "section": "opinion",
+      "question": "To what extent do your grandparents agree or disagree with the statement 'The fact that there are people immigrating from other countries is bad for the economy of the country of arrival'?",
+      "answer": [
+        "Moderately Disagree",
+        "Strongly Disagree",
+        "Slightly Disagree",
+        "Slightly Agree",
+        "Moderately Agree",
+        "Strongly Agree",
+        "I don't know",
+        "Neutral"
+      ],
+      "missing_percentage": 87,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "merging",
+          "merging_in": "opinion_other_4_family"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "opinion_other_4_family"
+        }
+      ]
+    },
+    {
+      "id": "opinion_other_1_6",
+      "section": "opinion",
+      "question": "To what extent do your friends agree with the statement 'Vaccines are decisive for the protection of human health'? (1-5)",
+      "question_group": "opinion_other",
+      "question_entity": "Friends, Vaccines are decisive for the protection of human health",
+      "answer": [
+        "Strongly Disagree",
+        "Moderately Disagree",
+        "Slightly Disagree",
+        "I don't know",
+        "Slightly Agree",
+        "Strongly Agree",
+        "Neutral",
+        "Moderately Agree"
+      ],
+      "missing_percentage": 5,
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "friends_vaccines_importance"
+        }
+      ],
+      "category": "Perceived Social Norms (Friends)",
+      "subcategory": "Topic: Vaccine importance"
+    },
+    {
+      "id": "opinion_other_2_6",
+      "section": "opinion",
+      "question": "To what extent do your friends agree with the statement 'Climate change will have a bad impact on people across the world'? (1-5)",
+      "question_group": "opinion_other",
+      "question_entity": "Friends, Climate change will have a bad impact on people across the world",
+      "answer": [
+        "Strongly Disagree",
+        "Moderately Disagree",
+        "Slightly Disagree",
+        "I don't know",
+        "Slightly Agree",
+        "Neutral",
+        "Moderately Agree",
+        "Strongly Agree"
+      ],
+      "missing_percentage": 5,
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "friends_climate_harm"
+        }
+      ],
+      "category": "Perceived Social Norms (Friends)",
+      "subcategory": "Topic: Climate change harm"
+    },
+    {
+      "id": "opinion_other_3_6",
+      "section": "opinion",
+      "question": "To what extent do your friends agree with the statement 'Gay male and lesbian couples should have the same rights to adopt children as straight couples'?",
+      "question_group": "opinion_other",
+      "question_entity": "Friends, Gay male and lesbian couples should have the same rights to adopt children as straight couples",
+      "answer": [
+        "Moderately Disagree",
+        "Strongly Disagree",
+        "Slightly Disagree",
+        "Slightly Agree",
+        "I don't know",
+        "Moderately Agree",
+        "Strongly Agree",
+        "Neutral"
+      ],
+      "missing_percentage": 5,
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "friends_lgbt_adoption_rights"
+        }
+      ],
+      "category": "Perceived Social Norms (Friends)",
+      "subcategory": "Topic: LGBT adoption rights"
+    },
+    {
+      "id": "opinion_other_4_6",
+      "section": "opinion",
+      "question": "To what extent do your friends agree with the statement 'The fact that there are people immigrating from other countries is bad for the economy of the country of arrival'?",
+      "question_group": "opinion_other",
+      "question_entity": "Friends, The fact that there are people immigrating from other countries is bad for the economy of the country of arrival",
+      "answer": [
+        "Moderately Disagree",
+        "Strongly Disagree",
+        "Slightly Disagree",
+        "Slightly Agree",
+        "Moderately Agree",
+        "Strongly Agree",
+        "I don't know",
+        "Neutral"
+      ],
+      "missing_percentage": 5,
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$reverse_1_to_7"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "friends_immigration_tolerance"
+        }
+      ],
+      "category": "Perceived Social Norms (Friends)",
+      "subcategory": "Topic: Immigration & economy"
+    },
+    {
+      "id": "opinion_other_1_3",
+      "section": "opinion",
+      "question": "To what extent do your siblings agree or disagree with the statement 'Vaccines are decisive for the protection of human health'?",
+      "answer": [
+        "Moderately Disagree",
+        "Strongly Disagree",
+        "Slightly Disagree",
+        "I don't know",
+        "Slightly Agree",
+        "Neutral",
+        "Moderately Agree",
+        "Strongly Agree"
+      ],
+      "missing_percentage": 49,
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "merging",
+          "merging_in": "opinion_other_1_family"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "opinion_other_1_family"
+        }
+      ]
+    },
+    {
+      "id": "opinion_other_2_3",
+      "section": "opinion",
+      "question": "To what extent do your siblings agree or disagree with the statement 'Climate change will have a bad impact on people across the world'?",
+      "answer": [
+        "Moderately Disagree",
+        "Strongly Disagree",
+        "Slightly Disagree",
+        "I don't know",
+        "Slightly Agree",
+        "Neutral",
+        "Moderately Agree",
+        "Strongly Agree"
+      ],
+      "missing_percentage": 49,
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "merging",
+          "merging_in": "opinion_other_2_family"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "opinion_other_2_family"
+        }
+      ]
+    },
+    {
+      "id": "opinion_other_3_3",
+      "section": "opinion",
+      "question": "To what extent do your siblings agree or disagree with the statement 'Gay male and lesbian couples should have the same rights to adopt children as straight couples'?",
+      "answer": [
+        "Moderately Disagree",
+        "Slightly Disagree",
+        "Strongly Disagree",
+        "Slightly Agree",
+        "Moderately Agree",
+        "I don't know",
+        "Neutral",
+        "Strongly Agree"
+      ],
+      "missing_percentage": 49,
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "merging",
+          "merging_in": "opinion_other_3_family"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "opinion_other_3_family"
+        }
+      ]
+    },
+    {
+      "id": "opinion_other_4_3",
+      "section": "opinion",
+      "question": "To what extent do your siblings agree or disagree with the statement 'The fact that there are people immigrating from other countries is bad for the economy of the country of arrival'?",
+      "answer": [
+        "Moderately Disagree",
+        "Strongly Disagree",
+        "Slightly Disagree",
+        "Slightly Agree",
+        "Moderately Agree",
+        "Strongly Agree",
+        "I don't know",
+        "Neutral"
+      ],
+      "missing_percentage": 49,
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "merging",
+          "merging_in": "opinion_other_4_family"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "opinion_other_4_family"
+        }
+      ]
+    },
+    {
+      "id": "opinion_other_1_4",
+      "section": "opinion",
+      "question": "To what extent do your parents agree or disagree with the statement 'Vaccines are decisive for the protection of human health'?",
+      "answer": [
+        "Moderately Disagree",
+        "Strongly Disagree",
+        "Slightly Disagree",
+        "I don't know",
+        "Slightly Agree",
+        "Neutral",
+        "Moderately Agree",
+        "Strongly Agree"
+      ],
+      "missing_percentage": 52,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "merging",
+          "merging_in": "opinion_other_1_family"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "opinion_other_1_family"
+        }
+      ]
+    },
+    {
+      "id": "opinion_other_2_4",
+      "section": "opinion",
+      "question": "To what extent do your parents agree or disagree with the statement 'Climate change will have a bad impact on people across the world'?",
+      "answer": [
+        "Moderately Disagree",
+        "Strongly Disagree",
+        "Slightly Disagree",
+        "I don't know",
+        "Slightly Agree",
+        "Neutral",
+        "Moderately Agree",
+        "Strongly Agree"
+      ],
+      "missing_percentage": 52,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "merging",
+          "merging_in": "opinion_other_2_family"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "opinion_other_2_family"
+        }
+      ]
+    },
+    {
+      "id": "opinion_other_3_4",
+      "section": "opinion",
+      "question": "To what extent do your parents agree or disagree with the 'Gay male and lesbian couples should have the same rights to adopt children as straight couples'?",
+      "answer": [
+        "Moderately Disagree",
+        "Slightly Disagree",
+        "Strongly Disagree",
+        "Slightly Agree",
+        "Moderately Agree",
+        "I don't know",
+        "Strongly Agree",
+        "Neutral"
+      ],
+      "missing_percentage": 52,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "merging",
+          "merging_in": "opinion_other_3_family"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "opinion_other_3_family"
+        }
+      ]
+    },
+    {
+      "id": "opinion_other_4_4",
+      "section": "opinion",
+      "question": "To what extent do your parents agree or disagree with the statement 'The fact that there are people immigrating from other countries is bad for the economy of the country of arrival'?",
+      "answer": [
+        "Moderately Disagree",
+        "Strongly Disagree",
+        "Slightly Disagree",
+        "Slightly Agree",
+        "I don't know",
+        "Moderately Agree",
+        "Strongly Agree",
+        "Neutral"
+      ],
+      "missing_percentage": 52,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "merging",
+          "merging_in": "opinion_other_4_family"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "opinion_other_4_family"
+        }
+      ]
+    },
+    {
+      "id": "opinion_other_1_7",
+      "section": "opinion",
+      "question": "To what extent do your co-workers agree or disagree with the statement 'Vaccines are decisive for the protection of human health'?",
+      "answer": [
+        "Strongly Disagree",
+        "Moderately Disagree",
+        "Slightly Disagree",
+        "I don't know",
+        "Strongly Agree",
+        "Slightly Agree",
+        "Moderately Agree",
+        "Neutral"
+      ],
+      "missing_percentage": 41,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "merging",
+          "merging_in": "opinion_other_1_colleagues"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "opinion_other_1_colleagues"
+        }
+      ]
+    },
+    {
+      "id": "opinion_other_2_7",
+      "section": "opinion",
+      "question": "To what extent do your co-workers agree or disagree with the statement 'Climate change will have a bad impact on people across the world'?",
+      "answer": [
+        "Strongly Disagree",
+        "Moderately Disagree",
+        "Slightly Disagree",
+        "I don't know",
+        "Slightly Agree",
+        "Neutral",
+        "Strongly Agree",
+        "Moderately Agree"
+      ],
+      "missing_percentage": 41,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "merging",
+          "merging_in": "opinion_other_2_colleagues"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "opinion_other_2_colleagues"
+        }
+      ]
+    },
+    {
+      "id": "opinion_other_3_7",
+      "section": "opinion",
+      "question": "To what extent do your co-workers agree or disagree with the statement 'Gay male and lesbian couples should have the same rights to adopt children as straight couples'?",
+      "answer": [
+        "Moderately Disagree",
+        "Strongly Disagree",
+        "Slightly Disagree",
+        "Slightly Agree",
+        "Moderately Agree",
+        "Strongly Agree",
+        "I don't know",
+        "Neutral"
+      ],
+      "missing_percentage": 41,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "merging",
+          "merging_in": "opinion_other_3_colleagues"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "opinion_other_3_colleagues"
+        }
+      ]
+    },
+    {
+      "id": "opinion_other_4_7",
+      "section": "opinion",
+      "question": "To what extent do your co-workers agree or disagree with the statement 'The fact that there are people immigrating from other countries is bad for the economy of the country of arrival'?",
+      "answer": [
+        "Moderately Disagree",
+        "Strongly Disagree",
+        "Slightly Disagree",
+        "Strongly Agree",
+        "Slightly Agree",
+        "Moderately Agree",
+        "I don't know",
+        "Neutral"
+      ],
+      "missing_percentage": 41,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "merging",
+          "merging_in": "opinion_other_4_colleagues"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "opinion_other_4_colleagues"
+        }
+      ]
+    },
+    {
+      "id": "opinion_other_1_8",
+      "section": "opinion",
+      "question": "To what extent do your class/course-mates agree or disagree with the statement 'Vaccines are decisive for the protection of human health'?",
+      "answer": [
+        "Strongly Disagree",
+        "Slightly Disagree",
+        "Moderately Disagree",
+        "Strongly Agree",
+        "Slightly Agree",
+        "Moderately Agree",
+        "Neutral",
+        "I don't know"
+      ],
+      "missing_percentage": 95,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "merging",
+          "merging_in": "opinion_other_1_colleagues"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "opinion_other_1_colleagues"
+        }
+      ]
+    },
+    {
+      "id": "opinion_other_2_8",
+      "section": "opinion",
+      "question": "To what extent do your class/course-mates agree or disagree with the statement 'Climate change will have a bad impact on people across the world'?",
+      "answer": [
+        "Strongly Disagree",
+        "Moderately Disagree",
+        "Slightly Disagree",
+        "Slightly Agree",
+        "Neutral",
+        "Moderately Agree",
+        "I don't know",
+        "Strongly Agree"
+      ],
+      "missing_percentage": 95,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "merging",
+          "merging_in": "opinion_other_2_colleagues"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "opinion_other_2_colleagues"
+        }
+      ]
+    },
+    {
+      "id": "opinion_other_3_8",
+      "section": "opinion",
+      "question": "To what extent do your class/course-mates agree or disagree with the statement 'Gay male and lesbian couples should have the same rights to adopt children as straight couples'?",
+      "answer": [
+        "Strongly Disagree",
+        "Moderately Disagree",
+        "Slightly Disagree",
+        "Slightly Agree",
+        "Neutral",
+        "Moderately Agree",
+        "Strongly Agree",
+        "I don't know"
+      ],
+      "missing_percentage": 95,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "merging",
+          "merging_in": "opinion_other_3_colleagues"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "opinion_other_3_colleagues"
+        }
+      ]
+    },
+    {
+      "id": "opinion_other_4_8",
+      "section": "opinion",
+      "question": "To what extent do your class/course-mates agree or disagree with the statement 'The fact that there are people immigrating from other countries is bad for the economy of the country of arrival'?",
+      "answer": [
+        "Moderately Disagree",
+        "Strongly Disagree",
+        "Strongly Agree",
+        "Moderately Agree",
+        "Slightly Disagree",
+        "Slightly Agree",
+        "Neutral",
+        "I don't know"
+      ],
+      "missing_percentage": 95,
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "merging",
+          "merging_in": "opinion_other_4_colleagues"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "opinion_other_4_colleagues"
+        }
+      ]
+    },
+    {
+      "id": "institut_trust_vax_1",
+      "section": "opinion",
+      "question": "How much do you trust the information about vaccines/vaccination programs shared by Local government?",
+      "question_group": "institut_trust_vax",
+      "question_entity": "Local government",
+      "answer": [
+        "Completely",
+        "Very",
+        "Not at all",
+        "Quite",
+        "A little"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "trust_local_gov_vax_info"
+        }
+      ],
+      "category": "Institutional Trust (Vaccine Info Source)",
+      "subcategory": "Local government"
+    },
+    {
+      "id": "institut_trust_vax_2",
+      "section": "opinion",
+      "question": "How much do you trust the information about vaccines/vaccination programs shared by National government?",
+      "answer": [
+        "Completely",
+        "Very",
+        "A little",
+        "Quite",
+        "Not at all"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "trust_national_gov_vax_info"
+        }
+      ],
+      "category": "Institutional Trust (Vaccine Info Source)",
+      "subcategory": "National government"
+    },
+    {
+      "id": "institut_trust_vax_3",
+      "section": "opinion",
+      "question": "How much do you trust the information about vaccines/vaccination programs shared by family doctor?",
+      "answer": [
+        "Not at all",
+        "A little",
+        "Completely",
+        "Very",
+        "Quite"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "trust_gp_vax_info"
+        }
+      ],
+      "category": "Institutional Trust (Vaccine Info Source)",
+      "subcategory": "Family doctor / GP"
+    },
+    {
+      "id": "institut_trust_vax_4",
+      "section": "opinion",
+      "question": "How much do you trust the information about vaccines/vaccination programs shared by local health authorities?",
+      "answer": [
+        "Completely",
+        "Not at all",
+        "Very",
+        "A little",
+        "Quite"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "trust_local_health_authorities_vax_info"
+        }
+      ],
+      "category": "Institutional Trust (Vaccine Info Source)",
+      "subcategory": "Local health authorities"
+    },
+    {
+      "id": "institut_trust_vax_5",
+      "section": "opinion",
+      "question": "How much do you trust the information about vaccines/vaccination programs shared by national health institutions?",
+      "answer": [
+        "Completely",
+        "Not at all",
+        "A little",
+        "Very",
+        "Quite"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "trust_national_health_institutions_vax_info"
+        }
+      ],
+      "category": "Institutional Trust (Vaccine Info Source)",
+      "subcategory": "National health institutions"
+    },
+    {
+      "id": "institut_trust_vax_6",
+      "section": "opinion",
+      "question": "How much do you trust the information about vaccines/vaccination programs shared by World Health Organization?",
+      "answer": [
+        "Completely",
+        "Not at all",
+        "A little",
+        "Very",
+        "Quite"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "trust_who_vax_info"
+        }
+      ],
+      "category": "Institutional Trust (Vaccine Info Source)",
+      "subcategory": "World Health Organization"
+    },
+    {
+      "id": "institut_trust_vax_7",
+      "section": "opinion",
+      "question": "How much do you trust the information about vaccines/vaccination programs shared by religious leaders?",
+      "answer": [
+        "Completely",
+        "Very",
+        "Quite",
+        "A little",
+        "Not at all"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "trust_religious_leaders_vax_info"
+        }
+      ],
+      "category": "Institutional Trust (Vaccine Info Source)",
+      "subcategory": "Religious leaders"
+    },
+    {
+      "id": "institut_trust_vax_8",
+      "section": "opinion",
+      "question": "How much do you trust the information about vaccines/vaccination programs shared by influencers and other public personalities?",
+      "answer": [
+        "Completely",
+        "Very",
+        "Quite",
+        "A little",
+        "Not at all"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "trust_influencers_vax_info"
+        }
+      ],
+      "category": "Institutional Trust (Vaccine Info Source)",
+      "subcategory": "Influencers/public personalities"
+    },
+    {
+      "id": "fiveC_1",
+      "section": "opinion",
+      "question": "I am completely confident that vaccines are safe.",
+      "answer": [
+        "Moderately disagree",
+        "Slightly disagree",
+        "Strongly disagree",
+        "Strongly agree",
+        "Moderately agree",
+        "Neutral",
+        "Slightly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "fivec_confidence"
+        }
+      ],
+      "category": "5C Antecedents of Vaccination",
+      "subcategory": "Confidence"
+    },
+    {
+      "id": "fiveC_2",
+      "section": "opinion",
+      "question": "Vaccination is unnecessary because vaccine preventable diseases are not common anymore.",
+      "answer": [
+        "Strongly agree",
+        "Moderately agree",
+        "Slightly agree",
+        "Slightly disagree",
+        "Moderately disagree",
+        "Neutral",
+        "Strongly disagree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$reverse_1_to_7"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "fivec_low_complacency"
+        }
+      ],
+      "category": "5C Antecedents of Vaccination",
+      "subcategory": "Complacency"
+    },
+    {
+      "id": "fiveC_3",
+      "section": "opinion",
+      "question": "Everyday stress prevents me from getting vaccinated.",
+      "answer": [
+        "Strongly agree",
+        "Moderately agree",
+        "Slightly agree",
+        "Slightly disagree",
+        "Neutral",
+        "Moderately disagree",
+        "Strongly disagree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$reverse_1_to_7"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "fivec_low_constraints"
+        }
+      ],
+      "category": "5C Antecedents of Vaccination",
+      "subcategory": "Constraints"
+    },
+    {
+      "id": "fiveC_4",
+      "section": "opinion",
+      "question": "When I think about getting vaccinated, I weigh benefits and risks to make the best decision possible",
+      "answer": [
+        "Moderately disagree",
+        "Strongly disagree",
+        "Slightly disagree",
+        "Neutral",
+        "Moderately agree",
+        "Strongly agree",
+        "Slightly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "fivec_calculation"
+        }
+      ],
+      "category": "5C Antecedents of Vaccination",
+      "subcategory": "Calculation"
+    },
+    {
+      "id": "fiveC_5",
+      "section": "opinion",
+      "question": "When everyone is vaccinated, I don't need to get vaccinated.",
+      "answer": [
+        "Moderately agree",
+        "Strongly agree",
+        "Slightly agree",
+        "Slightly disagree",
+        "Moderately disagree",
+        "Neutral",
+        "Strongly disagree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$reverse_1_to_7"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "fivec_collective_responsibility"
+        }
+      ],
+      "category": "5C Antecedents of Vaccination",
+      "subcategory": "Collective responsibility (reverse-worded)"
+    },
+    {
+      "id": "protective_behaviour_1",
+      "section": "opinion",
+      "question": "Safe and effective vaccines should be made mandatory for the entire population.",
+      "answer": [
+        "Moderately disagree",
+        "Slightly disagree",
+        "Strongly disagree",
+        "Moderately agree",
+        "Slightly agree",
+        "Neutral",
+        "Strongly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "support_mandatory_vaccination"
+        }
+      ],
+      "category": "Protective Behaviors",
+      "subcategory": "Mandatory vaccination support"
+    },
+    {
+      "id": "protective_behaviour_2",
+      "section": "opinion",
+      "question": "I use masks in crowded places when experiencing respiratory symptoms.",
+      "answer": [
+        "Moderately disagree",
+        "Slightly disagree",
+        "Strongly disagree",
+        "Moderately agree",
+        "Neutral",
+        "Slightly agree",
+        "Strongly agree"
+      ],
+      "validation_category": "output",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "mask_when_symptomatic_crowded"
+        }
+      ],
+      "category": "Protective Behaviors",
+      "subcategory": "Mask when symptomatic (crowded)"
+    },
+    {
+      "id": "protective_behaviour_3",
+      "section": "opinion",
+      "question": "I stay at home when experiencing respiratory symptoms.",
+      "answer": [
+        "Strongly disagree",
+        "Moderately disagree",
+        "Slightly disagree",
+        "Strongly agree",
+        "Moderately agree",
+        "Neutral",
+        "Slightly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "stay_home_when_symptomatic"
+        }
+      ],
+      "category": "Protective Behaviors",
+      "subcategory": "Stay home when symptomatic"
+    },
+    {
+      "id": "protective_behaviour_4",
+      "section": "opinion",
+      "question": "When the epidemic pressure is high, I use masks in crowded places.",
+      "answer": [
+        "Moderately disagree",
+        "Slightly disagree",
+        "Strongly disagree",
+        "Neutral",
+        "Moderately agree",
+        "Slightly agree",
+        "Strongly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "opinion"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "mask_when_pressure_high"
+        }
+      ],
+      "category": "Protective Behaviors",
+      "subcategory": "Mask when epidemic pressure high"
+    }
+  ],
+  "new_columns": [
+    {
+      "id": "opinion_other_1_family",
+      "section": "opinion",
+      "question": "To what extent does your family agree or disagree with the statement 'Vaccines are decisive for the protection of human health'?",
+      "answer": "Average of agreement",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "opinion_other_1_1",
+            "opinion_other_1_2",
+            "opinion_other_1_5",
+            "opinion_other_1_3",
+            "opinion_other_1_4"
+          ]
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "family_vaccines_importance"
+        }
+      ],
+      "category": "Perceived Social Norms (Family)",
+      "subcategory": "Topic: Vaccine importance"
+    },
+    {
+      "id": "opinion_other_2_family",
+      "section": "opinion",
+      "question": "To what extent does your family agree or disagree with the statement 'Climate change will have a bad impact on people across the world'?",
+      "answer": "Average of agreement",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "opinion_other_2_1",
+            "opinion_other_2_2",
+            "opinion_other_2_5",
+            "opinion_other_2_3",
+            "opinion_other_2_4"
+          ]
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "family_climate_harm"
+        }
+      ],
+      "category": "Perceived Social Norms (Family)",
+      "subcategory": "Topic: Climate change harm"
+    },
+    {
+      "id": "opinion_other_3_family",
+      "section": "opinion",
+      "question": "To what extent does your family agree or disagree with the statement 'Gay male and lesbian couples should have the same rights to adopt children as straight couples'?",
+      "answer": "Average of agreement",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "opinion_other_3_1",
+            "opinion_other_3_2",
+            "opinion_other_3_5",
+            "opinion_other_3_3",
+            "opinion_other_3_4"
+          ]
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "family_lgbt_adoption_rights"
+        }
+      ],
+      "category": "Perceived Social Norms (Family)",
+      "subcategory": "Topic: LGBT adoption rights"
+    },
+    {
+      "id": "opinion_other_4_family",
+      "section": "opinion",
+      "question": "To what extent does your family agree or disagree with the statement 'The fact that there are people immigrating from other countries is bad for the economy of the country of arrival'?",
+      "answer": "Average of agreement",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "opinion_other_4_1",
+            "opinion_other_4_2",
+            "opinion_other_4_5",
+            "opinion_other_4_3",
+            "opinion_other_4_4"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": "$reverse_1_to_7"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "family_immigration_tolerance"
+        }
+      ],
+      "category": "Perceived Social Norms (Family)",
+      "subcategory": "Topic: Immigration & economy"
+    },
+    {
+      "id": "opinion_other_1_colleagues",
+      "section": "opinion",
+      "question": "To what extent do your colleagues (co-workers/classmates) agree or disagree with the statement 'Vaccines are decisive for the protection of human health'?",
+      "answer": "Average of agreement",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "opinion_other_1_7",
+            "opinion_other_1_8"
+          ]
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "colleagues_vaccines_importance"
+        }
+      ],
+      "category": "Perceived Social Norms (Colleagues)",
+      "subcategory": "Topic: Vaccine importance"
+    },
+    {
+      "id": "opinion_other_2_colleagues",
+      "section": "opinion",
+      "question": "To what extent do your colleagues (co-workers/classmates) agree or disagree with the statement 'Climate change will have a bad impact on people across the world'?",
+      "answer": "Average of agreement",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "missing",
+          "merged_from": [
+            "opinion_other_2_7",
+            "opinion_other_2_8"
+          ]
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "colleagues_climate_harm"
+        }
+      ],
+      "category": "Perceived Social Norms (Colleagues)",
+      "subcategory": "Topic: Climate change harm"
+    },
+    {
+      "id": "opinion_other_3_colleagues",
+      "section": "opinion",
+      "question": "To what extent do your colleagues (co-workers/classmates) agree or disagree with the statement 'Gay male and lesbian couples should have the same rights to adopt children as straight couples'?",
+      "answer": "Average of agreement",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "missing",
+          "merged_from": [
+            "opinion_other_3_7",
+            "opinion_other_3_8"
+          ]
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "colleagues_lgbt_adoption_rights"
+        }
+      ],
+      "category": "Perceived Social Norms (Colleagues)",
+      "subcategory": "Topic: LGBT adoption rights"
+    },
+    {
+      "id": "opinion_other_4_colleagues",
+      "section": "opinion",
+      "question": "To what extent do your colleagues (co-workers/classmates) agree or disagree with the statement 'The fact that there are people immigrating from other countries is bad for the economy of the country of arrival'?",
+      "answer": [
+        "Moderately Disagree",
+        "Strongly Disagree",
+        "Slightly Disagree",
+        "Strongly Agree",
+        "Slightly Agree",
+        "Moderately Agree",
+        "I don't know",
+        "Neutral"
+      ],
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "missing",
+          "merged_from": [
+            "opinion_other_4_7",
+            "opinion_other_4_8"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": "$reverse_1_to_7"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "colleagues_immigration_tolerance"
+        }
+      ],
+      "category": "Perceived Social Norms (Colleagues)",
+      "subcategory": "Topic: Immigration & economy"
+    },
+    {
+      "id": "fivec_confidence",
+      "question": "Alias of fiveC_1 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "fiveC_1"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "fivec_low_complacency",
+      "question": "Alias of fiveC_2 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "fiveC_2"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "fivec_low_constraints",
+      "question": "Alias of fiveC_3 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "fiveC_3"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "fivec_collective_responsibility",
+      "question": "Alias of fiveC_5 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "fiveC_5"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "att_vaccines_importance",
+      "question": "Alias of opinion_1 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "opinion_1"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "att_climate_harm",
+      "question": "Alias of opinion_2 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "opinion_2"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "att_lgbt_adoption_rights",
+      "question": "Alias of opinion_3 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "opinion_3"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "att_immigration_tolerance",
+      "question": "Alias of opinion_4 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "opinion_4"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "friends_climate_harm",
+      "question": "Alias of opinion_other_2_6 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "opinion_other_2_6"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "friends_lgbt_adoption_rights",
+      "question": "Alias of opinion_other_3_6 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "opinion_other_3_6"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "friends_immigration_tolerance",
+      "question": "Alias of opinion_other_4_6 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "opinion_other_4_6"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "family_climate_harm",
+      "question": "Alias of opinion_other_2_family (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "opinion_other_2_family"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "family_lgbt_adoption_rights",
+      "question": "Alias of opinion_other_3_family (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "opinion_other_3_family"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "family_immigration_tolerance",
+      "question": "Alias of opinion_other_4_family (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "opinion_other_4_family"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "colleagues_climate_harm",
+      "question": "Alias of opinion_other_2_colleagues (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "opinion_other_2_colleagues"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "colleagues_lgbt_adoption_rights",
+      "question": "Alias of opinion_other_3_colleagues (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "opinion_other_3_colleagues"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "colleagues_immigration_tolerance",
+      "question": "Alias of opinion_other_4_colleagues (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "opinion_other_4_colleagues"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "trust_gp_vax_info",
+      "question": "Alias of institut_trust_vax_3 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "institut_trust_vax_3"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "mask_when_symptomatic_crowded",
+      "question": "Alias of protective_behaviour_2 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "protective_behaviour_2"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "opinion_change_vaccines_importance",
+      "question": "Alias of opinion_change_1 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "opinion_change_1"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "opinion_change_climate_harm",
+      "question": "Alias of opinion_change_2 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "opinion_change_2"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "opinion_change_lgbt_adoption_rights",
+      "question": "Alias of opinion_change_3 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "opinion_change_3"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "opinion_change_immigration_harms_economy",
+      "question": "Alias of opinion_change_4 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "opinion_change_4"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "friends_vaccines_importance",
+      "question": "Alias of opinion_other_1_6 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "opinion_other_1_6"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "family_vaccines_importance",
+      "question": "Alias of opinion_other_1_family (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "opinion_other_1_family"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "colleagues_vaccines_importance",
+      "question": "Alias of opinion_other_1_colleagues (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "opinion_other_1_colleagues"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "fivec_calculation",
+      "question": "Alias of fiveC_4 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "fiveC_4"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "trust_local_gov_vax_info",
+      "question": "Alias of institut_trust_vax_1 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "institut_trust_vax_1"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "trust_national_gov_vax_info",
+      "question": "Alias of institut_trust_vax_2 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "institut_trust_vax_2"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "trust_local_health_authorities_vax_info",
+      "question": "Alias of institut_trust_vax_4 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "institut_trust_vax_4"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "trust_national_health_institutions_vax_info",
+      "question": "Alias of institut_trust_vax_5 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "institut_trust_vax_5"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "trust_who_vax_info",
+      "question": "Alias of institut_trust_vax_6 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "institut_trust_vax_6"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "trust_religious_leaders_vax_info",
+      "question": "Alias of institut_trust_vax_7 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "institut_trust_vax_7"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "trust_influencers_vax_info",
+      "question": "Alias of institut_trust_vax_8 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "institut_trust_vax_8"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "support_mandatory_vaccination",
+      "question": "Alias of protective_behaviour_1 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "protective_behaviour_1"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "stay_home_when_symptomatic",
+      "question": "Alias of protective_behaviour_3 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "protective_behaviour_3"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "mask_when_pressure_high",
+      "question": "Alias of protective_behaviour_4 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "protective_behaviour_4"
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "fivec_pro_vax_idx",
+      "question": "Pro-vaccine antecedents index (5C; excl. calculation)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "fivec_confidence",
+            "fivec_low_complacency",
+            "fivec_low_constraints",
+            "fivec_collective_responsibility"
+          ]
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "progressive_attitudes_nonvax_idx",
+      "question": "Progressive attitudes (climate, LGBT, immigration tolerance)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "att_climate_harm",
+            "att_lgbt_adoption_rights",
+            "att_immigration_tolerance"
+          ]
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "friends_progressive_norms_nonvax_idx",
+      "question": "Friends' progressive norms (climate, LGBT, immigration tolerance)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "friends_climate_harm",
+            "friends_lgbt_adoption_rights",
+            "friends_immigration_tolerance"
+          ]
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "family_progressive_norms_nonvax_idx",
+      "question": "Family progressive norms (climate, LGBT, immigration tolerance)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "family_climate_harm",
+            "family_lgbt_adoption_rights",
+            "family_immigration_tolerance"
+          ]
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "colleagues_progressive_norms_nonvax_idx",
+      "question": "Colleagues progressive norms (climate, LGBT, immigration tolerance)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "colleagues_climate_harm",
+            "colleagues_lgbt_adoption_rights",
+            "colleagues_immigration_tolerance"
+          ]
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "social_norms_vax_avg",
+      "question": "Perceived social norms: vaccines important (avg)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "family_vaccines_importance",
+            "friends_vaccines_importance",
+            "colleagues_vaccines_importance"
+          ]
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "institutional_trust_avg",
+      "question": "Institutional trust in vaccine info (avg)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "trust_local_gov_vax_info",
+            "trust_national_gov_vax_info",
+            "trust_gp_vax_info",
+            "trust_local_health_authorities_vax_info",
+            "trust_national_health_institutions_vax_info",
+            "trust_who_vax_info"
+          ]
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "protective_behaviour_avg",
+      "question": "Protective behaviour (avg)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "mask_when_symptomatic_crowded",
+            "stay_home_when_symptomatic",
+            "mask_when_pressure_high"
+          ]
+        }
+      ],
+      "section": "opinion"
+    },
+    {
+      "id": "moral_progressive_orientation",
+      "question": "Moral + progressive orientation (avg)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "progressive_attitudes_nonvax_idx",
+            "mfq_relevance_individualizing_idx",
+            "mfq_agreement_individualizing_idx"
+          ]
+        }
+      ],
+      "section": "opinion"
+    }
+  ]
+}

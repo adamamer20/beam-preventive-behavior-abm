@@ -1,0 +1,1441 @@
+# Introduction & Research Motivation {#sec-01-introduction}
+
+Designing good policy is fundamentally a counterfactual exercise: we need to know what would happen if a specific intervention were introduced. Yet clean counterfactual evidence is rare. Real-world systems resist experimental manipulation, and observational studies often lack the external validity needed to predict outcomes in complex, interactive environments. In such cases, agent-based models (ABMs) can make it possible to study interventions in silico in populations where heterogeneity and interaction shape aggregate outcomes.
+
+Behavioural ABMs, however, face a recurring difficulty. Aggregate trajectories can be highly sensitive to how individual decision rules are specified and to how psychological profile variables evolve over time. Building models that are both parsimonious and realistic demands substantial modelling effort and non-trivial calibration. Even when a model reproduces broad aggregate patterns, this does not by itself show that it is relying on the right individual-level behavioural mechanisms.
+
+Recent work has begun using large language models (LLMs) as behavioural components in these models. Because they generate context-sensitive outputs from rich descriptions of individuals, they can be used both to map survey-grounded profiles into actions and to update parts of those profiles under information exposure and social influence. A growing literature explores ABMs with LLM-driven agents, and proposals for evaluating them are beginning to appear. Most existing assessments, however, still focus on whether model outputs look plausible at baseline. They say much less about whether responses remain sensible under intervention or coherent under repeated use over time.
+
+Epidemic prevention is a useful domain in which to study this problem. Its policy targets are interpretable, large cross-sectional surveys can anchor the behavioural layer in observed profiles and choices, and behaviour feeds back into the epidemic conditions that help shape later decisions.
+
+This thesis develops that empirical-to-simulation pipeline in three steps.
+
+First, I ask whether prevention decisions can be organised by a common empirical backbone that jointly accounts for multiple behavioural outcomes and can be generalised across countries. Using data from a large cross-country survey, I reduce a high-dimensional questionnaire to a smaller set of theory-guided blocks, including perceived disease stakes, institutional trust and legitimacy, norms, disposition, moral orientation, constraints, and habit. I then use these blocks to identify the main correlates of preventive behaviour and to derive empirical patterns that can anchor the downstream modelling.
+
+Second, I test whether LLMs can reproduce these patterns both at baseline and under controlled shifts in profile or context. The results show that they can often recover broad ordering at baseline, but they compress variation and respond unreliably when relevant inputs are perturbed.
+
+Third, the ABM uses these survey-grounded behavioural relationships as its core and studies how behaviour evolves under inertia, social influence, and epidemic feedback. The ABM shows that intervention regimes generate different time profiles. Credibility-repair interventions tend to generate gradual but durable shifts. Risk-salience shocks are sharper and more short-lived. Norm-based interventions can persist because exposure and visibility accumulate over time. When policy targets vaccination alone, the resulting drop in perceived risk can also weaken other precautions through feedback between protection and infection pressure.
+
+The rest of the thesis follows this sequence. @sec-02-literature-review frames the problem in relation to preventive behaviour, behavioural modelling, and ABMs, including recent work on LLM-driven agents. @sec-03-decision-function, @sec-04-llm-micro-validation, and @sec-05-agent-based-model implement the empirical, evaluative, and simulation steps outlined above. @sec-06-discussion-conclusion summarises implications, limitations, and directions for future research.
+
+
+
+# Literature Review {#sec-02-literature-review}
+
+<!-- Intro prev behaviours -->
+
+## Behavioural foundations of prevention
+
+Epidemic trajectories are shaped by pathogen dynamics and by a bundle of everyday prevention decisions, such as vaccination, masking, testing, and self-isolation, that differ in cost, feasibility, and social meaning. These behaviours are not independent: people who adopt one protective behaviour are often more likely to adopt others, and these correlations recur across countries and phases of a pandemic [@wright_2022_patterns; @dryhurst_2020_risk_perceptions]. Their determinants span both individual-level drivers, such as risk perceptions, norms, trust, and habit, and broader contexts, including access constraints, political polarisation, and the information environment. Prevention is better treated as a multi-outcome behaviour set because the same underlying drivers can shape several behaviours at once.
+
+<!-- Behavioral frameworks  -->
+
+Several behavioural frameworks organise these determinants into accounts of why individuals adopt or reject preventive measures [@rosenstock_1974_historical_origins; @rogers_1975_protection_motivation; @ajzen_1991_the; @macdonald_2015_vaccine_hesitancy; @betsch_2018_beyond].
+
+The Health Belief Model explains uptake through perceived susceptibility and severity, weighed against perceived benefits and barriers, with behaviour often triggered by *cues to action*. Protection Motivation Theory makes a similar trade-off explicit, emphasising that protection is more likely when people believe a measure works (*response efficacy*), believe they can carry it out (*self-efficacy*), and perceive costs as manageable. The Theory of Planned Behavior shifts attention to intention formation, linking behaviour to attitudes, perceived social expectations, and perceived control, clarifying how norms and constraints jointly shape compliance. Vaccine-focused frameworks, including the WHO/SAGE "3Cs" and the related 5C antecedents, translate these ideas into confidence/trust, perceived need versus complacency, and convenience or access constraints, while also highlighting vaccination-specific motives such as *collective responsibility* and *deliberation*. More recent extensions incorporate political ideology, moral motivations, and institutional legitimacy as additional drivers that can condition, and at times dominate, individual risk appraisal [@hornsey_2018_psychological_correlates; @baumgaertner_2018_psychological_political].
+
+Despite differences in terminology, these traditions repeatedly return to the same drivers: perceived disease stakes, perceived intervention trade-offs (risks, benefits, efficacy), trust and legitimacy, norms and moral motivations, and constraints or perceived control. Habit and inertia shape persistence and switching costs, helping explain why behaviour can remain sticky even when perceived stakes shift [@ouellette_1998_habit_intention; @gardner_2014_habit_health]. While these drivers recur across settings, their typical levels and relative importance vary by context [@macdonald_2015_vaccine_hesitancy; @defigueiredo_2020_vaccine_confidence].
+
+<!-- bridge: we need behavioural modeling for policy -->
+
+These same determinants are often the levers policy tries to move. Real interventions, however, rarely move one lever at a time. They bundle messaging, rules, and access in ways that can shift perceived stakes, trust, norms, and constraints jointly [@michie_2011_behaviour_change_wheel; @vanbavel_2020_covid_response]. Observational evidence can document robust associations, but it struggles to isolate which mechanism is being activated when behaviour changes, or how effects propagate through a population over time, especially in cross-sectional data [@hernanrobins_2020_whatif; @shadish_2002_experiments]. That identification problem is one reason to use mechanistic models that explicitly represent the interplay between behaviour and epidemic dynamics.
+
+<!-- How behaviour is modeled  -->
+
+## How epidemic models represent behaviour
+
+Epidemic models usually incorporate behaviour in two broad ways [@funk_2010_modelling]. In simpler formulations it is an *exogenous control*: compliance levels or contact reductions are set by assumption and do not respond to the epidemic. In coupled formulations, behaviour is *endogenous*: agents update their actions as a function of information (prevalence and mortality signals, social observation, media exposure, or institutional messaging) and those actions in turn affect transmission through contacts and protective uptake.
+
+Within endogenous models, two main approaches are common. The first, and more common in applied policy modelling, treats behaviour as a function of psychological constructs, perceived risk, trust in institutions, social norms, and constraints, often drawing on the behavioural frameworks reviewed above [@verelst_2016_behavioural_models]. Here, rising case numbers amplify perceived stakes, which increases protective uptake, which then suppresses transmission.
+
+A second tradition models behaviour through game-theoretic or evolutionary frameworks [@bauch_2004_vaccination_game; @fu_2011_imitation_dynamics]. Agents choose strategies (e.g., vaccinate or not) based on payoff comparisons, weighing the risk of infection against the cost of vaccination. Strategies that yield higher payoffs spread through imitation or learning, capturing a form of social influence distinct from explicit psychological state updating. These models have generated important insights into free-riding and the conditions under which vaccine coverage can collapse. However, they typically abstract away the psychological states, and they require strong assumptions about payoff structures and agent rationality that are difficult to verify empirically.
+
+<!-- bridge:  problem of behavioural modeling in epidemics  -->
+
+Systematic reviews emphasise a recurring limitation across behavioural modelling: behavioural responses and belief dynamics are hard to measure directly, so models often rely on *stylised assumptions* that can be difficult to distinguish using aggregate epidemic time series alone [@verelst_2016_behavioural_models; @wang_2015_coupled_review]. Consequently, recent work has moved toward explicitly representing heterogeneity and interaction structure, and toward seeking additional micro-level anchors.
+
+<!-- thus we need ABM  -->
+
+## Agent-based models: empirical grounding and validation
+
+These limitations make ABMs attractive because they represent micro-level heterogeneity, interaction, and feedback explicitly. An agent-based model (ABM) specifies micro-level units, their decision rules, and their interaction structure, then treats macro-level dynamics as model output [@bonabeau_2002_agent_based; @railsbackgrimm_2019_abm]. This matters because macro outcomes in endogenous, interactive systems are not simple aggregations of individual behaviour. Heterogeneity, local interactions, and feedback loops can generate nonlinear responses, tipping dynamics, and context-dependent effects. The same average change at the individual level can translate into very different aggregate trajectories depending on who changes and how influence propagates. By making micro mechanisms explicit, an ABM allows “what-if” experiments and tracing their implications for both population-level outcomes and subgroup heterogeneity.
+
+<!-- which ABM in prevention  -->
+
+Within prevention-focused ABMs, three modelling families recur, often in combination [@tracy_2018_abm_public_health; @wang_2015_coupled_review]. One family models uptake, usually vaccination, as a function of perceived risk and individual costs. These models are typically coupled to explicit transmission dynamics and calibrated primarily to epidemic outcomes, while keeping the behavioural layer parsimonious. Another centres social influence by placing agents on networks. Adoption propagates through local peer effects, coordination, and imitation. Empirical inputs tend to be stronger on contact structure or mixing patterns than on latent psychological states. A third foregrounds the information environment (communication, misinformation, media exposure, institutional messaging) as a driver of changing perceptions and, in turn, prevention choices.
+
+
+<!-- bridge to problem of validation in prevention based ABM  -->
+
+As behavioural detail increases, prevention ABMs become harder to parameterise and evaluate in a disciplined way. In applied work, models are commonly calibrated to a small set of aggregate patterns, usually incidence curves, coverage trajectories, or stylised facts, using simulation-based parameter search. Evaluation then often focuses on in-sample fit and local sensitivity checks, while component-level tests of behavioural mechanisms and out-of-sample stress tests remain less common, particularly for psychological-profile update dynamics [@windrum_2007_empirical_validation; @sargent_2012_verification_validation].
+
+<!-- problem of equifinality in ABM in general -->
+
+A common principle in agent-based modelling is that explanation should be *generative*: if a model can “grow” the phenomenon, it provides a concrete account of how micro-level mechanisms produce macro-level patterns [@epstein_1999_generative_social_science]. That flexibility also creates a familiar problem. Distinct micro-specification, or the same specification under different parameterisations if complex enough, can yield similar aggregate trajectories. Aggregate agreement alone therefore does not pin down the operative mechanism (equifinality; @oreskes_1994_verification_validation; @windrum_2007_empirical_validation). This is especially consequential for counterfactual policy analysis, where projected “what-if” effects may depend on modelling choices unless additional empirical constraints are imposed.
+
+<!-- we need micro-level validation  -->
+
+Following the standard distinction in @sargent_2012_verification_validation, verification asks whether the model has been implemented correctly, while validation asks whether it adequately represents the real-world system for its intended purpose. For behavioural ABMs used in policy analysis, that validation problem turns on three ingredients: the population distribution being simulated, the mapping from profiles to preventive outcomes, and the way those profiles evolve under exposure and interaction. That framing aligns with pattern-oriented and multi-pattern validation approaches, which seek to reproduce multiple empirical regularities across scales in order to narrow the set of admissible micro-mechanisms [@grimm_2005_pattern_oriented; @grimm_2010_odd_review].
+
+The first two ingredients can often be constrained with cross-sectional microdata, even without epidemic time series. The third, profile dynamics, is harder to identify because it requires longitudinal or experimental evidence on how key behavioural drivers change in response to information, policy, and social interaction. This is where counterfactual use becomes fragile: even when baseline profiles and profile–outcome relationships are tightly constrained by data, the model still assumes that behaviour remains well-defined under new combinations of signals and exposures [@verelst_2016_behavioural_models; @grimm_2005_pattern_oriented; @windrum_2007_empirical_validation; @oreskes_1994_verification_validation].
+
+
+<!-- interest for ABM in the LLM -->
+
+## LLMs as behavioural components: promise, risks, and open questions
+
+The difficulty of validating behavioural dynamics has contributed to growing interest in large language models (LLMs) as candidate behavioural components. Trained on large-scale human text, LLMs can generate responses that condition on both individual profiles and situational cues, producing natural-language rationales without requiring ad hoc hand-coded rules. In behavioural modelling, this opens two potential uses: generating actions from an individual’s psychological profile and context, and translating informational or social exposure into updates of psychological profile variables [@gao_2024_large; @park_2023_generative_agents; @larooij_2025_do]. The same idea has also been explored in survey methodology where LLMs have been used as synthetic respondents to generate simulated samples under demographic conditioning (“silicon sampling”) and compared against observed survey distributions [@argyle_2023_out_of_one_many; @cao_2025_specializing_llms_survey_distributions]. These studies show that LLM-based synthetic samples can reproduce some micro-level regularities, but calibration errors remain and differ by topic and subgroup. Evaluation therefore has to be domain-specific. Recent agent-based work has in turn begun using LLMs directly as action modules, profile-update modules, or communication modules inside multi-agent systems [@gao_2024_large; @namikoshi_2024_using; @hou_2025_can].
+
+<!-- risk of LLM in ABM -->
+
+However, using LLMs as behavioural components raises substantive risks for counterfactual ABM analysis [@larooij_2025_do; @gao_2024_large]. Outputs can be sensitive to prompt framing and small context changes, making responses unstable to modelling choices that are not substantively meaningful [@sclar_2023_prompt_sensitivity; @zhao_2021_calibrate]. Repeated queries may also yield different answers under identical inputs, complicating replicability even at low temperature [@atil_2025_nondeterminism; @blackwell_2024_uncertainty]. Many models additionally exhibit central-tendency behaviour, compressing heterogeneity and attenuating tail responses [@larooij_2025_do; @boundary_2026_social_sim_boundary]. These problems are most serious in simulation. A model may look plausible at baseline and still react with the wrong scale, or spread responses too widely under counterfactual shifts. Once such inconsistencies are iterated over time, they can accumulate into drift or saturation [@chen_2024_socialbench; @park_2023_generative_agents].
+
+LLM-based components therefore require dedicated validation for ABM use. Most existing LLM-agent evaluations focus on general capability, social interaction, or prompt robustness. They rarely ask whether behavioural responses remain well calibrated under controlled interventions and repeated simulation use [@mohammadi_2025_agent_eval_survey; @liu_2024_agentbench; @zhou_2024_webarena; @chen_2024_llmarena; @sclar_2023_prompt_sensitivity]. For counterfactual ABMs used as policy laboratories, the central requirement is mechanistic coherence under controlled transformations: outputs should remain near-invariant under placebo manipulations, while targeted shifts in specific behavioural drivers should induce responses with the expected direction and credible sensitivity [@ribeiro_2020_checklist; @hernanrobins_2020_whatif]. This is still uncommon. Many assessments treat the agent end-to-end instead of isolating the components that matter for ABM credibility, such as mapping latent profiles to outcomes versus updating those profiles under exposure. Most evaluations also remain one-shot, without testing whether behaviour stays coherent when iterated inside a simulation [@mooney_2025_coherence; @chang_2024_agentboard; @chen_2024_socialbench].
+
+The remainder of the thesis takes a narrower route. It first builds a compact behavioural representation from survey data, then uses that representation to evaluate LLM components under baseline and perturbed tests, and finally implements the resulting behavioural core in an ABM for policy comparison.
+
+
+
+# Decision functions for preventive behaviour {#sec-03-decision-function}
+
+The literature review established a simple requirement for behavioural epidemic models: aggregate fit is not enough, because different micro-mechanisms can generate similar macro trajectories. This chapter therefore builds an empirical benchmark from cross-sectional survey regularities. The aim is not to recover a full causal theory of prevention, but to estimate the profile–outcome patterns that a credible behavioural mechanism should reproduce if it is later used in simulation.
+
+This chapter uses those observed regularities to build a compact empirical representation of prevention behaviour. It does so by reducing the questionnaire to a smaller set of theory-guided blocks and then using those blocks to estimate two equation families. First, *behavioural outcome equations* relate each preventive outcome to the retained block variables and controls. They identify which parts of the survey profile carry unique signal for each outcome. Second, *psychological profile regressions* relate a small set of key profile variables, including trust, legitimacy, perceived stakes, and norms, to the broader covariate block structure. These regressions describe how those psychological profile variables co-vary with the wider survey profile, helping place them within the broader block structure.
+
+The empirical base is a multi-country survey ($N \approx 22{,}246$; Italy, Spain, France, Germany, Hungary, and the United Kingdom), run in 2024, containing multiple prevention outcomes and a high-dimensional set of candidate correlates. Full details on survey design, preprocessing, index construction, and the preliminary descriptive and bivariate association analyses are reported in @sec-appendix-dataset-details.
+
+@tbl-core-outcomes summarises the five core outcomes used as behavioural targets: one COVID vaccination outcome tied to the first–second dose phase ($T_{12}$), three non-pharmaceutical prevention decisions (masking when symptomatic in crowded places, staying home when symptomatic, and masking under high epidemic pressure), and one routine vaccination outcome (flu vaccination in 2023/2024).^[Alternative outcomes were considered but not retained as core targets. Although the 2024 measure of current COVID willingness could reduce recall concerns, and “ever vaccinated” would provide a simple binary margin, I do not use either as a core target: current willingness largely reflects a later-stage booster decision and exhibits a pronounced floor effect, while ever-vaccinated status is heavily confounded by country- and phase-specific policy regimes. I also exclude policy attitudes such as mandate support because they are preferences about regulation rather than protective actions themselves.] Throughout the thesis, I refer to these three non-pharmaceutical prevention outcomes collectively as NPIs. I also use CoVax as shorthand for COVID vaccination-related constructs.
+
+
+## From survey items to blocks {#sec-03-items-to-blocks}
+
+The questionnaire spans hundreds of items across multiple domains, but the behavioural layer used in the analysis must remain compact enough to interpret and model. Working directly with the full survey would make the behavioural layer too high-dimensional to interpret cleanly.
+
+Guided by the framework developed in the literature review [@rogers_1975_protection_motivation; @ajzen_1991_the; @macdonald_2015_vaccine_hesitancy], I group survey-derived variables into a small number of theory-guided blocks, including stakes, trust, legitimacy, norms, disposition, habit, and moral orientation. These blocks provide an interpretable representation of the main domains relevant to prevention, and they serve as the main units used for screening, ablation, and interpretation.
+
+I construct and screen these blocks through a workflow designed for the modelling goals of this thesis. The workflow proceeds in five steps:
+
+1. **Build survey-derived variables**
+
+    The first task is to reduce the high-dimensional questionnaire to a manageable set of derived variables. This involves recoding items where needed and aggregating related items into interpretable derived measures (averages and multi-item indices) that align with established constructs, following standard construct-development and item-reduction logic [@boateng_2018_best_practices]. For multi-item indices, internal consistency is assessed with Cronbach’s $\alpha$, which summarises how items co-vary relative to the variance of their composite score [@cronbach_1951_coefficient; @cortina_1993_what]. The aim is to retain interpretable derived variables and defer decisions about which to model until later screening.
+
+2. **Group variables into theory-guided blocks**
+
+    Next, I group the survey-derived variables into theory‑guided blocks such as stakes, trust, legitimacy, norms, disposition, habit and moral orientation. Each block collects variables from a common domain so they can be screened and interpreted together. Composition may vary across outcomes, particularly when disease‑specific measures are most relevant.
+
+3. **Estimate broad reference equations**
+
+    Once the blocks are defined, I estimate two equation families. *Behavioural outcome equations* model each preventive outcome as a function of country effects, a minimal set of demographic and socioeconomic controls, and the retained block members. *Psychological profile regressions* model a small set of psychological profile variables used later in the thesis, trust, legitimacy, perceived stakes, and norms, as functions of broader covariate blocks and controls.
+
+    I begin from deliberately broad specifications before imposing sparsity, so later selection is based on each block’s unique contribution conditional on the others. These relationships are estimated using generalized linear models matched to each outcome’s measurement scale [@mccullagh_nelder_1989], with a common missing-data policy to preserve row comparability across specifications (see @sec-appendix-missing-data). Continuous predictors are standardised before estimation to improve numerical stability and to make coefficient magnitudes more comparable within a model. This choice keeps the modelling layer explicit: coefficients encode how retained variables relate to each outcome, which supports mechanism-focused modelling and later counterfactual interpretation [@shmueli_2010_explain_predict]. More flexible black-box learners could improve predictive fit, but they would make the resulting behavioural layer harder to inspect and justify in a policy-facing simulator [@rudin_2019_stop_explaining].
+
+4. **Screen blocks for unique signal**
+
+    The broad starting specification is too inclusive to serve directly as the final behavioural representation. I therefore evaluate blocks with a *leave-one-block-out (LOBO)* diagnostic: remove one block at a time, refit the model, and record the change in fit. This block-level version of leave-one-covariate-out asks whether a block adds unique information once the others are in place [@lei_2018_distribution_free; @verdinelli_2024_decorrelated].
+
+    Fit changes are summarised by
+    $$
+    \Delta \mathrm{BIC}_b = \mathrm{BIC}(M_{-b}) - \mathrm{BIC}(M_{\mathrm{all}})
+    $$
+    where $M_{\mathrm{all}}$ denotes the model with all retained blocks and $M_{-b}$ is the same model with block $b$ omitted. A positive $\Delta \mathrm{BIC}_b$ indicates that omitting the block worsens fit, i.e. the block contributes unique signal conditional on the others.
+
+5. **Freeze the retained representation**
+
+    After block screening, I fix the retained representation used in the main analyses. When several variables capture closely related aspects of a conceptual block, I retain a small non‑overlapping subset and avoid stacking near‑duplicates. This keeps the representation compact and interpretable while limiting redundancy. The retained block members and their definitions are summarised in @tbl-construct-dictionary, while the full reference outcome backbone, including retained predictors and their standardised coefficients across behaviours, are reported in @tbl-appendix-predictors-estimate and @tbl-appendix-predictors-estimate-npi.
+
+
+## Block structure across outcomes {#sec-03-behavioural-architecture}
+
+
+
+I now turn to the retained block structure and its empirical implications across the main prevention outcomes. I distinguish between descriptive associations, summarised by Spearman’s rank correlation $\rho$, and model-based associations, summarised by predictor-level coefficient magnitudes $|\beta|$. For continuous predictors, larger $|\beta|$ indicates a stronger conditional association for a one-SD increase, holding the remaining predictors fixed; binary indicators retain their original coding. Block-level conditional importance is summarised by the LOBO results introduced above.
+
+For COVID vaccination willingness at $T_{12}$, the LOBO results in @fig-lobo-bic-block-outcome are weighted most strongly toward the stakes block, with additional contributions from the disposition (5C), institutional trust, and legitimacy blocks. This is consistent with a willingness outcome structured primarily by perceived need for protection, and secondarily by confidence in vaccines and the institutions promoting them.
+
+Age and health are salient in the willingness model (age $|\beta|\approx$ `{python} coef_abs_beta("B_COVID_MAIN_vax_willingness_T12", "age")`), but the psychological profile regressions indicate that much of this pattern runs through perceived disease stakes. Legitimacy-related considerations play a smaller role. Age and health indicators are most strongly associated with stakes-related variables, and only more weakly with legitimacy-related ones (age $|\beta|\approx$ `{python} coef_abs_beta("P_LEGIT_covax_legitimacy", "age")`). This matches the bivariate pattern: willingness rises with perceived COVID danger ($\rho \approx$ `{python} rho("vax_willingness_T12", "covid_perceived_danger_T12")`) and even more strongly with 5C confidence ($\rho \approx$ `{python} rho("vax_willingness_T12", "fivec_confidence")`). Perceived vaccine risk is negatively associated with willingness (vaccine risk $\rho \approx$ `{python} rho("vax_willingness_T12", "vaccine_risk_avg")`), but it adds limited incremental signal once the broader disposition block is included. The same overlap appears in the vaccine-risk regression, where 5C confidence has the largest standardised coefficient ($|\beta|\approx$ `{python} coef_abs_beta("P_RISK_vaccine_risk", "fivec_confidence")`).
+
+Institutional trust forms a second major axis. Willingness is positively associated with the institutional trust index ($\rho \approx$ `{python} rho("vax_willingness_T12", "institutional_trust_avg")`), with similar positive associations across major expert-system nodes such as the WHO, GPs, and national or local health institutions. Trust, confidence, and legitimacy nevertheless remain distinct. In the psychological profile regressions, institutional trust is tied most strongly to broader information-environment credibility and social climate, confidence is more closely tied to vaccine-specific information authority and side-effect concerns, and legitimacy is more strongly associated with political positioning. Legitimacy therefore captures a more procedural dimension that can depress willingness even when vaccine evaluation is otherwise favourable.
+
+For flu vaccination, the LOBO map is dominated by habit, matching the descriptive evidence that seasonal uptake is highly persistent across years [@ouellette_1998_habit_intention; @gardner_2014_habit_health]. Prior-season flu vaccination is by far the strongest correlate of current-season uptake. Because habit swamps the remaining blocks, I also report a second column, “flu vaccination (no habit),” to show which blocks still matter once inertia is excluded.
+
+In that no-habit specification, the profile shifts toward a more clinical risk-and-need pattern. Uptake is steeply stratified by age and health status, and the most salient psychological predictors are flu disease fear (strongly positive) and flu vaccine risk (strongly negative), with additional contributions from general vaccine disposition and trust in medical advice, especially GP vaccine information. Compared with COVID willingness, age and health play a more direct role here. For COVID, age appears mainly to work through stakes within a broader trust and legitimacy environment; for flu, once inertia is removed, age and health map more directly onto perceived clinical need and flu-specific appraisal.
+
+For the three non-pharmaceutical prevention outcomes (masking when symptomatic in crowds, staying home when symptomatic, and masking under high epidemic pressure), the LOBO results are weighted most strongly toward moral orientation, with stakes as a stable secondary block and only smaller residual roles for trust and disposition. The moral contribution is driven mainly by an individualising, prosocial orientation, while binding morality contributes positively but more modestly. Vaccine-specific appraisal is less central.
+
+A potentially surprising result is the relatively small incremental contribution of perceived norms once the other blocks are included. Close-circle norms do correlate with willingness and NPI outcomes, but this association is largely attenuated in the joint models because norm perceptions are strongly aligned both across reference groups and with respondents’ own orientations and choices.
+
+Two non-exclusive mechanisms may explain this overlap. One is homophily and shared environment: respondents often belong to social circles with aligned values and information diets, so perceived norms and behaviour genuinely co-vary [@mcpherson_2001_homophily]. The other is projection (false consensus): when asked what close others think, respondents may partly report a reflection of their own stance, mechanically inflating alignment [@ross_1977_false_consensus].
+
+A second counterintuitive pattern concerns information exposure. Raw time-spent measures in both information media and social media have only weak associations with prevention outcomes: time in information media is essentially flat for both COVID willingness and protective behaviour ($|\rho| \approx$ `{python} rho_abs("vax_willingness_T12", "duration_infomedia")`), and time in social media is small for willingness and near-zero for protective behaviour ($|\rho| \approx$ `{python} rho_abs("vax_willingness_T12", "duration_socialmedia")`). This points to a useful distinction between exposure and uptake of content. Time spent in media is therefore better interpreted as an exposure multiplier, with behavioural relevance increasing when the surrounding information environment is seen as credible and trustworthy.
+
+::: {#fig-equations-diagram fig-cap="**Behavioural blocks across prevention outcomes.** The figure highlights the dominant block–outcome relationships identified in the modelling chapter. Thick edges denote the main links emphasised in the text; thin edges show only a small number of secondary links retained for orientation." fig-pos="H"}
+
+::: {.content-visible when-format="html"}
+
+```{mermaid}
+%%| label: fig-equations-diagram
+---
+config:
+  layout: elk
+  flowchart:
+    curve: basis
+  theme: base
+  themeVariables:
+    background: "#ffffff"
+    lineColor: "#475569"
+    fontFamily: "Roboto, 'Segoe UI', sans-serif"
+    edgeLabelBackground: "#f8fafc"
+    clusterBkg: "#ffffff"
+    clusterBorder: "#cbd5e1"
+---
+flowchart TB
+
+  classDef block fill:#eff6ff,stroke:#60a5fa,stroke-width:1.2px,color:#172554;
+  classDef outcome fill:#fdf2f8,stroke:#f472b6,stroke-width:1.8px,color:#500724;
+
+  subgraph BLOCKS["Behavioural blocks"]
+    MORAL["Moral orientation"]
+    DISP["Disposition (5C)"]
+    TRUST["Institutional trust"]
+    LEGIT["CoVax legitimacy"]
+    STAKES["Stakes"]
+    HABIT["Habit"]
+  end
+
+  subgraph OUTCOMES["Behavioural outcomes"]
+    NPI["NPI behaviours"]
+    COVIDWILL["COVID vaccination willingness (T12)"]
+    FLU["Flu vaccination (2023/2024)"]
+  end
+
+  class MORAL,DISP,TRUST,LEGIT,STAKES,HABIT block;
+  class NPI,COVIDWILL,FLU outcome;
+
+  %% dominant links
+  MORAL ==> NPI
+  STAKES ==> COVIDWILL
+  HABIT ==> FLU
+
+  %% secondary links
+  STAKES --> NPI
+  DISP --> COVIDWILL
+  TRUST --> COVIDWILL
+  LEGIT --> COVIDWILL
+```
+
+:::
+
+::: {.content-visible when-format="pdf"}
+
+![](_generated/mermaid/fig-equations-diagram.png){fig-align="center"}
+
+:::
+
+::: {.content-visible when-format="docx"}
+
+![](_generated/mermaid/fig-equations-diagram.png){fig-align="center"}
+
+:::
+
+:::
+
+## Reference perturbation effects: which levers matter? {#sec-03-perturbation-effects}
+
+
+With the retained block structure in place, I next ask how much the fitted outcomes change when one retained variable is shifted in a realistic way while the rest of the profile is held fixed. The earlier results identify which blocks retain unique signal and which predictors are conditionally important, but not the scale of the implied outcome change under a plausible shift in one variable. That scale is central to the counterfactual use of the model. I therefore consider a simple one-step, *ceteris paribus* perturbation: move a retained variable from a typical low value to a typical high value and record the resulting change in the fitted outcome. This yields an interpretable measure of leverage within the fitted equations and shows which retained variables matter most over realistic ranges.
+
+I formalise this using the individual conditional expectation (ICE) function [@goldstein_2015_peeking; @friedman_2001_greedy]. Let the fitted rule be $f(x,z)$, where $x$ denotes the variable of interest and $z$ collects the remaining covariates. For a given respondent profile $z=z_i$, the ICE curve is
+$$
+\mathrm{ICE}_{f,i}(x)\equiv f(x,z_i), \qquad x \in \mathcal{X},
+$$
+which traces the model’s prediction as the variable of interest is varied. The difference between two points on this curve,
+$$
+\mathrm{ICE}_{f,i}(x_1)-\mathrm{ICE}_{f,i}(x_0)=f(x_1,z_i)-f(x_0,z_i),
+$$
+is therefore the model-implied change associated with moving that variable alone.
+
+I use it only to define a common low-to-high contrast across variables:
+$$
+PE(X;z) := f(x_{\text{high}},z)-f(x_{\text{low}},z),
+$$
+where $x_{\text{low}}$ and $x_{\text{high}}$ are survey-grounded low and high values of the variable of interest $X$. For ordered or continuous variables, I use the within-country 25th and 75th percentiles,
+$$
+x_{\text{low}} = Q_{25}(X), \qquad x_{\text{high}} = Q_{75}(X),
+$$
+and for binary variables,
+$$
+x_{\text{low}}=0, \qquad x_{\text{high}}=1.
+$$
+
+Because the size of that move differs across variables, I also report a scale-free version by expressing the low-to-high shift in SD units,
+$$
+\Delta x^{(\mathrm{SD})}=\frac{x_{\text{high}}-x_{\text{low}}}{\sigma_X},
+$$
+and then scaling the reference perturbation effect accordingly:
+$$
+PE_{\text{std}}(X;z)=\frac{PE(X;z)}{\Delta x^{(\mathrm{SD})}}.
+$$
+
+I report corresponding summaries for behavioural outcomes and for the psychological profile regressions. The first shows which retained variables have the largest model-implied leverage on behaviour. The second shows which broader parts of the survey profile are most strongly associated with movement in the profile variables.
+
+Derivations for the GLM case are reported in @sec-appendix-ice-glm-derivation.
+
+
+
+In the perturbation results for the behavioural outcome equations (@fig-mutable-ref), the stakes block is the most consistently high-leverage retained component. Typical low-to-high shifts in stakes yield large changes in COVID willingness and smaller but still non-trivial changes in the NPI outcomes. The wide dispersion for the NPI outcomes instead reflects differences in headroom. Many respondent profiles are already near the top or bottom of the predicted response scale, so shifting one retained variable has limited effect. Larger changes arise mainly for respondents whose baseline profiles place them in the middle of the response range, where the fitted outcome can still move appreciably.
+
+Norms and several credibility-related variables show tighter and lower-magnitude perturbation distributions once the rest of the profile is held fixed. They remain predictive, but they contribute more limited incremental leverage in this comparison. This is broadly consistent with the LOBO results: blocks that retain clearer unique signal also tend to produce larger model-implied changes under realistic perturbations, whereas blocks that are more redundant in the fitted equations tend to yield smaller shifts.
+
+The perturbations from the psychological profile regressions in @fig-upstream-ref show which broader covariate blocks are most strongly associated with movement in each psychological profile variable. The pattern differs by variable. Institutional trust is most responsive to information-environment credibility, with smaller additional associations from vaccine-risk and disease-stakes covariates. CoVax legitimacy is associated most strongly with institutional credibility. Stakes also show substantial movement, again led mainly by institutional credibility, with smaller contributions from vaccine-risk and disease-salience covariates. Disposition (5C) is the clearest multi-source case, with meaningful associations not only with institutional credibility but also with interpersonal and accessibility-related blocks. Group trust and norms show smaller perturbation magnitudes overall, though both remain responsive to specific parts of the broader survey profile.
+
+Flu uptake, when habit is included, is inertia-dominated, so short-run shifts in appraisal or trust have relatively limited leverage unless they accumulate over time or relax persistent frictions.
+
+A practical caveat is that ceteris paribus perturbations can create unrealistic profile combinations when variables are strongly correlated. If one variable is shifted from a typically low to a typically high value while all other covariates are held fixed, the resulting profile may no longer resemble combinations actually observed in the survey. To check this, I evaluate whether the perturbed value of the variable of interest remains consistent with the rest of the respondent’s profile within country.
+
+Formally, for a variable of interest $X$ and the remaining covariates $z$, I estimate the country-specific conditional distribution $\hat F(X \mid z)$, that is, the distribution of $X$ among respondents with similar values of the other observed characteristics. I then ask whether the perturbed low or high value of that variable falls in an extreme conditional tail. Perturbations that do so are treated as off-manifold and excluded when recomputing the ordering of blocks by perturbation effect magnitude. Full details are given in @sec-appendix-offmanifold-conditional-percentile.
+
+The realism screen leaves the vaccination results essentially unchanged, which suggests that their perturbation patterns are not driven by off-manifold profile combinations. The masking results are less stable, because trust and several 5C components are more tightly predicted by the rest of the profile. The masking rankings should therefore be read more cautiously, as they depend more strongly on restricting attention to empirically plausible perturbations.
+
+The block-structure and perturbation results therefore jointly identify a compact, outcome-specific empirical structure for prevention behaviour. COVID willingness is organised mainly by stakes and vaccine evaluation within a broader trust and legitimacy context, flu uptake is dominated by habit, and the NPI outcomes are shaped mainly by moral orientation and stakes. This empirical structure provides the benchmark used in the next chapter.
+
+
+
+# LLM Micro-Validation {#sec-04-llm-micro-validation}
+
+The previous chapter established the empirical benchmark used in this chapter: a compact set of theory-guided blocks and reference perturbation contrasts derived from a multi-country survey fielded in 2024 [@offeddu_2025_advancing_behavioural_epidemic_data]. This chapter asks whether LLMs can reproduce that structure in a way that is useful for simulation.
+
+I evaluate two task families: predicting preventive outcomes from fixed respondent profiles, and predicting a small set of psychological profile variables, such as trust, legitimacy, perceived stakes, and norms, from broader parts of the survey profile. For both task families, I distinguish *unperturbed* tests of baseline reconstruction from *perturbed* tests of response to controlled shifts.
+
+Evaluating the full survey ($N \approx 22{,}246$) would be computationally expensive and statistically redundant, because many respondents occupy nearby regions of the same empirical profile space. I therefore evaluate on *anchor prototypes*: observed respondent profiles selected to cover that space efficiently. Each anchor is stratified by country, producing an anchor × country cell, and within each cell I sample $50$ complete profiles from the local neighbourhood. Across $10$ anchors and $6$ countries, this yields a fixed evaluation set of $3{,}000$ profiles. This preserves the joint structure of survey profiles while keeping the evaluation budget manageable. The same neighbourhood sampler is later used to initialise ABM populations and counterfactual variants from observed profile space. Full survey and sampling details are reported in Appendix A (@sec-appendix-anchor-prototypes; @offeddu_2025_advancing_behavioural_epidemic_data).
+
+Because LLM outputs can depend on how the same respondent profile is presented, I vary both the model and the prompt form while holding the underlying profile fixed. I consider five prompt formats: a data-only profile; two narrative renderings of the same profile, a short third-person vignette and a first-person self-description; a three-expert decomposition; and a paired-contrast format. In the three-expert variant, the model first produces separate expert-style judgments, which are then combined on the response scale, while the paired-contrast format presents low and high versions jointly to make the counterfactual comparison explicit. Example prompts for all formats are reported in @sec-appendix-llm-prompts.
+
+The model suite is chosen to separate prompt effects from model-family and scale effects. The main workhorse is openai/gpt-oss-20b at reasoning effort medium, with a high-effort setting used to test whether additional deliberation improves performance at fixed scale. openai/gpt-oss-120b probes within-family scaling, and qwen/qwen3-32b provides a cross-family robustness check.
+
+## Baseline Reconstruction: Unperturbed Micro-Validation {#sec-04-unperturbed}
+
+### Reconstructing behavioural outcomes: can the LLM rank baseline preventive behaviour? {#sec-04-choice-unperturbed}
+
+
+I report two complementary metrics, following recent behavioural-LLM evaluations that distinguish between *level accuracy* and *rank-based agreement* at the individual level [@xie_2025_befm; @li_2025_hugagent]. The first captures whether the LLM places predictions at the correct point on the response scale, while the second captures whether it correctly orders respondents from lower to higher predicted propensity. Both are benchmarked against simple baselines so that results remain comparable across outcomes and prompt forms.
+
+For level accuracy, I compare the LLM’s mean absolute error to that of a constant baseline and rescale the result as a *skill score*:
+$$
+ \mathrm{skill}=1-\frac{\mathrm{MAE}(f)}{\mathrm{MAE}(f_0)}.
+$$
+This scaling is easy to interpret: $\mathrm{skill}=1$ is perfect, $\mathrm{skill}=0$ means the model is no better than the baseline, and negative values indicate worse-than-baseline performance. For non-binary outcomes, the baseline $f_0$ predicts the sample median of $y$, which minimises MAE. For binary outcomes, it predicts the majority class.
+
+For ordering, I use a tie-aware concordance index $C$, which measures whether the model assigns a higher score to the respondent with the higher observed outcome, with $0.5$ credit for ties [@mayr_2016_sparse_survival_cindex]. I then convert this to a *Gini coefficient*,
+$$
+ G = 2C-1.
+$$
+
+For binary outcomes, $C$ is computed as AUC and then converted to $G$. Under this scaling, $G=1$ indicates perfect ordering, $G=0$ chance-level ordering, and $G<0$ inverted ordering [@fawcett_2006_roc].
+
+On this task, overall rank recovery is moderate (mean Gini `{python} _fmt_gini_math_or_dash(overall_gini)`). Most of the variation is across outcomes, with smaller differences across model families and prompt strategies (@tbl-unperturbed-difficulty). COVID willingness and masking under high pressure show the strongest rank recovery (mean `{python} _fmt_gini_math_or_dash(mean_gini_by_outcome.get("vax_willingness_T12", float("nan")))` and `{python} _fmt_gini_math_or_dash(mean_gini_by_outcome.get("mask_when_pressure_high", float("nan")))`). Staying home when symptomatic is substantially harder (mean `{python} _fmt_gini_math_or_dash(mean_gini_by_outcome.get("stay_home_when_symptomatic", float("nan")))`). This matches the reference equations: staying-home behaviour has the weakest empirical separability, and the LLM performs worst where the underlying signal is weakest. A likely reason is that the decision to stay home when symptomatic depends strongly on situational constraints and immediate context that are only partly observed in the survey profile.
+
+Level accuracy is weaker than ranking performance (mean `{python} _fmt_skill_math_or_dash(overall_skill)`). The gap is largest on the harder outcomes, where ordering remains partly informative even when predictions are misplaced on the response scale.
+
+Prompting effects are visible, but they do not alter the overall pattern. The multi-expert format is the most reliable on average, consistent with evidence that decomposed prompting can improve the stability and usefulness of LLM judgments [@long_2024_multiexpert], though it is also the most expensive in tokens and latency because it requires multiple intermediate judgments. The two narrative renderings perform only modestly worse even without explicit numerical detail. This suggests that the LLM is mainly picking up broad respondent-type signals, including trust and risk sensitivity, and is less sensitive to fine-grained tabular detail. Prompt design therefore matters at the margin, but it does not remove the underlying constraint: some behaviours are simply less separable from the available profile information than others. Additional strategy-level and MAE-skill results are reported in @sec-appendix-llm-micro-validation.
+
+
+
+
+
+Why does the LLM recover rankings more reliably than absolute levels? The main reason is central-tendency compression. Predictions are pulled toward the centre of the response scale: respondents with very low observed outcomes are systematically over-predicted, while those at the high end are systematically under-predicted. This inward compression depresses MAE skill and is not fully removed by monotone calibration. Appendix diagnostics quantify the same pattern, including its concentration in the tails and within-country strata (@tbl-unperturbed-diagnostics).
+
+The unperturbed ablations also clarify which information the LLM relies on. I measure block importance as the drop in rank recovery when a block is removed ($\Delta G$), and compare the resulting ordering with the reference LOBO ordering from the choice equations (@fig-block-importance-alignment). The alignment is only partial. Across outcomes, the LLM’s block-importance rankings are moderately close to the reference LOBO ordering, with a median rank correlation of about $\rho \approx 0.6$, but the agreement is uneven (@fig-block-importance-alignment). For most outcomes, the broad block structure is recovered reasonably well. The main exception is masking when symptomatic in crowded places, where the ranking alignment is close to zero and the relative weighting of blocks is substantially reordered. This means that baseline ranking success does not by itself show that the LLM is relying on the same empirical structure as the survey-grounded equations: it can order respondents reasonably well while still misweighting the underlying behavioural blocks.
+
+### Reconstructing psychological profile variables: can the LLM recover baseline profiles? {#sec-04-state-unperturbed}
+
+I next consider unperturbed reconstruction of psychological profile variables from the broader survey profile. This is a harder task than behavioural-outcome reconstruction because the target is multivariate: trust, stakes, and norms co-vary across respondent types, so the model must recover not only each variable separately but also their relative balance within the profile.
+
+To evaluate this profile structure directly, I complement variable-by-variable metrics with a standardised profile-vector cosine similarity score. For each respondent, I compare the predicted vector $\hat x$ to the survey-implied vector $x$ using cosine similarity, after standardising the psychological profile variables so that each dimension contributes comparably; the resulting score captures whether the LLM recovers the relative balance across profile variables [@manning2008introduction; @carlier2024profile].
+
+
+@fig-belief-unperturbed-cosine-state shows that unperturbed reconstruction of psychological profile variables is generally well aligned across model-prompt cells: standardised profile-vector cosine similarity is positive in most cases. Alignment is strongest under data-only and multi-expert prompting. The clearest failure mode is the first-person format, where cosine similarity for the smaller models falls close to zero. A likely reason is that first-person prompting weakens information discipline by inviting the model to produce a coherent self-presentation rather than simply reconstruct a fixed profile. In that setting, the model may partially blend the provided attributes with its own learned priors about identity, voice, and values, making the original profile structure less stable.
+
+
+Cosine similarity is scale-invariant, so it can remain positive even when predicted profiles are compressed toward the population centre. The variable-level diagnostics show exactly this pattern. @tbl-belief-unperturbed-difficulty indicates that rank structure (Gini) is generally positive across psychological profile variables, but this does not translate into reliable level recovery; the full cell grids show the same result (@fig-belief-unperturbed-gini-heatmap; @fig-belief-unperturbed-skill-heatmap). Stakes are the hardest profile variable for the LLM to discriminate, which is consistent with stakes depending more heavily on situational appraisal signals that are only weakly identified by baseline covariates alone. Trust-related variables show more stable ordering, but their predicted magnitudes are still compressed.
+
+I summarise this central-tendency compression with a single dispersion statistic that is directly comparable across tasks,
+$$
+\mathrm{compression\ ratio}=\frac{\mathrm{IQR}(\hat y)}{\mathrm{IQR}(y)},
+$$
+
+
+where values below 1 indicate that the predicted distribution is narrower than the observed one. Reconstruction of psychological profile variables yields a median compression ratio of `{python} _fmt_math_or_dash(belief_compression_median, digits=3)` (`{python} _fmt_n_math_or_dash(belief_compression_n_cells)`), compared with `{python} _fmt_math_or_dash(choice_compression_median, digits=3)` for behavioural outcomes (`{python} _fmt_n_math_or_dash(choice_compression_n_cells)`).
+
+The difference is small, but compression in psychological profile variables has more important downstream consequences. In the behavioural-outcome task, compression affects a single predicted outcome while the underlying survey profile remains fixed. In the psychological-profile task, compression acts directly on the state variables that carry heterogeneity into the ABM. The result is a narrower initial profile distribution, with too little mass in the tails. If agents begin the simulation too similar to one another, treatment heterogeneity is weakened and nonlinear responses are dampened, even when the downstream behavioural mapping remains directionally reasonable.
+
+A likely reason is that psychological profile variables are harder for the LLM to place at the correct distance from the centre. Behaviours such as vaccination or masking have more familiar base-rate structure and clearer narrative anchors in natural text. By contrast, psychological profile variables are survey-scaled constructs, and the available covariates provide only limited information about which respondents should lie at the extremes. When the prompt under-identifies those tails, the model defaults toward more moderate profiles.
+
+## Counterfactual response: perturbed micro-validation {#sec-04-perturbed}
+
+I now evaluate whether LLM responses remain coherent when one relevant part of the profile is shifted. In both task families, I summarise the induced change using the perturbation effect introduced in @sec-03-decision-function, the difference between the model output under a typical high value and under a typical low value of the perturbed input, holding the rest of the profile fixed. The question is whether the model reproduces the empirical response pattern: which perturbation-target combinations should move, in what direction, and by how much, while leaving near-null combinations essentially unchanged. Throughout this section, I call a perturbation-target combination an active cell when the reference model implies a non-trivial effect ($|PE_{\mathrm{ref}}| \geq 0.03$) and a placebo cell when the reference effect is near zero ($|PE_{\mathrm{ref}}| < 0.03$). Directional agreement rate (DAR) then denotes the share of active cells for which the model matches the sign of the reference perturbation effect. Success also requires containment on placebo cells: when the perturbed input has little or no empirical effect on a given target, the model should leave that target essentially unchanged. I summarise this as $1-\text{false-positive movement}$, where false-positive movement is the share of placebo cells in which the model produces a non-negligible perturbation effect.
+
+### Perturbed behavioural response: can the LLM reproduce counterfactual effects? {#sec-04-choice-perturbed}
+
+
+@fig-perturbed-pareto-by-model highlights a clear trade-off between sharper discrimination and weaker containment. Paired-contrast prompting performs best on active cells, combining stronger ordering with higher directional agreement, but it does not systematically improve effect-size accuracy and performs poorly on placebo cells. Making the low-versus-high comparison explicit therefore seems to improve comparative sensitivity while reducing restraint.
+
+Prompt-level replicates make it possible to separate perturbation-effect error into a variance component and a bias component:
+$$
+\operatorname{MSE}(\widehat{PE}, PE_{\mathrm{ref}}) =
+\operatorname{Var}(\widehat{PE})
++
+ \left(\mathbb{E}[\widehat{PE}] - PE_{\mathrm{ref}}\right)^2.
+$$
+
+Here the variance term measures instability across repeated calls for the same cell, while the squared-bias term measures systematic deviation from the reference perturbation effect.
+
+Across the full perturbed choice task, about `{python} fmt_float(100.0 * choice_pe_repeatability["overall"]["var_share"], 1)`% of repeated-sample PE error comes from within-prompt variance and `{python} fmt_float(100.0 * choice_pe_repeatability["overall"]["bias_share"], 1)`% from squared bias, with mean within-cell PE standard deviation `{python} fmt_float(choice_pe_repeatability["overall"]["mean_within_sd"], 2)` and mean absolute PE bias `{python} fmt_float(choice_pe_repeatability["overall"]["mean_abs_bias"], 2)`. Under paired contrast, mean PE standard deviation falls to `{python} fmt_float(choice_pe_repeatability_paired["mean_within_sd"], 2)`. Squared bias then accounts for most of the remaining PE error (`{python} fmt_float(100.0 * choice_pe_repeatability_paired["bias_share"], 1)`%), which indicates that paired prompting reduces stochastic noise more strongly than it reduces systematic miscalibration. Paired prompting therefore improves repeatability, but it does not resolve the broader problem of mis-scaled responses.
+
+```{=latex}
+\Needspace{0.68\textheight}
+```
+
+
+
+To see where perturbed performance succeeds or fails, I break the results down by outcome and perturbed block. @fig-perturbed-gini-block and @fig-perturbed-skill-block show a structured but uneven picture. Median perturbation-effect ordering ($G$) is close to zero across most cells, yet the LLMs do show selective ordering ability for some vaccination-related blocks. In particular, CoVax legitimacy and norms produce non-trivial Gini scores. The clearest failure is stakes: the models do not recover ordering for that block, even though it is central in the survey-grounded behavioural outcome equations.
+
+One interpretation is that the models respond more readily to socio-institutional vaccination cues than to clinical risk appraisal. Legitimacy and norms are relatively easy to render in natural language, whereas perceived disease stakes are more weakly identified by the prompt and harder to separate cleanly from neighbouring constructs.
+
+Magnitude accuracy (median perturbation-effect $\mathrm{skill}$) is much worse, especially for the NPI outcomes. For masking and staying home, skill is strongly negative across most outcome-block cells. The models assign effects that are too large and spread them across too many respondents, rather than concentrating them in the smaller subset with real headroom to move. In the reference equations, these responses are constrained by saturation; the LLMs do not reproduce that pattern and instead overshoot the empirically bounded response [@zey_2021_message_framing_ceiling].
+
+
+@fig-perturbed-block-sensitivity-lobo compares the LLM’s block sensitivities with the reference LOBO structure, so points far from the diagonal indicate that the empirical mechanism is being reweighted rather than merely predicted noisily.
+
+The main distortion is systematic sensitivity reallocation across blocks. For vaccination willingness, stakes are among the most important blocks in the reference equations, yet their perturbation sensitivity is strongly attenuated in the LLM (reference `{python} fmt_math(rf"\approx {fmt_float(diag_vax_stakes_ref, 2)}")` vs LLM `{python} fmt_math(rf"\approx {fmt_float(diag_vax_stakes_llm, 2)}")` in $\mathrm{median}(|PE|)$), while trust- and legitimacy-related sensitivities are comparatively preserved. For the non-pharmaceutical outcomes, most points lie above the diagonal, indicating systematic over-sensitivity relative to the reference. The sharpest distortion appears for institutional trust: the reference median sensitivity is small (`{python} fmt_math(rf"\approx {fmt_float(diag_npi_trust_ref, 2)}")`), but the LLM produces consistently larger shifts (`{python} fmt_math(rf"\approx {fmt_float(diag_npi_trust_llm_min, 2)}")`–`{python} fmt_math(rf"{fmt_float(diag_npi_trust_llm_max, 2)}")`). If carried directly into an LLM-based ABM, this would systematically reweight policy effects across blocks: vaccination would appear insufficiently responsive to stakes, while trust and legitimacy would appear too dominant.
+
+### Perturbed psychological-profile response: can the LLM reproduce profile shifts? {#sec-04-state-perturbed}
+
+I now turn to the perturbed task on the psychological-profile side. The question is whether the LLM reproduces the profile shifts implied by the reference regressions when one broader covariate block is changed.
+
+
+@fig-belief-frontier shows the same basic pattern as in the perturbed behavioural-outcome task: configurations that better match the intended direction of profile change often do so by allowing more spillover into dimensions that should have remained stable. This benchmark is demanding because the reference psychological profile regressions imply selective updates: a shift in one broader covariate block may move perceived stakes, for example, without inducing equally large changes in trust or norms. The LLMs do not preserve that scope. Changing one profile dimension appears to trigger a broader reinterpretation of the respondent, so related dimensions move together instead of remaining tightly localised [@mooney_2025_coherence].
+
+
+Leakage is only part of the problem. @fig-belief-signal-block-sensitivity-alignment shows that the LLM is systematically over-responsive to perturbations in broader covariate blocks. Every block lies above the diagonal, so for the same class of input shift the model produces larger profile changes than the reference benchmark. The pattern is broad-based: accessibility is the clearest case, but the same oversensitivity appears for institutional credibility, disease-stakes salience, and interpersonal signals. The psychological-profile task therefore fails on both scope and gain: updates spill into non-target dimensions, and even the targeted dimensions are shifted too strongly.
+
+The results draw a clear boundary around what current LLMs can and cannot do reliably as behavioural components in this ABM. In the unperturbed tasks, the models often recover meaningful cross-sectional structure. They can rank baseline behaviours moderately well and recover part of the relative shape of baseline psychological profiles. Their main weakness is central-tendency compression: level recovery is weaker than ranking, and tail profiles are under-represented.
+
+The perturbed tasks are more problematic. In the behavioural-outcome task, the models sometimes recover the sign of a response and part of the ordering of who should move more under a controlled shift, especially with paired-contrast prompting, but effect-size accuracy and containment remain weak. In the psychological-profile task, the failures are stronger still: updates are too diffuse and too large relative to the survey-grounded benchmark. Off-the-shelf LLMs are therefore not reliable enough to serve as the behavioural update mechanism in this ABM. The next chapter accordingly returns to the estimated survey equations and carries those forward into the simulator design.
+
+
+
+# Agent-Based Model {#sec-05-agent-based-model}
+
+The micro-validation results in @sec-04-llm-micro-validation place a clear boundary on the role that off-the-shelf LLMs can play in this thesis. While they recover some baseline structure, their responses to controlled perturbations are too compressed, too diffuse, and too unstable to serve as the behavioural update rule in a counterfactual simulator. For that reason, the ABM does not use the LLM as the engine of within-person behavioural change over time. Instead, it reuses the fitted equations from @sec-03-decision-function as the empirical behavioural core and embeds them in a dynamic simulator.
+
+This bridge is necessarily imperfect. The data do not identify persistence, adjustment speed, path dependence, or whether every observed cross-sectional profile is dynamically reachable. The model is therefore specified to avoid treating between-person patterns as if they were fully equivalent to within-person dynamics, an assumption that is often difficult to justify [@curran_bauer_2011; @molenaar_2004_manifesto]. Instead, a separate law of motion governs persistence and relaxation, while the fitted cross-sectional gradients are used only to indicate the direction and relative strength of change.
+
+The model then adds the dynamic ingredients needed for policy comparison: a social interaction structure through which norms and related perceptions propagate, and an endogenous feedback loop linking prevention to local incidence and local incidence back to perceived risk.
+
+## ABM Architecture {#sec-05-abm-architecture}
+
+Prevention-relevant attitudes and perceptions often change gradually over time [@ouellette_1998_habit_intention; @gardner_2014_habit_health], but treating them as fixed would remove the policy, epidemic, and social effects the simulator is meant to study. Because the fitted relationships identify baseline heterogeneity and one-step directional responses, but not the temporal persistence of change, I adopt a partial-adjustment dynamic.
+
+Let $s_{i,u}(t)$ denote the value of mutable behavioural state $u$ for agent $i$ at tick $t$. Most state components move only part of the way each tick toward a time-varying target $\tilde s_{i,u}(t)$:
+$$
+s_{i,u}(t+1) = s_{i,u}(t) + \kappa_u\big(\tilde s_{i,u}(t)-s_{i,u}(t)\big),
+\qquad
+\kappa_u\in\{k_{\text{fast}},k_{\text{slow}}\}.
+$$
+
+The target value $\tilde s_{i,u}(t)$ starts from the agent’s survey-implied baseline and then shifts over time in response to active policy signals, social exposure, and epidemic feedback through local incidence. These inputs are linked to behavioural states using the fitted regressions from @sec-03-decision-function, while the updated state vector is mapped into behavioural outcomes through the behavioural outcome equations. Adjustment is set to be slower for trust- and norm-like variables and faster for more situational appraisals such as perceived danger and infection risk [@devine_2024_stability]. Under this design, persistent intervention effects arise only when epidemic conditions or network exposure remain displaced after the initial forcing window has ended; otherwise, state components relax back toward baseline.
+
+Social exposure enters through two distinct channels. At each tick, agents interact through a dynamic sample of contacts drawn from a fixed relational backbone consisting of household and recurring neighbours, plus ephemeral one-shot contacts drawn mainly from the local pool and, to a smaller extent, from a global pool.
+
+The first channel is peer exposure. Within this realised contact set, pairwise, symmetric interactions partially pull agents toward one another on selected trust- and risk-related variables. More similar contacts are sampled more often, reflecting homophily [@mcpherson_2001_homophily].
+
+The second channel is norm updating. Agents observe preventive behaviour in their realised contacts and revise perceived normality in their local environment. The update follows a threshold-style contagion rule: low observed adoption has little effect, but once exposure crosses an agent-specific social-proof threshold, perceived normality rises quickly and then saturates [@granovetter_1978_threshold; @centola_macy_2007_complex]. The process has two stages: agents first update their estimate of how common prevention is among contacts, then adjust their descriptive norm toward that estimate, with more socially susceptible agents responding more strongly.
+
+To close the behavioural–epidemic loop, the ABM includes a locality-level incidence signal. Each locality $c$ carries a normalised incidence state $I_{c,t}$ that follows a bounded growth-with-decay process. Its effective growth rate is dampened by average local protective propensity, so wider diffusion of vaccination willingness and NPIs lowers subsequent incidence pressure. In the model, local protection is captured through predicted behaviour: vaccination willingness serves as a proxy for uptake propensity, and NPIs contribute through their fitted behavioural levels. This incidence signal then feeds back into agents’ target state values $\tilde s_{i,u}(t)$ by shifting risk-related variables, including perceived danger, fear, and infection likelihood. The parameterisation is calibrated so that one simulation tick corresponds to approximately one month, while social influence operates on weekly substeps within each tick.
+
+Initial conditions are anchored empirically through the anchor-prototype sampler introduced earlier: agents are resampled from local anchor-country neighbourhoods so that simulated populations preserve realistic joint distributions of attributes and behavioural drivers. Full details of the ABM equations, parameters, and initialisation procedure are reported in @sec-appendix-abm-specification.
+
+
+
+
+In @fig-05-baseline-closure-diagnostic, shown over the post-burn analysis window after the initial adjustment phase has settled, the baseline regime provides a compact verification that the simulator behaves as a closed feedback system and that the social channels move their intended targets. Panel A compares the endogenous baseline to a regime in which exogenous importation keeps incidence elevated through a standing floor and periodic pulses. Panel B shows the corresponding salience response: higher incidence sustains higher disease fear. Panel C shows that peer pull shifts institutional trust and that observed norms shift descriptive vaccination norms in the expected direction. Here “communication” refers to the social influence layer; when it is off, agents update only through partial adjustment and incidence feedback. The communication-on versus communication-off gap is modest but non-zero, indicating that the social layer measurably affects the evolving baseline without destabilising the system. More broadly, the ABM is also checked for consistent behaviour: it reproduces the intended baseline patterns, responds as expected to simple perturbations, remains stable over time, and does not generate artefacts from the network or from randomness.
+
+## Counterfactual Experiments {#sec-05-abm-experiments}
+
+
+
+@fig-05-auc-leaderboard compares counterfactual interventions applied from the post-burn period onward, summarising their cumulative impact on vaccination willingness and the NPI index. I report $ΔAUC$, the area under the curve of outcome deviations over the evaluation window, because the ABM is mean-reverting: intervention effects typically rise and then decay, so a time-integrated summary is more informative than a single end-of-horizon snapshot.
+
+The scenarios are calibrated as one-sided 1-IQR shifts in the relevant variable, following the same low-to-high convention used in @sec-03-perturbation-effects. Some are short pulses and others sustained campaigns over a standardised 9-month window. In all cases, the intervention acts on precursor variables or mutable state targets; the resulting states then evolve through the same partial-adjustment system as in the baseline model, after which vaccination willingness and the NPI outcomes are recomputed from the fitted equations.
+
+The norm-shift campaign produces the largest cumulative increases in both vaccination willingness and the NPI index. Although norms were not the strongest one-step lever in the empirical benchmark, they become much more consequential once social reinforcement and slow adjustment are allowed to accumulate over time, making their effects more persistent than those of the other interventions.
+
+In this model, the outbreak wave increases both vaccination willingness and the NPI index, consistent with a broad risk-response pattern under worsening epidemic conditions. The outbreak salience campaign is narrower: it shifts disease salience through cues such as worse health and knowing someone hospitalised with an infectious illness, but without generating the same realised incidence dynamics. It therefore produces only a modest gain in vaccination willingness and little sustained increase in the NPI index, suggesting that outbreak conditions have broader behavioural reach than a cue-based salience intervention.
+
+Credibility-focused interventions occupy an intermediate but asymmetric position. Legitimacy repair mainly increases vaccination willingness, whereas institutional trust repair moves vaccination willingness and the NPI index together. This difference reflects the scope of the two channels: legitimacy is more tightly tied to vaccination governance, while institutional trust extends more broadly across prevention outcomes. The duration-normalised results also show that some one-tick credibility pulses generate very large short-run effects even when their cumulative $ΔAUC$ remains smaller than that of longer campaigns. This is especially clear for legitimacy repair and legitimacy scandal, which produce some of the largest per-month changes in vaccination willingness despite being only one-tick pulses.
+
+Access improvements initially raise vaccination, but the resulting increase in protection reduces subsequent incidence pressure and perceived risk. In the shock specification used for @tbl-05-auc-leaderboard-summary, that early vaccination bump is more than offset later on: both vaccination willingness and the NPI index fall back enough that the average post-burn cumulative effect becomes slightly negative relative to baseline.
+
+At the negative end of the ranking, misinformation / trust erosion produces the largest decline in vaccination willingness while affecting the NPI index much less. This mirrors the repair results: credibility matters for both outcomes, but its strongest effects fall on vaccination, whereas the NPI index remains partly supported by other behavioural blocks.
+
+For the shorthand used in @fig-05-mechanism-impulse, `(C)` denotes a campaign lasting 9 months, `(S)` a simulated outbreak wave lasting 6 months, and `(P)` a one-tick pulse.
+
+
+The leaderboard establishes which interventions generate the largest cumulative displacement, but cumulative summaries alone do not show how those effects unfold over time. I therefore turn to the dynamic profiles of three representative intervention types, comparing their mediator paths and the resulting trajectories of vaccination willingness and the NPI index.
+
+The time profiles in @fig-05-mechanism-impulse show that the norm campaign follows the programmed rise-and-decay schedule, while the behavioural responses exhibit longer tails. This is consistent with slow partial adjustment, which allows effects to continue accumulating even after the external forcing begins to fade. Persistence comes partly from slow movement in individual behavioural states, but the observed-norm channel also contributes: continued visibility of prevention among contacts reinforces perceived normality and helps keep behaviour displaced as the campaign decays.
+
+The outbreak wave follows a different pattern. Vaccination willingness and the NPI index rise under elevated epidemic pressure and then relax smoothly as perceived risk subsides. Its uncertainty bands are comparatively tight, which is expected because the wave acts as a common exogenous forcing and the plotted curves are matched deviations from baseline, limiting between-run variation at the aggregate level.
+
+Misinformation generates the most persistent credibility shock, and this persistence appears mainly in vaccination willingness, while the NPI index remains closer to baseline on average. Unlike the norm campaign, the slow decay here is driven mainly by gradual relaxation in trust- and legitimacy-related profile variables after the shock window closes.
+
+
+The coupling diagnostics in @tbl-05-shock-coupling-diagnostic distinguish scenarios in which vaccination willingness and the NPI index move together from those in which one partly substitutes for the other. Norm shift, outbreak wave, and institutional trust repair all show reinforcing coupling: both prevention outcomes co-move because they are pushed by a common influence, such as perceived normality, perceived stakes, or broad credibility. Misinformation / trust erosion is also reinforcing, though less tightly, indicating that credibility shocks still move the two outcomes in the same direction even when their strength differs.
+
+Access scenarios are different. Their coupling is weakly substitutive: access affects vaccination more directly, while the NPI index adjusts later through feedback from protection to incidence and perceived risk. The NPI response peaks later than the vaccination response in these scenarios, by about `{python} _fmt_or_na(access_sub_lag, 1)` ticks on average, which is consistent with that ordering.
+
+
+The robustness screening, documented in @sec-appendix-sensitivity-screening, asks how sensitive the ABM's counterfactual effects are to uncertainty in its parameters. It does so by varying parameters over plausible ranges and computing Morris elementary effects on the scenario deltas relative to baseline [@morris_1991_factorial_sampling; @campolongo_2007_effective]. @fig-05-sensitivity-heatmap aggregates those Morris $\mu^*$ values to four broad mechanism families and normalises each row to sum to one. The figure should therefore be read as showing where sensitivity is concentrated within each intervention–outcome pair, rather than as an absolute comparison across rows.
+
+The concentration pattern differs across intervention types. Institutional-trust repair and legitimacy repair place their largest shares on persistence, consistent with effects that depend strongly on how slowly trust- and legitimacy-related states relax. The norm-shift row tilts most strongly toward social diffusion, in line with the role of reinforcement and network propagation in sustaining prevention, though stochasticity also remains non-negligible. Access facilitation is concentrated most heavily on stochasticity, with additional sensitivity to the incidence loop, probably because it acts more directly on vaccination rather than working through the socially reinforcing parts of the ABM. The NPI-index row shown here is more diffuse, with screening influence spread across persistence, social diffusion, and the incidence loop rather than concentrated in a single family. At the parameter level, the corresponding Morris dispersion statistic $\sigma$ gives very similar rankings overall (median rank correlation $\approx 0.99$), but suggests that persistence and some feedback terms are more context-dependent in the norm-heavy and more socially mediated scenarios.
+
+A complementary claim-level check asks whether selected intervention rankings remain true across the screened parameter space, where $p$ denotes the share of screened parameter draws for which the comparison holds. The clearest pattern is the contrast between cumulative and late-horizon comparisons. Norm shift exceeds institutional-trust repair on both vaccination and NPI cumulative yield in all screened draws ($p=1.00$ for both $ΔAUC$ comparisons), but the corresponding month-12 orderings are essentially unstable ($p=0.44$ for vaccination and $p=0.52$ for NPI, with median gaps near zero). A similar reversal appears against legitimacy repair: norm shift exceeds it on vaccination $ΔAUC$ in $76\%$ of draws, yet legitimacy repair exceeds norm shift on month-12 vaccination in $96\%$ of draws. This is consistent with the ABM’s mean reversion: interventions can separate strongly in cumulative yield while ending at much more similar, or even reversed, late-horizon levels.
+
+Some asymmetries are more robust. Legitimacy repair exceeds institutional-trust repair on vaccination in all screened draws, while institutional-trust repair exceeds legitimacy repair on the NPI outcome in all screened draws. Access facilitation shows a different persistence profile: its vaccination effect always peaks above its month-12 level ($p=1.00$; median final-to-peak ratio $0.61$), but that does not imply a positive cumulative effect, because the later reversal is strong enough that its post-burn vaccination $ΔAUC$ is negative on average in the canonical shock runs. Its month-12 NPI effect is never above baseline. The outbreak comparison is weaker and less consistent. On vaccination, outbreak salience exceeds outbreak wave in most draws ($p=0.78$ for $ΔAUC$ and $p=0.86$ at month 12), while on NPI the wave retains only a marginal edge ($p=0.56$ for both $ΔAUC$ and month 12). This matches the family-level screening: for NPI, outbreak wave is concentrated almost entirely on the incidence loop, whereas outbreak salience is distributed more broadly across stochasticity, incidence feedback, and social diffusion.
+
+
+
+# Discussion & Conclusion {#sec-06-discussion-conclusion}
+
+This thesis develops behavioural policy simulation through a three-step pipeline linking empirical evidence, component-level evaluation, and dynamic simulation. It first builds a compact survey-grounded representation of prevention behaviour, then tests whether LLM components can reproduce that structure both at baseline and under controlled shifts, and finally embeds the resulting behavioural core in an ABM. The broader argument is that behavioural policy simulation becomes more credible when the behavioural layer is constrained by more than baseline fit alone. It also needs to respond coherently when the relevant drivers of behaviour are deliberately perturbed.
+
+The results show that prevention is organised by a compact but outcome-specific architecture. COVID vaccination willingness depends mainly on stakes and vaccine evaluation within a wider trust and legitimacy context, flu vaccination is dominated by inertia, and the NPI outcomes are shaped mainly by moral orientation and stakes. Off-the-shelf LLMs can recover part of this structure in static settings, especially in the ranking of baseline profiles, but they respond much less reliably once the profile is shifted. Their weakness is therefore not only imperfect fit, but limited counterfactual discipline. This is why the ABM does not rely on them as the core behavioural update mechanism. Instead, it keeps behaviour tied to the estimated survey relationships and adds a minimal dynamic layer for persistence, social influence, and epidemic feedback. In that simulator, norms generate the most persistent cumulative effects, access improvements can induce compensatory declines in other precautions through reduced incidence pressure, and legitimacy is more vaccination-specific whereas institutional trust spills over more broadly across prevention outcomes.
+
+## Implications {#sec-06-implications}
+
+One implication of this thesis is methodological. In behavioural policy simulators, aggregate epidemic or uptake patterns are not sufficient to validate the behavioural layer, because similar macro-level outcomes can be generated by different underlying micro-level structures. The more demanding test is whether the model responds coherently when the relevant behavioural drivers are deliberately shifted. The LLM results show this concretely: a component can perform plausibly in static reconstruction tasks and still mis-scale intervention responses or diffuse them across dimensions that should remain stable. Baseline fit is therefore an incomplete test of validity.
+
+This matters because the behavioural architecture of prevention is broader than a single risk-response channel. Epidemic policy models often centre changing perceived risk [@funk_2010_modelling; @verelst_2016_behavioural_models], and the results here confirm that appraisal of disease stakes is important, especially for COVID vaccination willingness. But that is only part of the empirical structure. Trust and legitimacy shape whether recommendations are accepted as credible and appropriate. Norms help keep prevention visible in everyday interaction and can sustain behaviour through social reinforcement. Inertia and feasibility constraints help explain why some behaviours remain sticky even when salience changes. A model centred only on perceived danger may therefore capture short-run reactions to worsening conditions, while missing the mechanisms that sustain, block, or redirect prevention over time.
+
+The policy implication is that interventions should be matched to the behavioural margins they can realistically move. Measures aimed at salience or credibility are more likely to work where uptake depends on appraisal and institutional acceptance. By contrast, behaviours anchored more strongly in inertia, feasibility constraints, or stable value orientations are less likely to shift through communication alone. This also means that success on one preventive outcome does not automatically generalise to others. An intervention that raises vaccination may still weaken other precautions if the resulting reduction in perceived risk is not accompanied by forces that sustain broader prevention. In that sense, effective policy design is not only about increasing protection somewhere in the system, but about understanding which behavioural channels are being activated, how persistent they are, and whether gains in one domain may offset behaviour in another.
+
+## Limitations {#sec-06-limitations}
+
+The thesis prioritises interpretability and portability of the behavioural model. Those design choices make the pipeline easier to inspect and evaluate, but they also define its main limitations.
+
+The empirical base has clear limits. The survey is self-reported, cross-national, and fielded after the acute phase of COVID-19. Recall bias, expressive responding, and social desirability may affect several variables, especially perceived norms, moral items, and retrospective vaccination attitudes. Cross-country harmonisation reduces some comparability problems, but measurement invariance is not guaranteed. Some between-country differences may therefore reflect differences in interpretation or response style rather than differences in the underlying psychological profiles.
+
+Observability is also incomplete. The survey captures many important determinants of preventive behaviour, but not all of them. Feasibility constraints that are likely to matter for behaviours such as staying home when symptomatic, including workplace flexibility, paid leave, caregiving obligations, and immediate household logistics, are only partially observed. This likely contributes to the weaker empirical separability of some outcomes and means that the constraint-related variables capture only part of the feasibility conditions that shape these behaviours.
+
+A central limitation is that the empirical backbone is anchored in cross-sectional data. The thesis uses between-person gradients as a local guide to nearby within-person adjustment, while a separate law of motion governs persistence and relaxation. That bridge is useful, but it remains an assumption rather than a direct empirical identification of behavioural dynamics. The data do not reveal individual decay rates, whether every observed profile is dynamically reachable, or the exact persistence of intervention-induced changes. For that reason, the model is more informative about the direction and relative magnitude of responses than about the precise time scale over which they unfold.
+
+There are also limitations in the statistical backbone. The reference equations are deliberately parsimonious and interpretable, which is useful for mechanism-focused simulation, but this comes with functional-form restrictions. Linear and ordinal-link models may smooth over nonlinearities, threshold effects, or subgroup interactions that matter in specific contexts. The resulting perturbation summaries provide principled empirical reference points for evaluation, but they remain model-based estimates, not ground truth. The same applies to block construction: the chosen derived variables are compact summaries of broader constructs, and different measurement choices could slightly alter the resulting empirical structure.
+
+The LLM evaluation has additional scope conditions. Its results are conditional on the tested models, prompt formats, and the controlled perturbation setup used to keep the comparisons interpretable. Other frontier systems or more specialised training procedures may perform differently.
+
+Finally, the ABM is built to compare behavioural policy scenarios, not to forecast epidemic trajectories in a fully epidemiological sense. For that reason, incidence is represented through a simplified local-pressure process. It is not an explicit transmission model. The social layer includes clustered exposure and norm propagation, but the network is fixed and does not allow endogenous rewiring, selective tie dissolution, or the emergence of echo chambers through adaptive sorting. The update mechanism is intentionally modular, which improves interpretability and prevents unconstrained drift, but may understate some real forms of interaction across psychological profile variables.
+
+## Extensions {#sec-06-extensions}
+
+The most useful extensions follow directly from the main limits identified in this thesis. Two priorities stand out: tighter empirical constraints on generative components, and a stronger dynamic backbone for simulation.
+
+On the generative side, the micro-validation harness could be used not only for evaluation but also for optimisation. In this thesis, the perturbation tests are used to assess whether a model reproduces reference responses to controlled shifts, preserves placebo invariances, and avoids unstable spillovers across profile dimensions. Because these targets are automatically checkable, they could also serve as optimisation targets, in line with recent work that trains models against verifiable external criteria [@wen_2025_rlvr_reasoning; @jiang_2026_reward_chain]. A related extension is to separate communication from behavioural updating more explicitly. A more robust design would keep profile evolution in a parametric module, where bounds and stability can be enforced directly, while using an LLM as a social interface for generating messages, interpreting communication, and representing informational or normative exposure in natural language.
+
+On the dynamic side, the current framework could be strengthened in two complementary ways. One is to couple the model to an explicit transmission process. In the present thesis, incidence enters as a stylised local-pressure signal that closes the behavioural feedback loop while keeping the epidemiological side intentionally reduced-form. The contact-network structure developed here would also support a stochastic transmission layer, such as a network-based SIR, SEIR, or SEIRV process [@keeling_2008_modeling_infectious_diseases]. The other is to improve dynamic identification through longitudinal data. Because the present behavioural backbone is anchored in cross-sectional variation, the ABM relies on cross-sectional gradients to connect between-person differences to within-person change. Repeated measurement of the same individuals would strengthen this part of the pipeline substantially by identifying inertia, post-shock decay, habituation, and asymmetric recovery more directly.
+
+Beyond these specific extensions, the same logic could also be made cumulative across studies. A recurring problem in behavioural simulation is that models are often evaluated against bespoke targets and ad hoc criteria, which makes results difficult to compare across settings [@windrum_2007_empirical_validation]. A shared micro-validation framework anchored to survey data offers one way to narrow that gap. Models could then be compared on common tasks that test baseline fit, coherent response to controlled perturbations, and stability under repeated updating, making progress less dependent on isolated demonstrations and more on direct comparison across parametric, generative, and hybrid architectures. The framework developed in this thesis can be read as one step in that direction: it combines a survey-grounded behavioural backbone, component-level micro-validation, and counterfactual simulation within a single pipeline.
+
+
+
+# Bibliography {#sec-bibliography .unnumbered}
+
+::: {#refs}
+:::
+
+
+
+# Dataset details {#sec-appendix-dataset-details}
+
+The survey was run in 2024 as a self-administered online questionnaire across Italy, Spain, France, Germany, Hungary, and the United Kingdom, using a common instrument translated into the five non-English study languages. Full fieldwork and sampling details are reported in @offeddu_2025_advancing_behavioural_epidemic_data. The published source reports 22,228 respondents after predefined data-quality filters. This thesis instead starts from the harmonised survey extract prior to that final published row-level exclusion and then applies the preprocessing and analysis-sample restrictions described below.
+
+The questionnaire is organised into eight core modules:
+
+1. Demographics, household, and health background: socio-demographics (including education, employment, and income), household composition, and health-risk context for respondent and close others.
+2. COVID-19 experience and vaccination history: infection history and COVID-19 vaccination uptake/timing, plus retrospective willingness at key rollout time points and stated motives/barriers.
+3. Other infectious diseases and vaccine beliefs: flu/measles/meningitis-related risk and severity perceptions, flu vaccination history, and a short vaccine-knowledge/beliefs module.
+4. Information ecosystem: primary media/social channels used, time spent, and trust in vaccine information by channel.
+5. Social network, contacts, and discussions: network size by role (e.g., coworkers/friends), a contact matrix for direct contacts yesterday by social group and age band, and a parallel matrix for discussion contacts last week.
+6. Attitudes, norms, and trust: political/value items and perceived norms in close groups; institutional trust in vaccine-related information; and the 5C antecedents of vaccination [@betsch_2018_beyond].
+7. Accessibility and barriers: self-efficacy and practical constraints for accessing vaccination (distance, availability, time/work conflicts, and related impediments).
+8. Moral foundations: adapted Moral Foundations batteries capturing relevance and agreement for the five foundations [@haidt_2004_intuitive; @graham_2011_mapping].
+
+
+## Data cleaning and dataset preparation {#sec-appendix-dd-data-cleaning}
+
+### Harmonisation and cross-country comparability
+
+Because the questionnaire combines binary items, ordered scales, counts, routed follow-up questions, and some country-specific response formats, the first preprocessing step harmonises these inputs into a common analytic representation. This mainly involved recoding categorical responses into consistent categories, aligning and reverse-coding ordered scales so that higher values had a common interpretation where appropriate, and aggregating conceptually related items into composite summaries, usually by averaging across non-missing responses.
+
+To support cross-country comparison, socio-economic variables were harmonised where possible onto comparable scales. Household income brackets were mapped to a continuous proxy and then converted into a PPP-adjusted numeric measure. Geographic information was likewise harmonised into Eurostat NUTS-style identifiers, with lower-level regional categories rolled up when they were too sparse for stable analysis.
+
+### Missing data and structural non-response
+
+Missing values are retained whenever they plausibly reflect genuine item non-response and may therefore remain analytically informative. The preprocessing workflow nevertheless applies a limited set of structural imputations in cases where survey routing implies a natural default and where leaving the value missing would create internal inconsistencies.
+
+For example, numeric counts derived from household or close-contact rosters are imputed to zero when missingness is consistent with the respondent having reported no such individuals. Similarly, media-use duration items are imputed to “Never” when missingness is consistent with routed non-use, after which they are encoded onto the ordinal duration scale and, where relevant, combined into summary indices. These imputations are intentionally narrow in scope, while other forms of missingness are left untouched.
+
+### Removing unusable variables and treating extremes
+
+Not all raw survey fields are suitable for downstream statistical modelling. Variables are therefore removed when they are redundant, purely administrative, free-text, or too sparse to support stable inference. This includes metadata fields, open-ended “other (specify)” responses, and highly incomplete routed follow-ups.
+
+For high-variance count variables, the preprocessing workflow also applies plausibility bounds and outlier checks so that a very small number of implausible responses do not dominate scale construction or model estimation. This affects variables such as household counts, non-cohabiting family counts, and infection- or contact-related totals, where the survey instrument already uses bounded response ranges and the clean analytic representation preserves those bounds.
+
+## Derived variables, index construction, and measurement quality {#sec-appendix-dd-index-construction}
+
+Many of the variables used in the empirical analyses are not single questionnaire items but derived summaries constructed from conceptually related responses. This section documents how those indices were built and how their measurement quality was assessed.
+
+
+Where possible, conceptually related items were aggregated by taking the mean across non-missing responses. Formally, for respondent $i$ and an index built from items $j \in J_i$ with observed responses $x_{ij}$, the index is
+
+$$
+\text{Index}_i = \frac{1}{\lvert J_i \rvert} \sum_{j \in J_i} x_{ij},
+$$
+
+where $J_i$ denotes the set of non-missing items for that respondent. No additional minimum-item requirement is imposed beyond this available-item rule, so some indices may be based on as few as one observed item. I therefore report index coverage and treat lower coverage as an indication that missingness reduces the effective sample size for that composite.
+
+For multi-item composites intended to capture a common latent construct, I report Cronbach’s $\alpha$ as a descriptive reliability diagnostic. For formative composites, such as the 5C pro-vaccine index, $\alpha$ is included for transparency. No internal-consistency statistic is reported for aggregates built from heterogeneous entities, such as household/contact summaries or media-use baskets, because these are deterministic summaries rather than psychometric scales.
+
+### Derived household and social-contact variables
+
+The survey records detailed information on up to ten cohabitants and up to ten non-cohabiting close contacts, including age, COVID-19 vaccination status, and COVID-19 infection history. To avoid a proliferation of highly sparse columns, this information is summarised into a small set of continuous variables:
+
+* Average age of cohabitants/non-cohabitants
+* Average number of COVID vaccine doses among cohabitants/non-cohabitants
+* Average number of COVID infections among cohabitants/non-cohabitants
+
+### Media use and information diet {#sec-appendix-dd-media-use}
+
+Time spent with different online and social media is summarised into two duration indices:
+
+* Duration of Informational Media averages reported time on informational platforms such as Wikipedia, YouTube, and Reddit.
+* Duration of Social Media averages time on social platforms such as Instagram, Facebook, Telegram, Twitter/X, LinkedIn, and TikTok.
+
+### Composite psychological indices {#sec-appendix-dd-composite-indices}
+
+#### 5C pro-vaccine index
+
+To summarise pro-vaccine psychological orientation, I construct the 5C pro-vaccine index (`{python} alpha_md("fivec_pro_vax_idx")`) as the mean of four recoded 5C components:
+
+* 5C Confidence
+* 5C Complacency (reverse-coded)
+* 5C Constraints (reverse-coded)
+* 5C Collective Responsibility
+
+#### Risk, safety, fear and comfort
+
+Perceptions of infection risk and vaccine risk are captured using multi-item averages:
+
+* Average perceived infection likelihood across COVID-19, seasonal flu, measles, and meningitis (`{python} alpha_md("infection_likelihood_avg")`).
+* Average perceived severity if infected across COVID-19 and flu (`{python} alpha_md("severity_if_infected_avg")`).
+* Average disease fear across COVID-19, seasonal flu, measles, and meningitis (`{python} alpha_md("disease_fear_avg")`).
+
+Although baseline prevalence differs sharply across pathogens, the perceived infection likelihood composite is interpreted as a dispositional tendency to perceive infectious diseases as likely in general, rather than as a calibrated estimate of objective infection probabilities.
+
+The perceived severity index is likewise treated as a general severity sensitivity: how strongly respondents expect serious consequences conditional on infection, rather than a disease-specific clinical assessment.
+
+For vaccines:
+
+* Average perceived vaccine risk across COVID-19, flu, measles, and meningitis vaccines (`{python} alpha_md("vaccine_risk_avg")`).
+
+#### COVID-19 vaccine rollout scepticism
+
+To capture scepticism about the safety, motives, and mandate-related aspects of the COVID-19 vaccination campaign, I construct a COVID-19 vaccine rollout scepticism composite (`{python} alpha_md("covax_legitimacy_scepticism_idx")`) by averaging agreement across six statements covering safety concerns, perceived insufficient testing, side-effect worries, opposition to mandates, distrust in pharmaceutical motives, and preference for natural immunity.
+
+#### Progressive attitudes and social norms
+
+I construct a Progressive attitudes index (`{python} alpha_md("progressive_attitudes_nonvax_idx")`) by averaging agreement with:
+
+* concern about climate harm,
+* support for LGBT adoption rights,
+* tolerance towards immigration.
+
+Perceived vaccine-importance norms are measured separately as single items capturing how important respondents believe vaccination is to their family, friends, and colleagues.
+
+Three analogous progressive norms bundles capture perceived social climate among friends (`{python} alpha_md("friends_progressive_norms_nonvax_idx")`), family (`{python} alpha_md("family_progressive_norms_nonvax_idx")`), and colleagues (`{python} alpha_md("colleagues_progressive_norms_nonvax_idx")`) by averaging the same items within each reference group.
+
+The progressive attitudes composite has modest internal consistency, as expected given its deliberate coverage of multiple policy domains. It should therefore be interpreted as a broad value gradient rather than a narrow latent trait. Likewise, the progressive norms bundles are treated as descriptive composites rather than narrow psychometric scales, and relatively low Cronbach’s alpha values for these bundles are not taken as evidence of measurement failure but as a reflection of their intentionally broad content.
+
+For vaccination specifically, I also combine the three vaccine-importance norm items into a single Perceived vaccine norms index, defined as their mean (`{python} alpha_md("social_norms_vax_avg")`). I do so because these three items display very high internal consistency, indicating that perceived vaccine importance is largely shared across respondents’ close reference groups rather than being sharply group-specific.
+
+Finally, to summarise a broader moral–progressive orientation that links progressive policy attitudes to individualising moral concerns (care and fairness), I construct a higher-order composite by averaging the Progressive attitudes index with the two individualising morality constructs (moral relevance and moral agreement). The resulting composite is reported with its internal-consistency diagnostic (`{python} alpha_md("moral_progressive_orientation")`).
+
+#### Protective behaviour bundle
+
+The protective behaviour index (`{python} alpha_md("protective_behaviour_avg")`) summarises three non-pharmaceutical behavioural items:
+
+* wearing a mask in crowded places when symptomatic,
+* staying at home when symptomatic,
+* wearing a mask when “pressure” (infection risk) is high.
+
+### Trust indices {#sec-appendix-dd-trust-indices}
+
+Trust in information sources is summarised at three levels:
+
+* Trust in traditional media (`{python} alpha_md("trust_traditional")`)
+  Mean of trust in printed press, television, and radio as sources of vaccine information.
+* Trust in online information (`{python} alpha_md("trust_onlineinfo")`)
+  Average trust in online news websites, Wikipedia, YouTube, and podcasts as vaccine information sources.
+* Trust in social media (`{python} alpha_md("trust_social")`)
+  Average trust in Facebook, Instagram, Twitter/X, TikTok, Telegram, and LinkedIn.
+
+Finally, the Institutional trust index (`{python} alpha_md("institutional_trust_avg")`) averages trust in local and national governments, general practitioners, local and national health authorities, and the WHO.
+
+### Moral foundations indices {#sec-appendix-dd-moral-foundations}
+
+Moral values were measured using an adapted version of the Moral Foundations Questionnaire (MFQ), which distinguishes between five moral foundations: care, fairness, loyalty, authority, and purity [@haidt_2004_intuitive; @graham_2011_mapping]. Following standard practice, I construct separate indices for relevance and agreement items within each foundation, and further aggregate them into higher-order individualizing (care, fairness) and binding (loyalty, authority, purity) dimensions. These higher-order composites are used in the main analyses, while foundation-specific subscales are treated as exploratory.
+
+For each foundation, I construct:
+
+* Relevance subscales, each averaging two items about how morally relevant a given consideration is:
+
+  * Care relevance (`{python} alpha_md("mfq_relevance_care_idx")`),
+  * Fairness relevance (`{python} alpha_md("mfq_relevance_fairness_idx")`),
+  * Loyalty relevance (`{python} alpha_md("mfq_relevance_loyalty_idx")`),
+  * Authority relevance (`{python} alpha_md("mfq_relevance_authority_idx")`),
+  * Purity relevance (`{python} alpha_md("mfq_relevance_purity_idx")`)
+
+* Agreement subscales, each averaging two items about agreement with value statements:
+
+  * Care agreement (`{python} alpha_md("mfq_agreement_care_idx")`),
+  * Fairness agreement (`{python} alpha_md("mfq_agreement_fairness_idx")`),
+  * Loyalty agreement (`{python} alpha_md("mfq_agreement_loyalty_idx")`),
+  * Authority agreement (`{python} alpha_md("mfq_agreement_authority_idx")`),
+  * Purity agreement (`{python} alpha_md("mfq_agreement_purity_idx")`)
+
+To align with standard MFQ practice, I then form higher-order individualizing and binding indices:
+
+* Relevance–individualizing index (`{python} alpha_md("mfq_relevance_individualizing_idx")`) averages care and fairness relevance,
+* Relevance–binding index (`{python} alpha_md("mfq_relevance_binding_idx")`) averages loyalty, authority, and purity relevance,
+* Agreement–individualizing index (`{python} alpha_md("mfq_agreement_individualizing_idx")`) averages care and fairness agreement,
+* Agreement–binding index (`{python} alpha_md("mfq_agreement_binding_idx")`) averages loyalty, authority, and purity agreement.
+
+As is typical for two-item subscales, some foundation-specific reliability estimates are modest. The main analyses therefore rely primarily on the higher-order individualizing and binding composites.
+
+
+
+# Missing-data handling and comparability of fit statistics {#sec-appendix-missing-data}
+
+Because some predictors are missing by design, especially in conditionally administered modules, naive listwise deletion would cause different model specifications and LOBO comparisons to be estimated on different respondent sets. This is problematic because likelihood-based fit statistics, including BIC, are only directly comparable when they are computed on the same rows. To preserve comparability across specifications, the modelling workflow applies a common missing-data policy to predictors and reports the resulting sample sizes.
+
+
+For any predictor with missingness fraction at or below a threshold $\tau$ (here `{python} tau_md()`), I retain the variable, add a missingness indicator $M=\mathbb{1}(X\ \text{missing})$, and fill missing values using a type-aware rule. Binary items are filled with 0 and flagged; roughly symmetric scales or indices are mean-filled, which is equivalent to 0 after z-scoring; and highly skewed continuous measures, such as income, are median-filled, typically within country. Predictors with missingness above $\tau$ are excluded from the relevant specification. Rows are dropped only for missing outcomes or non-finite values. This approach keeps estimation samples aligned across comparable models while treating non-response as part of the observed data structure rather than eliminating it through silent row deletion.
+
+
+
+# Additional modelling results {#sec-appendix-modeling}
+
+
+::: {.content-visible when-format="pdf"}
+```{=latex}
+\begin{landscape}
+```
+:::
+
+
+
+::: {.content-visible when-format="pdf"}
+```{=latex}
+\end{landscape}
+```
+:::
+
+
+
+# Derivation of PE for GLM {#sec-appendix-ice-glm-derivation}
+
+I derive the two-point ICE contrast, and hence the corresponding reference perturbation effect (PE), under a GLM decision rule, making explicit its dependence on the estimated slope $\beta_X$, the lever step $\Delta x$, and, through the inverse link, the baseline index level. Let the fitted rule be written as
+$$
+f(x,z)=g^{-1}\big(\eta(x,z)\big),
+\qquad
+\eta(x,z)=\alpha+\beta_X x+\gamma^\top z,
+$$
+where $x$ is the lever value and $z$ collects all remaining covariates held fixed in the ICE thought experiment. For a shift $x_0\to x_1$ with $\Delta x=x_1-x_0$ and baseline index $\eta_0=\eta(x_0,z)$, the latent-scale displacement is
+$$
+\Delta\eta=\eta(x_1,z)-\eta(x_0,z)=\beta_X\Delta x,
+$$
+which is exact and independent of $z$ (the intercept and $\gamma^\top z$ cancel in the difference). The associated two-point ICE contrast is therefore
+$$
+f(x_1,z)-f(x_0,z)=g^{-1}(\eta_0+\Delta\eta)-g^{-1}(\eta_0)= g^{-1}(\eta_0+\beta_X\Delta x)-g^{-1}(\eta_0).
+$$
+
+In the proportional-odds cumulative logit reference models used in the thesis,
+$$
+\operatorname{logit}\Pr(Y\le k\mid x,z)=\tau_k-\eta(x,z),\qquad k=1,\dots,K-1,
+$$
+so a lever shift $x_0\to x_1$ implies the same additive change for every cumulative logit:
+$$
+\operatorname{logit}\Pr(Y\le k\mid x_1,z)-\operatorname{logit}\Pr(Y\le k\mid x_0,z)=(\eta(x_1,z)-\eta(x_0,z))=\beta_X\Delta x.
+$$
+Outcome-scale contrasts for any category probability or summary derived from these probabilities are then induced by this common latent displacement and depend on the baseline index $\eta_0$ only through the link function.
+
+
+
+# Screening off-manifold perturbations {#sec-appendix-offmanifold-conditional-percentile}
+
+The country-specific conditional-tail diagnostic below screens perturbations for empirical plausibility. Because psychological profile variables are correlated in the observed profile space, setting a single lever $X$ to $x_{\text{low}}$ or $x_{\text{high}}$ while holding the remaining covariates $z_i$ fixed can generate combinations that are rarely observed in the survey. I flag such perturbed points using a conditional tail probability based on $\hat F(X \mid z)$.
+
+For each country $c$ and lever $X$, I estimate the conditional distribution of $X$ given the remaining profile:
+$$
+\hat F_c(x\mid z)=\Pr\bigl(X\le x \mid Z=z,\ \text{country}=c\bigr).
+$$
+
+Given an intervention value $x^*$ applied to respondent $i$ in country $c(i)$, I compute its conditional percentile $\pi_i(x^*)$. For continuous $X$, this is
+$$
+\pi_i(x^*)=\hat F_{c(i)}(x^*\mid z_i).
+$$
+
+For discrete $X$ (ordinal or binary), I use a mid-CDF percentile to avoid degeneracy at the endpoints:
+$$
+\pi_i(x^*)=\Pr(X<x^*\mid z_i,c(i))+\tfrac{1}{2}\Pr(X=x^*\mid z_i,c(i)).
+$$
+
+I then convert $\pi_i(x^*)$ into a two-sided conditional tail probability,
+$$
+\mathrm{tail}_i(x^*) = 2\min\{\pi_i(x^*),\,1-\pi_i(x^*)\},
+$$
+and I flag the perturbed point $(x^*,z_i)$ as off-manifold if
+$$
+\mathrm{tail}_i(x^*) < 0.05.
+$$
+
+Conditional on $z_i$ within country $c(i)$, the assigned value $x^*$ lies in the most extreme $2.5\%$ of the conditional distribution on at least one side.
+
+All conditional models are fit within country. For continuous levers, I estimate a grid of conditional quantiles and use monotone interpolation to approximate $\hat F_c(x \mid z)$. For ordinal levers, I use an ordered response model to recover the conditional probabilities entering the mid-CDF percentile. For binary levers, I use a logistic model and derive the same percentile measure from the predicted category probabilities.
+
+When I evaluate perturbation effects for lever $X$ on respondent $i$, I create two perturbed points, $(x_{\text{low}},z_i)$ and $(x_{\text{high}},z_i)$. I compute $\mathrm{tail}_i(x_{\text{low}})$ and $\mathrm{tail}_i(x_{\text{high}})$ and flag the perturbation as off-manifold if either endpoint is extreme:
+$$
+\mathrm{off\_manifold}_{i,X} = \mathbb{1}\left(
+\min\{\mathrm{tail}_i(x_{\text{low}}),\,\mathrm{tail}_i(x_{\text{high}})\} < 0.05
+\right).
+$$
+
+The screen is therefore conservative: a perturbation is retained only if both the low and high endpoint remain conditionally plausible given the rest of the respondent’s profile.
+
+
+
+# Anchor prototypes for LLM evaluation and ABM resampling {#sec-appendix-anchor-prototypes}
+
+Anchor prototypes provide a compact empirical scaffold for both the LLM evaluation and the ABM initialisation. Rather than working directly with the full respondent cloud, I select a small set of observed profile prototypes that cover the main gradients of the psychological-profile space.
+
+Let $z_i\in\mathbb{R}^p$ denote respondent $i$'s vector of core psychological profile variables. To remove country-level baseline differences while preserving within-country structure, each variable is standardised after country demeaning:
+$$
+z'_{ij} = \frac{z_{ij}-\bar z_{c(i)j}}{s_j},
+$$
+where $\bar z_{c(i)j}$ is the mean of variable $j$ in respondent $i$'s country and $s_j$ is a pooled scale.
+
+Anchors are selected in three steps. First, the standardised profile space is projected to a lower-dimensional representation using principal components analysis, so that distance calculations are driven by the main empirical gradients rather than by noise in a high-dimensional space [@jolliffe_2002_principal]. Second, a small set of observed respondent profiles is chosen as anchor prototypes using k-medoids in that reduced space [@kaufman_2005_finding]. Third, the final anchor set is required to have support across multiple countries, so that anchors represent recurrent cross-country profile types rather than country-specific outliers.
+
+## Coverage diagnostics {#sec-appendix-anchoring-results}
+
+
+
+
+The anchor construction is intended to provide broad empirical coverage, and I report two diagnostics to assess whether it does so. First, @tbl-coverage reports nearest-anchor distances by country in the normalised anchoring space. These distances are similar across countries, indicating that no country is systematically under-covered under the chosen anchor specification. Second, anchors should not collapse into country clusters; they should instead capture profile types that recur across countries. The cross-country support diagnostic points in that direction: anchors typically receive non-trivial support from multiple countries. On average, about `{python} fmt_math(fmt_float(mean_countries_above, 1))` of the 6 countries contribute above the support threshold for a given anchor.
+
+
+
+# Example prompt templates for LLM micro-validation {#sec-appendix-llm-prompts}
+
+## Profile presentation formats {#sec-appendix-prompt-families}
+
+The first source of variation concerns how the respondent profile is presented to the model. In the standard prompting families, the underlying information is held fixed and only the surface rendering changes. The examples below are only representative: the full profile shown to the model varies across tasks and outcomes, so additional fields may be present or some fields may differ.
+
+The data-only format presents the respondent as a structured list of attributes with explicit scales and values. This is the closest format to the underlying tabular survey record.
+
+```text
+Survey context: Country=Germany, Year=2024
+
+Attributes:
+
+Scale: 1–5 (1 = Not at all, 5 = Extremely)
+- Trust in vaccine information (by source):
+  - Institutions/public authorities (local/national gov, GP, health authorities, national health institutions, WHO): 3
+- Flu vaccine perceived risk: 1
+- Flu disease fear: 1
+
+Scale: 1–7 (1 = Strongly disagree, 7 = Strongly agree)
+- 5C pro-vaccine orientation index: 5.5
+- Perceived social norms: "vaccines are important": 5
+
+- Age: 68
+- Income (PPP-normalised) (scale 445.994–4795.962): 720.835
+- Education level (0 = ED0–2; 1 = ED3–4; 2 = ED5–8): 0
+- Any cohabitants have medical conditions: Yes
+- Experienced vaccine side effects (self): No
+```
+
+The third-person format renders the same profile as a short vignette. It preserves the same respondent information, but translates it into a compact descriptive narrative.
+
+```text
+It is 2024.
+They are a woman, in their 20s, with a higher level of formal education.
+Their health is not great; they have had COVID twice; vaccine side effects have affected them and people they know.
+Overall, they feel neutral about vaccine information; they trust traditional media much more than the national government.
+Vaccination comes up often in conversations at home.
+Overall, they feel mixed about vaccines; they are not very confident vaccines are safe; protecting others matters a lot to them here.
+People around them lean against vaccines.
+They endorse principles of loyalty, authority, and purity, and these matter somewhat when they judge right and wrong.
+```
+
+The first-person format renders the respondent profile as a self-description in the first person and injects it as an assistant message. The subsequent user prompt then asks for a prediction, while the system instruction requires the model to treat the injected self-description as its own prior statement and remain consistent with it.
+
+```text
+You are a human survey respondent answering in the first person.
+You are not an AI system, nor a chatbot.
+
+Do not use meta-language about being an AI, a model, or a system.
+
+You are answering as the same speaker across the conversation.
+Maintain strict self-consistency with what you have already stated about yourself, your beliefs, and your constraints in prior assistant messages.
+Do not add new biography, motives, or beliefs unless they have been stated already. If something is not stated, treat it as unknown.
+
+Treat prior narrative statements as your own prior statements.
+```
+
+A representative injected assistant message is:
+
+```text
+It is 2024.
+I am a woman, in my 20s, with a higher level of formal education.
+My health is not great; I have had COVID twice; vaccine side effects have affected me and people I know.
+Overall, I feel mixed about vaccines; I am not very confident vaccines are safe.
+These statements describe me; I stand by them for the next question.
+```
+
+The paired-profile format is used only in perturbed tasks. Instead of showing a single profile, it presents two versions of the same respondent, one at the low value of the focal lever and one at the high value, while all other attributes are held fixed.
+
+A representative paired-profile prompt is:
+
+```text
+Survey context: Country=Germany, Year=2024
+
+Common attributes:
+- Flu vaccine perceived risk: 1
+- Flu disease fear: 1
+
+Scale: 1–7 (1 = Strongly disagree, 7 = Strongly agree)
+- 5C pro-vaccine orientation index: 5.5
+- Perceived social norms: "vaccines are important": 5
+
+- Age: 68
+- Income (PPP-normalised) (scale 445.994–4795.962): 720.835
+- Education level (0 = ED0–2; 1 = ED3–4; 2 = ED5–8): 0
+- Any cohabitants have medical conditions: Yes
+- Experienced vaccine side effects (self): No
+
+Profile A (differences):
+- Institutional trust in vaccine information: 3.5
+
+Profile B (differences):
+- Institutional trust in vaccine information: 2.0
+
+Predict each outcome for Profile A and for Profile B separately.
+Output format: {"A": {...}, "B": {...}}
+```
+
+This format makes the counterfactual comparison explicit inside the prompt itself.
+
+## Prediction targets and output schemas {#sec-appendix-prompt-targets}
+
+The second source of variation concerns the prediction target. The same profile rendering can be paired with different output instructions depending on whether the model is asked to predict a behavioural outcome or a psychological profile variable. In both cases, the natural-language instruction was paired with a structured output constraint: the model was required to return only JSON, and the call also supplied a corresponding JSON Schema specifying the allowed keys and value types.
+
+In the behavioural-outcome tasks, the model predicts one or more preventive outcomes from a fixed survey-grounded respondent profile.
+
+A representative system instruction for a single-outcome behavioural-outcome task is:
+
+```text
+You are an expert survey psychometrician acting as a prediction function.
+
+Predict the truthful expected self-reported survey response for the person with the following attributes, not what is socially desirable or recommended.
+Fields not listed are unknown; treat them as unknown (do not assume typical values).
+
+Outcome semantics: Flu vaccinated (2023/2024) (0–1: 0 = No, 1 = Yes)
+
+Do not include reasoning or commentary.
+Return ONLY JSON: {"p_yes": <float in [0,1]>}.
+```
+
+In the psychological-profile tasks, the model predicts the respondent’s psychological profile variables from upstream signals and background traits.
+
+A representative system instruction is:
+
+```text
+You are an expert survey psychometrician acting as a prediction function.
+
+Predict the expected self-reported values of the psychological profile variables from the provided predictors.
+Fields not listed are unknown; treat them as unknown (do not assume typical values).
+
+Return ONLY valid JSON with keys from the psychological profile.
+Use floats for all values.
+Include ALL psychological profile keys in every response.
+Do not include any other keys, reasoning, or commentary.
+
+Variable semantics:
+- covid_perceived_danger_t12: COVID perceived disease danger when offered the first and second dose (scale: 1–5; 1 = Not at all, 5 = Extremely)
+- institutional_trust_avg: Trust in institutions/public authorities (local/national gov, GP, health authorities, national health institutions, WHO) (scale: 1–5; 1 = Not at all, 5 = Extremely)
+- ...
+```
+
+In the paired-profile versions, the prompt additionally makes clear that differences in predictors do not mechanically require differences in the predicted target:
+
+```text
+Differences in the predictors do not necessarily imply differences in the predicted psychological profile variables.
+```
+
+## Multi-expert decomposition {#sec-appendix-prompt-multi-expert}
+
+The multi-expert strategy differs from the other profile-presentation formats because it changes the elicitation procedure itself, not only the surface rendering of the respondent profile. Instead of asking for one direct prediction from a single prompt, the model is asked to produce several scoped partial judgements from different expert perspectives. Each expert is restricted to a specific mechanism and returns only the contribution attributable to that scope. The final prediction is then constructed from these scoped outputs.
+
+In the behavioural-outcome tasks, the same respondent profile was shown to three experts, each assigned to a different mechanism block. All experts followed the same prompt template. They were asked to use only the evidence within their assigned scope, to ignore all other profile information, and to return only the signed contribution of their block to the final outcome, measured in outcome-scale units relative to a neutral reference profile.
+
+The shared template was:
+
+```text
+You are a [EXPERT ROLE].
+
+Task:
+- Output ONLY the signed delta contribution of the [MECHANISM] channel to the given survey outcome, in outcome-scale units.
+
+Definition of delta_raw:
+- Consider a neutral reference profile where ONLY your scope predictors are at their scale midpoint (or 0 if z-scored). delta_raw is the expected change in the outcome when moving from that neutral profile to the observed profile, using ONLY your scope.
+
+Allowed evidence (scope):
+- [ALLOWED EVIDENCE]
+
+Forbidden (do NOT use):
+- [FORBIDDEN EVIDENCE]
+````
+
+The required output format was:
+
+```json
+{"delta_raw": <float>, "mechanism": "<=(8 words)", "fields_used": ["..."]}
+```
+
+If the relevant scope fields were absent or unknown, the expert returned `delta_raw = 0.0`.
+
+The three behavioural-outcome experts differed only in role and evidentiary scope. The first expert was framed as a *Behavioural Epidemiologist and Public Health scientist* and was responsible for the disease stakes / exposure channel.
+
+The second expert was framed as a *Social Psychologist specializing in social norms, moralized obligation, and legitimacy / authority acceptance* and was responsible for the norms / moral obligation / legitimacy channel.
+
+The third expert was framed as a *Behavioural Economist focused on practical frictions, constraints, and follow-through* and was responsible for the practical constraints / frictions channel.
+
+For the psychological-profile tasks, the decomposition followed the same general idea, but the target changed. Here the experts no longer contributed partial shifts to a behavioural outcome. Instead, each expert was assigned a subset of the psychological profile and asked to return only the signed post-minus-pre update induced by the signal for the variables in that subset.
+
+All experts again followed a shared template:
+
+```text
+You are a [EXPERT ROLE].
+
+Task:
+- Output ONLY the signed delta updates (post - pre) to the psychological profile variables in your scope caused by the signal.
+
+Your scope:
+[ALLOWED VARIABLES]
+
+Allowed evidence:
+[ALLOWED EVIDENCE]
+
+Forbidden:
+[FORBIDDEN EVIDENCE]
+```
+
+The required output format was:
+
+```json
+{"delta": {...}, "fields_used": ["..."]}
+```
+
+If the expert judged that the signal produced no meaningful change within its scope, it returned an empty delta object.
+
+The three psychological-profile experts again differed only in role, assigned dimensions, and evidentiary scope. The first expert was framed as a *Public Health and Risk Communication expert* and was responsible for the parts of the profile concerning institutional trust, vaccine-risk perceptions, and legitimacy-related scepticism.
+
+The second expert was framed as a *Social Psychologist specializing in social norms and interpersonal influence* and was responsible for the parts of the profile concerning perceived social norms and trust in vaccine-related information from close social contacts.
+
+The third expert was framed as a *Behavioural Epidemiologist and Behavioural Economist focused on disease stakes and practical frictions* and was responsible for the parts of the profile concerning perceived disease danger and low constraints on action.
+
+
+
+# Additional unperturbed LLM micro-validation results {#sec-appendix-llm-micro-validation}
+
+## Choice reconstruction diagnostics {#sec-appendix-choice-validation}
+
+
+
+
+
+## Psychological-profile reconstruction by variable {#sec-appendix-state-validation}
+
+
+
+
+
+
+# ABM specification {#sec-appendix-abm-specification}
+
+The equations below give the mathematical specification of the agent-based model used in @sec-05-agent-based-model.
+
+Throughout, agents are indexed by $i \in \{1,\dots,N\}$ and monthly ticks by $t \in \{0,\dots,T-1\}$. Each agent carries fixed attributes $a_i$, mutable behavioural states $s_i(t)$, and behavioural outcomes $y_i(t)$. The $u$-th state component is written $s_{i,u}(t)$, and the $g$-th outcome component is written $y_{i,g}(t)$. When a construct-specific index is needed in the equations below, I use $c$ for the corresponding state component. Time-varying exogenous context or scenario inputs are denoted $r_i(t)$.
+
+## Agent representation and empirical initialization
+
+The ABM is anchored to the survey, but agents are not initialised by uniform sampling from the raw respondent pool. Instead, each simulated agent is drawn from a local anchor-country neighbourhood. This preserves empirically coherent profiles while making the initial population less dependent on the idiosyncrasies of a single raw subsample and consistent with the anchor-based representation used in the evaluation pipeline.
+
+Each agent first draws an anchor prototype conditional on country:
+$$
+A_i \sim \operatorname{Categorical}(\pi_{\cdot \mid c_i}).
+$$
+
+A donor respondent is then drawn from the neighbourhood $\mathcal N(A_i,c_i)$ using inverse-rank weights:
+$$
+w(r)\propto \frac{1}{\max\{1,\operatorname{rank}(r)\}},
+\qquad
+R_i\sim \operatorname{Categorical}(w(\cdot)).
+$$
+
+The donor row is copied into the simulated population:
+$$
+(a_i,s_i(0),y_i(0))\leftarrow (a_{R_i},s_{R_i},y_{R_i}).
+$$
+
+This resampling step keeps the initial population on-manifold by construction.
+
+Beyond their fixed attributes $a_i$, initial behavioural states $s_i(0)$, and initial behavioural outcomes $y_i(0)$, agents also receive a small set of fixed response parameters. These capture persistent differences in how strongly agents react inside the social-influence layer:
+
+- $\lambda_i$ (social susceptibility): how strongly the agent updates descriptive vaccination norms in response to observed behaviour.
+- $\alpha_i$ (social attention): how likely the agent is to notice and register prevention behaviour in realised contacts.
+- $\phi_i$ (exposure intensity): how much the agent is exposed to opportunities for observing others’ behaviour.
+- $\theta_i$ (norm threshold): the exposure level at which descriptive norms begin to move substantially; lower values imply easier activation, higher values imply greater resistance.
+
+The first three parameters are survey-anchored. The last, $\theta_i$, is prior-drawn.
+
+The survey anchors are built from three empirical drivers. Two are low-dimensional axes extracted from the survey, and the third is a raw conversation-count measure.
+
+The first axis, social activity, summarizes how socially connected and conversation-active the respondent is. It is the first principal component of:
+
+- number of vaccine conversations with friends,
+- number of vaccine conversations with cohabitants,
+- number of vaccine conversations with others,
+- friend-group size,
+- colleague-group size.
+
+The second axis, media exposure, summarizes media use and trust in online or social information channels. It is the first principal component of:
+
+- time spent on social media,
+- time spent on information media,
+- trust in social media,
+- trust in online information.
+
+Using these survey-derived quantities, the runtime defines three drivers:
+$$
+d_i^{(\lambda)} = \text{social activity}_i + \text{media exposure}_i,
+$$
+$$
+d_i^{(\alpha)} = \text{media exposure}_i + 0.5\,\text{social activity}_i,
+$$
+$$
+d_i^{(\phi)} = \text{conversation count}_i,
+$$
+where conversation count is the raw total
+$$
+\text{conversation count}_i
+\begin{aligned}
+&= \text{conversations with friends}_i \\
+&\quad + \text{conversations with cohabitants}_i \\
+&\quad + \text{conversations with others}_i.
+\end{aligned}
+$$
+
+The $\lambda_i$ driver combines social activity and media exposure because norm susceptibility should be higher for agents who are both more socially embedded and more exposed to circulating behavioural signals. The $\alpha_i$ driver puts greater weight on media exposure because attention to others’ behaviour depends more directly on information intake, while still allowing socially active agents to register more cues. The $\phi_i$ driver is tied to raw conversation count because exposure opportunities are most directly proxied by the volume of vaccine-related interpersonal exchange.
+
+Each driver is then mapped into a percentile using an empirical CDF fitted on the survey:
+$$
+u_i^{(\lambda)}=\widehat F_{\lambda}\!\left(d_i^{(\lambda)}\right),\qquad
+u_i^{(\alpha)}=\widehat F_{\alpha}\!\left(d_i^{(\alpha)}\right),\qquad
+u_i^{(\phi)}=\widehat F_{\phi}\!\left(d_i^{(\phi)}\right).
+$$
+
+These percentiles are then transformed into the runtime coefficients $\lambda_i$, $\alpha_i$, and $\phi_i$.
+
+The remaining parameter, $\theta_i$, which determines how much observed adoption is needed before norms start to shift, is drawn from a symmetric Beta prior:
+$$
+u_i^{(\theta)}\sim \operatorname{Beta}(a_\theta,a_\theta),
+$$
+and then mapped into the admissible range,
+$$
+\theta_i=\theta_{\min}+(\theta_{\max}-\theta_{\min})u_i^{(\theta)}.
+$$
+
+## Time-varying state targets and partial-adjustment dynamics
+
+The dynamic part of the ABM is carried by the mutable behavioural states. Rather than changing discontinuously between periods, each construct adjusts only partially toward a time-varying target.
+
+For constructs equipped with a state reference model, the simulator first computes a reference level from the agent’s fixed attributes, current exogenous context inputs, and current state values:
+$$
+s^\star_{ic}(t)=f_c\big(a_i,r_i(t),s_i(t)\big).
+$$
+
+Because the initialized donor state value may lie above or below this fitted reference, the simulator stores the baseline deviation
+$$
+u_{ic}=s_{ic}(0)-s^\star_{ic}(0),
+$$
+and adds it back to the moving reference:
+$$
+\tilde s^\star_{ic}(t)=s^\star_{ic}(t)+u_{ic}.
+$$
+
+The target for construct $c$ is then defined as
+$$
+T_{ic}(t)=
+\begin{cases}
+\tilde s^\star_{ic}(t), & \text{if a state reference model is available},\\[4pt]
+s_{ic}(0), & \text{otherwise},
+\end{cases}
+$$
+with any active incidence-feedback shifts, scenario offsets, or direct state-target overrides applied on top of this baseline target.
+
+State evolution then follows a partial-adjustment law:
+$$
+\hat s_{ic}(t+1)
+=
+s_{ic}(t)+\rho_c\big(T_{ic}(t)-s_{ic}(t)\big),
+$$
+where $\rho_c$ is a construct-specific adjustment rate, taking a fast or slow value depending on the class of behavioural state.
+
+Finally, the updated value is clipped to the admissible range:
+$$
+s_{ic}(t+1)=\operatorname{clip}_c\big(\hat s_{ic}(t+1)\big).
+$$
+
+After the primitive behavioural states are updated, any derived composites are recomputed deterministically. For example, a pro-vaccination index is rebuilt as the mean of its component constructs.
+
+## Social interaction
+
+The ABM also includes social interaction, operating through recurring and one-shot contacts. Social influence enters through two separate channels. One channel pulls connected agents toward one another on selected states. The other updates descriptive norms from observed preventive behaviour. Because social interaction is assumed to evolve faster than the monthly state update, these social processes operate weekly, so each monthly tick contains four social-interaction rounds.
+
+### Recurring contacts
+
+Each agent inherits a locality identifier from the respondent’s NUTS-level location recorded in the survey. Conditional on these locality assignments, the simulator builds a static recurring-contact scaffold with two components.
+
+The first component is a layer of non-household recurring contacts. Its target degree is initialized from a survey-anchored group-size score. Let $g_i$ denote the respondent’s normalized group-size score, derived from friend- and colleague-group sizes. The corresponding non-household core degree is
+$$
+d_i
+=
+\operatorname{clip}_{[4,30]}\!\left(
+\operatorname{round}\!\left(4+26\,g_i\right)
+\right).
+$$
+
+The second component is a layer of household ties, built separately from the household-size information. The full recurring-contact set is the union of the two layers:
+$$
+\mathcal N_i^{\text{rec}}=(\mathcal N_i^{\text{core}}\cup \mathcal N_i^{\text{hh}}).
+$$
+
+Neighbour assignments are then sampled without replacement under the locality-mixing rule shared by the static network construction: with probability $1-b$, a candidate is drawn from the same locality, and with probability $b$, from the full population.
+
+### Pairwise peer pull
+
+Peer pull operates on stable social ties in the recurring-contact layer. It applies only to a restricted subset of behavioural states: trust and credibility channels plus the vaccine-risk appraisal channel. Descriptive norms are excluded from peer pull, because they are updated separately from observed behaviour, and broader disease-stakes constructs are also excluded, since they move through the incidence-feedback mechanism.
+
+The probability of interaction with recurring contacts is weighted by homophily. The homophily score is based on a distance metric that combines differences in trust-related and moral-value-related positioning:
+$$
+D_{ij}=w_T|T_j-T_i|+w_M|M_j-M_i|,
+\qquad
+W_{ij}=e^{-\gamma_h D_{ij}}.
+$$
+
+Here, $T_i$ denotes the agent’s trust-related position and $M_i$ the agent’s moral-value position. Smaller distances imply more similar agents and therefore higher interaction weight.
+
+For each peer-pulled construct $c$, the interaction updates both agents symmetrically:
+$$
+s_{ic}' = s_{ic}+g_c(s_{jc}-s_{ic}),
+\qquad
+s_{jc}' = s_{jc}+g_c(s_{ic}-s_{jc}).
+$$
+
+### Observed adoption and descriptive-norm updating
+
+Descriptive norms are updated from observed behaviour in the agent’s local social environment. The model distinguishes two separate norm channels: one for vaccination and one for non-pharmaceutical prevention (NPI).
+
+For the vaccination channel, the observed-adoption index is simply the normalized vaccination-willingness outcome:
+$$
+p_i^{\text{vax}}(t)=\tilde y_{i,\text{vax}}(t).
+$$
+
+For the NPI channel, the observed-adoption index is the mean of the three normalized NPI outcomes:
+$$
+p_i^{\text{npi}}(t)
+=
+\frac{1}{3}\Big(
+\tilde y_{i,\text{mask symptomatic}}(t)
++
+\tilde y_{i,\text{stay home symptomatic}}(t)
++
+\tilde y_{i,\text{mask high pressure}}(t)
+\Big).
+$$
+
+Let $\hat p_i^{\text{vax}}(t)$ and $\hat p_i^{\text{npi}}(t)$ denote the resulting exposure estimates for the vaccination and NPI channels, respectively. Each is formed from observed behaviour in the agent’s recurring and one-shot contacts, and each is normalized to $(0,1)$.
+
+Observed exposure is converted into a target descriptive norm in two steps. First, the model asks whether the observed level of adoption is high enough to count as socially meaningful for agent $i$. This is governed by the agent-specific threshold $\theta_i$: lower values mean that even modest visible uptake can shift norms, while higher values require stronger visible uptake. The parameter $\kappa$ controls how sharply the response turns on around that threshold.
+
+For each channel, the normalized exposure estimate $\hat p_i(t)$ is therefore passed through a threshold-style logistic transform:
+$$
+q_i(t)
+=
+\sigma\!\left(
+\kappa\big(\operatorname{logit}(\hat p_i(t))-\operatorname{logit}(\theta_i)\big)
+\right).
+$$
+
+The resulting quantity $q_i(t)\in(0,1)$ can be read as the level of socially perceived adoption after thresholding. It is then mapped back into the scale of the descriptive-norm construct:
+$$
+T_i(t)=\underline s+(\bar s-\underline s)\,q_i(t),
+$$
+
+As with the other constructs above, the descriptive norm does not jump directly to this target; it moves only part of the way toward it at each update:
+
+$$
+s_i(t+1)
+=
+\operatorname{clip}\!\left(
+s_i(t)
++
+\lambda_i^{\text{eff}}\big(T_i(t)-s_i(t)\big)
++
+\varepsilon_i(t)
+\right),
+$$
+where
+$$
+\lambda_i^{\text{eff}}=\operatorname{clip}(\lambda_i\,k_{\text{social}},0,1),
+\qquad
+\varepsilon_i(t)\sim\mathcal N(0,\sigma_{\text{social}}^2).
+$$
+
+Here $\lambda_i^{\text{eff}}$ is the effective adjustment rate, obtained by scaling the agent’s baseline social susceptibility $\lambda_i$ introduced above. Larger values make the agent more responsive to visible behaviour in the social environment, while smaller values make norm updating more inertial. The noise term $\varepsilon_i(t)$ allows small idiosyncratic variation around this deterministic pull toward the target.
+
+## Endogenous incidence feedback
+
+The ABM closes the behavioural loop through a group-level incidence signal defined on the same territorial grouping used in the network layer. Let $g(i)$ denote the locality group of agent $i$, inherited from the respondent’s NUTS-level location in the survey.
+
+Incidence evolves at the level of these groups according to a bounded growth-with-decay process:
+$$
+I_{g}(t+1)
+=
+\operatorname{clip}_{[0,1]}\!\Big(
+(1-\gamma)I_{g}(t)+\beta I_{g}(t)(1-I_{g}(t))M_{g}(t)+F_{g}(t)
+\Big),
+$$
+
+The mitigation factor depends on average protective propensity within group $g$:
+$$
+M_g(t)
+=
+\operatorname{clip}_{[0,1]}\!\left(
+1-\alpha_v\bar v_g(t)-\alpha_p\bar p_g(t)
+\right).
+$$
+
+The first term carries forward part of the previous incidence level, with $\gamma$ governing how quickly incidence decays. The second term is a logistic-style growth component, where $\beta$ sets the baseline growth rate and $M_g(t)$ scales that growth down when local protective propensity is higher.
+
+Here $\bar v_{g}(t)$ is mean normalized vaccination willingness in group $g$, $\bar p_{g}(t)$ is mean normalized NPI uptake in group $g$, and $F_{g}(t)$ is the exogenous forcing specified by the current scenario, including importation floors, pulses, or local bumps.
+
+Because the survey target is vaccination willingness rather than realised uptake, $\bar v_g(t)$ should be interpreted as an uptake-propensity proxy. Its use in the incidence equation is therefore a modelling choice that prioritises behavioural anchoring over epidemiological realism.
+
+Local incidence feeds back into the behavioural state through a stakes offset:
+$$
+\Delta_i^{\text{stakes}}(t)=k_{\text{fb}}\big(I_{g(i)}(t)-I_0\big),
+$$
+where $I_{g(i)}(t)$ is the incidence level in agent $i$'s group, $I_0$ is the baseline incidence anchor, and $k_{\text{fb}}$ controls how strongly deviations from that baseline are translated into behavioural salience.
+
+## Monthly runtime schedule
+
+Each monthly tick follows the same sequence.
+
+1. Activate the current scenario inputs.
+   The simulator applies the policy or information signals that are active in the current month.
+
+2. Predict current behavioural outcomes.
+   Using the current fixed attributes, behavioural states, and exogenous context inputs, the simulator evaluates the choice module and obtains the current behavioural outcomes $y_i(t)$.
+
+3. Update group-level incidence.
+   The predicted behaviours are aggregated to the locality group level and used to update incidence through the incidence-feedback equation.
+
+4. Run weekly social-interaction rounds.
+   Within the same monthly tick, the simulator performs four social-interaction rounds. In each round it:
+   - samples recurring and one-shot contacts;
+   - applies peer pull on the eligible recurring-contact ties;
+   - updates descriptive norms from observed behaviour in recurring and one-shot contacts.
+
+5. Update the remaining behavioural states.
+   After the weekly social rounds are completed, the simulator updates the remaining behavioural states through partial adjustment toward their current targets.
+
+6. Finalize the next-period state.
+   The updated behavioural states become the starting point for the next monthly tick.
+
+## Runtime parameter envelope
+
+The simulator operates over the following parameter families. Parameters are grouped by the ABM component in which they enter. The table reports the full runtime bounds, the baseline default value, and the main provenance category. More specific calibration anchors are summarized below.
+
+| Component | Parameter | Runtime bounds | Default | Provenance | Role in calibration |
+|---|---|---:|---:|---|---|
+| Social-response heterogeneity | Norm threshold prior $a_\theta$ | $(0,20]$ | $2.0$ | design | Governs the dispersion of agent-specific norm thresholds drawn from the Beta prior. |
+| Social-response heterogeneity | Norm threshold bounds $\theta_{\min},\theta_{\max}$ | each in $[0,1]$ | $(0.05,0.95)$ | design | Set the admissible range for descriptive-norm thresholds. |
+| State dynamics | Fast relaxation $\rho_{\text{fast}}$ | $[0,1]$ | $0.081$ | design | Governs the speed of partial adjustment for faster-moving constructs. |
+| State dynamics | Slow relaxation $\rho_{\text{slow}}$ | $[0,1]$, with $\rho_{\text{slow}}\le \rho_{\text{fast}}$ | $0.025$ | design | Governs the speed of partial adjustment for slower-moving constructs. |
+| Social interaction | Social convergence scaling $k_{\text{social}}$ | $[0,2]$ | $0.3$ | survey-anchored | Governs the strength of descriptive-norm updating by scaling the baseline social susceptibility $\lambda_i$. |
+| Social interaction | Norm response slope $\kappa$ | $(0,25]$ | $8.0$ | design | Controls how sharply descriptive-norm updating turns on around the threshold $\theta_i$. |
+| Social interaction | State-update noise $\sigma_{\text{social}}$ | $[0,0.04]$ | $0.006$ | design | Gaussian noise scale used in social and descriptive-norm updates. |
+| Social interaction | Homophily decay $\gamma_h$ | $[0,10]$ | $1.5$ | calibrated | Controls how sharply peer-pull interactions are concentrated among similar agents. |
+| Social interaction | Cross-locality bridging probability $b$ | $[0,1]$ | $0.08$ | calibrated | Controls how often static network ties are assigned outside the agent’s own locality. |
+| Incidence feedback | Incidence memory $\gamma$ | $[0,1]$ | $0.58$ | calibrated | Controls how quickly incidence decays in the absence of continued growth. |
+| Incidence feedback | Incidence growth rate $\beta$ | $[0,4]$ | $1.26$ | calibrated | Sets the baseline growth rate of the bounded incidence process before behavioural mitigation. |
+| Incidence feedback | Vaccine mitigation weight $\alpha_v$ | $[0,1]$ | $0.42$ | external empirical | Scales how group-level vaccination uptake reduces local incidence growth. |
+| Incidence feedback | NPI mitigation weight $\alpha_p$ | $[0,1]$ | $0.52$ | external empirical | Scales how group-level NPI uptake reduces local incidence growth. |
+| Incidence feedback | Incidence baseline $I_0$ | $[0,1]$ | $0.05$ | design | Baseline incidence anchor used in the feedback from local incidence to perceived stakes. |
+| Incidence feedback | Incidence-to-stakes elasticity $k_{\text{fb}}$ | $[0,2]$ | $1.35$ | calibrated | Controls how strongly local incidence deviations are translated into behavioural salience. |
+
+In this table, survey-anchored denotes parameters tied to survey-derived quantities or survey-motivated behavioural timescales; external empirical denotes parameters anchored to evidence outside the survey, such as vaccine- and NPI-effectiveness estimates; calibrated denotes parameters chosen to reproduce plausible aggregate wave growth, decay, or network-mixing behaviour under the survey-grounded dynamics; and design denotes parameters set as modelling choices to define admissible ranges or prior distributions.
+
+$k_{\text{social}}$ is anchored to a monthly social-convergence timescale informed by small-effect social-norm evidence. $\beta$ and $\gamma$ are calibrated to reproduce plausible monthly epidemic-wave growth and decay patterns, using OWID-style case trajectories as an external envelope. $k_{\text{fb}}$ is calibrated as an effective incidence-to-stakes elasticity, informed by survey evidence linking epidemic conditions to danger and fear appraisals. $\gamma_h$ and $b$ are calibrated from generic homophily and small-world network reasoning. The mitigation weights $\alpha_v$ and $\alpha_p$ are anchored to external empirical evidence on the incidence-reducing effects of vaccination and bundled non-pharmaceutical interventions, respectively.
+
+Scenario forcing is specified separately through the exogenous term $F_g(t)$ rather than through a single scalar parameter. In the baseline configuration this includes an importation floor and, where activated by the scenario, optional local bumps or periodic pulses with user-defined amplitude, period, width, and start time. Because these quantities define intervention schedules rather than stable structural parameters, they are reported with the scenarios rather than in the main parameter table.
+
+
+
+# Sensitivity screening by Morris elementary effects {#sec-appendix-sensitivity-screening}
+
+The aim of sensitivity screening is to assess whether the intervention comparisons in @sec-05-agent-based-model depend strongly on particular uncertain parameters, and to identify which broad mechanism families matter most for those comparisons.
+
+For each scenario $s$ and parameter vector $\theta$, let $y_s(\theta)$ denote a scalar summary of the simulated outcome, computed either at the final tick or as an area-under-the-curve summary. I study intervention effects relative to their reference baseline,
+$$
+\Delta_s(\theta)=y_s(\theta)-y_{\mathrm{ref}(s)}(\theta).
+$$
+
+Most scenarios are compared with the standard baseline, while scenarios defined under importation are compared with the corresponding importation baseline. Within each parameter setting, baseline and intervention runs share the same seeds and contact network, so the estimated deltas are less affected by Monte Carlo noise.
+
+The screening varies the main uncertain behavioural and epidemiological parameters jointly over plausible ranges and applies the Morris method of elementary effects [@morris_1991_factorial_sampling; @campolongo_2007_effective]. For parameter $j$, the elementary effect is
+$$
+EE_j=
+\frac{\Delta_s(\theta^{(t+1)})-\Delta_s(\theta^{(t)})}
+{\theta_j^{(t+1)}-\theta_j^{(t)}}.
+$$
+
+I summarise these effects with the standard Morris statistics: $\mu^*$, the mean absolute elementary effect, and $\sigma$, the dispersion of the elementary effects across sampled trajectories. Large $\mu^*$ indicates that a parameter is an important source of uncertainty for the scenario effect, while large $\sigma$ indicates that its influence varies more across the parameter space, consistent with nonlinearity, interactions, or context dependence. To keep the results substantively interpretable, the reported heatmap aggregates parameter-level $\mu^*$ values to four broad mechanism families: persistence, social diffusion, incidence feedback, and stochasticity.
+
+
+
+# Code and reproducibility {#sec-appendix-code}
+
+The codebase includes data preparation, construction of derived variables and indices, estimation of the empirical models, the LLM micro-validation framework, and the agent-based model used for the counterfactual experiments. The thesis code is available in the public GitHub repository ([beam-preventive-behavior-abm](https://github.com/adamamer20/beam-preventive-behavior-abm)), while the full survey data are not publicly available.

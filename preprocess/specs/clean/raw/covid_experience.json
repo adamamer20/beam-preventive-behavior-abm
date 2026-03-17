@@ -1,0 +1,5681 @@
+{
+  "encodings": {
+    "categorical": {
+      "Not at all": 1,
+      "Very bad": 1,
+      "Not very": 2,
+      "Bad": 2,
+      "A little": 2,
+      "Fair": 3,
+      "Quite": 3,
+      "Good": 4,
+      "Very": 4,
+      "Very good": 5,
+      "Very Good": 5,
+      "Completely": 5,
+      "Extremely": 5,
+      "I never found information on vaccines on this channel": null,
+      "I prefer not to answer": null
+    },
+    "months": {
+      "January": "01",
+      "February": "02",
+      "March": "03",
+      "April": "04",
+      "May": "05",
+      "June": "06",
+      "July": "07",
+      "August": "08",
+      "September": "09",
+      "October": "10",
+      "November": "11",
+      "December": "12",
+      "I don't remember": "",
+      "I prefer not to answer": ""
+    },
+    "years": {
+      "I don't remember": "",
+      "I prefer not to answer": ""
+    }
+  },
+  "question_group": {
+    "people_num": "How many people of each group do you have?",
+    "medical_conditions": null,
+    "covid_num": "How many times on average has each of these groups contracted COVID-19?",
+    "covax_num": "How many doses of COVID-19 vaccine on average has each of these groups received?",
+    "risk_1": "How dangerous did you think COVID-19 was to your health in the following periods? (1-5)",
+    "risk_2": "How willing were you to be vaccinated against COVID-19 in the following periods? (1-5)",
+    "risk_infection": "In your opinion, how likely are you to contract the following infections today? (1-5)",
+    "risk_illness": "In your opinion, how likely are you to experience serious health consequences if you contract the following infections? (1-5)",
+    "risk_vax": "In your opinion, how likely are you to experience health consequences if you receive the vaccine for the following infections? (1-5)",
+    "emotion_illness": "How much do you fear the following infections? (1-5)",
+    "emotion_vax": "How much do you fear the vaccine for the following infections? (1-5)",
+    "fluvax": "Did you get vaccinated against the flu at least once in the following periods?",
+    "side_effects": "Has anyone in the following groups of people experienced any side effects (apart from arm pain) after being administered a dose of any vaccine?",
+    "vax_group": "During the pandemic, with how many people in the following groups did you have a conversation about vaccines/vaccination programs (in person, over the phone, or online)?",
+    "vax_freq": "During the pandemic, how often did you find yourself participating in a conversation about vaccines/vaccination programs (in person, over the phone, or online) with the following groups?",
+    "opinion": "How much do you agree with the following statements? (1-5)",
+    "opinion_change": "How has your opinion on the following statement changed?",
+    "institut_trust_vax": "How much do you trust the information about vaccines/vaccination programs shared by the following groups? (1-5)",
+    "pandemic_behaviour": "How much do you agree with the following statements? (1-7)",
+    "moral1": "When you decide whether something is right or wrong, to what extent are the following statements relevant to your thinking? (1-6)",
+    "moral2": "How much do you agree with the following statements? (1-5)",
+    "info": "Select the information channels you primarily use",
+    "contact_group": "With how many people in the following groups did you have a direct contact YESTERDAY?",
+    "discussion_group": "Thinking of LAST week, with how many different people in the following groups did you have a relevant conversation with?",
+    "opinion_other": "To what extent do the following groups agree or disagree with the provided statement? (1-7)"
+  },
+  "old_columns": [
+    {
+      "id": "covid",
+      "section": "covid_experience",
+      "question": "Have you ever contracted COVID-19?",
+      "answer": [
+        "I prefer not to answer",
+        "I don't know",
+        "I think so, but it was not confirmed by any test",
+        "No",
+        "Yes and it was confirmed by a test"
+      ],
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "redundant",
+          "removal_redundant_col": "covid_num"
+        }
+      ]
+    },
+    {
+      "id": "covid_num",
+      "section": "covid_experience",
+      "question": "As far as you know, how many times have you contracted COVID-19?",
+      "question_group": "covid_num",
+      "question_entity": "You",
+      "answer": "Single choice (1-10)",
+      "missing_percentage": 39,
+      "n_outliers": {
+        "high": 333,
+        "max": 10
+      },
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        }
+      ],
+      "category": "COVID-19 Experience",
+      "subcategory": "Infections: self (count)"
+    },
+    {
+      "id": "covid_date_1_1",
+      "section": "covid_experience",
+      "question": "Indicate the month in which you contracted COVID-19 (First infection).",
+      "answer": "Month/I don't remember/I prefer not to answer",
+      "missing_percentage": 39,
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "months"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covid_date_2_1",
+      "section": "covid_experience",
+      "question": "Indicate the month in which you contracted COVID-19 (Second infection).",
+      "answer": "Month/I don't remember/I prefer not to answer",
+      "missing_percentage": 73,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "months"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "redundant",
+          "removal_redundant_col": "covid_date_2_days_from_2019_01_01"
+        }
+      ]
+    },
+    {
+      "id": "covid_date_3_1",
+      "section": "covid_experience",
+      "question": "Indicate the month in which you contracted COVID-19 (Third infection).",
+      "answer": "Month/I don't remember/I prefer not to answer",
+      "missing_percentage": 93,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "months"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "redundant",
+          "removal_redundant_col": "covid_date_3_days_from_2019_01_01"
+        }
+      ]
+    },
+    {
+      "id": "covid_date_4_1",
+      "section": "covid_experience",
+      "question": "Indicate the month in which you contracted COVID-19 (Fourth infection).",
+      "answer": "Month/I don't remember/I prefer not to answer",
+      "missing_percentage": 99,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "months"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "redundant",
+          "removal_redundant_col": "covid_date_4_days_from_2019_01_01"
+        }
+      ]
+    },
+    {
+      "id": "covid_date_5_1",
+      "section": "covid_experience",
+      "question": "Indicate the month in which you contracted COVID-19 (Fifth infection).",
+      "answer": "Month/I don't remember/I prefer not to answer",
+      "missing_percentage": 99,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "months"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "redundant",
+          "removal_redundant_col": "covid_date_5_days_from_2019_01_01"
+        }
+      ]
+    },
+    {
+      "id": "covid_date_6_1",
+      "section": "covid_experience",
+      "question": "Indicate the month in which you contracted COVID-19 (Sixth infection).",
+      "answer": "Month/I don't remember/I prefer not to answer",
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "months"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "redundant",
+          "removal_redundant_col": "covid_date_6_days_from_2019_01_01"
+        }
+      ]
+    },
+    {
+      "id": "covid_date_7_1",
+      "section": "covid_experience",
+      "question": "Indicate the month in which you contracted COVID-19 (Seventh infection).",
+      "answer": "Month/I don't remember/I prefer not to answer",
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "months"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "redundant",
+          "removal_redundant_col": "covid_date_7_days_from_2019_01_01"
+        }
+      ]
+    },
+    {
+      "id": "covid_date_8_1",
+      "section": "covid_experience",
+      "question": "Indicate the month in which you contracted COVID-19 (Eighth infection).",
+      "answer": "Month/I don't remember/I prefer not to answer",
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "months"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "redundant",
+          "removal_redundant_col": "covid_date_8_days_from_2019_01_01"
+        }
+      ]
+    },
+    {
+      "id": "covid_date_9_1",
+      "section": "covid_experience",
+      "question": "Indicate the month in which you contracted COVID-19 (Ninth infection).",
+      "answer": "Month/I don't remember/I prefer not to answer",
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "months"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "redundant",
+          "removal_redundant_col": "covid_date_9_days_from_2019_01_01"
+        }
+      ]
+    },
+    {
+      "id": "covid_date_10_1",
+      "section": "covid_experience",
+      "question": "Indicate the month in which you contracted COVID-19 (Tenth infection).",
+      "answer": "Month/I don't remember/I prefer not to answer",
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "months"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "redundant",
+          "removal_redundant_col": "covid_date_10_days_from_2019_01_01"
+        }
+      ]
+    },
+    {
+      "id": "covid_date_1_2",
+      "section": "covid_experience",
+      "question": "Indicate the year in which you contracted COVID-19 (First infection).",
+      "answer": "2020-2024/I don't remember/I prefer not to answer",
+      "missing_percentage": 39,
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "years"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covid_date_2_2",
+      "section": "covid_experience",
+      "question": "Indicate the year in which you contracted COVID-19 (Second infection).",
+      "answer": "2020-2024/I don't remember/I prefer not to answer",
+      "missing_percentage": 73,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "years"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "redundant",
+          "removal_redundant_col": "covid_date_2_days_from_2019_01_01"
+        }
+      ]
+    },
+    {
+      "id": "covid_date_3_2",
+      "section": "covid_experience",
+      "question": "Indicate the year in which you contracted COVID-19 (Third infection).",
+      "answer": "2020-2024/I don't remember/I prefer not to answer",
+      "missing_percentage": 93,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "years"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "redundant",
+          "removal_redundant_col": "covid_date_3_days_from_2019_01_01"
+        }
+      ]
+    },
+    {
+      "id": "covid_date_4_2",
+      "section": "covid_experience",
+      "question": "Indicate the year in which you contracted COVID-19 (Fourth infection).",
+      "answer": "2020-2024/I don't remember/I prefer not to answer",
+      "missing_percentage": 99,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "years"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "redundant",
+          "removal_redundant_col": "covid_date_4_days_from_2019_01_01"
+        }
+      ]
+    },
+    {
+      "id": "covid_date_5_2",
+      "section": "covid_experience",
+      "question": "Indicate the year in which you contracted COVID-19 (Fifth infection).",
+      "answer": "2020-2024/I don't remember/I prefer not to answer",
+      "missing_percentage": 99,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "years"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "redundant",
+          "removal_redundant_col": "covid_date_5_days_from_2019_01_01"
+        }
+      ]
+    },
+    {
+      "id": "covid_date_6_2",
+      "section": "covid_experience",
+      "question": "Indicate the year in which you contracted COVID-19 (Sixth infection).",
+      "answer": "2020-2024/I don't remember/I prefer not to answer",
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "years"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "redundant",
+          "removal_redundant_col": "covid_date_6_days_from_2019_01_01"
+        }
+      ]
+    },
+    {
+      "id": "covid_date_7_2",
+      "section": "covid_experience",
+      "question": "Indicate the year in which you contracted COVID-19 (Seventh infection).",
+      "answer": "2020-2024/I don't remember/I prefer not to answer",
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "years"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "redundant",
+          "removal_redundant_col": "covid_date_7_days_from_2019_01_01"
+        }
+      ]
+    },
+    {
+      "id": "covid_date_8_2",
+      "section": "covid_experience",
+      "question": "Indicate the year in which you contracted COVID-19 (Eighth infection).",
+      "answer": "2020-2024/I don't remember/I prefer not to answer",
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "years"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "redundant",
+          "removal_redundant_col": "covid_date_8_days_from_2019_01_01"
+        }
+      ]
+    },
+    {
+      "id": "covid_date_9_2",
+      "section": "covid_experience",
+      "question": "Indicate the year in which you contracted COVID-19 (Ninth infection).",
+      "answer": "2020-2024/I don't remember/I prefer not to answer",
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "years"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "redundant",
+          "removal_redundant_col": "covid_date_9_days_from_2019_01_01"
+        }
+      ]
+    },
+    {
+      "id": "covid_date_10_2",
+      "section": "covid_experience",
+      "question": "Indicate the year in which you contracted COVID-19 (Tenth infection).",
+      "answer": "2020-2024/I don't remember/I prefer not to answer",
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "years"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "redundant",
+          "removal_redundant_col": "covid_date_10_days_from_2019_01_01"
+        }
+      ]
+    },
+    {
+      "id": "covid_date_1_3",
+      "section": "covid_experience",
+      "question": "Indicate whether you had any symptoms when you contracted COVID-19 (First infection).",
+      "answer": [
+        "I don't remember",
+        "No",
+        "Yes"
+      ],
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covid_date_2_3",
+      "section": "covid_experience",
+      "question": "Indicate whether you had any symptoms when you contracted COVID-19 (Second infection).",
+      "answer": [
+        "I don't remember",
+        "No",
+        "Yes"
+      ],
+      "missing_percentage": 73,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covid_date_3_3",
+      "section": "covid_experience",
+      "question": "Indicate whether you had any symptoms when you contracted COVID-19 (Third infection).",
+      "answer": [
+        "I don't remember",
+        "No",
+        "Yes"
+      ],
+      "missing_percentage": 93,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covid_date_4_3",
+      "section": "covid_experience",
+      "question": "Indicate whether you had any symptoms when you contracted COVID-19 (Fourth infection).",
+      "answer": [
+        "I don't remember",
+        "No",
+        "Yes"
+      ],
+      "missing_percentage": 99,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covid_date_5_3",
+      "section": "covid_experience",
+      "question": "Indicate whether you had any symptoms when you contracted COVID-19 (Fifth infection).",
+      "answer": [
+        "I don't remember",
+        "No",
+        "Yes"
+      ],
+      "missing_percentage": 99,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covid_date_6_3",
+      "section": "covid_experience",
+      "question": "Indicate whether you had any symptoms when you contracted COVID-19 (Sixth infection).",
+      "answer": [
+        "I don't remember",
+        "No",
+        "Yes"
+      ],
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covid_date_7_3",
+      "section": "covid_experience",
+      "question": "Indicate whether you had any symptoms when you contracted COVID-19 (Seventh infection).",
+      "answer": [
+        "No",
+        "I don't remember",
+        "Yes"
+      ],
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covid_date_8_3",
+      "section": "covid_experience",
+      "question": "Indicate whether you had any symptoms when you contracted COVID-19 (Eighth infection).",
+      "answer": [
+        "No",
+        "I don't remember",
+        "Yes"
+      ],
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covid_date_9_3",
+      "section": "covid_experience",
+      "question": "Indicate whether you had any symptoms when you contracted COVID-19 (Ninth infection).",
+      "answer": [
+        "I don't remember",
+        "No",
+        "Yes"
+      ],
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covid_date_10_3",
+      "section": "covid_experience",
+      "question": "Indicate whether you had any symptoms when you contracted COVID-19 (Tenth infection).",
+      "answer": [
+        "I don't remember",
+        "No",
+        "Yes"
+      ],
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covid_treat",
+      "section": "covid_experience",
+      "question": "Considering all the COVID-19 infections you have had, what kinds of medical treatment have you been prescribed in order to recover?",
+      "new_question": "Have you been prescribed medical treatment for COVID-19?",
+      "answer": [
+        "I prefer not to answer",
+        "I have been prescribed medical treatment to be carried out at home,I have been hospitalized",
+        "I have been hospitalized",
+        "I have been prescribed medical treatment to be carried out at home",
+        "I have not been prescribed any medical treatment"
+      ],
+      "missing_percentage": 48,
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "imputation",
+          "imputation_value": "I have not been prescribed any medical treatment"
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "I have not been prescribed any medical treatment": false,
+            "I have been prescribed medical treatment to be carried out at home": true,
+            "I have been hospitalized": true,
+            "I have been prescribed medical treatment to be carried out at home,I have been hospitalized": true,
+            "I prefer not to answer": null
+          }
+        }
+      ],
+      "category": "COVID-19 Experience",
+      "subcategory": "Treatment severity (self)"
+    },
+    {
+      "id": "covid_other",
+      "section": "covid_experience",
+      "question": "Do you personally know anyone who has been hospitalized for or died from COVID-19?",
+      "answer": [
+        "I prefer not to answer",
+        "I don't know/I don't remember",
+        "Yes, I personally know someone who has been hospitalized for COVID-19,Yes, I personally know someone who died from COVID-19",
+        "Yes, I personally know someone who died from COVID-19",
+        "Yes, I personally know someone who has been hospitalized for COVID-19",
+        "No, I do not personally know anyone who has been hospitalized for or died from COVID-19"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": {
+            "No, I do not personally know anyone who has been hospitalized for or died from COVID-19": false,
+            "$DEFAULT": true,
+            "I don't know/I don't remember": null,
+            "I prefer not to answer": null
+          }
+        }
+      ],
+      "category": "COVID-19 Experience",
+      "subcategory": "Severe case in social circle"
+    },
+    {
+      "id": "covax",
+      "section": "covid_experience",
+      "question": "Have you received at least one dose of COVID-19 vaccine?",
+      "answer": [
+        "No",
+        "Yes"
+      ],
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "redundant",
+          "removal_redundant_col": "covax_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covax_yes",
+      "section": "covid_experience",
+      "question": "Indicate the main reasons why you got vaccinated against COVID-19.",
+      "answer": [
+        "Other:",
+        "It was personally recommended to me by a trusted person",
+        "It was offered to me at a convenient place/time",
+        "It was offered to me free of charge",
+        "I fell into one of the categories for which vaccination was compulsory",
+        "It was personally recommended to me by a healthcare professional",
+        "I wanted the mandatory Covid passport",
+        "The health authorities recommended it",
+        "I wanted to help stop the pandemic",
+        "I wanted to protect the people around me from COVID-19",
+        "I wanted to protect myself from COVID-19"
+      ],
+      "missing_percentage": 16,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covax_yes_11_TEXT",
+      "section": "covid_experience",
+      "question": "Indicate the main reasons why you got vaccinated against COVID-19.",
+      "answer": "Other reasons not listed above",
+      "missing_percentage": 98,
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covax_num",
+      "section": "covid_experience",
+      "question": "How many doses of COVID-19 vaccine have you received?",
+      "question_group": "covax_num",
+      "question_entity": "You",
+      "answer": [
+        "1",
+        "4 or more",
+        "2",
+        "3"
+      ],
+      "missing_percentage": 16,
+      "validation_category": "output",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        }
+      ],
+      "category": "COVID-19 Vaccination History",
+      "subcategory": "Doses received (self)"
+    },
+    {
+      "id": "covax_date_1_1",
+      "section": "covid_experience",
+      "question": "Specify the month in which you received each dose of COVID-19 vaccine (First dose).",
+      "answer": "Month/I don't remember/I prefer not to answer",
+      "missing_percentage": 16,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "months"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covax_date_2_1",
+      "section": "covid_experience",
+      "question": "Specify the month in which you received each dose of COVID-19 vaccine (Second dose).",
+      "answer": "Month/I don't remember/I prefer not to answer",
+      "missing_percentage": 20,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "months"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covax_date_3_1",
+      "section": "covid_experience",
+      "question": "Specify the month in which you received each dose of COVID-19 vaccine (Third dose).",
+      "answer": "Month/I don't remember/I prefer not to answer",
+      "missing_percentage": 48,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "months"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "redundant",
+          "removal_redundant_col": "covax_date_3_days_from_2019_01_01"
+        }
+      ]
+    },
+    {
+      "id": "covax_date_4_1",
+      "section": "covid_experience",
+      "question": "Specify the month in which you received each dose of COVID-19 vaccine (Fourth dose).",
+      "answer": "Month/I don't remember/I prefer not to answer",
+      "missing_percentage": 86,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "months"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "redundant",
+          "removal_redundant_col": "covax_date_4_days_from_2019_01_01"
+        }
+      ]
+    },
+    {
+      "id": "covax_date_1_2",
+      "section": "covid_experience",
+      "question": "Specify the year in which you received each dose of COVID-19 vaccine (First dose).",
+      "answer": "2020-2024/I don't remember/I prefer not to answer",
+      "missing_percentage": 16,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "years"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covax_date_2_2",
+      "section": "covid_experience",
+      "question": "Specify the year in which you received each dose of COVID-19 vaccine (Second dose).",
+      "answer": "2020-2024/I don't remember/I prefer not to answer",
+      "missing_percentage": 20,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "years"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covax_date_3_2",
+      "section": "covid_experience",
+      "question": "Specify the year in which you received each dose of COVID-19 vaccine (Third dose).",
+      "answer": "2020-2024/I don't remember/I prefer not to answer",
+      "missing_percentage": 48,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "years"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "redundant",
+          "removal_redundant_col": "covax_date_3_days_from_2019_01_01"
+        }
+      ]
+    },
+    {
+      "id": "covax_date_4_2",
+      "section": "covid_experience",
+      "question": "Specify the year in which you received each dose of COVID-19 vaccine (Fourth dose).",
+      "answer": "2020-2024/I don't remember/I prefer not to answer",
+      "missing_percentage": 86,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "years"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "redundant",
+          "removal_redundant_col": "covax_date_4_days_from_2019_01_01"
+        }
+      ]
+    },
+    {
+      "id": "covax_yesno",
+      "section": "covid_experience",
+      "question": "People of your age were offered more doses of vaccine than you indicated. Indicate the main reasons why you did NOT receive all doses that were offered to you.",
+      "answer": [
+        "I was personally advised against it by a trusted person - please specify the reason:",
+        "I was personally advised against it by a healthcare professional - please specify the reason:",
+        "Other:",
+        "The vaccination was not offered to me at a convenient place/time",
+        "I did not have the time/occasion",
+        "I had side effects following the previous dose",
+        "I changed my mind about the effectiveness of the vaccine",
+        "I was not aware that other doses were available to me",
+        "I changed my mind about the safety of the vaccine",
+        "I had COVID-19 after the last dose",
+        "I no longer needed the vaccine because I was taking other precautions (mask or social distancing)",
+        "The mandatory Covid passport was no longer needed",
+        "I no longer saw COVID-19 as a serious health risk"
+      ],
+      "missing_percentage": 41,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covax_yesno_6_TEXT",
+      "section": "covid_experience",
+      "question": "People of your age were offered more doses of vaccine than you indicated. Indicate the main reasons why you did NOT receive all doses that were offered to you.",
+      "answer": "Reason for being personally advised against it by a healthcare professional",
+      "missing_percentage": 99,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covax_yesno_7_TEXT",
+      "section": "covid_experience",
+      "question": "People of your age were offered more doses of vaccine than you indicated in your previous answer. Indicate the main reasons why you did NOT receive all doses that were offered to you.",
+      "answer": "Reason for being personally advised against it by a trusted person",
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covax_yesno_13_TEXT",
+      "section": "covid_experience",
+      "question": "People of your age were offered more doses of vaccine than you indicated in your previous answer. Indicate the main reasons why you did NOT receive all doses that were offered to you.",
+      "answer": "Other reasons not listed above",
+      "missing_percentage": 98,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covax_no",
+      "section": "covid_experience",
+      "question": "Indicate the main reasons why you did NOT get vaccinated against COVID-19.",
+      "answer": [
+        "I was personally advised against it by a trusted person - please specify the reason:",
+        "I have a medical condition that prevents me from getting the vaccine – please specify:",
+        "Other:",
+        "I was personally advised against it by a health care professional - please specify the reason:",
+        "The vaccine was not offered to me at a convenient place/time",
+        "I do not need the vaccine because I take other precautions (mask or social distancing)",
+        "I never saw COVID-19 as a serious health risk",
+        "I lack sufficient information about the vaccine",
+        "I am opposed to the mandatory Covid passport",
+        "I feel that the vaccine is a waste of money for the benefit of the big pharmaceutical companies",
+        "I am opposed to mandatory vaccination",
+        "I believe that the vaccine is not effective",
+        "I think developing natural immunity is better than getting vaccinated",
+        "I believe that the vaccine is not safe",
+        "I do not believe that the vaccine has been sufficiently tested",
+        "I worry about the vaccine’s side effects"
+      ],
+      "missing_percentage": 84,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covax_no_1_TEXT",
+      "section": "covid_experience",
+      "question": "Indicate the main reasons why you did NOT get vaccinated against COVID-19.",
+      "answer": "Medical condition preventing from getting the vaccine",
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covax_no_7_TEXT",
+      "section": "covid_experience",
+      "question": "Indicate the main reasons why you did NOT get vaccinated against COVID-19.",
+      "answer": "Reason for being personally advised against it by a healthcare professional",
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covax_no_8_TEXT",
+      "section": "covid_experience",
+      "question": "Indicate the main reasons why you did NOT get vaccinated against COVID-19.",
+      "answer": "Reason for being personally advised against it by a trusted person",
+      "missing_percentage": 100,
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covax_no_16_TEXT",
+      "section": "covid_experience",
+      "question": "Indicate the main reasons why you did NOT get vaccinated against COVID-19.",
+      "answer": "Other reasons not listed above",
+      "missing_percentage": 100,
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "risk_1_1",
+      "section": "covid_experience",
+      "question": "How dangerous did you think COVID-19 was to your health when you were offered the FIRST and SECOND dose of vaccine? (1-5)",
+      "question_group": "risk_1",
+      "question_entity": "When you were offered the first and second dose of vaccine",
+      "answer": [
+        "Not at all",
+        "Extremely",
+        "Not very",
+        "Very",
+        "Quite"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "covid_perceived_danger_T12"
+        }
+      ],
+      "category": "COVID-19 Risk Perception",
+      "subcategory": "Timepoint: 1st–2nd dose"
+    },
+    {
+      "id": "risk_2_1",
+      "section": "covid_experience",
+      "question": "How willing were you to be vaccinated against COVID-19 when you were offered the FIRST and SECOND dose of vaccine? (1-5)",
+      "question_group": "risk_2",
+      "question_entity": "When you were offered the first and second dose of vaccine",
+      "answer": [
+        "Not very",
+        "Quite",
+        "Very",
+        "Extremely",
+        "Not at all"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "vax_willingness_T12"
+        }
+      ],
+      "category": "COVID-19 Vaccination Willingness",
+      "subcategory": "Timepoint: 1st–2nd dose"
+    },
+    {
+      "id": "risk_1_2",
+      "section": "covid_experience",
+      "question": "How dangerous did you think COVID-19 was to your health when you were offered the THIRD dose of vaccine? (1-5)",
+      "question_group": "risk_1",
+      "question_entity": "When you were offered the third dose of vaccine",
+      "answer": [
+        "Extremely",
+        "Not at all",
+        "Very",
+        "Not very",
+        "Quite"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "covid_perceived_danger_T3"
+        }
+      ],
+      "category": "COVID-19 Risk Perception",
+      "subcategory": "Timepoint: 3rd dose"
+    },
+    {
+      "id": "risk_2_2",
+      "section": "covid_experience",
+      "question": "How willing were you to be vaccinated against COVID-19 when you were offered the THIRD dose of vaccine? (1-5)",
+      "question_group": "risk_2",
+      "question_entity": "When you were offered the third dose of vaccine",
+      "answer": [
+        "Not very",
+        "Extremely",
+        "Not at all",
+        "Quite",
+        "Very"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "vax_willingness_T3"
+        }
+      ],
+      "category": "COVID-19 Vaccination Willingness",
+      "subcategory": "Timepoint: 3rd dose"
+    },
+    {
+      "id": "risk_1_3",
+      "section": "covid_experience",
+      "question": "How dangerous did you think COVID-19 was to your health when you were offered the FOURTH dose of vaccine? (1-5)",
+      "question_group": "risk_1",
+      "question_entity": "When you were offered the fourth dose",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Not at all",
+        "Quite",
+        "Not very"
+      ],
+      "missing_percentage": 16,
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "covid_perceived_danger_T4"
+        }
+      ],
+      "category": "COVID-19 Risk Perception",
+      "subcategory": "Timepoint: 4th dose"
+    },
+    {
+      "id": "risk_2_3",
+      "section": "covid_experience",
+      "question": "How willing were you to be vaccinated against COVID-19 when you were offered the FOURTH dose of vaccine? (1-5)",
+      "question_group": "risk_2",
+      "question_entity": "When you were offered the fourth dose",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Not very",
+        "Quite",
+        "Not at all"
+      ],
+      "missing_percentage": 16,
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "vax_willingness_T4"
+        }
+      ],
+      "category": "COVID-19 Vaccination Willingness",
+      "subcategory": "Timepoint: 4th dose"
+    },
+    {
+      "id": "risk_1_4",
+      "section": "covid_experience",
+      "question": "How dangerous did you think COVID-19 was to your health before the arrival of the COVID-19 vaccine? (1-5)",
+      "question_group": "risk_1",
+      "question_entity": "Before the arrival of the COVID-19 vaccine",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Quite",
+        "Not at all",
+        "Not very"
+      ],
+      "missing_percentage": 54,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "covid_perceived_danger_pre"
+        }
+      ]
+    },
+    {
+      "id": "risk_2_4",
+      "section": "covid_experience",
+      "question": "How willing were you to be vaccinated against COVID-19 before the arrival of the COVID-19 vaccine? (1-5)",
+      "question_group": "risk_2",
+      "question_entity": "Before the arrival of the COVID-19 vaccine",
+      "answer": [
+        "Very",
+        "Quite",
+        "Extremely",
+        "Not very",
+        "Not at all"
+      ],
+      "missing_percentage": 54,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "vax_willingness_pre"
+        }
+      ]
+    },
+    {
+      "id": "risk_1_5",
+      "section": "covid_experience",
+      "question": "How dangerous did you think COVID-19 was to your health yesterday? (1-5)",
+      "question_group": "risk_1",
+      "question_entity": "Yesterday",
+      "answer": [
+        "Extremely",
+        "Very",
+        "Quite",
+        "Not very",
+        "Not at all"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "covid_perceived_danger_Y"
+        }
+      ],
+      "category": "COVID-19 Risk Perception",
+      "subcategory": "Timepoint: Yesterday"
+    },
+    {
+      "id": "risk_2_5",
+      "section": "covid_experience",
+      "question": "How willing were you to be vaccinated against COVID-19 yesterday? (1-5)",
+      "question_group": "risk_2",
+      "question_entity": "Yesterday",
+      "answer": [
+        "Very",
+        "Extremely",
+        "Quite",
+        "Not very",
+        "Not at all"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "vax_willingness_Y"
+        }
+      ],
+      "category": "COVID-19 Vaccination Willingness",
+      "subcategory": "Timepoint: Yesterday"
+    },
+    {
+      "id": "cohabitant_info_1_1",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 1: Age",
+      "answer": "Age",
+      "missing_percentage": 21,
+      "transformations": [
+        {
+          "type": "merging",
+          "merging_in": "cohabitant_age"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "cohabitant_age"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_2_1",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 2: Age",
+      "answer": "Age",
+      "missing_percentage": 47,
+      "n_outliers": {
+        "high": 2,
+        "max": 99
+      },
+      "transformations": [
+        {
+          "type": "merging",
+          "merging_in": "cohabitant_age"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "cohabitant_age"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_3_1",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 3: Age",
+      "answer": "Age",
+      "missing_percentage": 71,
+      "n_outliers": {
+        "high": 225,
+        "max": 96
+      },
+      "transformations": [
+        {
+          "type": "merging",
+          "merging_in": "cohabitant_age"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "cohabitant_age"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_4_1",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 4: Age",
+      "answer": "Age",
+      "missing_percentage": 89,
+      "n_outliers": {
+        "high": 33,
+        "max": 99
+      },
+      "transformations": [
+        {
+          "type": "merging",
+          "merging_in": "cohabitant_age"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "cohabitant_age"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_5_1",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 5: Age.",
+      "answer": "Age",
+      "missing_percentage": 97,
+      "n_outliers": {
+        "high": 5,
+        "max": 96
+      },
+      "transformations": [
+        {
+          "type": "merging",
+          "merging_in": "cohabitant_age"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "cohabitant_age"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_6_1",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 6: Age.",
+      "answer": "Age",
+      "missing_percentage": 99,
+      "n_outliers": {
+        "high": 2,
+        "max": 92
+      },
+      "transformations": [
+        {
+          "type": "merging",
+          "merging_in": "cohabitant_age"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "cohabitant_age"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_7_1",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 7: Age.",
+      "answer": "Age",
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "merging",
+          "merging_in": "cohabitant_age"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "cohabitant_age"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_8_1",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 8: Age.",
+      "answer": "Age",
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "merging",
+          "merging_in": "cohabitant_age"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "cohabitant_age"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_9_1",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 9: Age.",
+      "answer": "Age",
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "merging",
+          "merging_in": "cohabitant_age"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "cohabitant_age"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_10_1",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 10: Age",
+      "answer": "Age",
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "merging",
+          "merging_in": "cohabitant_age"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "cohabitant_age"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_1_2",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 1: Relationship",
+      "answer": [
+        "Grandparent",
+        "Other family member",
+        "Non-family member",
+        "Sibling",
+        "Child",
+        "Parent",
+        "Partner"
+      ],
+      "missing_percentage": 21,
+      "transformations": []
+    },
+    {
+      "id": "cohabitant_info_2_2",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 2: Relationship",
+      "answer": [
+        "Grandparent",
+        "Other family member",
+        "Non-family member",
+        "Sibling",
+        "Partner",
+        "Parent",
+        "Child"
+      ],
+      "missing_percentage": 47,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_3_2",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 3: Relationship",
+      "answer": [
+        "Grandparent",
+        "Non-family member",
+        "Partner",
+        "Other family member",
+        "Parent",
+        "Sibling",
+        "Child"
+      ],
+      "missing_percentage": 71,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_4_2",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 4: Relationship",
+      "answer": [
+        "Grandparent",
+        "Other family member",
+        "Non-family member",
+        "Sibling",
+        "Partner",
+        "Parent",
+        "Child"
+      ],
+      "missing_percentage": 89,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_5_2",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 5: Relationship",
+      "answer": [
+        "Grandparent",
+        "Other family member",
+        "Non-family member",
+        "Sibling",
+        "Partner",
+        "Parent",
+        "Child"
+      ],
+      "missing_percentage": 97,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_6_2",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 6: Relationship",
+      "answer": [
+        "Grandparent",
+        "Other family member",
+        "Non-family member",
+        "Sibling",
+        "Partner",
+        "Parent",
+        "Child"
+      ],
+      "missing_percentage": 99,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_7_2",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 7: Relationship",
+      "answer": [
+        "Grandparent",
+        "Other family member",
+        "Non-family member",
+        "Sibling",
+        "Partner",
+        "Parent",
+        "Child"
+      ],
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_8_2",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 8: Relationship",
+      "answer": [
+        "Grandparent",
+        "Other family member",
+        "Non-family member",
+        "Sibling",
+        "Partner",
+        "Parent",
+        "Child"
+      ],
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_9_2",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 9: Relationship",
+      "answer": [
+        "Grandparent",
+        "Other family member",
+        "Non-family member",
+        "Sibling",
+        "Partner",
+        "Parent",
+        "Child"
+      ],
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_10_2",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 10: Relationship",
+      "answer": [
+        "Grandparent",
+        "Other family member",
+        "Non-family member",
+        "Sibling",
+        "Partner",
+        "Parent",
+        "Child"
+      ],
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_1_3",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 1: Number of vaccine doses received.",
+      "answer": [
+        "I don't know",
+        "1",
+        "4 or more",
+        "0",
+        "2",
+        "3"
+      ],
+      "missing_percentage": 21,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "cohabitant_covax_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "cohabitant_covax_num"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_2_3",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 2: Number of vaccine doses received.",
+      "answer": [
+        "I don't know",
+        "4 or more",
+        "1",
+        "3",
+        "2",
+        "0"
+      ],
+      "missing_percentage": 47,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "cohabitant_covax_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "cohabitant_covax_num"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_3_3",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 3: Number of vaccine doses received.",
+      "answer": [
+        "4 or more",
+        "I don't know",
+        "1",
+        "3",
+        "2",
+        "0"
+      ],
+      "missing_percentage": 71,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "cohabitant_covax_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "cohabitant_covax_num"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_4_3",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 4: Number of vaccine doses received.",
+      "answer": [
+        "4 or more",
+        "I don't know",
+        "1",
+        "3",
+        "2",
+        "0"
+      ],
+      "missing_percentage": 89,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "cohabitant_covax_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "cohabitant_covax_num"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_5_3",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 5: Number of vaccine doses received.",
+      "answer": [
+        "4 or more",
+        "I don't know",
+        "1",
+        "3",
+        "2",
+        "0"
+      ],
+      "missing_percentage": 97,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "cohabitant_covax_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "cohabitant_covax_num"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_6_3",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 6: Number of vaccine doses received.",
+      "answer": [
+        "4 or more",
+        "1",
+        "I don't know",
+        "3",
+        "2",
+        "0"
+      ],
+      "missing_percentage": 99,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "cohabitant_covax_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "cohabitant_covax_num"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_7_3",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 7: Number of vaccine doses received.",
+      "answer": [
+        "4 or more",
+        "1",
+        "I don't know",
+        "3",
+        "2",
+        "0"
+      ],
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "cohabitant_covax_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "cohabitant_covax_num"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_8_3",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 8: Number of vaccine doses received.",
+      "answer": [
+        "4 or more",
+        "1",
+        "I don't know",
+        "3",
+        "2",
+        "0"
+      ],
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "cohabitant_covax_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "cohabitant_covax_num"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_9_3",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 9: Number of vaccine doses received.",
+      "answer": [
+        "4 or more",
+        "1",
+        "I don't know",
+        "3",
+        "2",
+        "0"
+      ],
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "cohabitant_covax_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "cohabitant_covax_num"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_10_3",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 10: Number of vaccine doses received.",
+      "answer": [
+        "4 or more",
+        "1",
+        "I don't know",
+        "3",
+        "2",
+        "0"
+      ],
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "cohabitant_covax_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "cohabitant_covax_num"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_1_4",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 1: Number of times contracted COVID-19.",
+      "answer": [
+        "I prefer not to answer",
+        "4 or more",
+        "3",
+        "I don't know",
+        "2",
+        "1",
+        "0"
+      ],
+      "missing_percentage": 21,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "cohabitant_covid_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "cohabitant_covid_num"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_2_4",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 2: Number of times contracted COVID-19.",
+      "answer": [
+        "I prefer not to answer",
+        "4 or more",
+        "3",
+        "I don't know",
+        "2",
+        "1",
+        "0"
+      ],
+      "missing_percentage": 47,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "cohabitant_covid_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "cohabitant_covid_num"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_3_4",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 3: Number of times contracted COVID-19.",
+      "answer": [
+        "I prefer not to answer",
+        "4 or more",
+        "3",
+        "I don't know",
+        "2",
+        "1",
+        "0"
+      ],
+      "missing_percentage": 71,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "cohabitant_covid_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "cohabitant_covid_num"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_4_4",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 4: Number of times contracted COVID-19.",
+      "answer": [
+        "4 or more",
+        "I prefer not to answer",
+        "3",
+        "I don't know",
+        "2",
+        "1",
+        "0"
+      ],
+      "missing_percentage": 89,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "cohabitant_covid_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "cohabitant_covid_num"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_5_4",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 5: Number of times contracted COVID-19.",
+      "answer": [
+        "I prefer not to answer",
+        "4 or more",
+        "3",
+        "I don't know",
+        "2",
+        "1",
+        "0"
+      ],
+      "missing_percentage": 97,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "cohabitant_covid_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "cohabitant_covid_num"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_6_4",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 6: Number of times contracted COVID-19.",
+      "answer": [
+        "I prefer not to answer",
+        "4 or more",
+        "3",
+        "I don't know",
+        "2",
+        "1",
+        "0"
+      ],
+      "missing_percentage": 99,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "cohabitant_covid_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "cohabitant_covid_num"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_7_4",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 7: Number of times contracted COVID-19.",
+      "answer": [
+        "I prefer not to answer",
+        "4 or more",
+        "3",
+        "I don't know",
+        "2",
+        "1",
+        "0"
+      ],
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "cohabitant_covid_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "cohabitant_covid_num"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_8_4",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 8: Number of times contracted COVID-19.",
+      "answer": [
+        "I prefer not to answer",
+        "4 or more",
+        "3",
+        "I don't know",
+        "2",
+        "1",
+        "0"
+      ],
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "cohabitant_covid_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "cohabitant_covid_num"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_9_4",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 9: Number of times contracted COVID-19.",
+      "answer": [
+        "I prefer not to answer",
+        "4 or more",
+        "3",
+        "I don't know",
+        "2",
+        "1",
+        "0"
+      ],
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "cohabitant_covid_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "cohabitant_covid_num"
+        }
+      ]
+    },
+    {
+      "id": "cohabitant_info_10_4",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitant 10: Number of times contracted COVID-19.",
+      "answer": [
+        "I prefer not to answer",
+        "4 or more",
+        "3",
+        "I don't know",
+        "2",
+        "1",
+        "0"
+      ],
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "cohabitant_covid_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "cohabitant_covid_num"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_1_1",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 1: Age",
+      "answer": "Age",
+      "missing_percentage": 32,
+      "transformations": [
+        {
+          "type": "merging",
+          "merging_in": "noncohabitant_age"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "noncohabitant_age"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_2_1",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 2: Age",
+      "answer": "Age",
+      "missing_percentage": 45,
+      "transformations": [
+        {
+          "type": "merging",
+          "merging_in": "noncohabitant_age"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "noncohabitant_age"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_3_1",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 3: Age",
+      "answer": "Age",
+      "missing_percentage": 61,
+      "n_outliers": {
+        "high": 1,
+        "max": 110
+      },
+      "transformations": [
+        {
+          "type": "merging",
+          "merging_in": "noncohabitant_age"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "noncohabitant_age"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_4_1",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 4: Age",
+      "answer": "Age",
+      "missing_percentage": 75,
+      "transformations": [
+        {
+          "type": "merging",
+          "merging_in": "noncohabitant_age"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "noncohabitant_age"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_5_1",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 5: Age",
+      "answer": "Age",
+      "missing_percentage": 86,
+      "transformations": [
+        {
+          "type": "merging",
+          "merging_in": "noncohabitant_age"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "noncohabitant_age"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_6_1",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 6: Age",
+      "answer": "Age",
+      "missing_percentage": 91,
+      "transformations": [
+        {
+          "type": "merging",
+          "merging_in": "noncohabitant_age"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "noncohabitant_age"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_7_1",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 7: Age",
+      "answer": "Age",
+      "missing_percentage": 95,
+      "transformations": [
+        {
+          "type": "merging",
+          "merging_in": "noncohabitant_age"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "noncohabitant_age"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_8_1",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 8: Age",
+      "answer": "Age",
+      "missing_percentage": 96,
+      "transformations": [
+        {
+          "type": "merging",
+          "merging_in": "noncohabitant_age"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "noncohabitant_age"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_9_1",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 9: Age",
+      "answer": "Age",
+      "missing_percentage": 98,
+      "transformations": [
+        {
+          "type": "merging",
+          "merging_in": "noncohabitant_age"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "noncohabitant_age"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_10_1",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 10: Age",
+      "answer": "Age",
+      "missing_percentage": 98,
+      "transformations": [
+        {
+          "type": "merging",
+          "merging_in": "noncohabitant_age"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "noncohabitant_age"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_1_3",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 1: Number of vaccine doses received.",
+      "answer": [
+        "1",
+        "I don't know",
+        "4 or more",
+        "0",
+        "2",
+        "3"
+      ],
+      "missing_percentage": 32,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "noncohabitant_covax_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "noncohabitant_covax_num"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_2_3",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 2: Number of vaccine doses received.",
+      "answer": [
+        "1",
+        "4 or more",
+        "0",
+        "I don't know",
+        "2",
+        "3"
+      ],
+      "missing_percentage": 45,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "noncohabitant_covax_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "noncohabitant_covax_num"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_3_3",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 3: Number of vaccine doses received.",
+      "answer": [
+        "1",
+        "4 or more",
+        "0",
+        "I don't know",
+        "2",
+        "3"
+      ],
+      "missing_percentage": 61,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "noncohabitant_covax_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "noncohabitant_covax_num"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_4_3",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 4: Number of vaccine doses received.",
+      "answer": [
+        "1",
+        "4 or more",
+        "0",
+        "2",
+        "I don't know",
+        "3"
+      ],
+      "missing_percentage": 75,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "noncohabitant_covax_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "noncohabitant_covax_num"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_5_3",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 5: Number of vaccine doses received.",
+      "answer": [
+        "1",
+        "4 or more",
+        "0",
+        "2",
+        "I don't know",
+        "3"
+      ],
+      "missing_percentage": 86,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "noncohabitant_covax_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "noncohabitant_covax_num"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_6_3",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 6: Number of vaccine doses received.",
+      "answer": [
+        "1",
+        "4 or more",
+        "0",
+        "2",
+        "I don't know",
+        "3"
+      ],
+      "missing_percentage": 91,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "noncohabitant_covax_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "noncohabitant_covax_num"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_7_3",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 7: Number of vaccine doses received.",
+      "answer": [
+        "1",
+        "4 or more",
+        "2",
+        "0",
+        "I don't know",
+        "3"
+      ],
+      "missing_percentage": 95,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "noncohabitant_covax_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "noncohabitant_covax_num"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_8_3",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 8: Number of vaccine doses received.",
+      "answer": [
+        "1",
+        "4 or more",
+        "2",
+        "3",
+        "0",
+        "I don't know"
+      ],
+      "missing_percentage": 96,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "noncohabitant_covax_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "noncohabitant_covax_num"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_9_3",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 9: Number of vaccine doses received.",
+      "answer": [
+        "1",
+        "4 or more",
+        "2",
+        "3",
+        "0",
+        "I don't know"
+      ],
+      "missing_percentage": 98,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "noncohabitant_covax_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "noncohabitant_covax_num"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_10_3",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 10: Number of vaccine doses received.",
+      "answer": [
+        "1",
+        "4 or more",
+        "2",
+        "3",
+        "I don't know",
+        "0"
+      ],
+      "missing_percentage": 98,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "noncohabitant_covax_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "noncohabitant_covax_num"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_1_4",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 1: Number of times contracted COVID-19.",
+      "answer": [
+        "I prefer not to answer",
+        "4 or more",
+        "3",
+        "2",
+        "I don't know",
+        "1",
+        "0"
+      ],
+      "missing_percentage": 32,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "noncohabitant_covid_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "noncohabitant_covid_num"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_2_4",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 2: Number of times contracted COVID-19.",
+      "answer": [
+        "I prefer not to answer",
+        "4 or more",
+        "3",
+        "2",
+        "I don't know",
+        "1",
+        "0"
+      ],
+      "missing_percentage": 45,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "noncohabitant_covid_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "noncohabitant_covid_num"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_3_4",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 3: Number of times contracted COVID-19.",
+      "answer": [
+        "I prefer not to answer",
+        "4 or more",
+        "3",
+        "2",
+        "I don't know",
+        "1",
+        "0"
+      ],
+      "missing_percentage": 61,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "noncohabitant_covid_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "noncohabitant_covid_num"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_4_4",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 4: Number of times contracted COVID-19.",
+      "answer": [
+        "I prefer not to answer",
+        "4 or more",
+        "3",
+        "2",
+        "I don't know",
+        "1",
+        "0"
+      ],
+      "missing_percentage": 75,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "noncohabitant_covid_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "noncohabitant_covid_num"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_5_4",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 5: Number of times contracted COVID-19.",
+      "answer": [
+        "I prefer not to answer",
+        "4 or more",
+        "3",
+        "2",
+        "I don't know",
+        "1",
+        "0"
+      ],
+      "missing_percentage": 86,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "noncohabitant_covid_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "noncohabitant_covid_num"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_6_4",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 6: Number of times contracted COVID-19.",
+      "answer": [
+        "I prefer not to answer",
+        "4 or more",
+        "3",
+        "2",
+        "I don't know",
+        "1",
+        "0"
+      ],
+      "missing_percentage": 91,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "noncohabitant_covid_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "noncohabitant_covid_num"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_7_4",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 7: Number of times contracted COVID-19.",
+      "answer": [
+        "I prefer not to answer",
+        "4 or more",
+        "3",
+        "2",
+        "I don't know",
+        "1",
+        "0"
+      ],
+      "missing_percentage": 95,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "noncohabitant_covid_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "noncohabitant_covid_num"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_8_4",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 8: Number of times contracted COVID-19.",
+      "answer": [
+        "I prefer not to answer",
+        "4 or more",
+        "3",
+        "2",
+        "1",
+        "I don't know",
+        "0"
+      ],
+      "missing_percentage": 96,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "noncohabitant_covid_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "noncohabitant_covid_num"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_9_4",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 9: Number of times contracted COVID-19.",
+      "answer": [
+        "I prefer not to answer",
+        "4 or more",
+        "3",
+        "2",
+        "1",
+        "I don't know",
+        "0"
+      ],
+      "missing_percentage": 98,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "noncohabitant_covid_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "noncohabitant_covid_num"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_10_4",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 10: Number of times contracted COVID-19.",
+      "answer": [
+        "I prefer not to answer",
+        "4 or more",
+        "3",
+        "2",
+        "1",
+        "I don't know",
+        "0"
+      ],
+      "missing_percentage": 98,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "$NUM"
+        },
+        {
+          "type": "merging",
+          "merging_in": "noncohabitant_covid_num"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "noncohabitant_covid_num"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_1_2",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 1: Relationship",
+      "answer": [
+        "Partner",
+        "Grandparent",
+        "Child",
+        "Sibling",
+        "Parent"
+      ],
+      "missing_percentage": 32,
+      "transformations": []
+    },
+    {
+      "id": "noncohabitant_info_2_2",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 2: Relationship",
+      "answer": [
+        "Partner",
+        "Grandparent",
+        "Child",
+        "Sibling",
+        "Parent"
+      ],
+      "missing_percentage": 45,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_3_2",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 3: Relationship",
+      "answer": [
+        "Partner",
+        "Grandparent",
+        "Child",
+        "Parent",
+        "Sibling"
+      ],
+      "missing_percentage": 61,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_4_2",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 4: Relationship",
+      "answer": [
+        "Partner",
+        "Parent",
+        "Child",
+        "Grandparent",
+        "Sibling"
+      ],
+      "missing_percentage": 75,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_5_2",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 5: Relationship",
+      "answer": [
+        "Partner",
+        "Parent",
+        "Child",
+        "Grandparent",
+        "Sibling"
+      ],
+      "missing_percentage": 86,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_6_2",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 6: Relationship",
+      "answer": [
+        "Partner",
+        "Parent",
+        "Child",
+        "Grandparent",
+        "Sibling"
+      ],
+      "missing_percentage": 91,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_7_2",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 7: Relationship",
+      "answer": [
+        "Partner",
+        "Parent",
+        "Child",
+        "Grandparent",
+        "Sibling"
+      ],
+      "missing_percentage": 95,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_8_2",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 8: Relationship",
+      "answer": [
+        "Partner",
+        "Parent",
+        "Grandparent",
+        "Child",
+        "Sibling"
+      ],
+      "missing_percentage": 96,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_9_2",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 9: Relationship",
+      "answer": [
+        "Partner",
+        "Parent",
+        "Grandparent",
+        "Child",
+        "Sibling"
+      ],
+      "missing_percentage": 98,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "noncohabitant_info_10_2",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member 10: Relationship",
+      "answer": [
+        "Partner",
+        "Grandparent",
+        "Child",
+        "Sibling",
+        "Parent"
+      ],
+      "missing_percentage": 98,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "covax_yesno_child",
+      "section": "covid_experience",
+      "question": "Children the same age as yours were offered more vaccine doses than your child received. Indicate the main reasons why your child did NOT receive all doses that were offered.",
+      "answer": [
+        "I was personally advised against it by a trusted person - please specify the reason:",
+        "Other:",
+        "I was personally advised against it by a health care professional - please specify the reason:",
+        "I did not have the time/occasion to have my child/children vaccinated",
+        "My child/children had side effects following the previous dose",
+        "The vaccination was not offered to my child/children at a convenient place/time",
+        "I changed my mind about the effectiveness of the vaccine for children",
+        "I was not aware that other doses were available to children the same age as mine",
+        "I changed my mind about the safety of the vaccine for children",
+        "My child/children had COVID-19 after the last dose",
+        "My child/children no longer needed the vaccine as they were taking other precautions (mask wearing or social distancing)",
+        "I no longer saw COVID-19 as a serious health risk for children"
+      ],
+      "missing_percentage": 94,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "covax_yesno_child_6_TEXT",
+      "section": "covid_experience",
+      "question": "Children the same age as yours were offered more vaccine doses than your child received. Indicate the main reasons why your child did NOT receive all doses that were offered.",
+      "answer": "Reason for being personally advised against it by a healthcare professional",
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covax_yesno_child_7_TEXT",
+      "section": "covid_experience",
+      "question": "Children the same age as yours were offered more vaccine doses than your child received. Indicate the main reasons why your child did NOT receive all doses that were offered.",
+      "answer": "Reason for being personally advised against it by a trusted person",
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covax_yesno_child_12_TEXT",
+      "section": "covid_experience",
+      "question": "Children the same age as yours were offered more vaccine doses than your child received. Indicate the main reasons why your child did NOT receive all doses that were offered.",
+      "answer": "Other reasons not listed above",
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covax_no_child",
+      "section": "covid_experience",
+      "question": "Indicate the main reasons why your child did NOT receive the COVID-19 vaccine.",
+      "answer": [
+        "I was personally advised against it by a trusted person - please specify the reason:",
+        "My child/children have a medical condition that prevents them from getting the vaccine – please specify:",
+        "I was personally advised against it by a health care professional - please specify the reason:",
+        "Other:",
+        "I feel that vaccinating children is a waste of money for the benefit of the big pharmaceutical companies",
+        "The vaccine was not offered to my child/children at a convenient place/time",
+        "I believe that the vaccine is not effective for children",
+        "I am opposed to mandatory vaccination for children",
+        "My child/children do not need the vaccine because they take other precautions (mask or social distancing)",
+        "I never saw COVID-19 as a serious health risk for my child/children",
+        "I lack sufficient information about the vaccine for children",
+        "I think it is better for children to develop natural immunity to COVID-19 rather than to get vaccinated",
+        "I believe that the vaccine is not safe for children",
+        "I do not believe that the childhood vaccine has been sufficiently tested",
+        "I worry about the vaccine’s side effects for children"
+      ],
+      "missing_percentage": 87,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        }
+      ]
+    },
+    {
+      "id": "covax_no_child_1_TEXT",
+      "section": "covid_experience",
+      "question": "Indicate the main reasons why your child did NOT receive the COVID-19 vaccine.",
+      "answer": "Medical condition preventing from getting the vaccine",
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covax_no_child_7_TEXT",
+      "section": "covid_experience",
+      "question": "Indicate the main reasons why your child did NOT receive the COVID-19 vaccine.",
+      "answer": "Reason for being personally advised against it by a healthcare professional",
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covax_no_child_8_TEXT",
+      "section": "covid_experience",
+      "question": "Indicate the main reasons why your child did NOT receive the COVID-19 vaccine.",
+      "answer": "Reason for being personally advised against it by a trusted person",
+      "missing_percentage": 100,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    },
+    {
+      "id": "covax_no_child_15_TEXT",
+      "section": "covid_experience",
+      "question": "Indicate the main reasons why your child did NOT receive the COVID-19 vaccine.",
+      "answer": "Other reasons not listed above",
+      "missing_percentage": 99,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ]
+    }
+  ],
+  "new_columns": [
+    {
+      "id": "cohabitant_age",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitants: Age",
+      "answer": "Mean of cohabitants age",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "cohabitant_info_1_1",
+            "cohabitant_info_2_1",
+            "cohabitant_info_3_1",
+            "cohabitant_info_4_1",
+            "cohabitant_info_5_1",
+            "cohabitant_info_6_1",
+            "cohabitant_info_7_1",
+            "cohabitant_info_8_1",
+            "cohabitant_info_9_1",
+            "cohabitant_info_10_1"
+          ]
+        }
+      ],
+      "category": "Household Composition",
+      "subcategory": "Cohabitants: age"
+    },
+    {
+      "id": "cohabitant_covax_num",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitants: Number of vaccine doses received.",
+      "answer": "Mean of cohabitants vaccine",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "cohabitant_info_1_3",
+            "cohabitant_info_2_3",
+            "cohabitant_info_3_3",
+            "cohabitant_info_4_3",
+            "cohabitant_info_5_3",
+            "cohabitant_info_6_3",
+            "cohabitant_info_7_3",
+            "cohabitant_info_8_3",
+            "cohabitant_info_9_3",
+            "cohabitant_info_10_3"
+          ]
+        },
+        {
+          "type": "outliers",
+          "min": 0
+        }
+      ],
+      "category": "Household Composition",
+      "subcategory": "Cohabitants: vaccine doses"
+    },
+    {
+      "id": "cohabitant_covid_num",
+      "section": "covid_experience",
+      "question": "Now think about the people you live with. Provide the following information about Cohabitants: Number of times contracted COVID-19.",
+      "answer": "Mean of cohabitants covid times",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "cohabitant_info_1_4",
+            "cohabitant_info_2_4",
+            "cohabitant_info_3_4",
+            "cohabitant_info_4_4",
+            "cohabitant_info_5_4",
+            "cohabitant_info_6_4",
+            "cohabitant_info_7_4",
+            "cohabitant_info_8_4",
+            "cohabitant_info_9_4",
+            "cohabitant_info_10_4"
+          ]
+        }
+      ],
+      "category": "Household Composition",
+      "subcategory": "Cohabitants: COVID infections"
+    },
+    {
+      "id": "noncohabitant_age",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family members: Age",
+      "answer": "Mean of age",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "noncohabitant_info_1_1",
+            "noncohabitant_info_2_1",
+            "noncohabitant_info_3_1",
+            "noncohabitant_info_4_1",
+            "noncohabitant_info_5_1",
+            "noncohabitant_info_6_1",
+            "noncohabitant_info_7_1",
+            "noncohabitant_info_8_1",
+            "noncohabitant_info_9_1",
+            "noncohabitant_info_10_1"
+          ]
+        },
+        {
+          "type": "outliers",
+          "min": 0
+        }
+      ],
+      "category": "Family Network (Non-cohabiting)",
+      "subcategory": "Age"
+    },
+    {
+      "id": "noncohabitant_covax_num",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family member: Number of vaccine doses received.",
+      "answer": "Mean of cohabitants vaccine",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "noncohabitant_info_1_3",
+            "noncohabitant_info_2_3",
+            "noncohabitant_info_3_3",
+            "noncohabitant_info_4_3",
+            "noncohabitant_info_5_3",
+            "noncohabitant_info_6_3",
+            "noncohabitant_info_7_3",
+            "noncohabitant_info_8_3",
+            "noncohabitant_info_9_3",
+            "noncohabitant_info_10_3"
+          ]
+        },
+        {
+          "type": "outliers",
+          "min": 0
+        }
+      ],
+      "category": "Family Network (Non-cohabiting)",
+      "subcategory": "Vaccine doses"
+    },
+    {
+      "id": "noncohabitant_covid_num",
+      "section": "covid_experience",
+      "question": "Now think about your NON-COHABITING close family members. Provide the following information about Non-cohabiting family members: Number of times contracted COVID-19.",
+      "answer": "Mean of noncohabitants covid times",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "noncohabitant_info_1_4",
+            "noncohabitant_info_2_4",
+            "noncohabitant_info_3_4",
+            "noncohabitant_info_4_4",
+            "noncohabitant_info_5_4",
+            "noncohabitant_info_6_4",
+            "noncohabitant_info_7_4",
+            "noncohabitant_info_8_4",
+            "noncohabitant_info_9_4",
+            "noncohabitant_info_10_4"
+          ]
+        }
+      ],
+      "category": "Family Network (Non-cohabiting)",
+      "subcategory": "COVID infections"
+    },
+    {
+      "id": "vax_willingness_T12",
+      "question": "Alias of risk_2_1 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "risk_2_1"
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covid_perceived_danger_T12",
+      "question": "Alias of risk_1_1 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "risk_1_1"
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covid_perceived_danger_T3",
+      "question": "Alias of risk_1_2 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "risk_1_2"
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covid_perceived_danger_T4",
+      "question": "Alias of risk_1_3 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "risk_1_3"
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covid_perceived_danger_pre",
+      "question": "Alias of risk_1_4 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "risk_1_4"
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covid_perceived_danger_Y",
+      "question": "Alias of risk_1_5 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "risk_1_5"
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "vax_willingness_T3",
+      "question": "Alias of risk_2_2 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "risk_2_2"
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "vax_willingness_T4",
+      "question": "Alias of risk_2_3 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "risk_2_3"
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "vax_willingness_pre",
+      "question": "Alias of risk_2_4 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "risk_2_4"
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "vax_willingness_Y",
+      "question": "Alias of risk_2_5 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "risk_2_5"
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_0_1",
+      "question": "Ever vaccinated (0/1 derived from covax_num)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "missing",
+          "merged_from": [
+            "covax_num"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": "$covax_started_any"
+        }
+      ],
+      "section": "covid_experience",
+      "question_group": "covax_num"
+    },
+    {
+      "id": "covid_date_1_days_from_2019_01_01",
+      "question": "Days since 2019-01-01 for covid_date_1 (mid-month=15)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "concat",
+          "merged_from": [
+            "covid_date_1_2",
+            "covid_date_1_1"
+          ],
+          "concat_string": "{covid_date_1_2}-{covid_date_1_1}-15"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME",
+          "datetime_format": "%Y-%m-%d"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME_TO_INTERVAL",
+          "from_timestamp": "2019-01-01",
+          "datetime_format": "%Y-%m-%d",
+          "unit": "days"
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covid_date_2_days_from_2019_01_01",
+      "question": "Days since 2019-01-01 for covid_date_2 (mid-month=15)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "concat",
+          "merged_from": [
+            "covid_date_2_2",
+            "covid_date_2_1"
+          ],
+          "concat_string": "{covid_date_2_2}-{covid_date_2_1}-15"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME",
+          "datetime_format": "%Y-%m-%d"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME_TO_INTERVAL",
+          "from_timestamp": "2019-01-01",
+          "datetime_format": "%Y-%m-%d",
+          "unit": "days"
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covid_date_3_days_from_2019_01_01",
+      "question": "Days since 2019-01-01 for covid_date_3 (mid-month=15)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "concat",
+          "merged_from": [
+            "covid_date_3_2",
+            "covid_date_3_1"
+          ],
+          "concat_string": "{covid_date_3_2}-{covid_date_3_1}-15"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME",
+          "datetime_format": "%Y-%m-%d"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME_TO_INTERVAL",
+          "from_timestamp": "2019-01-01",
+          "datetime_format": "%Y-%m-%d",
+          "unit": "days"
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covid_date_4_days_from_2019_01_01",
+      "question": "Days since 2019-01-01 for covid_date_4 (mid-month=15)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "concat",
+          "merged_from": [
+            "covid_date_4_2",
+            "covid_date_4_1"
+          ],
+          "concat_string": "{covid_date_4_2}-{covid_date_4_1}-15"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME",
+          "datetime_format": "%Y-%m-%d"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME_TO_INTERVAL",
+          "from_timestamp": "2019-01-01",
+          "datetime_format": "%Y-%m-%d",
+          "unit": "days"
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covid_date_5_days_from_2019_01_01",
+      "question": "Days since 2019-01-01 for covid_date_5 (mid-month=15)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "concat",
+          "merged_from": [
+            "covid_date_5_2",
+            "covid_date_5_1"
+          ],
+          "concat_string": "{covid_date_5_2}-{covid_date_5_1}-15"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME",
+          "datetime_format": "%Y-%m-%d"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME_TO_INTERVAL",
+          "from_timestamp": "2019-01-01",
+          "datetime_format": "%Y-%m-%d",
+          "unit": "days"
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covid_date_6_days_from_2019_01_01",
+      "question": "Days since 2019-01-01 for covid_date_6 (mid-month=15)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "concat",
+          "merged_from": [
+            "covid_date_6_2",
+            "covid_date_6_1"
+          ],
+          "concat_string": "{covid_date_6_2}-{covid_date_6_1}-15"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME",
+          "datetime_format": "%Y-%m-%d"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME_TO_INTERVAL",
+          "from_timestamp": "2019-01-01",
+          "datetime_format": "%Y-%m-%d",
+          "unit": "days"
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covid_date_7_days_from_2019_01_01",
+      "question": "Days since 2019-01-01 for covid_date_7 (mid-month=15)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "concat",
+          "merged_from": [
+            "covid_date_7_2",
+            "covid_date_7_1"
+          ],
+          "concat_string": "{covid_date_7_2}-{covid_date_7_1}-15"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME",
+          "datetime_format": "%Y-%m-%d"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME_TO_INTERVAL",
+          "from_timestamp": "2019-01-01",
+          "datetime_format": "%Y-%m-%d",
+          "unit": "days"
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covid_date_8_days_from_2019_01_01",
+      "question": "Days since 2019-01-01 for covid_date_8 (mid-month=15)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "concat",
+          "merged_from": [
+            "covid_date_8_2",
+            "covid_date_8_1"
+          ],
+          "concat_string": "{covid_date_8_2}-{covid_date_8_1}-15"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME",
+          "datetime_format": "%Y-%m-%d"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME_TO_INTERVAL",
+          "from_timestamp": "2019-01-01",
+          "datetime_format": "%Y-%m-%d",
+          "unit": "days"
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covid_date_9_days_from_2019_01_01",
+      "question": "Days since 2019-01-01 for covid_date_9 (mid-month=15)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "concat",
+          "merged_from": [
+            "covid_date_9_2",
+            "covid_date_9_1"
+          ],
+          "concat_string": "{covid_date_9_2}-{covid_date_9_1}-15"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME",
+          "datetime_format": "%Y-%m-%d"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME_TO_INTERVAL",
+          "from_timestamp": "2019-01-01",
+          "datetime_format": "%Y-%m-%d",
+          "unit": "days"
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covid_date_10_days_from_2019_01_01",
+      "question": "Days since 2019-01-01 for covid_date_10 (mid-month=15)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "concat",
+          "merged_from": [
+            "covid_date_10_2",
+            "covid_date_10_1"
+          ],
+          "concat_string": "{covid_date_10_2}-{covid_date_10_1}-15"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME",
+          "datetime_format": "%Y-%m-%d"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME_TO_INTERVAL",
+          "from_timestamp": "2019-01-01",
+          "datetime_format": "%Y-%m-%d",
+          "unit": "days"
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_date_1_days_from_2019_01_01",
+      "question": "Days since 2019-01-01 for covax_date_1 (mid-month=15)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "concat",
+          "merged_from": [
+            "covax_date_1_2",
+            "covax_date_1_1"
+          ],
+          "concat_string": "{covax_date_1_2}-{covax_date_1_1}-15"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME",
+          "datetime_format": "%Y-%m-%d"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME_TO_INTERVAL",
+          "from_timestamp": "2019-01-01",
+          "datetime_format": "%Y-%m-%d",
+          "unit": "days"
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_date_2_days_from_2019_01_01",
+      "question": "Days since 2019-01-01 for covax_date_2 (mid-month=15)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "concat",
+          "merged_from": [
+            "covax_date_2_2",
+            "covax_date_2_1"
+          ],
+          "concat_string": "{covax_date_2_2}-{covax_date_2_1}-15"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME",
+          "datetime_format": "%Y-%m-%d"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME_TO_INTERVAL",
+          "from_timestamp": "2019-01-01",
+          "datetime_format": "%Y-%m-%d",
+          "unit": "days"
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_date_3_days_from_2019_01_01",
+      "question": "Days since 2019-01-01 for covax_date_3 (mid-month=15)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "concat",
+          "merged_from": [
+            "covax_date_3_2",
+            "covax_date_3_1"
+          ],
+          "concat_string": "{covax_date_3_2}-{covax_date_3_1}-15"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME",
+          "datetime_format": "%Y-%m-%d"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME_TO_INTERVAL",
+          "from_timestamp": "2019-01-01",
+          "datetime_format": "%Y-%m-%d",
+          "unit": "days"
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_date_4_days_from_2019_01_01",
+      "question": "Days since 2019-01-01 for covax_date_4 (mid-month=15)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "concat",
+          "merged_from": [
+            "covax_date_4_2",
+            "covax_date_4_1"
+          ],
+          "concat_string": "{covax_date_4_2}-{covax_date_4_1}-15"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME",
+          "datetime_format": "%Y-%m-%d"
+        },
+        {
+          "type": "encoding",
+          "encoding": "$DATETIME_TO_INTERVAL",
+          "from_timestamp": "2019-01-01",
+          "datetime_format": "%Y-%m-%d",
+          "unit": "days"
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason_text",
+      "question": "All vaccination-related reasons (concat)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "concat",
+          "merged_from": [
+            "covax_yes",
+            "covax_yesno",
+            "covax_no"
+          ],
+          "concat_string": "{covax_yes}|{covax_yesno}|{covax_no}"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "dropped from clean spec"
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__other",
+      "question": "Reason present: Other:",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "Other:"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "Other:": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__it_was_personally_recommended_to_me_by_a_trusted_person",
+      "question": "Reason present: It was personally recommended to me by a trusted person",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "It was personally recommended to me by a trusted person"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "It was personally recommended to me by a trusted person": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__it_was_offered_to_me_at_a_convenient_place_time",
+      "question": "Reason present: It was offered to me at a convenient place/time",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "It was offered to me at a convenient place/time"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "It was offered to me at a convenient place/time": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__it_was_offered_to_me_free_of_charge",
+      "question": "Reason present: It was offered to me free of charge",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "It was offered to me free of charge"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "It was offered to me free of charge": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__i_fell_into_one_of_the_categories_for_which_vaccination_was_compulsory",
+      "question": "Reason present: I fell into one of the categories for which vaccination was compulsory",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "I fell into one of the categories for which vaccination was compulsory"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I fell into one of the categories for which vaccination was compulsory": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__it_was_personally_recommended_to_me_by_a_healthcare_professional",
+      "question": "Reason present: It was personally recommended to me by a healthcare professional",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "It was personally recommended to me by a healthcare professional"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "It was personally recommended to me by a healthcare professional": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__i_wanted_the_mandatory_covid_passport",
+      "question": "Reason present: I wanted the mandatory Covid passport",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "I wanted the mandatory Covid passport"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I wanted the mandatory Covid passport": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__the_health_authorities_recommended_it",
+      "question": "Reason present: The health authorities recommended it",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "The health authorities recommended it"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "The health authorities recommended it": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__i_wanted_to_help_stop_the_pandemic",
+      "question": "Reason present: I wanted to help stop the pandemic",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "I wanted to help stop the pandemic"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I wanted to help stop the pandemic": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__i_wanted_to_protect_the_people_around_me_from_covid_19",
+      "question": "Reason present: I wanted to protect the people around me from COVID-19",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "I wanted to protect the people around me from COVID-19"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I wanted to protect the people around me from COVID-19": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__i_wanted_to_protect_myself_from_covid_19",
+      "question": "Reason present: I wanted to protect myself from COVID-19",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "I wanted to protect myself from COVID-19"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I wanted to protect myself from COVID-19": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__i_was_personally_advised_against_it_by_a_trusted_person_please_specify_the_reaso",
+      "question": "Reason present: I was personally advised against it by a trusted person - please specify the reason:",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "I was personally advised against it by a trusted person - please specify the reason:"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I was personally advised against it by a trusted person - please specify the reason:": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__i_was_personally_advised_against_it_by_a_healthcare_professional_please_specify_",
+      "question": "Reason present: I was personally advised against it by a healthcare professional - please specify the reason:",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "I was personally advised against it by a healthcare professional - please specify the reason:"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I was personally advised against it by a healthcare professional - please specify the reason:": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__the_vaccination_was_not_offered_to_me_at_a_convenient_place_time",
+      "question": "Reason present: The vaccination was not offered to me at a convenient place/time",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "The vaccination was not offered to me at a convenient place/time"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "The vaccination was not offered to me at a convenient place/time": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__i_did_not_have_the_time_occasion",
+      "question": "Reason present: I did not have the time/occasion",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "I did not have the time/occasion"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I did not have the time/occasion": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__i_had_side_effects_following_the_previous_dose",
+      "question": "Reason present: I had side effects following the previous dose",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "I had side effects following the previous dose"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I had side effects following the previous dose": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__i_changed_my_mind_about_the_effectiveness_of_the_vaccine",
+      "question": "Reason present: I changed my mind about the effectiveness of the vaccine",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "I changed my mind about the effectiveness of the vaccine"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I changed my mind about the effectiveness of the vaccine": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__i_was_not_aware_that_other_doses_were_available_to_me",
+      "question": "Reason present: I was not aware that other doses were available to me",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "I was not aware that other doses were available to me"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I was not aware that other doses were available to me": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__i_changed_my_mind_about_the_safety_of_the_vaccine",
+      "question": "Reason present: I changed my mind about the safety of the vaccine",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "I changed my mind about the safety of the vaccine"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I changed my mind about the safety of the vaccine": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__i_had_covid_19_after_the_last_dose",
+      "question": "Reason present: I had COVID-19 after the last dose",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "I had COVID-19 after the last dose"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I had COVID-19 after the last dose": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__i_no_longer_needed_the_vaccine_because_i_was_taking_other_precautions_mask_or_so",
+      "question": "Reason present: I no longer needed the vaccine because I was taking other precautions (mask or social distancing)",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "I no longer needed the vaccine because I was taking other precautions (mask or social distancing)"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I no longer needed the vaccine because I was taking other precautions (mask or social distancing)": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__the_mandatory_covid_passport_was_no_longer_needed",
+      "question": "Reason present: The mandatory Covid passport was no longer needed",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "The mandatory Covid passport was no longer needed"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "The mandatory Covid passport was no longer needed": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__i_no_longer_saw_covid_19_as_a_serious_health_risk",
+      "question": "Reason present: I no longer saw COVID-19 as a serious health risk",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "I no longer saw COVID-19 as a serious health risk"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I no longer saw COVID-19 as a serious health risk": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__i_have_a_medical_condition_that_prevents_me_from_getting_the_vaccine_please_spec",
+      "question": "Reason present: I have a medical condition that prevents me from getting the vaccine – please specify:",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "I have a medical condition that prevents me from getting the vaccine – please specify:"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I have a medical condition that prevents me from getting the vaccine – please specify:": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__i_was_personally_advised_against_it_by_a_health_care_professional_please_specify",
+      "question": "Reason present: I was personally advised against it by a health care professional - please specify the reason:",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "I was personally advised against it by a health care professional - please specify the reason:"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I was personally advised against it by a health care professional - please specify the reason:": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__the_vaccine_was_not_offered_to_me_at_a_convenient_place_time",
+      "question": "Reason present: The vaccine was not offered to me at a convenient place/time",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "The vaccine was not offered to me at a convenient place/time"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "The vaccine was not offered to me at a convenient place/time": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__i_do_not_need_the_vaccine_because_i_take_other_precautions_mask_or_social_distan",
+      "question": "Reason present: I do not need the vaccine because I take other precautions (mask or social distancing)",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "I do not need the vaccine because I take other precautions (mask or social distancing)"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I do not need the vaccine because I take other precautions (mask or social distancing)": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__i_never_saw_covid_19_as_a_serious_health_risk",
+      "question": "Reason present: I never saw COVID-19 as a serious health risk",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "I never saw COVID-19 as a serious health risk"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I never saw COVID-19 as a serious health risk": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__i_lack_sufficient_information_about_the_vaccine",
+      "question": "Reason present: I lack sufficient information about the vaccine",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "I lack sufficient information about the vaccine"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I lack sufficient information about the vaccine": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__i_am_opposed_to_the_mandatory_covid_passport",
+      "question": "Reason present: I am opposed to the mandatory Covid passport",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "I am opposed to the mandatory Covid passport"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I am opposed to the mandatory Covid passport": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__i_feel_that_the_vaccine_is_a_waste_of_money_for_the_benefit_of_the_big_pharmaceu",
+      "question": "Reason present: I feel that the vaccine is a waste of money for the benefit of the big pharmaceutical companies",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "I feel that the vaccine is a waste of money for the benefit of the big pharmaceutical companies"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I feel that the vaccine is a waste of money for the benefit of the big pharmaceutical companies": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__i_am_opposed_to_mandatory_vaccination",
+      "question": "Reason present: I am opposed to mandatory vaccination",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "I am opposed to mandatory vaccination"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I am opposed to mandatory vaccination": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__i_believe_that_the_vaccine_is_not_effective",
+      "question": "Reason present: I believe that the vaccine is not effective",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "I believe that the vaccine is not effective"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I believe that the vaccine is not effective": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__i_think_developing_natural_immunity_is_better_than_getting_vaccinated",
+      "question": "Reason present: I think developing natural immunity is better than getting vaccinated",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "I think developing natural immunity is better than getting vaccinated"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I think developing natural immunity is better than getting vaccinated": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__i_believe_that_the_vaccine_is_not_safe",
+      "question": "Reason present: I believe that the vaccine is not safe",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "I believe that the vaccine is not safe"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I believe that the vaccine is not safe": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__i_do_not_believe_that_the_vaccine_has_been_sufficiently_tested",
+      "question": "Reason present: I do not believe that the vaccine has been sufficiently tested",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "I do not believe that the vaccine has been sufficiently tested"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I do not believe that the vaccine has been sufficiently tested": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_reason__i_worry_about_the_vaccine_s_side_effects",
+      "question": "Reason present: I worry about the vaccine’s side effects",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_reason_text",
+          "values": [
+            "I worry about the vaccine’s side effects"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I worry about the vaccine’s side effects": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_legitimacy_scepticism_idx",
+      "question": "COVID vaccination legitimacy / scepticism index (reasons: safety, testing, side effects, pharma, mandates, natural immunity)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "covax_reason__i_believe_that_the_vaccine_is_not_safe",
+            "covax_reason__i_do_not_believe_that_the_vaccine_has_been_sufficiently_tested",
+            "covax_reason__i_worry_about_the_vaccine_s_side_effects",
+            "covax_reason__i_feel_that_the_vaccine_is_a_waste_of_money_for_the_benefit_of_the_big_pharmaceu",
+            "covax_reason__i_am_opposed_to_mandatory_vaccination",
+            "covax_reason__i_think_developing_natural_immunity_is_better_than_getting_vaccinated"
+          ]
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_yesno_child__i_was_personally_advised_against_it_by_a_trusted_person_please_specify_the_reaso",
+      "question": "Child dose-gap reason present: I was personally advised against it by a trusted person - please specify the reason:",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_yesno_child",
+          "values": [
+            "I was personally advised against it by a trusted person - please specify the reason:"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I was personally advised against it by a trusted person - please specify the reason:": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_yesno_child__other",
+      "question": "Child dose-gap reason present: Other:",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_yesno_child",
+          "values": [
+            "Other:"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "Other:": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_yesno_child__i_was_personally_advised_against_it_by_a_health_care_professional_please_specify",
+      "question": "Child dose-gap reason present: I was personally advised against it by a health care professional - please specify the reason:",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_yesno_child",
+          "values": [
+            "I was personally advised against it by a health care professional - please specify the reason:"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I was personally advised against it by a health care professional - please specify the reason:": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_yesno_child__i_did_not_have_the_time_occasion_to_have_my_child_children_vaccinated",
+      "question": "Child dose-gap reason present: I did not have the time/occasion to have my child/children vaccinated",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_yesno_child",
+          "values": [
+            "I did not have the time/occasion to have my child/children vaccinated"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I did not have the time/occasion to have my child/children vaccinated": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_yesno_child__my_child_children_had_side_effects_following_the_previous_dose",
+      "question": "Child dose-gap reason present: My child/children had side effects following the previous dose",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_yesno_child",
+          "values": [
+            "My child/children had side effects following the previous dose"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "My child/children had side effects following the previous dose": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_yesno_child__the_vaccination_was_not_offered_to_my_child_children_at_a_convenient_place_time",
+      "question": "Child dose-gap reason present: The vaccination was not offered to my child/children at a convenient place/time",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_yesno_child",
+          "values": [
+            "The vaccination was not offered to my child/children at a convenient place/time"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "The vaccination was not offered to my child/children at a convenient place/time": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_yesno_child__i_changed_my_mind_about_the_effectiveness_of_the_vaccine_for_children",
+      "question": "Child dose-gap reason present: I changed my mind about the effectiveness of the vaccine for children",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_yesno_child",
+          "values": [
+            "I changed my mind about the effectiveness of the vaccine for children"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I changed my mind about the effectiveness of the vaccine for children": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_yesno_child__i_was_not_aware_that_other_doses_were_available_to_children_the_same_age_as_mine",
+      "question": "Child dose-gap reason present: I was not aware that other doses were available to children the same age as mine",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_yesno_child",
+          "values": [
+            "I was not aware that other doses were available to children the same age as mine"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I was not aware that other doses were available to children the same age as mine": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_yesno_child__i_changed_my_mind_about_the_safety_of_the_vaccine_for_children",
+      "question": "Child dose-gap reason present: I changed my mind about the safety of the vaccine for children",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_yesno_child",
+          "values": [
+            "I changed my mind about the safety of the vaccine for children"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I changed my mind about the safety of the vaccine for children": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_yesno_child__my_child_children_had_covid_19_after_the_last_dose",
+      "question": "Child dose-gap reason present: My child/children had COVID-19 after the last dose",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_yesno_child",
+          "values": [
+            "My child/children had COVID-19 after the last dose"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "My child/children had COVID-19 after the last dose": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_yesno_child__my_child_children_no_longer_needed_the_vaccine_as_they_were_taking_other_precaut",
+      "question": "Child dose-gap reason present: My child/children no longer needed the vaccine as they were taking other precautions (mask wearing or social distancing)",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_yesno_child",
+          "values": [
+            "My child/children no longer needed the vaccine as they were taking other precautions (mask wearing or social distancing)"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "My child/children no longer needed the vaccine as they were taking other precautions (mask wearing or social distancing)": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_yesno_child__i_no_longer_saw_covid_19_as_a_serious_health_risk_for_children",
+      "question": "Child dose-gap reason present: I no longer saw COVID-19 as a serious health risk for children",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_yesno_child",
+          "values": [
+            "I no longer saw COVID-19 as a serious health risk for children"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I no longer saw COVID-19 as a serious health risk for children": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_no_child__i_was_personally_advised_against_it_by_a_trusted_person_please_specify_the_reaso",
+      "question": "Child reason present: I was personally advised against it by a trusted person - please specify the reason:",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_no_child",
+          "values": [
+            "I was personally advised against it by a trusted person - please specify the reason:"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I was personally advised against it by a trusted person - please specify the reason:": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_no_child__my_child_children_have_a_medical_condition_that_prevents_them_from_getting_the_v",
+      "question": "Child reason present: My child/children have a medical condition that prevents them from getting the vaccine – please specify:",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_no_child",
+          "values": [
+            "My child/children have a medical condition that prevents them from getting the vaccine – please specify:"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "My child/children have a medical condition that prevents them from getting the vaccine – please specify:": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_no_child__i_was_personally_advised_against_it_by_a_health_care_professional_please_specify",
+      "question": "Child reason present: I was personally advised against it by a health care professional - please specify the reason:",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_no_child",
+          "values": [
+            "I was personally advised against it by a health care professional - please specify the reason:"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I was personally advised against it by a health care professional - please specify the reason:": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_no_child__other",
+      "question": "Child reason present: Other:",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_no_child",
+          "values": [
+            "Other:"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "Other:": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_no_child__i_feel_that_vaccinating_children_is_a_waste_of_money_for_the_benefit_of_the_big_",
+      "question": "Child reason present: I feel that vaccinating children is a waste of money for the benefit of the big pharmaceutical companies",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_no_child",
+          "values": [
+            "I feel that vaccinating children is a waste of money for the benefit of the big pharmaceutical companies"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I feel that vaccinating children is a waste of money for the benefit of the big pharmaceutical companies": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_no_child__the_vaccine_was_not_offered_to_my_child_children_at_a_convenient_place_time",
+      "question": "Child reason present: The vaccine was not offered to my child/children at a convenient place/time",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_no_child",
+          "values": [
+            "The vaccine was not offered to my child/children at a convenient place/time"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "The vaccine was not offered to my child/children at a convenient place/time": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_no_child__i_believe_that_the_vaccine_is_not_effective_for_children",
+      "question": "Child reason present: I believe that the vaccine is not effective for children",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_no_child",
+          "values": [
+            "I believe that the vaccine is not effective for children"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I believe that the vaccine is not effective for children": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_no_child__i_am_opposed_to_mandatory_vaccination_for_children",
+      "question": "Child reason present: I am opposed to mandatory vaccination for children",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_no_child",
+          "values": [
+            "I am opposed to mandatory vaccination for children"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I am opposed to mandatory vaccination for children": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_no_child__my_child_children_do_not_need_the_vaccine_because_they_take_other_precautions_ma",
+      "question": "Child reason present: My child/children do not need the vaccine because they take other precautions (mask or social distancing)",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_no_child",
+          "values": [
+            "My child/children do not need the vaccine because they take other precautions (mask or social distancing)"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "My child/children do not need the vaccine because they take other precautions (mask or social distancing)": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_no_child__i_never_saw_covid_19_as_a_serious_health_risk_for_my_child_children",
+      "question": "Child reason present: I never saw COVID-19 as a serious health risk for my child/children",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_no_child",
+          "values": [
+            "I never saw COVID-19 as a serious health risk for my child/children"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I never saw COVID-19 as a serious health risk for my child/children": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_no_child__i_lack_sufficient_information_about_the_vaccine_for_children",
+      "question": "Child reason present: I lack sufficient information about the vaccine for children",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_no_child",
+          "values": [
+            "I lack sufficient information about the vaccine for children"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I lack sufficient information about the vaccine for children": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_no_child__i_think_it_is_better_for_children_to_develop_natural_immunity_to_covid_19_rather",
+      "question": "Child reason present: I think it is better for children to develop natural immunity to COVID-19 rather than to get vaccinated",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_no_child",
+          "values": [
+            "I think it is better for children to develop natural immunity to COVID-19 rather than to get vaccinated"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I think it is better for children to develop natural immunity to COVID-19 rather than to get vaccinated": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_no_child__i_believe_that_the_vaccine_is_not_safe_for_children",
+      "question": "Child reason present: I believe that the vaccine is not safe for children",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_no_child",
+          "values": [
+            "I believe that the vaccine is not safe for children"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I believe that the vaccine is not safe for children": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_no_child__i_do_not_believe_that_the_childhood_vaccine_has_been_sufficiently_tested",
+      "question": "Child reason present: I do not believe that the childhood vaccine has been sufficiently tested",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_no_child",
+          "values": [
+            "I do not believe that the childhood vaccine has been sufficiently tested"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I do not believe that the childhood vaccine has been sufficiently tested": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    },
+    {
+      "id": "covax_no_child__i_worry_about_the_vaccine_s_side_effects_for_children",
+      "question": "Child reason present: I worry about the vaccine’s side effects for children",
+      "transformations": [
+        {
+          "type": "splitted",
+          "split_from": "covax_no_child",
+          "values": [
+            "I worry about the vaccine’s side effects for children"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "": 0,
+            "I worry about the vaccine’s side effects for children": 1
+          }
+        }
+      ],
+      "section": "covid_experience"
+    }
+  ]
+}

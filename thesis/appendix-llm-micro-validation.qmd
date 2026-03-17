@@ -1,0 +1,663 @@
+# Additional unperturbed LLM micro-validation results {#sec-appendix-llm-micro-validation}
+
+## Choice reconstruction diagnostics {#sec-appendix-choice-validation}
+
+```{python}
+#| echo: false
+#| include: false
+from __future__ import annotations
+
+import importlib.util
+import textwrap
+from pathlib import Path
+
+import matplotlib.pyplot as plt
+from matplotlib.colors import TwoSlopeNorm
+from matplotlib.patches import Rectangle
+import numpy as np
+import polars as pl
+
+from IPython.display import Markdown, display
+
+from utils.chapter_io import md_table as _md_table
+from utils.chapter_io import read_csv_fast as _read_csv
+from utils.model_labels import label_model as _label_model
+from utils.model_labels import label_strategy as _label_strategy
+from utils.outcome_labels import label_outcome_short as _label_outcome_short
+from utils.qmd_utils import fmt_float
+
+UNPERTURBED_OUT = Path("../thesis/artifacts/evaluation/choice_validation/unperturbed")
+POSTHOC_SUMMARY_PATH = UNPERTURBED_OUT / "posthoc_metrics_all.csv"
+POSTHOC_BOOT_PATH = UNPERTURBED_OUT / "posthoc_metrics_bootstrap.csv"
+STRATEGY_BOOT_PATH = UNPERTURBED_OUT / "strategy_bootstrap_cis.csv"
+
+posthoc = _read_csv(POSTHOC_SUMMARY_PATH) if POSTHOC_SUMMARY_PATH.exists() else pl.DataFrame()
+posthoc_boot = _read_csv(POSTHOC_BOOT_PATH) if POSTHOC_BOOT_PATH.exists() else pl.DataFrame()
+strategy_boot = _read_csv(STRATEGY_BOOT_PATH) if STRATEGY_BOOT_PATH.exists() else pl.DataFrame()
+
+OUTCOME_ALIASES = {
+    "vax_willingness_Y": "vax_willingness_T12",
+    "flu_vaccinated_2023_2024_no_habit": "flu_vaccinated_2023_2024",
+}
+
+PREFERRED_OUTCOME_ORDER = [
+    "vax_willingness_T12",
+    "flu_vaccinated_2023_2024",
+    "mask_when_pressure_high",
+    "mask_when_symptomatic_crowded",
+    "stay_home_when_symptomatic",
+]
+
+
+def _canonical_outcome(outcome: str) -> str:
+    raw = str(outcome).strip()
+    return OUTCOME_ALIASES.get(raw, raw)
+
+
+def _label_outcome(outcome: str) -> str:
+    key = str(outcome).strip()
+    if key == "flu_vaccinated_2023_2024":
+        key = "flu_vaccinated_2023_2024_no_habit"
+    return _label_outcome_short(key)
+
+
+if posthoc.is_empty():
+    cell_metrics = pl.DataFrame()
+else:
+    cell_metrics = (
+        posthoc.filter(pl.col("calibration_status") == "calibrated")
+        .with_columns(
+            pl.col("outcome")
+            .cast(pl.Utf8)
+            .map_elements(_canonical_outcome, return_dtype=pl.Utf8)
+            .alias("outcome")
+        )
+        .group_by(["outcome", "model", "strategy"])
+        .agg(
+            pl.mean("pooled_gini").alias("gini"),
+            pl.mean("mae_skill_cal").alias("skill_cal"),
+        )
+    )
+
+STRATEGY_ORDER = ["data_only", "third_person", "first_person", "multi_expert"]
+OUTCOME_PANEL_W = 4.0
+OUTCOME_SET = set(cell_metrics.get_column("outcome").to_list()) if not cell_metrics.is_empty() else set()
+OUTCOME_ORDER = [o for o in PREFERRED_OUTCOME_ORDER if o in OUTCOME_SET] + sorted(
+    OUTCOME_SET - set(PREFERRED_OUTCOME_ORDER)
+)
+MODEL_ORDER = sorted(set(cell_metrics.get_column("model").to_list())) if not cell_metrics.is_empty() else []
+
+
+def _outcome_panel_slots(outcomes: list[str]) -> tuple[int, int, list[str | None]]:
+    ordered = list(dict.fromkeys(str(o) for o in outcomes if str(o).strip()))
+    if not ordered:
+        return 1, 1, [None]
+    if len(ordered) == 1:
+        return 1, 1, [ordered[0]]
+    preferred_slots = [
+        "vax_willingness_T12",
+        "flu_vaccinated_2023_2024",
+        "mask_when_pressure_high",
+        "mask_when_symptomatic_crowded",
+        "stay_home_when_symptomatic",
+    ]
+    arranged = [outcome for outcome in preferred_slots if outcome in ordered]
+    arranged.extend(outcome for outcome in ordered if outcome not in arranged)
+
+    nrows = 3
+    ncols = 2
+    slots: list[str | None] = [None] * (nrows * ncols)
+    left_column = arranged[::2]
+    right_column = arranged[1::2]
+
+    for row_idx, outcome in enumerate(left_column[:nrows]):
+        slots[row_idx * ncols] = outcome
+    for row_idx, outcome in enumerate(right_column[:nrows]):
+        slots[row_idx * ncols + 1] = outcome
+    return nrows, ncols, slots
+
+
+def _fmt_ci(point: float, lo: float | None, hi: float | None, digits: int = 2) -> str:
+    if point is None or not np.isfinite(point):
+        return "—"
+    if lo is None or hi is None:
+        return fmt_float(float(point), digits)
+    if not np.isfinite(float(lo)) or not np.isfinite(float(hi)):
+        return fmt_float(float(point), digits)
+    return f"{fmt_float(float(point), digits)} [{fmt_float(float(lo), digits)}, {fmt_float(float(hi), digits)}]"
+
+
+def _bootstrap_mean_ci(values: list[float], *, B: int = 500, seed: int = 20260312) -> tuple[float | None, float | None]:
+    arr = np.asarray(values, dtype=np.float64)
+    arr = arr[np.isfinite(arr)]
+    if arr.size == 0:
+        return (None, None)
+    if arr.size == 1:
+        value = float(arr[0])
+        return (value, value)
+    rng = np.random.default_rng(seed)
+    draws = rng.choice(arr, size=(B, arr.size), replace=True).mean(axis=1)
+    return (float(np.quantile(draws, 0.025)), float(np.quantile(draws, 0.975)))
+
+
+_POSTHOC_BOOTSTRAP_MODULE = None
+
+
+def _load_posthoc_bootstrap_module():
+    global _POSTHOC_BOOTSTRAP_MODULE
+    if _POSTHOC_BOOTSTRAP_MODULE is not None:
+        return _POSTHOC_BOOTSTRAP_MODULE
+    module_path = (
+        Path.cwd().parent
+        / "evaluation"
+        / "scripts"
+        / "choice_validation"
+        / "unperturbed"
+        / "compute_posthoc_metrics.py"
+    )
+    spec = importlib.util.spec_from_file_location("choice_validation_posthoc_bootstrap", module_path)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Could not load bootstrap helper from {module_path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    _POSTHOC_BOOTSTRAP_MODULE = module
+    return module
+
+
+def _bootstrap_posthoc_row(
+    *,
+    outcome: str,
+    model: str,
+    strategy: str,
+    status: str = "calibrated",
+) -> dict[str, float | None] | None:
+    if status == "calibrated":
+        path = UNPERTURBED_OUT / outcome / model / strategy / "calibrated" / "predictions_calibrated.csv"
+    else:
+        path = UNPERTURBED_OUT / outcome / model / strategy / "uncalibrated" / "predictions.csv"
+    if not path.exists():
+        return None
+    try:
+        df = _read_csv(path)
+    except Exception:
+        return None
+    if df.is_empty():
+        return None
+    pred_col = "y_pred_cal" if status == "calibrated" and "y_pred_cal" in df.columns else "y_pred"
+    module = _load_posthoc_bootstrap_module()
+    return module._bootstrap_posthoc_ci(
+        df=df.to_pandas(),
+        y_true_col="y_true",
+        y_pred_col=pred_col,
+        slice_col="country",
+        B=500,
+        seed=20260201,
+    )
+
+
+def _heatmap_norm(vmin: float, vmax: float, *, vcenter: float = 0.0):
+    if not (np.isfinite(vmin) and np.isfinite(vmax)) or vmin >= vmax:
+        return plt.Normalize(vmin=vmin, vmax=vmax, clip=True)
+    if vmin < vcenter < vmax:
+        return TwoSlopeNorm(vmin=vmin, vcenter=vcenter, vmax=vmax)
+    return plt.Normalize(vmin=vmin, vmax=vmax, clip=True)
+
+
+def _text_color_for_value(
+    value: float,
+    *,
+    cmap: plt.Colormap,
+    vmin: float,
+    vmax: float,
+    vcenter: float = 0.0,
+) -> str:
+    if not np.isfinite(value):
+        return "white"
+    norm = _heatmap_norm(vmin=vmin, vmax=vmax, vcenter=vcenter)
+    r, g, b, _ = cmap(norm(value))
+    luminance = 0.299 * r + 0.587 * g + 0.114 * b
+    return "black" if luminance > 0.65 else "white"
+
+
+def _heatmap_panel(
+    ax: plt.Axes,
+    df: pl.DataFrame,
+    title: str,
+    value_col: str,
+    *,
+    vmin: float,
+    vmax: float,
+    cmap: plt.Colormap,
+    show_xlabels: bool,
+    show_ylabels: bool,
+    highlight_best: bool = False,
+):
+    pivot = df.pivot(index="model", on="strategy", values=value_col, aggregate_function="first").with_columns(
+        pl.col("model").cast(pl.Utf8)
+    )
+
+    if "model" not in pivot.columns:
+        pivot = pl.DataFrame({"model": MODEL_ORDER})
+    else:
+        missing_models = [m for m in MODEL_ORDER if m not in set(pivot.get_column("model").to_list())]
+        if missing_models:
+            pivot = pl.concat([pivot, pl.DataFrame({"model": missing_models})], how="diagonal")
+
+    pivot = (
+        pivot.with_columns(
+            pl.col("model")
+            .map_elements(lambda m: MODEL_ORDER.index(str(m)) if str(m) in MODEL_ORDER else 999, return_dtype=pl.Int64)
+            .alias("_m")
+        )
+        .sort("_m")
+        .drop("_m")
+    )
+    for s in STRATEGY_ORDER:
+        if s not in pivot.columns:
+            pivot = pivot.with_columns(pl.lit(float("nan")).alias(s))
+
+    mat = pivot.select(STRATEGY_ORDER).to_numpy()
+    norm = _heatmap_norm(vmin=vmin, vmax=vmax, vcenter=0.0)
+    im = ax.imshow(mat, norm=norm, cmap=cmap, aspect="auto")
+    ax.set_xticks(np.arange(len(STRATEGY_ORDER)))
+    ax.set_yticks(np.arange(pivot.height))
+    if show_xlabels:
+        ax.set_xticklabels([_label_strategy(s) for s in STRATEGY_ORDER], rotation=30, ha="right")
+        ax.tick_params(axis="x", labelsize=12)
+    else:
+        ax.set_xticklabels([])
+        ax.tick_params(axis="x", length=0)
+    if show_ylabels:
+        ax.set_yticklabels([_label_model(m) for m in pivot.get_column("model").to_list()])
+        ax.tick_params(axis="y", labelsize=12)
+    else:
+        ax.set_yticklabels([])
+        ax.tick_params(axis="y", length=0)
+    ax.set_title(textwrap.fill(title, width=22), pad=8, fontsize=12)
+
+    if not np.isfinite(mat).any():
+        ax.text(
+            0.5,
+            0.5,
+            "No unperturbed runs",
+            ha="center",
+            va="center",
+            transform=ax.transAxes,
+            fontsize=12,
+            color="#444444",
+        )
+    else:
+        for i in range(mat.shape[0]):
+            for j in range(mat.shape[1]):
+                val = mat[i, j]
+                if np.isfinite(val):
+                    ax.text(
+                        j,
+                        i,
+                        f"{val:.2f}",
+                        ha="center",
+                        va="center",
+                        color=_text_color_for_value(
+                            val,
+                            cmap=cmap,
+                            vmin=float(vmin),
+                            vmax=float(vmax),
+                            vcenter=0.0,
+                        ),
+                        fontsize=12,
+                    )
+    if highlight_best and value_col in df.columns:
+        best_df = df.filter(pl.col(value_col).is_finite()).sort(value_col, descending=True)
+        if not best_df.is_empty():
+            best = best_df.row(0, named=True)
+            best_model = str(best["model"])
+            best_strategy = str(best["strategy"])
+            row_labels = [str(m) for m in pivot.get_column("model").to_list()]
+            if best_model in row_labels and best_strategy in STRATEGY_ORDER:
+                i = row_labels.index(best_model)
+                j = STRATEGY_ORDER.index(best_strategy)
+                rect = Rectangle(
+                    (j - 0.5, i - 0.5),
+                    1.0,
+                    1.0,
+                    fill=False,
+                    edgecolor="#cc0000",
+                    linewidth=2.0,
+                )
+                ax.add_patch(rect)
+
+    return im
+```
+
+```{python}
+#| echo: false
+#| label: fig-unperturbed-skill
+#| fig-cap: "Unperturbed response-scale recovery: MAE skill (higher is better) by model and prompt family, faceted by outcome."
+#| fig-pos: "H"
+if cell_metrics.is_empty() or not OUTCOME_ORDER:
+    display(Markdown("*No unperturbed outputs found for the MAE-skill heatmap.*"))
+else:
+    vals = cell_metrics.get_column("skill_cal").to_numpy()
+    finite_vals = vals[np.isfinite(vals)]
+    if finite_vals.size == 0:
+        skill_vmin, skill_vmax = 0.0, 1.0
+    else:
+        skill_vmin, skill_vmax = float(np.min(finite_vals)), float(np.max(finite_vals))
+        if skill_vmin == skill_vmax:
+            skill_vmin, skill_vmax = skill_vmin - 0.01, skill_vmax + 0.01
+
+    nrows, ncols, panel_slots = _outcome_panel_slots(OUTCOME_ORDER)
+    fig, axes = plt.subplots(
+        nrows,
+        ncols,
+        figsize=((OUTCOME_PANEL_W + 0.2) * ncols, 2.6 * nrows),
+        constrained_layout=True,
+    )
+    axes = np.atleast_1d(axes).ravel()
+    ims = []
+    for idx, outcome in enumerate(panel_slots):
+        ax = axes[idx]
+        if outcome is None:
+            ax.axis("off")
+            continue
+        row = idx // ncols
+        col = idx % ncols
+        df = cell_metrics.filter(pl.col("outcome") == outcome)
+        ims.append(
+            _heatmap_panel(
+                ax,
+                df,
+                title=_label_outcome(outcome),
+                value_col="skill_cal",
+                vmin=skill_vmin,
+                vmax=skill_vmax,
+                cmap=plt.get_cmap("cividis"),
+                show_xlabels=row == (nrows - 1),
+                show_ylabels=col == 0,
+                highlight_best=True,
+            )
+        )
+
+    cbar = fig.colorbar(ims[0], ax=axes, shrink=0.82, label="MAE skill (higher is better)")
+    cbar.ax.tick_params(labelsize=12)
+    cbar.set_label("MAE skill (higher is better)", fontsize=12)
+    plt.show()
+```
+
+```{python}
+#| echo: false
+#| label: tbl-unperturbed-strategy-choice
+#| tbl-cap: "Prompt-family summary for unperturbed choice reconstruction: mean Gini $G$ and mean MAE skill across models and outcomes, with outcome-level bootstrap 95% CIs ($B=500$)."
+if cell_metrics.is_empty():
+    display(Markdown("*No unperturbed outputs found for the strategy table.*"))
+else:
+    rows: list[list[str]] = []
+    for strategy in STRATEGY_ORDER:
+        gini_points: list[float] = []
+        skill_points: list[float] = []
+        for outcome in OUTCOME_ORDER:
+            df_r = (
+                cell_metrics.filter((pl.col("outcome") == outcome) & (pl.col("strategy") == strategy))
+                .filter(pl.col("gini").is_finite())
+                .select(pl.mean("gini"))
+            )
+            df_e = (
+                cell_metrics.filter((pl.col("outcome") == outcome) & (pl.col("strategy") == strategy))
+                .filter(pl.col("skill_cal").is_finite())
+                .select(pl.mean("skill_cal"))
+            )
+            if not df_r.is_empty():
+                val = df_r.row(0)[0]
+                if val is not None and np.isfinite(val):
+                    gini_points.append(float(val))
+            if not df_e.is_empty():
+                val = df_e.row(0)[0]
+                if val is not None and np.isfinite(val):
+                    skill_points.append(float(val))
+
+        if not gini_points or not skill_points:
+            continue
+
+        point_gini = float(np.mean(np.array(gini_points, dtype=np.float64)))
+        point_skill = float(np.mean(np.array(skill_points, dtype=np.float64)))
+        lo_gini, hi_gini = _bootstrap_mean_ci(gini_points, B=500, seed=20260312 + STRATEGY_ORDER.index(strategy))
+        lo_skill, hi_skill = _bootstrap_mean_ci(
+            skill_points,
+            B=500,
+            seed=20260412 + STRATEGY_ORDER.index(strategy),
+        )
+        rows.append(
+            [
+                _label_strategy(strategy),
+                _fmt_ci(point_gini, lo_gini, hi_gini, digits=2),
+                _fmt_ci(point_skill, lo_skill, hi_skill, digits=2),
+            ]
+        )
+
+    if rows:
+        display(_md_table(["Strategy", "Mean $G$ (95% CI)", "Mean MAE skill (95% CI)"], rows))
+    else:
+        display(Markdown("*No unperturbed outputs found for the strategy table.*"))
+```
+
+```{python}
+#| echo: false
+#| label: tbl-unperturbed-diagnostics
+#| tbl-cap: "Diagnostics for the best MAE-skill cell per outcome. Reports within-country Gini $G$ (mean across countries), dispersion ratio (IQR of predictions divided by IQR of truths), and tail bias (mean error in the bottom and top true-outcome deciles), with 95% bootstrap CIs."
+if posthoc.is_empty() or cell_metrics.is_empty():
+    display(Markdown("*No post-hoc diagnostics available for the selected cells.*"))
+else:
+    best_rows = (
+        cell_metrics.filter(pl.col("skill_cal").is_finite())
+        .sort(["outcome", "skill_cal"], descending=[False, True])
+        .group_by("outcome")
+        .agg(
+            pl.first("model").alias("model"),
+            pl.first("strategy").alias("strategy"),
+        )
+    )
+
+    def _to_float(value: object | None) -> float:
+        if value is None:
+            return float("nan")
+        try:
+            out = float(value)
+        except (TypeError, ValueError):
+            return float("nan")
+        return out if np.isfinite(out) else float("nan")
+
+    def _pick_posthoc_row(
+        df: pl.DataFrame,
+        *,
+        outcome: str,
+        model: str,
+        strategy: str,
+        status: str = "calibrated",
+    ) -> dict[str, object] | None:
+        if df.is_empty():
+            return None
+        sub = df.filter(
+            (pl.col("outcome") == outcome)
+            & (pl.col("model") == model)
+            & (pl.col("strategy") == strategy)
+        )
+        if "calibration_status" in sub.columns:
+            filtered = sub.filter(pl.col("calibration_status") == status)
+            if not filtered.is_empty():
+                sub = filtered
+        if sub.is_empty():
+            return None
+        return sub.row(0, named=True)
+
+    raw_outcome_variants: dict[str, tuple[str, ...]] = {
+        "vax_willingness_T12": ("vax_willingness_T12", "vax_willingness_Y"),
+        "flu_vaccinated_2023_2024": ("flu_vaccinated_2023_2024", "flu_vaccinated_2023_2024_no_habit"),
+    }
+
+    def _pick_boot_row(
+        *,
+        outcome: str,
+        model: str,
+        strategy: str,
+        status: str = "calibrated",
+    ) -> dict[str, object] | None:
+        for raw_outcome in raw_outcome_variants.get(outcome, (outcome,)):
+            row = _pick_posthoc_row(
+                posthoc_boot,
+                outcome=raw_outcome,
+                model=model,
+                strategy=strategy,
+                status=status,
+            )
+            if row is not None and raw_outcome == outcome:
+                return row
+        if outcome == "vax_willingness_T12":
+            boot_ci = _bootstrap_posthoc_row(
+                outcome=outcome,
+                model=model,
+                strategy=strategy,
+                status=status,
+            )
+            if boot_ci:
+                return boot_ci
+        for raw_outcome in raw_outcome_variants.get(outcome, (outcome,)):
+            row = _pick_posthoc_row(
+                posthoc_boot,
+                outcome=raw_outcome,
+                model=model,
+                strategy=strategy,
+                status=status,
+            )
+            if row is not None:
+                return row
+        return None
+
+    rows: list[list[str]] = []
+    for best in best_rows.iter_rows(named=True):
+        outcome = str(best["outcome"])
+        model = str(best["model"])
+        strategy = str(best["strategy"])
+        point_row = _pick_posthoc_row(posthoc, outcome=outcome, model=model, strategy=strategy, status="calibrated")
+        boot_row = _pick_boot_row(outcome=outcome, model=model, strategy=strategy, status="calibrated")
+        if point_row is None:
+            continue
+
+        def _ci_fmt(key: str, digits: int) -> str:
+            val = _to_float(point_row.get(key))
+            if not np.isfinite(val):
+                return "—"
+            if boot_row is None:
+                return fmt_float(val, digits)
+            lo = _to_float(boot_row.get(f"{key}_lo"))
+            hi = _to_float(boot_row.get(f"{key}_hi"))
+            if not (np.isfinite(lo) and np.isfinite(hi)):
+                return fmt_float(val, digits)
+            return _fmt_ci(val, lo, hi, digits=digits)
+
+        rows.append(
+            [
+                _label_outcome(outcome),
+                _label_model(model),
+                _label_strategy(strategy),
+                _ci_fmt("slice_gini_mean", digits=2),
+                _ci_fmt("dispersion_ratio_iqr", digits=2),
+                _ci_fmt("tail_bias_bottom_decile_mean_error", digits=2),
+                _ci_fmt("tail_bias_top_decile_mean_error", digits=2),
+            ]
+        )
+
+    if rows:
+        display(
+            _md_table(
+                [
+                    "Outcome",
+                    "Model",
+                    "Strategy",
+                    "Within-country $G$ (95% CI)",
+                    "Dispersion IQR ratio (95% CI)",
+                    "Bottom-decile bias (95% CI)",
+                    "Top-decile bias (95% CI)",
+                ],
+                rows,
+            )
+        )
+    else:
+        display(Markdown("*No post-hoc diagnostics available for the selected cells.*"))
+```
+
+## Psychological-profile reconstruction by variable {#sec-appendix-state-validation}
+
+```{python}
+#| echo: false
+#| include: false
+from pathlib import Path
+
+from utils.ch04_plot_tables import render_belief_unperturbed_engine_panel_heatmaps
+from utils.engine_labels import label_belief_engine
+from utils.model_labels import label_model as _label_model
+from utils.model_labels import label_strategy as _label_strategy
+
+BELIEF_ARTIFACT_ROOT = Path("../thesis/artifacts/evaluation/belief_update_validation")
+BELIEF_UNPERTURBED_ENGINE_SOURCE_OVERRIDES: dict[str, Path] = {}
+BELIEF_UNPERTURBED_STRATEGY_ORDER = ["data_only", "third_person", "first_person", "multi_expert"]
+BELIEF_UNPERTURBED_EXCLUDED_CONSTRUCTS = {
+    "vaccine_risk_avg",
+    "covax_legitimacy_scepticism_idx",
+}
+_belief_unperturbed_metrics = (
+    _read_csv(Path("../thesis/artifacts/evaluation/belief_update_validation/unperturbed_engine_metrics.csv"))
+)
+belief_unperturbed_model_order = (
+    sorted({str(v) for v in _belief_unperturbed_metrics.get_column("model").to_list()})
+    if (not _belief_unperturbed_metrics.is_empty() and "model" in _belief_unperturbed_metrics.columns)
+    else []
+)
+```
+
+```{python}
+#| echo: false
+#| label: fig-belief-unperturbed-gini-heatmap
+#| fig-cap: "Unperturbed psychological-profile reconstruction by psychological profile variable: rank fidelity (Gini $G$; chance = 0, perfect = 1) across model and prompting-strategy cells."
+#| fig-pos: "H"
+_msg = render_belief_unperturbed_engine_panel_heatmaps(
+    canonical_root=BELIEF_ARTIFACT_ROOT,
+    canonical_root_overrides_by_engine=BELIEF_UNPERTURBED_ENGINE_SOURCE_OVERRIDES,
+    model_order=belief_unperturbed_model_order,
+    strategy_order=BELIEF_UNPERTURBED_STRATEGY_ORDER,
+    label_model=_label_model,
+    label_strategy=_label_strategy,
+    label_engine=label_belief_engine,
+    metric="gini",
+    gini_vmin=-1.0,
+    gini_vmax=1.0,
+    excluded_constructs=BELIEF_UNPERTURBED_EXCLUDED_CONSTRUCTS,
+    panel_nrows=3,
+    panel_ncols=2,
+)
+if _msg:
+    display(Markdown(f"*{_msg}*"))
+```
+
+```{python}
+#| echo: false
+#| label: fig-belief-unperturbed-skill-heatmap
+#| fig-cap: "Unperturbed psychological-profile reconstruction by psychological profile variable: level accuracy (MAE skill; 1 = perfect, 0 = baseline) across model and prompting-strategy cells."
+#| fig-pos: "H"
+_msg = render_belief_unperturbed_engine_panel_heatmaps(
+    canonical_root=BELIEF_ARTIFACT_ROOT,
+    canonical_root_overrides_by_engine=BELIEF_UNPERTURBED_ENGINE_SOURCE_OVERRIDES,
+    model_order=belief_unperturbed_model_order,
+    strategy_order=BELIEF_UNPERTURBED_STRATEGY_ORDER,
+    label_model=_label_model,
+    label_strategy=_label_strategy,
+    label_engine=label_belief_engine,
+    metric="skill",
+    skill_vmin=-1.0,
+    skill_vmax=1.0,
+    excluded_constructs=BELIEF_UNPERTURBED_EXCLUDED_CONSTRUCTS,
+    panel_nrows=3,
+    panel_ncols=2,
+)
+if _msg:
+    display(Markdown(f"*{_msg}*"))
+```

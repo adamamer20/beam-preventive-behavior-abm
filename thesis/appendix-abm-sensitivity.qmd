@@ -1,0 +1,19 @@
+# Sensitivity screening by Morris elementary effects {#sec-appendix-sensitivity-screening}
+
+The aim of sensitivity screening is to assess whether the intervention comparisons in @sec-05-agent-based-model depend strongly on particular uncertain parameters, and to identify which broad mechanism families matter most for those comparisons.
+
+For each scenario $s$ and parameter vector $\theta$, let $y_s(\theta)$ denote a scalar summary of the simulated outcome, computed either at the final tick or as an area-under-the-curve summary. I study intervention effects relative to their reference baseline,
+$$
+\Delta_s(\theta)=y_s(\theta)-y_{\mathrm{ref}(s)}(\theta).
+$$
+
+Most scenarios are compared with the standard baseline, while scenarios defined under importation are compared with the corresponding importation baseline. Within each parameter setting, baseline and intervention runs share the same seeds and contact network, so the estimated deltas are less affected by Monte Carlo noise.
+
+The screening varies the main uncertain behavioural and epidemiological parameters jointly over plausible ranges and applies the Morris method of elementary effects [@morris_1991_factorial_sampling; @campolongo_2007_effective]. For parameter $j$, the elementary effect is
+$$
+EE_j=
+\frac{\Delta_s(\theta^{(t+1)})-\Delta_s(\theta^{(t)})}
+{\theta_j^{(t+1)}-\theta_j^{(t)}}.
+$$
+
+I summarise these effects with the standard Morris statistics: $\mu^*$, the mean absolute elementary effect, and $\sigma$, the dispersion of the elementary effects across sampled trajectories. Large $\mu^*$ indicates that a parameter is an important source of uncertainty for the scenario effect, while large $\sigma$ indicates that its influence varies more across the parameter space, consistent with nonlinearity, interactions, or context dependence. To keep the results substantively interpretable, the reported heatmap aggregates parameter-level $\mu^*$ values to four broad mechanism families: persistence, social diffusion, incidence feedback, and stochasticity.

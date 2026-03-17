@@ -1,0 +1,69 @@
+# Anchor prototypes for LLM evaluation and ABM resampling {#sec-appendix-anchor-prototypes}
+
+Anchor prototypes provide a compact empirical scaffold for both the LLM evaluation and the ABM initialisation. Rather than working directly with the full respondent cloud, I select a small set of observed profile prototypes that cover the main gradients of the psychological-profile space.
+
+Let $z_i\in\mathbb{R}^p$ denote respondent $i$'s vector of core psychological profile variables. To remove country-level baseline differences while preserving within-country structure, each variable is standardised after country demeaning:
+$$
+z'_{ij} = \frac{z_{ij}-\bar z_{c(i)j}}{s_j},
+$$
+where $\bar z_{c(i)j}$ is the mean of variable $j$ in respondent $i$'s country and $s_j$ is a pooled scale.
+
+Anchors are selected in three steps. First, the standardised profile space is projected to a lower-dimensional representation using principal components analysis, so that distance calculations are driven by the main empirical gradients rather than by noise in a high-dimensional space [@jolliffe_2002_principal]. Second, a small set of observed respondent profiles is chosen as anchor prototypes using k-medoids in that reduced space [@kaufman_2005_finding]. Third, the final anchor set is required to have support across multiple countries, so that anchors represent recurrent cross-country profile types rather than country-specific outliers.
+
+## Coverage diagnostics {#sec-appendix-anchoring-results}
+
+```{python}
+#| echo: false
+from __future__ import annotations
+
+import polars as pl
+
+from utils.analysis_utils import ANALYSIS_OUT
+from utils.chapter_io import md_table as _md_table
+from utils.chapter_io import read_csv_fast
+from utils.qmd_utils import fmt_float, fmt_int, fmt_math
+
+ANCHORS_OUT = ANALYSIS_OUT / "anchors"
+ANCHORS_DIAG = ANCHORS_OUT / "diagnostics"
+_read_csv = read_csv_fast
+```
+
+```{python}
+#| echo: false
+#| label: tbl-coverage
+#| tbl-cap: "Anchor coverage by country: mean and 90th-percentile nearest-anchor distance; $k=10$."
+coverage = _read_csv(ANCHORS_DIAG / "anchor_coverage.csv")
+coverage_k10 = (
+    coverage.filter(pl.col("k") == 10)
+    .with_columns(
+        pl.when(pl.col("scope") == "pooled")
+        .then(pl.lit("Pooled"))
+        .otherwise(pl.col("country"))
+        .alias("group")
+    )
+    .select("group", "n", "mean_dist", "p90_dist")
+    .sort("group")
+)
+_md_table(
+    ["Country", "$N$", "Mean $d_{\\min}$", "$p90(d_{\\min})$"],
+    [
+        [
+            str(row[0]),
+            fmt_int(row[1]),
+            fmt_float(row[2], 2),
+            fmt_float(row[3], 2),
+        ]
+        for row in coverage_k10.iter_rows()
+    ],
+)
+```
+
+```{python}
+#| echo: false
+leakage = _read_csv(ANCHORS_DIAG / "anchor_leakage.csv")
+mean_countries_above = float(
+    leakage.select(pl.col("n_countries_above_threshold").mean().alias("mean_countries_above")).row(0)[0]
+)
+```
+
+The anchor construction is intended to provide broad empirical coverage, and I report two diagnostics to assess whether it does so. First, @tbl-coverage reports nearest-anchor distances by country in the normalised anchoring space. These distances are similar across countries, indicating that no country is systematically under-covered under the chosen anchor specification. Second, anchors should not collapse into country clusters; they should instead capture profile types that recur across countries. The cross-country support diagnostic points in that direction: anchors typically receive non-trivial support from multiple countries. On average, about `{python} fmt_math(fmt_float(mean_countries_above, 1))` of the 6 countries contribute above the support threshold for a given anchor.

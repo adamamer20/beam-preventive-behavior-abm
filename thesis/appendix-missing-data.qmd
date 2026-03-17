@@ -1,0 +1,17 @@
+# Missing-data handling and comparability of fit statistics {#sec-appendix-missing-data}
+
+Because some predictors are missing by design, especially in conditionally administered modules, naive listwise deletion would cause different model specifications and LOBO comparisons to be estimated on different respondent sets. This is problematic because likelihood-based fit statistics, including BIC, are only directly comparable when they are computed on the same rows. To preserve comparability across specifications, the modelling workflow applies a common missing-data policy to predictors and reports the resulting sample sizes.
+
+```{python}
+#| echo: false
+from IPython.display import Markdown
+from beam_abm.empirical.missingness import DEFAULT_MISSINGNESS_THRESHOLD
+
+MISSINGNESS_TAU = DEFAULT_MISSINGNESS_THRESHOLD
+
+
+def tau_md() -> Markdown:
+    return Markdown(rf"$\tau = {MISSINGNESS_TAU:.2f}$")
+```
+
+For any predictor with missingness fraction at or below a threshold $\tau$ (here `{python} tau_md()`), I retain the variable, add a missingness indicator $M=\mathbb{1}(X\ \text{missing})$, and fill missing values using a type-aware rule. Binary items are filled with 0 and flagged; roughly symmetric scales or indices are mean-filled, which is equivalent to 0 after z-scoring; and highly skewed continuous measures, such as income, are median-filled, typically within country. Predictors with missingness above $\tau$ are excluded from the relevant specification. Rows are dropped only for missing outcomes or non-finite values. This approach keeps estimation samples aligned across comparable models while treating non-response as part of the observed data structure rather than eliminating it through silent row deletion.

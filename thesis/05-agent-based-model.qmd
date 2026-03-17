@@ -1,0 +1,436 @@
+# Agent-Based Model {#sec-05-agent-based-model}
+
+The micro-validation results in @sec-04-llm-micro-validation place a clear boundary on the role that off-the-shelf LLMs can play in this thesis. While they recover some baseline structure, their responses to controlled perturbations are too compressed, too diffuse, and too unstable to serve as the behavioural update rule in a counterfactual simulator. For that reason, the ABM does not use the LLM as the engine of within-person behavioural change over time. Instead, it reuses the fitted equations from @sec-03-decision-function as the empirical behavioural core and embeds them in a dynamic simulator.
+
+This bridge is necessarily imperfect. The data do not identify persistence, adjustment speed, path dependence, or whether every observed cross-sectional profile is dynamically reachable. The model is therefore specified to avoid treating between-person patterns as if they were fully equivalent to within-person dynamics, an assumption that is often difficult to justify [@curran_bauer_2011; @molenaar_2004_manifesto]. Instead, a separate law of motion governs persistence and relaxation, while the fitted cross-sectional gradients are used only to indicate the direction and relative strength of change.
+
+The model then adds the dynamic ingredients needed for policy comparison: a social interaction structure through which norms and related perceptions propagate, and an endogenous feedback loop linking prevention to local incidence and local incidence back to perceived risk.
+
+## ABM Architecture {#sec-05-abm-architecture}
+
+Prevention-relevant attitudes and perceptions often change gradually over time [@ouellette_1998_habit_intention; @gardner_2014_habit_health], but treating them as fixed would remove the policy, epidemic, and social effects the simulator is meant to study. Because the fitted relationships identify baseline heterogeneity and one-step directional responses, but not the temporal persistence of change, I adopt a partial-adjustment dynamic.
+
+Let $s_{i,u}(t)$ denote the value of mutable behavioural state $u$ for agent $i$ at tick $t$. Most state components move only part of the way each tick toward a time-varying target $\tilde s_{i,u}(t)$:
+$$
+s_{i,u}(t+1) = s_{i,u}(t) + \kappa_u\big(\tilde s_{i,u}(t)-s_{i,u}(t)\big),
+\qquad
+\kappa_u\in\{k_{\text{fast}},k_{\text{slow}}\}.
+$$
+
+The target value $\tilde s_{i,u}(t)$ starts from the agent’s survey-implied baseline and then shifts over time in response to active policy signals, social exposure, and epidemic feedback through local incidence. These inputs are linked to behavioural states using the fitted regressions from @sec-03-decision-function, while the updated state vector is mapped into behavioural outcomes through the behavioural outcome equations. Adjustment is set to be slower for trust- and norm-like variables and faster for more situational appraisals such as perceived danger and infection risk [@devine_2024_stability]. Under this design, persistent intervention effects arise only when epidemic conditions or network exposure remain displaced after the initial forcing window has ended; otherwise, state components relax back toward baseline.
+
+Social exposure enters through two distinct channels. At each tick, agents interact through a dynamic sample of contacts drawn from a fixed relational backbone consisting of household and recurring neighbours, plus ephemeral one-shot contacts drawn mainly from the local pool and, to a smaller extent, from a global pool.
+
+The first channel is peer exposure. Within this realised contact set, pairwise, symmetric interactions partially pull agents toward one another on selected trust- and risk-related variables. More similar contacts are sampled more often, reflecting homophily [@mcpherson_2001_homophily].
+
+The second channel is norm updating. Agents observe preventive behaviour in their realised contacts and revise perceived normality in their local environment. The update follows a threshold-style contagion rule: low observed adoption has little effect, but once exposure crosses an agent-specific social-proof threshold, perceived normality rises quickly and then saturates [@granovetter_1978_threshold; @centola_macy_2007_complex]. The process has two stages: agents first update their estimate of how common prevention is among contacts, then adjust their descriptive norm toward that estimate, with more socially susceptible agents responding more strongly.
+
+To close the behavioural–epidemic loop, the ABM includes a locality-level incidence signal. Each locality $c$ carries a normalised incidence state $I_{c,t}$ that follows a bounded growth-with-decay process. Its effective growth rate is dampened by average local protective propensity, so wider diffusion of vaccination willingness and NPIs lowers subsequent incidence pressure. In the model, local protection is captured through predicted behaviour: vaccination willingness serves as a proxy for uptake propensity, and NPIs contribute through their fitted behavioural levels. This incidence signal then feeds back into agents’ target state values $\tilde s_{i,u}(t)$ by shifting risk-related variables, including perceived danger, fear, and infection likelihood. The parameterisation is calibrated so that one simulation tick corresponds to approximately one month, while social influence operates on weekly substeps within each tick.
+
+Initial conditions are anchored empirically through the anchor-prototype sampler introduced earlier: agents are resampled from local anchor-country neighbourhoods so that simulated populations preserve realistic joint distributions of attributes and behavioural drivers. Full details of the ABM equations, parameters, and initialisation procedure are reported in @sec-appendix-abm-specification.
+
+
+```{python}
+#| echo: false
+from __future__ import annotations
+
+import numpy as np
+import polars as pl
+import matplotlib.pyplot as plt
+from IPython.display import display
+
+from utils.ch05_plot_tables import (
+    AUC_LEADERBOARD_SCENARIOS,
+    LEADERBOARD_SCENARIOS,
+    VERIFICATION_SCENARIOS,
+)
+from beam_abm.abm.scenario_defs import get_scenario
+from utils.ch05_plot_tables import (
+    compute_norm_channel_baseline_checks,
+    compute_shock_coupling_diagnostics,
+    compute_temporal_lag_signatures,
+    label_scenario,
+    load_abm_context,
+    plot_auc_leaderboard_horizontal,
+    plot_baseline_closure_diagnostic,
+    plot_dynamic_fingerprints_panel,
+    plot_flagship_morris_heatmap,
+    plot_norm_channel_baseline_checks,
+    pairwise_rank_robustness_table,
+    summarize_local_diffusion_did,
+    summarize_effects,
+)
+from utils.chapter_io import md_table, read_csv_fast
+from utils.qmd_utils import fmt_float
+
+
+required_abm_scenarios = {
+    # Baseline closure diagnostics.
+    "baseline_importation",
+    "baseline_no_communication",
+    "baseline_importation_no_communication",
+    "baseline_importation_no_peer_pull",
+    # Leaderboard and core intervention comparisons.
+    *LEADERBOARD_SCENARIOS,
+    *AUC_LEADERBOARD_SCENARIOS,
+    # Mechanism and shock panels.
+    "trust_scandal_repair",
+    "access_intervention",
+    "outbreak_global",
+    "trust_repair_institutional",
+    "outbreak_global_incidence_strong",
+    "norm_shift_campaign",
+    # Network effects.
+    "outbreak_local_incidence_moderate",
+    "outbreak_local_incidence_strong",
+    "targeted_norm_seed",
+    "misinfo_shock_targeted",
+    # Ensure social-channel verification scenarios are loaded for Panel C.
+    *VERIFICATION_SCENARIOS,
+}
+abm_ctx = load_abm_context(
+    scenarios=sorted(required_abm_scenarios),
+    effect_regime="shock",
+)
+abm_effects = summarize_effects(abm_ctx, scenarios=AUC_LEADERBOARD_SCENARIOS)
+lag_signatures = compute_temporal_lag_signatures(abm_ctx)
+norm_baseline_metrics = compute_norm_channel_baseline_checks(abm_ctx)
+lag_signal_threshold = 0.005
+lag_balance_threshold = 0.4
+shock_coupling = compute_shock_coupling_diagnostics(
+    abm_ctx,
+    scenarios=AUC_LEADERBOARD_SCENARIOS,
+    lag_min_amplitude=lag_signal_threshold,
+    lag_min_relative_amplitude=lag_balance_threshold,
+)
+
+
+def _scenario_metric(effect_df: pl.DataFrame, scenario: str, metric: str) -> float:
+    if effect_df.is_empty() or "scenario" not in effect_df.columns or "metric" not in effect_df.columns or "mean" not in effect_df.columns:
+        return float("nan")
+    row = effect_df.filter(
+        (pl.col("scenario") == scenario) & (pl.col("metric") == metric)
+    ).select("mean")
+    if row.is_empty():
+        return float("nan")
+    return float(row.item())
+
+
+def _safe_float(value: object) -> float:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return float("nan")
+
+
+def _fmt_or_na(value: float, digits: int = 2) -> str:
+    if not np.isfinite(value):
+        return "N/A"
+    return fmt_float(value, digits)
+
+
+def _fmt_signed_or_na(value: float, digits: int = 3) -> str:
+    if not np.isfinite(value):
+        return "N/A"
+    return f"{value:+.{digits}f}"
+
+
+def _scenario_intervention_duration_months(scenario: str) -> float:
+    try:
+        cfg = get_scenario(scenario)
+    except KeyError:
+        return float("nan")
+    duration = int(getattr(cfg, "duration", 0))
+    if duration > 0:
+        return float(duration)
+
+    incidence_schedule = tuple(getattr(cfg, "incidence_schedule", ()) or ())
+    schedule_durations: list[int] = []
+    for spec in incidence_schedule:
+        start = int(getattr(spec, "start_tick", 0))
+        end = getattr(spec, "end_tick", None)
+        if end is None:
+            continue
+        schedule_durations.append(max(int(end) - start, 1))
+
+    if schedule_durations:
+        return float(max(schedule_durations))
+    return float("nan")
+
+
+def _shock_coupling_metric(frame: pl.DataFrame, scenario: str, metric: str) -> float:
+    if frame.is_empty() or scenario not in frame.get_column("scenario").to_list():
+        return float("nan")
+    row = frame.filter(pl.col("scenario") == scenario).select(metric)
+    if row.is_empty():
+        return float("nan")
+    return _safe_float(row.item())
+
+
+def _shock_coupling_flag(frame: pl.DataFrame, scenario: str, metric: str) -> bool:
+    if frame.is_empty() or scenario not in frame.get_column("scenario").to_list():
+        return False
+    row = frame.filter(pl.col("scenario") == scenario).select(metric)
+    if row.is_empty():
+        return False
+    return bool(row.item())
+
+
+# Key metrics for inline citation
+trust_auc = _scenario_metric(abm_effects, "trust_repair_institutional", "delta_vax_auc")
+outbreak_auc = _scenario_metric(abm_effects, "outbreak_salience_global", "delta_vax_auc")
+trust_fear_ratio = trust_auc / outbreak_auc if outbreak_auc != 0 else float("nan")
+access_npi_auc = _scenario_metric(abm_effects, "access_intervention", "delta_npi_auc")
+access_sub_corr = _shock_coupling_metric(shock_coupling, "access_intervention", "vax_npi_corr")
+access_barrier_sub_corr = _shock_coupling_metric(shock_coupling, "access_barrier_shock", "vax_npi_corr")
+access_sub_lag = _shock_coupling_metric(shock_coupling, "access_intervention", "peak_lag_npi_minus_vax")
+access_barrier_sub_lag = _shock_coupling_metric(shock_coupling, "access_barrier_shock", "peak_lag_npi_minus_vax")
+misinfo_npi_peak_abs = _shock_coupling_metric(shock_coupling, "misinfo_trust_erosion_only", "npi_peak_abs")
+misinfo_lag_identifiable = _shock_coupling_flag(shock_coupling, "misinfo_trust_erosion_only", "lag_identifiable")
+
+# Leaderboard table inputs (intervention duration + normalised AUC per month)
+
+leaderboard_scenario_order = (
+    abm_effects.filter(pl.col("metric") == "delta_vax_auc")
+    .sort("mean", descending=True)
+    .get_column("scenario")
+    .to_list()
+)
+if not leaderboard_scenario_order:
+    leaderboard_scenario_order = list(AUC_LEADERBOARD_SCENARIOS)
+
+leaderboard_summary_rows: list[list[str]] = []
+for scenario in leaderboard_scenario_order:
+    duration_months = _scenario_intervention_duration_months(scenario)
+    delta_vax_auc = _scenario_metric(abm_effects, scenario, "delta_vax_auc")
+    delta_npi_auc = _scenario_metric(abm_effects, scenario, "delta_npi_auc")
+
+    vax_auc_per_month = (
+        delta_vax_auc / duration_months if np.isfinite(duration_months) and duration_months > 0 else float("nan")
+    )
+    npi_auc_per_month = (
+        delta_npi_auc / duration_months if np.isfinite(duration_months) and duration_months > 0 else float("nan")
+    )
+
+    leaderboard_summary_rows.append(
+        [
+            label_scenario(scenario),
+            _fmt_or_na(duration_months, 0),
+            _fmt_signed_or_na(vax_auc_per_month, 3),
+            _fmt_signed_or_na(npi_auc_per_month, 3),
+        ]
+    )
+
+leaderboard_summary_table_md = md_table(
+    [
+        "Scenario",
+        "Intervention duration (months)",
+        "Normalised ΔAUC/month (Vaccination Willingness)",
+        "Normalised ΔAUC/month (NPI)",
+    ],
+    leaderboard_summary_rows,
+)
+
+# Network effects table inputs
+network_scenarios = [
+    "misinfo_shock_targeted",
+    "outbreak_local_incidence_moderate",
+]
+canonical_effects = read_csv_fast("../thesis/artifacts/abm/report_summary_canonical_effects.csv")
+effect_mode_col = "effect_regime" if "effect_regime" in canonical_effects.columns else "effect_mode"
+network_global_effects = (
+    canonical_effects
+    .filter(
+        pl.col("scenario").is_in(network_scenarios)
+        & (pl.col(effect_mode_col) == "shock")
+    )
+    .select(
+        "scenario",
+        pl.col("post_burn_vax_auc_vs_baseline_importation").alias(
+            "global_delta_auc_vax"
+        ),
+    )
+)
+network_did = summarize_local_diffusion_did(
+    abm_ctx,
+    scenarios=network_scenarios,
+    outcomes=["vax_willingness_T12"],
+)
+if network_did.is_empty():
+    network_did_effects = pl.DataFrame(
+        {
+            "scenario": network_scenarios,
+            "did_gap_change_vax": [float("nan")] * len(network_scenarios),
+        }
+    )
+else:
+    network_did_effects = network_did.select(
+        "scenario",
+        pl.col("did_mean").alias("did_gap_change_vax"),
+    )
+network_effects_table = (
+    network_global_effects.join(network_did_effects, on="scenario", how="inner")
+    .with_columns(
+        pl.col("scenario").map_elements(label_scenario, return_dtype=pl.String).alias("Scenario"),
+    )
+    .select(
+        "Scenario",
+        pl.col("global_delta_auc_vax").round(3).alias("Global ΔAUC (Vaccination Willingness)"),
+        pl.col("did_gap_change_vax").round(3).alias("DiD Gap Change (Vaccination Willingness)"),
+    )
+)
+network_effects_rows = [
+    [
+        str(row["Scenario"]),
+        _fmt_or_na(float(row["Global ΔAUC (Vaccination Willingness)"]), 3),
+        _fmt_signed_or_na(float(row["DiD Gap Change (Vaccination Willingness)"]), 3),
+    ]
+    for row in network_effects_table.iter_rows(named=True)
+]
+network_effects_table_md = md_table(
+    [
+        "Scenario",
+        "Global ΔAUC (Vaccination Willingness)",
+        "DiD Gap Change (Vaccination Willingness)",
+    ],
+    network_effects_rows,
+)
+
+# Shock trajectory coupling diagnostics table
+shock_diag_focus = [
+    "trust_repair_institutional",
+    "outbreak_global_incidence_strong",
+    "norm_shift_campaign",
+    "misinfo_trust_erosion_only",
+    "access_intervention",
+    "access_barrier_shock",
+]
+shock_diag_rows: list[list[str]] = []
+if not shock_coupling.is_empty():
+    for scenario in shock_diag_focus:
+        row = shock_coupling.filter(pl.col("scenario") == scenario)
+        if row.is_empty():
+            continue
+        item = row.row(0, named=True)
+        shock_diag_rows.append(
+            [
+                str(item.get("scenario_label", label_scenario(scenario))),
+                _fmt_signed_or_na(_safe_float(item.get("vax_npi_corr")), 3),
+                str(item.get("coupling_type", "mixed")),
+            ]
+        )
+
+shock_coupling_table_md = md_table(
+    [
+        "Scenario",
+        "Corr(ΔVax, ΔNPI)",
+        "Coupling Type",
+    ],
+    shock_diag_rows,
+)
+
+pairwise_rank_robustness_table_md = pairwise_rank_robustness_table()
+
+# Temporal lag signatures
+fear_to_mask_lag = _safe_float(lag_signatures.get("fear_to_mask_lag"))
+trust_to_vax_lag = _safe_float(lag_signatures.get("trust_to_vax_lag"))
+norm_to_vax_lag = _safe_float(lag_signatures.get("norm_to_vax_lag"))
+```
+
+```{python}
+#| echo: false
+#| label: fig-05-baseline-closure-diagnostic
+#| fig-cap: "**Baseline closure and social-channel verification (post-burn).** (A) Mean incidence under the endogenous baseline loop and under an importation-forced regime, in which infections are continuously introduced from outside the local system, with communication enabled (solid) or disabled (dashed). The importation regime produces a higher and more persistent incidence path, while disabling communication yields slightly lower incidence in both regimes, confirming that the communication toggle has a measurable effect in the coupled incidence–behaviour system. (B) Mean disease fear under the same incidence regimes (communication enabled), showing that higher incidence sustains higher disease fear, consistent with the intended salience channel and with a smooth partial-adjustment response rather than one-to-one tracking. (C) ON–OFF direct-target effects for the two social channels: the effect of peer pull on institutional trust and the effect of observed norms on descriptive vaccination norms. Both channels produce stable, correctly signed shifts in their intended targets, and the growing separation over time is consistent with accumulation through slow-moving profile dynamics. Shaded bands show 5–95% quantiles across runs; all panels are shown from the post-burn tick onward."
+#| fig-pos: "htbp"
+fig_baseline_closure = plot_baseline_closure_diagnostic(abm_ctx)
+display(fig_baseline_closure)
+plt.close(fig_baseline_closure)
+```
+
+In @fig-05-baseline-closure-diagnostic, shown over the post-burn analysis window after the initial adjustment phase has settled, the baseline regime provides a compact verification that the simulator behaves as a closed feedback system and that the social channels move their intended targets. Panel A compares the endogenous baseline to a regime in which exogenous importation keeps incidence elevated through a standing floor and periodic pulses. Panel B shows the corresponding salience response: higher incidence sustains higher disease fear. Panel C shows that peer pull shifts institutional trust and that observed norms shift descriptive vaccination norms in the expected direction. Here “communication” refers to the social influence layer; when it is off, agents update only through partial adjustment and incidence feedback. The communication-on versus communication-off gap is modest but non-zero, indicating that the social layer measurably affects the evolving baseline without destabilising the system. More broadly, the ABM is also checked for consistent behaviour: it reproduces the intended baseline patterns, responds as expected to simple perturbations, remains stable over time, and does not generate artefacts from the network or from randomness.
+
+## Counterfactual Experiments {#sec-05-abm-experiments}
+
+```{python}
+#| echo: false
+#| label: fig-05-auc-leaderboard
+#| fig-cap: "**Policy leaderboard ranked by cumulative behavioural impact.** Bars show mean cumulative effects relative to baseline, measured as $ΔAUC$ over the evaluation window, for vaccination willingness and the NPI index, with 95% confidence-interval error bars across simulation runs. Norm-shift campaigns dominate in persistence, while credibility shocks show stronger effects on vaccination willingness than on the NPI index."
+#| fig-pos: "H"
+
+fig_auc_leaderboard = plot_auc_leaderboard_horizontal(abm_ctx)
+display(fig_auc_leaderboard)
+plt.close(fig_auc_leaderboard)
+```
+
+```{python}
+#| echo: false
+#| label: tbl-05-auc-leaderboard-summary
+#| tbl-cap: "**Scenario-level intervention duration and duration-normalised cumulative effects relative to baseline.** Entries report intervention duration in months and normalised $ΔAUC$ per month for vaccination willingness and NPI uptake, allowing short pulses and longer campaigns to be compared on a common scale."
+
+display(leaderboard_summary_table_md)
+```
+
+@fig-05-auc-leaderboard compares counterfactual interventions applied from the post-burn period onward, summarising their cumulative impact on vaccination willingness and the NPI index. I report $ΔAUC$, the area under the curve of outcome deviations over the evaluation window, because the ABM is mean-reverting: intervention effects typically rise and then decay, so a time-integrated summary is more informative than a single end-of-horizon snapshot.
+
+The scenarios are calibrated as one-sided 1-IQR shifts in the relevant variable, following the same low-to-high convention used in @sec-03-perturbation-effects. Some are short pulses and others sustained campaigns over a standardised 9-month window. In all cases, the intervention acts on precursor variables or mutable state targets; the resulting states then evolve through the same partial-adjustment system as in the baseline model, after which vaccination willingness and the NPI outcomes are recomputed from the fitted equations.
+
+The norm-shift campaign produces the largest cumulative increases in both vaccination willingness and the NPI index. Although norms were not the strongest one-step lever in the empirical benchmark, they become much more consequential once social reinforcement and slow adjustment are allowed to accumulate over time, making their effects more persistent than those of the other interventions.
+
+In this model, the outbreak wave increases both vaccination willingness and the NPI index, consistent with a broad risk-response pattern under worsening epidemic conditions. The outbreak salience campaign is narrower: it shifts disease salience through cues such as worse health and knowing someone hospitalised with an infectious illness, but without generating the same realised incidence dynamics. It therefore produces only a modest gain in vaccination willingness and little sustained increase in the NPI index, suggesting that outbreak conditions have broader behavioural reach than a cue-based salience intervention.
+
+Credibility-focused interventions occupy an intermediate but asymmetric position. Legitimacy repair mainly increases vaccination willingness, whereas institutional trust repair moves vaccination willingness and the NPI index together. This difference reflects the scope of the two channels: legitimacy is more tightly tied to vaccination governance, while institutional trust extends more broadly across prevention outcomes. The duration-normalised results also show that some one-tick credibility pulses generate very large short-run effects even when their cumulative $ΔAUC$ remains smaller than that of longer campaigns. This is especially clear for legitimacy repair and legitimacy scandal, which produce some of the largest per-month changes in vaccination willingness despite being only one-tick pulses.
+
+Access improvements initially raise vaccination, but the resulting increase in protection reduces subsequent incidence pressure and perceived risk. In the shock specification used for @tbl-05-auc-leaderboard-summary, that early vaccination bump is more than offset later on: both vaccination willingness and the NPI index fall back enough that the average post-burn cumulative effect becomes slightly negative relative to baseline.
+
+At the negative end of the ranking, misinformation / trust erosion produces the largest decline in vaccination willingness while affecting the NPI index much less. This mirrors the repair results: credibility matters for both outcomes, but its strongest effects fall on vaccination, whereas the NPI index remains partly supported by other behavioural blocks.
+
+For the shorthand used in @fig-05-mechanism-impulse, `(C)` denotes a campaign lasting 9 months, `(S)` a simulated outbreak wave lasting 6 months, and `(P)` a one-tick pulse.
+
+```{python}
+#| echo: false
+#| label: fig-05-mechanism-impulse
+#| fig-cap: "**Dynamic response signatures for three intervention types (post-burn).** Rows compare a sustained descriptive-norm campaign `(C)` (9 months), an incidence-driven outbreak wave `(S)` (6 months), and a credibility shock that erodes institutional trust `(P)` (1 tick). Columns show the targeted mediator, $\\Delta$ vaccination willingness, and $\\Delta$ NPI index relative to a matched baseline. The norm campaign produces a prolonged behavioural displacement consistent with slow adjustment; the outbreak wave generates a bounded, lagged response through perceived risk; and credibility erosion yields an early trust drop with a longer tail in behavioural deviations."
+#| fig-pos: "H"
+fig_mechanism_impulse = plot_dynamic_fingerprints_panel(abm_ctx)
+display(fig_mechanism_impulse)
+plt.close(fig_mechanism_impulse)
+```
+
+The leaderboard establishes which interventions generate the largest cumulative displacement, but cumulative summaries alone do not show how those effects unfold over time. I therefore turn to the dynamic profiles of three representative intervention types, comparing their mediator paths and the resulting trajectories of vaccination willingness and the NPI index.
+
+The time profiles in @fig-05-mechanism-impulse show that the norm campaign follows the programmed rise-and-decay schedule, while the behavioural responses exhibit longer tails. This is consistent with slow partial adjustment, which allows effects to continue accumulating even after the external forcing begins to fade. Persistence comes partly from slow movement in individual behavioural states, but the observed-norm channel also contributes: continued visibility of prevention among contacts reinforces perceived normality and helps keep behaviour displaced as the campaign decays.
+
+The outbreak wave follows a different pattern. Vaccination willingness and the NPI index rise under elevated epidemic pressure and then relax smoothly as perceived risk subsides. Its uncertainty bands are comparatively tight, which is expected because the wave acts as a common exogenous forcing and the plotted curves are matched deviations from baseline, limiting between-run variation at the aggregate level.
+
+Misinformation generates the most persistent credibility shock, and this persistence appears mainly in vaccination willingness, while the NPI index remains closer to baseline on average. Unlike the norm campaign, the slow decay here is driven mainly by gradual relaxation in trust- and legitimacy-related profile variables after the shock window closes.
+
+```{python}
+#| echo: false
+#| label: tbl-05-shock-coupling-diagnostic
+#| tbl-cap: "**Compact shock-coupling diagnostics for key scenarios.** Entries report the correlation between deviations in vaccination willingness and the NPI index, together with the implied coupling type. Positive correlations indicate reinforcing co-movement, while negative correlations indicate substitution, where one prevention outcome rises as the other relaxes."
+
+display(shock_coupling_table_md)
+```
+
+The coupling diagnostics in @tbl-05-shock-coupling-diagnostic distinguish scenarios in which vaccination willingness and the NPI index move together from those in which one partly substitutes for the other. Norm shift, outbreak wave, and institutional trust repair all show reinforcing coupling: both prevention outcomes co-move because they are pushed by a common influence, such as perceived normality, perceived stakes, or broad credibility. Misinformation / trust erosion is also reinforcing, though less tightly, indicating that credibility shocks still move the two outcomes in the same direction even when their strength differs.
+
+Access scenarios are different. Their coupling is weakly substitutive: access affects vaccination more directly, while the NPI index adjusts later through feedback from protection to incidence and perceived risk. The NPI response peaks later than the vaccination response in these scenarios, by about `{python} _fmt_or_na(access_sub_lag, 1)` ticks on average, which is consistent with that ordering.
+
+```{python}
+#| echo: false
+#| label: fig-05-sensitivity-heatmap
+#| fig-cap: "**Robustness screening of flagship intervention effects.** Row-normalised heatmap of Morris screening results for selected flagship scenario-endpoint pairs. Each cell reports the share of total Morris $\\mu^*$ assigned to one broad mechanism family within that row."
+#| fig-pos: "H"
+
+fig_sensitivity_heatmap = plot_flagship_morris_heatmap()
+display(fig_sensitivity_heatmap)
+plt.close(fig_sensitivity_heatmap)
+```
+
+The robustness screening, documented in @sec-appendix-sensitivity-screening, asks how sensitive the ABM's counterfactual effects are to uncertainty in its parameters. It does so by varying parameters over plausible ranges and computing Morris elementary effects on the scenario deltas relative to baseline [@morris_1991_factorial_sampling; @campolongo_2007_effective]. @fig-05-sensitivity-heatmap aggregates those Morris $\mu^*$ values to four broad mechanism families and normalises each row to sum to one. The figure should therefore be read as showing where sensitivity is concentrated within each intervention–outcome pair, rather than as an absolute comparison across rows.
+
+The concentration pattern differs across intervention types. Institutional-trust repair and legitimacy repair place their largest shares on persistence, consistent with effects that depend strongly on how slowly trust- and legitimacy-related states relax. The norm-shift row tilts most strongly toward social diffusion, in line with the role of reinforcement and network propagation in sustaining prevention, though stochasticity also remains non-negligible. Access facilitation is concentrated most heavily on stochasticity, with additional sensitivity to the incidence loop, probably because it acts more directly on vaccination rather than working through the socially reinforcing parts of the ABM. The NPI-index row shown here is more diffuse, with screening influence spread across persistence, social diffusion, and the incidence loop rather than concentrated in a single family. At the parameter level, the corresponding Morris dispersion statistic $\sigma$ gives very similar rankings overall (median rank correlation $\approx 0.99$), but suggests that persistence and some feedback terms are more context-dependent in the norm-heavy and more socially mediated scenarios.
+
+A complementary claim-level check asks whether selected intervention rankings remain true across the screened parameter space, where $p$ denotes the share of screened parameter draws for which the comparison holds. The clearest pattern is the contrast between cumulative and late-horizon comparisons. Norm shift exceeds institutional-trust repair on both vaccination and NPI cumulative yield in all screened draws ($p=1.00$ for both $ΔAUC$ comparisons), but the corresponding month-12 orderings are essentially unstable ($p=0.44$ for vaccination and $p=0.52$ for NPI, with median gaps near zero). A similar reversal appears against legitimacy repair: norm shift exceeds it on vaccination $ΔAUC$ in $76\%$ of draws, yet legitimacy repair exceeds norm shift on month-12 vaccination in $96\%$ of draws. This is consistent with the ABM’s mean reversion: interventions can separate strongly in cumulative yield while ending at much more similar, or even reversed, late-horizon levels.
+
+Some asymmetries are more robust. Legitimacy repair exceeds institutional-trust repair on vaccination in all screened draws, while institutional-trust repair exceeds legitimacy repair on the NPI outcome in all screened draws. Access facilitation shows a different persistence profile: its vaccination effect always peaks above its month-12 level ($p=1.00$; median final-to-peak ratio $0.61$), but that does not imply a positive cumulative effect, because the later reversal is strong enough that its post-burn vaccination $ΔAUC$ is negative on average in the canonical shock runs. Its month-12 NPI effect is never above baseline. The outbreak comparison is weaker and less consistent. On vaccination, outbreak salience exceeds outbreak wave in most draws ($p=0.78$ for $ΔAUC$ and $p=0.86$ at month 12), while on NPI the wave retains only a marginal edge ($p=0.56$ for both $ΔAUC$ and month 12). This matches the family-level screening: for NPI, outbreak wave is concentrated almost entirely on the incidence loop, whereas outbreak salience is distributed more broadly across stochasticity, incidence feedback, and social diffusion.

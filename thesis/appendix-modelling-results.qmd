@@ -1,0 +1,349 @@
+# Additional modelling results {#sec-appendix-modeling}
+
+```{python}
+#| echo: false
+#| label: fig-appendix-lobo-upstream
+#| fig-cap: "**Predictor-block importance for psychological profile variables, computed via leave-one-block-out (LOBO) ablation on the reference psychological-profile regressions.** Cell values are within-variable weights based on the increase in BIC when removing each upstream block, $w_{b,e}=\\max(\\Delta\\mathrm{BIC}_{b,e},0)/\\sum_j\\max(\\Delta\\mathrm{BIC}_{j,e},0)$. Institutional trust draws jointly on the information environment, information-environment credibility, and perceived norms; CoVax legitimacy is dominated by information-environment credibility; norms load primarily on moral orientation; and disposition (5C) is most strongly shaped by information-environment credibility, with smaller contributions from norms, moral orientation, and controls. Hatched cells denote blocks not included for that psychological profile variable."
+#| fig-pos: "H"
+
+from IPython.display import Markdown, display
+
+from utils.ch03_plot_tables import render_lobo_bic_block_outcome_heatmap
+from utils.engine_labels import (
+    P_REF_BLOCK_LABELS,
+    P_REF_BLOCK_ORDER,
+    P_REF_OUTCOME_BLOCK_LABELS,
+    P_REF_OUTCOME_BLOCK_MAP,
+    P_REF_OUTCOME_ORDER,
+)
+
+
+def _label_p_ref_outcome(outcome_key: str) -> str:
+    key = str(outcome_key).strip()
+    return P_REF_OUTCOME_BLOCK_LABELS.get(key, key)
+
+
+_p_ref_msg = render_lobo_bic_block_outcome_heatmap(
+    label_outcome=_label_p_ref_outcome,
+    extended_outcome_order=list(P_REF_OUTCOME_ORDER),
+    model_plan_ref_choice_path=None,
+    model_name_prefixes=["P_"],
+    model_name_suffix="_REF",
+    outcome_aliases=dict(P_REF_OUTCOME_BLOCK_MAP),
+    block_order=list(P_REF_BLOCK_ORDER),
+    block_labels=dict(P_REF_BLOCK_LABELS),
+    plot_title="Predictor-block importance for psychological profile variables",
+    x_axis_label="Psychological profile variables",
+)
+if _p_ref_msg:
+    display(Markdown(f"*{_p_ref_msg}*"))
+```
+
+::: {.content-visible when-format="pdf"}
+```{=latex}
+\begin{landscape}
+```
+:::
+
+```{python}
+#| echo: false
+#| label: tbl-appendix-predictors-estimate
+#| tbl-cap: "**Shared predictors of vaccination willingness and flu vaccination behaviours.** Standardised coefficients from the reference outcome models; '-' indicates that a predictor is not included for that outcome. Significance is encoded with $^*$ for $p < 0.05$, $^{**}$ for $p < 0.01$, and $^{***}$ for $p < 0.001$. Country fixed effects use Italy as the reference category."
+
+from utils.analysis_utils import MODELING
+from utils.engine_labels import CHOICE_ENGINE_BLOCK_LABELS
+from utils.qmd_utils import label_for, load_labels
+from utils.table_utils import effect_with_sig, load_coefficients, render_markdown_table
+import html
+from IPython.display import HTML
+
+LABELS = load_labels()
+SHORT_LABELS = load_labels(variant="short")
+COEFS = load_coefficients([MODELING / "model_coefficients_all.csv"])
+REF_MODEL_PLAN_PATH = MODELING / "model_plan_ref_choice.json"
+
+
+def fetch(model: str, term: str) -> tuple[str, str, str]:
+    return COEFS.format_entry(model, term)
+
+
+def build_ref_choice_columns() -> list[dict[str, str]]:
+    import json
+
+    rows = json.loads(REF_MODEL_PLAN_PATH.read_text(encoding="utf-8"))
+    cols: list[dict[str, str]] = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        outcome = str(row.get("outcome", "")).strip()
+        model = str(row.get("model", "")).strip()
+        if not outcome or not model:
+            continue
+        col_id = outcome
+        if outcome == "flu_vaccinated_2023_2024":
+            col_id = "flu_vaccination_habit"
+        cols.append({"id": col_id, "outcome": outcome, "model": model})
+
+    # Chapter 03 adds a no-habit flu reference column when reporting perturbations.
+    no_habit_model = "B_FLU_vaccinated_2023_2024_ENGINES"
+    if ("B_FLU_vaccinated_2023_2024_ENGINES_HABIT" in {c["model"] for c in cols}) and any(
+        m == no_habit_model for (m, _t) in COEFS.rows.keys()
+    ):
+        insert_at = next(
+            (i for i, col in enumerate(cols) if col["id"] == "flu_vaccination_habit"),
+            len(cols),
+        )
+        cols.insert(
+            insert_at,
+            {
+                "id": "flu_vaccination_no_habit",
+                "outcome": "flu_vaccinated_2023_2024",
+                "model": no_habit_model,
+            },
+        )
+    return cols
+
+
+BEHAVIOUR_COLUMNS_BASE = build_ref_choice_columns()
+
+
+def terms_by_model(columns: list[dict[str, str]]) -> dict[str, set[str]]:
+    by_model: dict[str, set[str]] = {}
+    for col in columns:
+        model_name = col["model"]
+        terms = {t for (m, t) in COEFS.rows if m == model_name and t != "Intercept"}
+        by_model[model_name] = terms
+    return by_model
+
+
+def _keep_predictor_term(term: str) -> bool:
+    t = str(term).strip()
+    if not t or t == "Intercept":
+        return False
+    if "missing" in t.lower():
+        return False
+    # Drop ordinal cutpoints / baseline thresholds (e.g., 1.0/2.0).
+    if "/" in t:
+        return False
+    return True
+
+
+BLOCK_ORDER_CH03 = [
+    "stakes_engine",
+    "vaccine_cost_engine",
+    "disposition_engine",
+    "institutional_trust_engine",
+    "group_trust_engine",
+    "trust_engine",
+    "legitimacy_engine",
+    "norms_engine",
+    "moral_engine",
+    "habit_engine",
+    "health_history_engine",
+    "controls_demography_SES",
+    "country",
+]
+
+
+def _block_label(block: str) -> str:
+    key = str(block).strip()
+    if key == "country":
+        return "Country context (fixed effect)"
+    return CHOICE_ENGINE_BLOCK_LABELS.get(key, key)
+
+
+def _term_to_block(columns: list[dict[str, str]]) -> dict[str, str]:
+    model_set = {col["model"] for col in columns}
+    candidates: dict[str, set[str]] = {}
+    for (model_name, term), row in COEFS.rows.items():
+        if model_name not in model_set or not _keep_predictor_term(term):
+            continue
+        block = str(row.get("block", "")).strip() or "other"
+        candidates.setdefault(term, set()).add(block)
+
+    order_rank = {b: i for i, b in enumerate(BLOCK_ORDER_CH03)}
+    out: dict[str, str] = {}
+    for term, blocks in candidates.items():
+        out[term] = sorted(blocks, key=lambda b: order_rank.get(b, 999))[0]
+    return out
+
+
+def build_all_predictor_rows(columns: list[dict[str, str]]) -> list[dict[str, object]]:
+    by_model = terms_by_model(columns)
+    all_terms = sorted({t for terms in by_model.values() for t in terms if _keep_predictor_term(t)})
+    term_block = _term_to_block(columns)
+    grouped: dict[str, list[str]] = {}
+    for term in all_terms:
+        grouped.setdefault(term_block.get(term, "other"), []).append(term)
+
+    rows: list[dict[str, object]] = []
+    ordered_blocks = [b for b in BLOCK_ORDER_CH03 if b in grouped] + sorted(
+        [b for b in grouped if b not in BLOCK_ORDER_CH03]
+    )
+    for block in ordered_blocks:
+        rows.append({"section": _block_label(block)})
+        for term in sorted(grouped[block], key=str.lower):
+            row_terms: dict[str, str | None] = {}
+            for col in columns:
+                model_name = col["model"]
+                row_terms[col["id"]] = term if term in by_model[model_name] else None
+            rows.append({"label_term": term, "terms": row_terms})
+    return rows
+
+
+def build_behaviour_rows(columns: list[dict[str, str]], rows: list[dict[str, object]]) -> list[list[str]]:
+    out_rows: list[list[str]] = []
+    for row in rows:
+        if "section" in row:
+            out_rows.append([f"__SECTION__::{row['section']}"])
+            continue
+        cells = [row_label(row)]
+        for col in columns:
+            term_spec = row["terms"].get(col["id"])
+            if not term_spec:
+                cells.append(" - ")
+                continue
+            if isinstance(term_spec, dict):
+                model_name = term_spec.get("model", col["model"])
+                term_name = term_spec["term"]
+            else:
+                model_name = col["model"]
+                term_name = term_spec
+            beta, _, sig = fetch(model_name, term_name)
+            cells.append(effect_with_sig(beta, sig))
+        out_rows.append(cells)
+    return out_rows
+
+
+def filter_rows_for_columns(columns: list[dict[str, str]], rows: list[dict[str, object]]) -> list[dict[str, object]]:
+    col_ids = [col["id"] for col in columns]
+    filtered: list[dict[str, object]] = []
+    pending_section: dict[str, object] | None = None
+
+    for row in rows:
+        if "section" in row:
+            pending_section = row
+            continue
+
+        terms = row.get("terms", {})
+        has_signal = any(bool(terms.get(col_id)) for col_id in col_ids)
+        if not has_signal:
+            continue
+
+        if pending_section is not None:
+            filtered.append(pending_section)
+            pending_section = None
+        filtered.append(row)
+
+    return filtered
+
+
+def row_label(row_spec: dict[str, object]) -> str:
+    if "label" in row_spec:
+        return str(row_spec["label"])
+    key = str(row_spec["label_term"])
+    short = label_for(key, labels=SHORT_LABELS)
+    if short != key:
+        return short
+    return label_for(key, labels=LABELS)
+
+
+def column_label(col: dict[str, str]) -> str:
+    outcome_key = str(col.get("outcome", "")).strip()
+    base = label_for(outcome_key, labels=SHORT_LABELS) if outcome_key else col["id"]
+    if col["id"] == "flu_vaccination_no_habit":
+        return f"{base} (no habit)"
+    if col["id"] == "flu_vaccination_habit":
+        return f"{base} (habit)"
+    return base
+
+
+def render_html_table_with_sections(headers: list[str], rows: list[list[str]]) -> str:
+    lines: list[str] = []
+    lines.append(
+        '<table class="table table-sm table-striped" '
+        'style="width:100%; table-layout:fixed;">'
+    )
+    lines.append("<colgroup>")
+    lines.append('<col style="width:24%;">')
+    if len(headers) > 1:
+        shared_width = 76 / (len(headers) - 1)
+        for _ in headers[1:]:
+            lines.append(f'<col style="width:{shared_width:.2f}%;">')
+    lines.append("</colgroup>")
+    lines.append("<thead><tr>")
+    for h in headers:
+        lines.append(
+            '<th style="white-space:normal; overflow-wrap:anywhere; '
+            'word-break:normal; line-height:1.15; vertical-align:bottom;">'
+            f"{html.escape(str(h))}</th>"
+        )
+    lines.append("</tr></thead>")
+    lines.append("<tbody>")
+    for row in rows:
+        if len(row) == 1 and row[0].startswith("__SECTION__::"):
+            title = row[0].split("::", 1)[1]
+            lines.append(
+                f'<tr class="section-row"><td colspan="{len(headers)}" '
+                'style="text-align:center; white-space:nowrap; font-weight:600;">'
+                f"<strong>{html.escape(title)}</strong></td></tr>"
+            )
+            continue
+        lines.append("<tr>")
+        for cell in row:
+            lines.append(f"<td>{html.escape(str(cell))}</td>")
+        lines.append("</tr>")
+    lines.append("</tbody></table>")
+    return "".join(lines)
+
+
+VAX_FLU_COLUMN_IDS = {
+    "vax_willingness_T12",
+    "flu_vaccination_no_habit",
+    "flu_vaccination_habit",
+}
+
+vax_flu_columns = [col for col in BEHAVIOUR_COLUMNS_BASE if col["id"] in VAX_FLU_COLUMN_IDS]
+all_rows = build_all_predictor_rows(BEHAVIOUR_COLUMNS_BASE)
+vax_flu_rows = filter_rows_for_columns(vax_flu_columns, all_rows)
+table3_html = render_html_table_with_sections(
+    ["Predictor"] + [column_label(col) for col in vax_flu_columns],
+    build_behaviour_rows(vax_flu_columns, vax_flu_rows),
+)
+
+display(HTML(table3_html))
+
+_b_lik, _, _ = fetch("B_PROTECT_mask_when_pressure_high_ENGINES_REF", "infection_likelihood_avg")
+_b_fear, _, _ = fetch("B_PROTECT_mask_when_pressure_high_ENGINES_REF", "disease_fear_avg")
+_b_sev, _, _ = fetch("B_PROTECT_mask_when_pressure_high_ENGINES_REF", "severity_if_infected_avg")
+_b_health_good, _, _ = fetch("B_FLU_vaccinated_2023_2024_ENGINES", "health_good")
+_b_stress_mask, _, _ = fetch("B_PROTECT_mask_when_symptomatic_crowded_ENGINES_REF", "fivec_low_constraints")
+_b_stress_home, _, _ = fetch("B_PROTECT_stay_home_when_symptomatic_ENGINES_REF", "fivec_low_constraints")
+```
+
+```{python}
+#| echo: false
+#| label: tbl-appendix-predictors-estimate-npi
+#| tbl-cap: "**Shared predictors of non-pharmaceutical preventive behaviours (NPI).** Standardised coefficients from the reference outcome models; '-' indicates that a predictor is not included for that outcome. Significance is encoded with $^*$ for $p < 0.05$, $^{**}$ for $p < 0.01$, and $^{***}$ for $p < 0.001$. Country fixed effects use Italy as the reference category."
+
+NPI_COLUMN_IDS = {
+    "mask_when_symptomatic_crowded",
+    "stay_home_when_symptomatic",
+    "mask_when_pressure_high",
+}
+
+npi_columns = [col for col in BEHAVIOUR_COLUMNS_BASE if col["id"] in NPI_COLUMN_IDS]
+npi_rows = filter_rows_for_columns(npi_columns, all_rows)
+table_npi_html = render_html_table_with_sections(
+    ["Predictor"] + [column_label(col) for col in npi_columns],
+    build_behaviour_rows(npi_columns, npi_rows),
+)
+
+display(HTML(table_npi_html))
+```
+
+::: {.content-visible when-format="pdf"}
+```{=latex}
+\end{landscape}
+```
+:::

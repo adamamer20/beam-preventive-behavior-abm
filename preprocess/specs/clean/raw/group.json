@@ -1,0 +1,3040 @@
+{
+  "encodings": {
+    "categorical": {
+      "Not at all": 1,
+      "Very bad": 1,
+      "Not very": 2,
+      "Bad": 2,
+      "A little": 2,
+      "Fair": 3,
+      "Quite": 3,
+      "Good": 4,
+      "Very": 4,
+      "Very good": 5,
+      "Very Good": 5,
+      "Completely": 5,
+      "Extremely": 5,
+      "I never found information on vaccines on this channel": null,
+      "I prefer not to answer": null
+    },
+    "coworker_closure_ordinal": {
+      "None of them": 0,
+      "Very few of them": 1,
+      "Some of them": 2,
+      "About a half of them": 3,
+      "Most of them": 4,
+      "Almost all of them": 5,
+      "All of them": 6
+    },
+    "vax_freq": {
+      "Never": 1,
+      "Less than once a month": 2,
+      "Once or more per month": 3,
+      "Once or more per week": 4,
+      "Daily": 5
+    }
+  },
+  "question_group": {
+    "people_num": "How many people of each group do you have?",
+    "medical_conditions": null,
+    "covid_num": "How many times on average has each of these groups contracted COVID-19?",
+    "covax_num": "How many doses of COVID-19 vaccine on average has each of these groups received?",
+    "risk_1": "How dangerous did you think COVID-19 was to your health in the following periods? (1-5)",
+    "risk_2": "How willing were you to be vaccinated against COVID-19 in the following periods? (1-5)",
+    "risk_infection": "In your opinion, how likely are you to contract the following infections today? (1-5)",
+    "risk_illness": "In your opinion, how likely are you to experience serious health consequences if you contract the following infections? (1-5)",
+    "risk_vax": "In your opinion, how likely are you to experience health consequences if you receive the vaccine for the following infections? (1-5)",
+    "emotion_illness": "How much do you fear the following infections? (1-5)",
+    "emotion_vax": "How much do you fear the vaccine for the following infections? (1-5)",
+    "fluvax": "Did you get vaccinated against the flu at least once in the following periods?",
+    "side_effects": "Has anyone in the following groups of people experienced any side effects (apart from arm pain) after being administered a dose of any vaccine?",
+    "vax_group": "During the pandemic, with how many people in the following groups did you have a conversation about vaccines/vaccination programs (in person, over the phone, or online)?",
+    "vax_freq": "During the pandemic, how often did you find yourself participating in a conversation about vaccines/vaccination programs (in person, over the phone, or online) with the following groups?",
+    "opinion": "How much do you agree with the following statements? (1-5)",
+    "opinion_change": "How has your opinion on the following statement changed?",
+    "institut_trust_vax": "How much do you trust the information about vaccines/vaccination programs shared by the following groups? (1-5)",
+    "pandemic_behaviour": "How much do you agree with the following statements? (1-7)",
+    "moral1": "When you decide whether something is right or wrong, to what extent are the following statements relevant to your thinking? (1-6)",
+    "moral2": "How much do you agree with the following statements? (1-5)",
+    "info": "Select the information channels you primarily use",
+    "contact_group": "With how many people in the following groups did you have a direct contact YESTERDAY?",
+    "discussion_group": "Thinking of LAST week, with how many different people in the following groups did you have a relevant conversation with?",
+    "opinion_other": "To what extent do the following groups agree or disagree with the provided statement? (1-7)"
+  },
+  "old_columns": [
+    {
+      "id": "size_coworker_group",
+      "section": "group",
+      "question": "How many co-workers do you have approximately?",
+      "answer": "Number of co-workers",
+      "missing_percentage": 37,
+      "n_outliers": {
+        "high": 2027,
+        "max": 500000
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 200
+        },
+        {
+          "type": "merging",
+          "merging_in": "size_colleagues_group"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "size_colleagues_group"
+        }
+      ]
+    },
+    {
+      "id": "size_classmate_group",
+      "section": "group",
+      "question": "How many classmates/course mates do you have approximately?",
+      "answer": "Number of classmates/course mates",
+      "missing_percentage": 94,
+      "n_outliers": {
+        "high": 130,
+        "max": 5000
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 200
+        },
+        {
+          "type": "merging",
+          "merging_in": "size_colleagues_group"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "size_colleagues_group"
+        }
+      ]
+    },
+    {
+      "id": "size_friend_group",
+      "section": "group",
+      "question": "How many friends do you have approximately?",
+      "answer": "Number of friends",
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 100
+        }
+      ],
+      "category": "Social Network Structure & Size",
+      "subcategory": "Friends: size"
+    },
+    {
+      "id": "coworker_closure",
+      "section": "group",
+      "question": "Approximately, how many of your coworkers are also working with each other?",
+      "answer": [
+        "None of them",
+        "About a half of them",
+        "Almost all of them",
+        "Very few of them",
+        "All of them",
+        "Most of them",
+        "Some of them"
+      ],
+      "missing_percentage": 44,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "missing"
+        },
+        {
+          "type": "encoding",
+          "encoding": "coworker_closure_ordinal"
+        }
+      ]
+    },
+    {
+      "id": "friend_closure",
+      "section": "group",
+      "question": "Approximately, how many of your friends are also each others' friends? (1-7)",
+      "answer": [
+        "Almost all of them",
+        "All of them",
+        "None of them",
+        "About a half of them",
+        "Very few of them",
+        "Most of them",
+        "Some of them"
+      ],
+      "missing_percentage": 11,
+      "transformations": [
+        {
+          "type": "imputation",
+          "imputation_value": "None of them"
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "None of them": 1,
+            "Very few of them": 2,
+            "About a half of them": 3,
+            "Some of them": 4,
+            "Most of them": 5,
+            "Almost all of them": 6,
+            "All of them": 7
+          }
+        }
+      ],
+      "category": "Social Network Structure & Size",
+      "subcategory": "Friend network closure"
+    },
+    {
+      "id": "yesterday_worker",
+      "section": "group",
+      "question": "How did you work YESTERDAY?",
+      "question_group": "vax_group",
+      "question_entity": "Cohabitants",
+      "answer": [
+        "Exclusively remotely",
+        "I did not work (e.g., it was a holiday, I was on vacation, I was ill)",
+        "Completely or partially in-person"
+      ],
+      "missing_percentage": 37,
+      "transformations": [
+        {
+          "type": "merging",
+          "merging_in": "yesterday_remote"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "yesterday_remote"
+        }
+      ]
+    },
+    {
+      "id": "yesterday_student",
+      "section": "group",
+      "question": "How did you attend school/university YESTERDAY?",
+      "answer": [
+        "Exclusively remotely (distance learning)",
+        "Completely or partially in-person",
+        "I did not attend (e.g., school/university was closed, I was ill)"
+      ],
+      "missing_percentage": 94,
+      "transformations": [
+        {
+          "type": "merging",
+          "merging_in": "yesterday_remote"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "yesterday_remote"
+        }
+      ]
+    },
+    {
+      "id": "contact_group_1_1",
+      "section": "group",
+      "question": "With how many different people in the age 0-17, cohabitants group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "missing_percentage": 21,
+      "n_outliers": {
+        "high": 969,
+        "max": 74
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 30
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "contact_group_cohabitant"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "contact_group_cohabitant"
+        }
+      ]
+    },
+    {
+      "id": "contact_group_2_1",
+      "section": "group",
+      "question": "With how many different people in the age 0-17, non-cohabiting sibling, parents and/or grandparents group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "missing_percentage": 44,
+      "n_outliers": {
+        "high": 1145,
+        "max": 75
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 30
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "contact_group_noncohabitant"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "contact_group_noncohabitant"
+        }
+      ]
+    },
+    {
+      "id": "contact_group_3_1",
+      "section": "group",
+      "question": "With how many different people in the age 0-17, non-cohabiting partner and/or children did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "missing_percentage": 74,
+      "n_outliers": {
+        "high": 780,
+        "max": 65
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 30
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "contact_group_noncohabitant"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "contact_group_noncohabitant"
+        }
+      ]
+    },
+    {
+      "id": "contact_group_4_1",
+      "section": "group",
+      "question": "With how many different people in the age 0-17, co-workers group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "missing_percentage": 41,
+      "n_outliers": {
+        "high": 1003,
+        "max": 500
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 200
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "contact_group_colleagues"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "contact_group_colleagues"
+        }
+      ]
+    },
+    {
+      "id": "contact_group_5_1",
+      "section": "group",
+      "question": "With how many different people in the age 0-17, class/course mates group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "missing_percentage": 95,
+      "n_outliers": {
+        "high": 213,
+        "max": 500
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 200
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "contact_group_colleagues"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "contact_group_colleagues"
+        }
+      ]
+    },
+    {
+      "id": "contact_group_6_1",
+      "section": "group",
+      "question": "With how many different people in the age 0-17, friends group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "missing_percentage": 5,
+      "n_outliers": {
+        "high": 2075,
+        "max": 698642687
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 200
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "contact_group_friends"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "contact_group_friends"
+        }
+      ]
+    },
+    {
+      "id": "contact_group_7_1",
+      "section": "group",
+      "question": "With how many different people in the age 0-17, Other (school, neighbors, shopkeepers) group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "n_outliers": {
+        "high": 2972,
+        "max": 674257943
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 200
+        },
+        {
+          "type": "merging",
+          "merging_in": "contact_group_others"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "contact_group_others"
+        }
+      ]
+    },
+    {
+      "id": "contact_group_1_2",
+      "section": "group",
+      "question": "With how many different people in the age 18-29, cohabitants group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "missing_percentage": 21,
+      "n_outliers": {
+        "high": 640,
+        "max": 1000
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 30
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "contact_group_cohabitant"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "contact_group_cohabitant"
+        }
+      ]
+    },
+    {
+      "id": "contact_group_2_2",
+      "section": "group",
+      "question": "With how many different people in the age 18-29, non-cohabiting sibling, parents and/or grandparents group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "missing_percentage": 44,
+      "n_outliers": {
+        "high": 1681,
+        "max": 90
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 30
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "contact_group_noncohabitant"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "contact_group_noncohabitant"
+        }
+      ]
+    },
+    {
+      "id": "contact_group_3_2",
+      "section": "group",
+      "question": "With how many different people in the age 18-29, non-cohabiting partner and/or children did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "missing_percentage": 74,
+      "n_outliers": {
+        "high": 1111,
+        "max": 100
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 30
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "contact_group_noncohabitant"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "contact_group_noncohabitant"
+        }
+      ]
+    },
+    {
+      "id": "contact_group_4_2",
+      "section": "group",
+      "question": "With how many different people in the age 18-29, co-workers group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "missing_percentage": 41,
+      "n_outliers": {
+        "high": 2232,
+        "max": 1000
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 200
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "contact_group_colleagues"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "contact_group_colleagues"
+        }
+      ]
+    },
+    {
+      "id": "contact_group_5_2",
+      "section": "group",
+      "question": "With how many different people in the age 18-29, class/course mates group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "missing_percentage": 95,
+      "n_outliers": {
+        "high": 193,
+        "max": 400
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 200
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "contact_group_colleagues"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "contact_group_colleagues"
+        }
+      ]
+    },
+    {
+      "id": "contact_group_6_2",
+      "section": "group",
+      "question": "With how many different people in the age 18-29, friends group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "missing_percentage": 5,
+      "n_outliers": {
+        "high": 4847,
+        "max": 658943709
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 200
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "contact_group_friends"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "contact_group_friends"
+        }
+      ]
+    },
+    {
+      "id": "contact_group_7_2",
+      "section": "group",
+      "question": "With how many different people in the age 18-29, Other (school, neighbors, shopkeepers) group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "n_outliers": {
+        "high": 4192,
+        "max": 679954980
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 200
+        },
+        {
+          "type": "merging",
+          "merging_in": "contact_group_others"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "contact_group_others"
+        }
+      ]
+    },
+    {
+      "id": "contact_group_1_3",
+      "section": "group",
+      "question": "With how many different people in the age 30-59, cohabitants group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "missing_percentage": 21,
+      "n_outliers": {
+        "high": 841,
+        "max": 1000
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 30
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "contact_group_cohabitant"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "contact_group_cohabitant"
+        }
+      ]
+    },
+    {
+      "id": "contact_group_2_3",
+      "section": "group",
+      "question": "With how many different people in the age 30-59, non-cohabiting sibling, parents and/or grandparents group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "missing_percentage": 44,
+      "n_outliers": {
+        "high": 630,
+        "max": 89
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 30
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "contact_group_noncohabitant"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "contact_group_noncohabitant"
+        }
+      ]
+    },
+    {
+      "id": "contact_group_3_3",
+      "section": "group",
+      "question": "With how many different people in the age 30-59, non-cohabiting partner and/or children did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "missing_percentage": 74,
+      "n_outliers": {
+        "high": 300,
+        "max": 80
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 30
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "contact_group_noncohabitant"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "contact_group_noncohabitant"
+        }
+      ]
+    },
+    {
+      "id": "contact_group_4_3",
+      "section": "group",
+      "question": "With how many different people in the age 30-59, co-workers group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "missing_percentage": 41,
+      "n_outliers": {
+        "high": 1076,
+        "max": 5000
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 200
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "contact_group_colleagues"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "contact_group_colleagues"
+        }
+      ]
+    },
+    {
+      "id": "contact_group_5_3",
+      "section": "group",
+      "question": "With how many different people in the age 30-59, class/course mates group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "missing_percentage": 95,
+      "n_outliers": {
+        "high": 158,
+        "max": 54
+      },
+      "transformations": [
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "contact_group_colleagues"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "contact_group_colleagues"
+        }
+      ]
+    },
+    {
+      "id": "contact_group_6_3",
+      "section": "group",
+      "question": "With how many different people in the age 30-59, friends group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "missing_percentage": 5,
+      "n_outliers": {
+        "high": 1206,
+        "max": 786479650
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 200
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "contact_group_friends"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "contact_group_friends"
+        }
+      ]
+    },
+    {
+      "id": "contact_group_7_3",
+      "section": "group",
+      "question": "With how many different people in the age 30-59, Other (school, neighbors, shopkeepers) group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "n_outliers": {
+        "high": 3222,
+        "max": 675479005
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 200
+        },
+        {
+          "type": "merging",
+          "merging_in": "contact_group_others"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "contact_group_others"
+        }
+      ]
+    },
+    {
+      "id": "contact_group_1_4",
+      "section": "group",
+      "question": "With how many different people in the age 60+, cohabitants group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "missing_percentage": 21,
+      "n_outliers": {
+        "high": 472,
+        "max": 1000
+      },
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 30
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "contact_group_cohabitant"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "contact_group_cohabitant"
+        }
+      ]
+    },
+    {
+      "id": "contact_group_2_4",
+      "section": "group",
+      "question": "With how many different people in the age 60+, non-cohabiting sibling, parents and/or grandparents group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "missing_percentage": 44,
+      "n_outliers": {
+        "high": 495,
+        "max": 90
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 30
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "contact_group_noncohabitant"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "contact_group_noncohabitant"
+        }
+      ]
+    },
+    {
+      "id": "contact_group_3_4",
+      "section": "group",
+      "question": "With how many different people in the age 60+, non-cohabiting partner and/or children did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "missing_percentage": 74,
+      "n_outliers": {
+        "high": 820,
+        "max": 90
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 30
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "contact_group_noncohabitant"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "contact_group_noncohabitant"
+        }
+      ]
+    },
+    {
+      "id": "contact_group_4_4",
+      "section": "group",
+      "question": "With how many different people in the age 60+, co-workers group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "missing_percentage": 41,
+      "n_outliers": {
+        "high": 2373,
+        "max": 900
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 200
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "contact_group_colleagues"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "contact_group_colleagues"
+        }
+      ]
+    },
+    {
+      "id": "contact_group_5_4",
+      "section": "group",
+      "question": "With how many different people in the age 60+, class/course mates group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "missing_percentage": 95,
+      "n_outliers": {
+        "high": 86,
+        "max": 84
+      },
+      "transformations": [
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "contact_group_colleagues"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "contact_group_colleagues"
+        }
+      ]
+    },
+    {
+      "id": "contact_group_6_4",
+      "section": "group",
+      "question": "With how many different people in the age 60+, friends group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "missing_percentage": 5,
+      "n_outliers": {
+        "high": 3961,
+        "max": 606447948
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 200
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "contact_group_friends"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "contact_group_friends"
+        }
+      ]
+    },
+    {
+      "id": "contact_group_7_4",
+      "section": "group",
+      "question": "With how many different people in the age 60+, Other (school, neighbors, shopkeepers) group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "n_outliers": {
+        "high": 5550,
+        "max": 689007438
+      },
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 200
+        },
+        {
+          "type": "merging",
+          "merging_in": "contact_group_others"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "contact_group_others"
+        }
+      ]
+    },
+    {
+      "id": "discussion_group_1_1",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the age 0-17, cohabitants group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "missing_percentage": 21,
+      "n_outliers": {
+        "high": 806,
+        "max": 800
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 20
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "discussion_group_cohabitant"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "discussion_group_cohabitant"
+        }
+      ]
+    },
+    {
+      "id": "discussion_group_2_1",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the age 0-17, non-cohabiting sibling, parents and/or grandparents group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "missing_percentage": 44,
+      "n_outliers": {
+        "high": 1249,
+        "max": 800
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 20
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "discussion_group_noncohabitant"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "discussion_group_noncohabitant"
+        }
+      ]
+    },
+    {
+      "id": "discussion_group_3_1",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the age 0-17, non-cohabiting partner and/or children group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "missing_percentage": 74,
+      "n_outliers": {
+        "high": 789,
+        "max": 300
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 20
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "discussion_group_noncohabitant"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "discussion_group_noncohabitant"
+        }
+      ]
+    },
+    {
+      "id": "discussion_group_4_1",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the age 0-17, co-workers group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "missing_percentage": 41,
+      "n_outliers": {
+        "high": 1135,
+        "max": 800
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 150
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "discussion_group_colleagues"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "discussion_group_colleagues"
+        }
+      ]
+    },
+    {
+      "id": "discussion_group_5_1",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the age 0-17, class/course mates group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "missing_percentage": 95,
+      "n_outliers": {
+        "high": 224,
+        "max": 100
+      },
+      "transformations": [
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "discussion_group_colleagues"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "discussion_group_colleagues"
+        }
+      ]
+    },
+    {
+      "id": "discussion_group_6_1",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the age 0-17, friends group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "missing_percentage": 5,
+      "n_outliers": {
+        "high": 2183,
+        "max": 689549043
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 150
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "discussion_group_friends"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "discussion_group_friends"
+        }
+      ]
+    },
+    {
+      "id": "discussion_group_7_1",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the age 0-17, Other (school, neighbors, shopkeepers) group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "n_outliers": {
+        "high": 3008,
+        "max": 632703279
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 150
+        },
+        {
+          "type": "merging",
+          "merging_in": "discussion_group_others"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "discussion_group_others"
+        }
+      ]
+    },
+    {
+      "id": "discussion_group_1_2",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the age 18-29, cohabitants group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "missing_percentage": 21,
+      "n_outliers": {
+        "high": 718,
+        "max": 1000
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 20
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "discussion_group_cohabitant"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "discussion_group_cohabitant"
+        }
+      ]
+    },
+    {
+      "id": "discussion_group_2_2",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the age 18-29, non-cohabiting sibling, parents and/or grandparents group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "missing_percentage": 44,
+      "n_outliers": {
+        "high": 2304,
+        "max": 800
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 20
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "discussion_group_noncohabitant"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "discussion_group_noncohabitant"
+        }
+      ]
+    },
+    {
+      "id": "discussion_group_3_2",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the age 18-29, non-cohabiting partner and/or children group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "missing_percentage": 74,
+      "n_outliers": {
+        "high": 204,
+        "max": 300
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 20
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "discussion_group_noncohabitant"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "discussion_group_noncohabitant"
+        }
+      ]
+    },
+    {
+      "id": "discussion_group_4_2",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the age 18-29, co-workers group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "missing_percentage": 41,
+      "n_outliers": {
+        "high": 914,
+        "max": 900
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 150
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "discussion_group_colleagues"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "discussion_group_colleagues"
+        }
+      ]
+    },
+    {
+      "id": "discussion_group_5_2",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the age 18-29, class/course mates group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "missing_percentage": 95,
+      "n_outliers": {
+        "high": 123,
+        "max": 240
+      },
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 150
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "discussion_group_colleagues"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "discussion_group_colleagues"
+        }
+      ]
+    },
+    {
+      "id": "discussion_group_6_2",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the age 18-29, friends group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "missing_percentage": 5,
+      "n_outliers": {
+        "high": 2821,
+        "max": 648053805
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 150
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "discussion_group_friends"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "discussion_group_friends"
+        }
+      ]
+    },
+    {
+      "id": "discussion_group_7_2",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the age 18-29, Other (school, neighbors, shopkeepers) group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "missing_percentage": 0,
+      "n_outliers": {
+        "high": 4867,
+        "max": 643700521
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 150
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "discussion_group_others"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "discussion_group_others"
+        }
+      ]
+    },
+    {
+      "id": "discussion_group_1_3",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the age 30-59, cohabitants group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "missing_percentage": 21,
+      "n_outliers": {
+        "high": 1035,
+        "max": 1000
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 20
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "discussion_group_cohabitant"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "discussion_group_cohabitant"
+        }
+      ]
+    },
+    {
+      "id": "discussion_group_2_3",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the age 30-59, non-cohabiting sibling, parents and/or grandparents group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "missing_percentage": 44,
+      "n_outliers": {
+        "high": 990,
+        "max": 800
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 20
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "discussion_group_noncohabitant"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "discussion_group_noncohabitant"
+        }
+      ]
+    },
+    {
+      "id": "discussion_group_3_3",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the age 30-59, non-cohabiting partner and/or children group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "missing_percentage": 74,
+      "n_outliers": {
+        "high": 483,
+        "max": 500
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 20
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "discussion_group_noncohabitant"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "discussion_group_noncohabitant"
+        }
+      ]
+    },
+    {
+      "id": "discussion_group_4_3",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the age 30-59, co-workers group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "missing_percentage": 41,
+      "n_outliers": {
+        "high": 970,
+        "max": 200000
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 150
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "discussion_group_colleagues"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "discussion_group_colleagues"
+        }
+      ]
+    },
+    {
+      "id": "discussion_group_5_3",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the age 30-59, class/course mates group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "missing_percentage": 95,
+      "n_outliers": {
+        "high": 192,
+        "max": 58
+      },
+      "transformations": [
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "discussion_group_colleagues"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "discussion_group_colleagues"
+        }
+      ]
+    },
+    {
+      "id": "discussion_group_6_3",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the age 30-59, friends group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "missing_percentage": 5,
+      "n_outliers": {
+        "high": 1755,
+        "max": 657932570
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 150
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "discussion_group_friends"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "discussion_group_friends"
+        }
+      ]
+    },
+    {
+      "id": "discussion_group_7_3",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the age 30-59, Other (school, neighbors, shopkeepers) group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "n_outliers": {
+        "high": 1534,
+        "max": 632709041
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 150
+        },
+        {
+          "type": "merging",
+          "merging_in": "discussion_group_others"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "discussion_group_others"
+        }
+      ]
+    },
+    {
+      "id": "discussion_group_1_4",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the age 60+, cohabitants group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "missing_percentage": 21,
+      "n_outliers": {
+        "high": 595,
+        "max": 9999900000000000
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 20
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "discussion_group_cohabitant"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "discussion_group_cohabitant"
+        }
+      ]
+    },
+    {
+      "id": "discussion_group_2_4",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the age 60+, non-cohabiting sibling, parents and/or grandparents group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "missing_percentage": 44,
+      "n_outliers": {
+        "high": 761,
+        "max": 999
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 20
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "discussion_group_noncohabitant"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "discussion_group_noncohabitant"
+        }
+      ]
+    },
+    {
+      "id": "discussion_group_3_4",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the age 60+, non-cohabiting partner and/or children group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "missing_percentage": 74,
+      "n_outliers": {
+        "high": 1032,
+        "max": 200
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 20
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "discussion_group_noncohabitant"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "discussion_group_noncohabitant"
+        }
+      ]
+    },
+    {
+      "id": "discussion_group_4_4",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the age 60+, co-workers group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "missing_percentage": 41,
+      "n_outliers": {
+        "high": 3202,
+        "max": 900
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 150
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "discussion_group_colleagues"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "discussion_group_colleagues"
+        }
+      ]
+    },
+    {
+      "id": "discussion_group_5_4",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the age 60+, class/course mates group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "missing_percentage": 95,
+      "n_outliers": {
+        "high": 100,
+        "max": 98
+      },
+      "transformations": [
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "discussion_group_colleagues"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "discussion_group_colleagues"
+        }
+      ]
+    },
+    {
+      "id": "discussion_group_6_4",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the age 60+, friends group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "missing_percentage": 5,
+      "n_outliers": {
+        "high": 2025,
+        "max": 632270513
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 150
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "discussion_group_friends"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "discussion_group_friends"
+        }
+      ]
+    },
+    {
+      "id": "discussion_group_7_4",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the age 60+, Other (school, neighbors, shopkeepers) group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "n_outliers": {
+        "high": 2442,
+        "max": 689427900
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 150
+        },
+        {
+          "type": "merging",
+          "merging_in": "discussion_group_others"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "discussion_group_others"
+        }
+      ]
+    },
+    {
+      "id": "vax_group_1",
+      "section": "group",
+      "question": "During the pandemic, with how many people in the cohabitants group did you have a conversation about vaccines/vaccination programs (in person, over the phone, or online)?",
+      "question_group": "vax_group",
+      "question_entity": "Cohabitants",
+      "answer": "Number of people",
+      "missing_percentage": 21,
+      "n_outliers": {
+        "high": 1459,
+        "max": 999999
+      },
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 8
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "vax_convo_count_cohabitants"
+        }
+      ],
+      "category": "Vaccine Conversations (Pandemic)",
+      "subcategory": "Count: Cohabitants"
+    },
+    {
+      "id": "vax_group_2",
+      "section": "group",
+      "question": "During the pandemic, with how many people in the non-cohabiting sibling, parents and/or grandparents group did you have a conversation about vaccines/vaccination programs (in person, over the phone, or online)?",
+      "answer": "Number of people",
+      "missing_percentage": 44,
+      "n_outliers": {
+        "high": 445,
+        "max": 1000
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 30
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "vax_group_noncohabitant"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "vax_group_noncohabitant"
+        }
+      ]
+    },
+    {
+      "id": "vax_group_3",
+      "section": "group",
+      "question": "During the pandemic, with how many people in the non-cohabiting partner and/or children group did you have a conversation about vaccines/vaccination programs (in person, over the phone, or online)?",
+      "answer": "Number of people",
+      "missing_percentage": 74,
+      "n_outliers": {
+        "high": 152,
+        "max": 365
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 30
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "vax_group_noncohabitant"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "vax_group_noncohabitant"
+        }
+      ]
+    },
+    {
+      "id": "vax_group_4",
+      "section": "group",
+      "question": "During the pandemic, with how many people in the co-workers group did you have a conversation about vaccines/vaccination programs (in person, over the phone, or online)?",
+      "answer": "Number of people",
+      "missing_percentage": 41,
+      "n_outliers": {
+        "high": 699,
+        "max": 4500
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 500
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "vax_group_colleagues"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "vax_group_colleagues"
+        }
+      ]
+    },
+    {
+      "id": "vax_group_5",
+      "section": "group",
+      "question": "During the pandemic, with how many people in the class/course mates group did you have a conversation about vaccines/vaccination programs (in person, over the phone, or online)?",
+      "answer": "Number of people",
+      "missing_percentage": 95,
+      "n_outliers": {
+        "high": 77,
+        "max": 200
+      },
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 500
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "merging",
+          "merging_in": "vax_group_colleagues"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "vax_group_colleagues"
+        }
+      ]
+    },
+    {
+      "id": "vax_group_6",
+      "section": "group",
+      "question": "During the pandemic, with how many people in the friends group did you have a conversation about vaccines/vaccination programs (in person, over the phone, or online)?",
+      "question_group": "vax_group",
+      "question_entity": "Friends",
+      "answer": "Number of people",
+      "missing_percentage": 5,
+      "n_outliers": {
+        "high": 1531,
+        "max": 29000
+      },
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 20
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "vax_convo_count_friends"
+        }
+      ],
+      "category": "Vaccine Conversations (Pandemic)",
+      "subcategory": "Count: Friends"
+    },
+    {
+      "id": "vax_group_7",
+      "section": "group",
+      "question": "During the pandemic, with how many people in the Other (school, neighbors, shopkeepers) group did you have a conversation about vaccines/vaccination programs (in person, over the phone, or online)?",
+      "question_group": "vax_group",
+      "question_entity": "Other (school, neighbors, shopkeepers)",
+      "answer": "Number of people",
+      "n_outliers": {
+        "high": 1761,
+        "max": 100000
+      },
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "outliers",
+          "max": 20
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "vax_convo_count_others"
+        }
+      ],
+      "category": "Vaccine Conversations (Pandemic)",
+      "subcategory": "Count: Others (school/neighbors/shopkeepers)"
+    },
+    {
+      "id": "vax_freq_1",
+      "section": "group",
+      "question": "During the pandemic, how often did you find yourself participating in a conversation about vaccines/vaccination programs (in person, over the phone, or online) with the cohabitants group?",
+      "question_group": "vax_freq",
+      "question_entity": "Cohabitants",
+      "answer": [
+        "Once or more per month",
+        "Less than once a month",
+        "Once or more per week",
+        "Daily"
+      ],
+      "missing_percentage": 31,
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "imputation",
+          "imputation_value": "Never"
+        },
+        {
+          "type": "encoding",
+          "encoding": "vax_freq"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "vax_convo_freq_cohabitants"
+        }
+      ],
+      "category": "Vaccine Conversations (Pandemic)",
+      "subcategory": "Frequency: Cohabitants"
+    },
+    {
+      "id": "vax_freq_2",
+      "section": "group",
+      "question": "During the pandemic, how often did you find yourself participating in a conversation about vaccines/vaccination programs (in person, over the phone, or online) with the non-cohabiting sibling, parents and/or grandparents group?",
+      "answer": [
+        "Less than once a month",
+        "Daily",
+        "Once or more per month",
+        "Once or more per week"
+      ],
+      "missing_percentage": 54,
+      "transformations": [
+        {
+          "type": "imputation",
+          "imputation_value": "Never"
+        },
+        {
+          "type": "encoding",
+          "encoding": "vax_freq"
+        },
+        {
+          "type": "merging",
+          "merging_in": "vax_freq_noncohabitant"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "vax_freq_noncohabitant"
+        }
+      ]
+    },
+    {
+      "id": "vax_freq_3",
+      "section": "group",
+      "question": "During the pandemic, how often did you find yourself participating in a conversation about vaccines/vaccination programs (in person, over the phone, or online) with the non-cohabiting partner and/or children group?",
+      "answer": [
+        "Less than once a month",
+        "Once or more per month",
+        "Daily",
+        "Once or more per week"
+      ],
+      "missing_percentage": 81,
+      "transformations": [
+        {
+          "type": "imputation",
+          "imputation_value": "Never"
+        },
+        {
+          "type": "encoding",
+          "encoding": "vax_freq"
+        },
+        {
+          "type": "merging",
+          "merging_in": "vax_freq_noncohabitant"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "vax_freq_noncohabitant"
+        }
+      ]
+    },
+    {
+      "id": "vax_freq_4",
+      "section": "group",
+      "question": "During the pandemic, how often did you find yourself participating in a conversation about vaccines/vaccination programs (in person, over the phone, or online) with the co-workers group?",
+      "answer": [
+        "Less than once a month",
+        "Once or more per month",
+        "Daily",
+        "Once or more per week"
+      ],
+      "missing_percentage": 57,
+      "transformations": [
+        {
+          "type": "imputation",
+          "imputation_value": "Never"
+        },
+        {
+          "type": "encoding",
+          "encoding": "vax_freq"
+        },
+        {
+          "type": "merging",
+          "merging_in": "vax_freq_colleagues"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "vax_freq_colleagues"
+        }
+      ]
+    },
+    {
+      "id": "vax_freq_5",
+      "section": "group",
+      "question": "During the pandemic, how often did you find yourself participating in a conversation about vaccines/vaccination programs (in person, over the phone, or online) with the class/course mates group?",
+      "answer": [
+        "Daily",
+        "Less than once a month",
+        "Once or more per month",
+        "Once or more per week"
+      ],
+      "missing_percentage": 97,
+      "transformations": [
+        {
+          "type": "imputation",
+          "imputation_value": "Never"
+        },
+        {
+          "type": "encoding",
+          "encoding": "vax_freq"
+        },
+        {
+          "type": "merging",
+          "merging_in": "vax_freq_colleagues"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "vax_freq_colleagues"
+        }
+      ]
+    },
+    {
+      "id": "vax_freq_6",
+      "section": "group",
+      "question": "During the pandemic, how often did you find yourself participating in a conversation about vaccines/vaccination programs (in person, over the phone, or online) with the friends group?",
+      "question_group": "vax_freq",
+      "question_entity": "Friends",
+      "answer": [
+        "Less than once a month",
+        "Daily",
+        "Once or more per month",
+        "Once or more per week"
+      ],
+      "missing_percentage": 24,
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "imputation",
+          "imputation_value": "Never"
+        },
+        {
+          "type": "encoding",
+          "encoding": "vax_freq"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "vax_convo_freq_friends"
+        }
+      ],
+      "category": "Vaccine Conversations (Pandemic)",
+      "subcategory": "Frequency: Friends"
+    },
+    {
+      "id": "vax_freq_7",
+      "section": "group",
+      "question": "During the pandemic, how often did you find yourself participating in a conversation about vaccines/vaccination programs (in person, over the phone, or online) with the Other (school, neighbors, shopkeepers) group?",
+      "question_group": "vax_freq",
+      "question_entity": "Other (school, neighbors, shopkeepers)",
+      "answer": [
+        "Daily",
+        "Less than once a month",
+        "Once or more per month",
+        "Once or more per week"
+      ],
+      "missing_percentage": 41,
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "imputation",
+          "imputation_value": "Never"
+        },
+        {
+          "type": "encoding",
+          "encoding": "vax_freq"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "vax_convo_freq_others"
+        }
+      ],
+      "category": "Vaccine Conversations (Pandemic)",
+      "subcategory": "Frequency: Others (school/neighbors/shopkeepers)"
+    },
+    {
+      "id": "group_trust_vax_1",
+      "section": "group",
+      "question": "How much did you trust the information about vaccines/vaccination programs you received from the cohabitants group?",
+      "answer": [
+        "Not at all",
+        "Completely",
+        "A little",
+        "Very",
+        "Quite"
+      ],
+      "missing_percentage": 31,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "merging",
+          "merging_in": "group_trust_vax"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "group_trust_vax"
+        }
+      ]
+    },
+    {
+      "id": "group_trust_vax_2",
+      "section": "group",
+      "question": "How much did you trust the information about vaccines/vaccination programs you received from the non-cohabiting sibling, parents and/or grandparents group?",
+      "answer": [
+        "Completely",
+        "Not at all",
+        "Very",
+        "A little",
+        "Quite"
+      ],
+      "missing_percentage": 54,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "merging",
+          "merging_in": "group_trust_vax"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "group_trust_vax"
+        }
+      ]
+    },
+    {
+      "id": "group_trust_vax_3",
+      "section": "group",
+      "question": "How much did you trust the information about vaccines/vaccination programs you received from the non-cohabiting partner and/or children group?",
+      "answer": [
+        "Not at all",
+        "Completely",
+        "Very",
+        "A little",
+        "Quite"
+      ],
+      "missing_percentage": 81,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "merging",
+          "merging_in": "group_trust_vax"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "group_trust_vax"
+        }
+      ]
+    },
+    {
+      "id": "group_trust_vax_4",
+      "section": "group",
+      "question": "How much did you trust the information about vaccines/vaccination programs you received from the co-workers group?",
+      "answer": [
+        "Completely",
+        "Not at all",
+        "Very",
+        "A little",
+        "Quite"
+      ],
+      "missing_percentage": 57,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "merging",
+          "merging_in": "group_trust_vax"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "group_trust_vax"
+        }
+      ]
+    },
+    {
+      "id": "group_trust_vax_5",
+      "section": "group",
+      "question": "How much did you trust the information about vaccines/vaccination programs you received from the class/course mates group?",
+      "answer": [
+        "Completely",
+        "Very",
+        "Not at all",
+        "Quite",
+        "A little"
+      ],
+      "missing_percentage": 97,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "merging",
+          "merging_in": "group_trust_vax"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "group_trust_vax"
+        }
+      ]
+    },
+    {
+      "id": "group_trust_vax_6",
+      "section": "group",
+      "question": "How much did you trust the information about vaccines/vaccination programs you received from the friends group?",
+      "answer": [
+        "Completely",
+        "Not at all",
+        "Very",
+        "A little",
+        "Quite"
+      ],
+      "missing_percentage": 24,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "merging",
+          "merging_in": "group_trust_vax"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "group_trust_vax"
+        }
+      ]
+    },
+    {
+      "id": "group_trust_vax_7",
+      "section": "group",
+      "question": "How much did you trust the information about vaccines/vaccination programs you received from the Other (school, neighbors, shopkeepers) group?",
+      "answer": [
+        "Completely",
+        "Very",
+        "Not at all",
+        "Quite",
+        "A little"
+      ],
+      "missing_percentage": 41,
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        },
+        {
+          "type": "merging",
+          "merging_in": "group_trust_vax"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "merging",
+          "removal_redundant_col": "group_trust_vax"
+        }
+      ]
+    }
+  ],
+  "new_columns": [
+    {
+      "id": "size_colleagues_group",
+      "section": "group",
+      "question": "How many colleagues (co-workers/classmates) do you have approximately?",
+      "answer": "Number of colleagues (co-workers/classmates)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "missing",
+          "merged_from": [
+            "size_coworker_group",
+            "size_classmate_group"
+          ]
+        },
+        {
+          "type": "imputation",
+          "imputation_value": 0
+        },
+        {
+          "type": "outliers",
+          "max": 70
+        }
+      ],
+      "category": "Social Network Structure & Size",
+      "subcategory": "Colleagues/classmates: size"
+    },
+    {
+      "id": "yesterday_remote",
+      "section": "group",
+      "question": "Did you work / attend lectures remotely YESTERDAY?",
+      "answer": [
+        "Exclusively remotely",
+        "I did not work / I did not attend lectures (e.g., it was a holiday, I was on vacation, I was ill)",
+        "Completely or partially in-person"
+      ],
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "missing",
+          "merged_from": [
+            "yesterday_worker",
+            "yesterday_student"
+          ]
+        },
+        {
+          "type": "encoding",
+          "encoding": {
+            "Completely or partially in-person": false,
+            "Exclusively remotely": true,
+            "Exclusively remotely (distance learning)": true,
+            "I did not work (e.g., it was a holiday, I was on vacation, I was ill)": null,
+            "I did not attend (e.g., school/university was closed, I was ill)": null
+          }
+        }
+      ],
+      "category": "Social Network Structure & Size",
+      "subcategory": "Work/study modality yesterday (remote)"
+    },
+    {
+      "id": "contact_group_cohabitant",
+      "section": "group",
+      "question": "With how many different people in the cohabitants group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "sum",
+          "merged_from": [
+            "contact_group_1_1",
+            "contact_group_1_2",
+            "contact_group_1_3",
+            "contact_group_1_4"
+          ]
+        },
+        {
+          "type": "outliers",
+          "max": 10
+        }
+      ],
+      "category": "Social Contacts (Yesterday)",
+      "subcategory": "Direct contacts: Cohabitants"
+    },
+    {
+      "id": "contact_group_noncohabitant",
+      "section": "group",
+      "question": "With how many different people in the non-cohabitants group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "sum",
+          "merged_from": [
+            "contact_group_2_1",
+            "contact_group_3_1",
+            "contact_group_2_2",
+            "contact_group_3_2",
+            "contact_group_2_3",
+            "contact_group_3_3",
+            "contact_group_2_4",
+            "contact_group_3_4"
+          ]
+        },
+        {
+          "type": "outliers",
+          "max": 10
+        }
+      ],
+      "category": "Social Contacts (Yesterday)",
+      "subcategory": "Direct contacts: Non-cohabitants"
+    },
+    {
+      "id": "contact_group_colleagues",
+      "section": "group",
+      "question": "With how many different people in the co-workers group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "sum",
+          "merged_from": [
+            "contact_group_4_1",
+            "contact_group_5_1",
+            "contact_group_4_2",
+            "contact_group_5_2",
+            "contact_group_4_3",
+            "contact_group_5_3",
+            "contact_group_4_4",
+            "contact_group_5_4"
+          ]
+        },
+        {
+          "type": "outliers",
+          "max": 20
+        }
+      ],
+      "category": "Social Contacts (Yesterday)",
+      "subcategory": "Direct contacts: Colleagues"
+    },
+    {
+      "id": "contact_group_friends",
+      "section": "group",
+      "question": "With how many different people in the friends group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "sum",
+          "merged_from": [
+            "contact_group_6_1",
+            "contact_group_6_2",
+            "contact_group_6_3",
+            "contact_group_6_4"
+          ]
+        },
+        {
+          "type": "outliers",
+          "max": 20
+        }
+      ],
+      "category": "Social Contacts (Yesterday)",
+      "subcategory": "Direct contacts: Friends"
+    },
+    {
+      "id": "contact_group_others",
+      "section": "group",
+      "question": "With how many different people in the Other (school, neighbors, shopkeepers) group did you have a direct contact YESTERDAY?",
+      "answer": "Number of contacts",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "sum",
+          "merged_from": [
+            "contact_group_7_1",
+            "contact_group_7_2",
+            "contact_group_7_3",
+            "contact_group_7_4"
+          ]
+        },
+        {
+          "type": "outliers",
+          "max": 20
+        }
+      ],
+      "category": "Social Contacts (Yesterday)",
+      "subcategory": "Direct contacts: Others"
+    },
+    {
+      "id": "discussion_group_cohabitant",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the cohabitants group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "sum",
+          "merged_from": [
+            "discussion_group_1_1",
+            "discussion_group_1_2",
+            "discussion_group_1_3",
+            "discussion_group_1_4"
+          ]
+        },
+        {
+          "type": "outliers",
+          "max": 20
+        }
+      ],
+      "category": "Conversations (Last Week, Any Topic)",
+      "subcategory": "Cohabitants"
+    },
+    {
+      "id": "discussion_group_noncohabitant",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the non-cohabiting sibling, parents and/or grandparents group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "sum",
+          "merged_from": [
+            "discussion_group_2_1",
+            "discussion_group_3_1",
+            "discussion_group_2_2",
+            "discussion_group_3_2",
+            "discussion_group_2_3",
+            "discussion_group_3_3",
+            "discussion_group_2_4",
+            "discussion_group_3_4"
+          ]
+        },
+        {
+          "type": "outliers",
+          "max": 20
+        }
+      ],
+      "category": "Conversations (Last Week, Any Topic)",
+      "subcategory": "Non-cohabiting family"
+    },
+    {
+      "id": "discussion_group_colleagues",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the co-workers group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "sum",
+          "merged_from": [
+            "discussion_group_4_1",
+            "discussion_group_5_1",
+            "discussion_group_4_2",
+            "discussion_group_5_2",
+            "discussion_group_4_3",
+            "discussion_group_5_3",
+            "discussion_group_4_4",
+            "discussion_group_5_4"
+          ]
+        },
+        {
+          "type": "outliers",
+          "max": 30
+        }
+      ],
+      "category": "Conversations (Last Week, Any Topic)",
+      "subcategory": "Colleagues"
+    },
+    {
+      "id": "discussion_group_friends",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the friends group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "sum",
+          "merged_from": [
+            "discussion_group_6_1",
+            "discussion_group_6_2",
+            "discussion_group_6_3",
+            "discussion_group_6_4"
+          ]
+        },
+        {
+          "type": "outliers",
+          "max": 30
+        }
+      ],
+      "category": "Conversations (Last Week, Any Topic)",
+      "subcategory": "Friends"
+    },
+    {
+      "id": "discussion_group_others",
+      "section": "group",
+      "question": "Thinking of LAST week, with how many different people in the Other (school, neighbors, shopkeepers) group did you have a relevant conversation with?",
+      "answer": "Number of people",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "sum",
+          "merged_from": [
+            "discussion_group_7_1",
+            "discussion_group_7_2",
+            "discussion_group_7_3",
+            "discussion_group_7_4"
+          ]
+        },
+        {
+          "type": "outliers",
+          "max": 20
+        }
+      ],
+      "category": "Conversations (Last Week, Any Topic)",
+      "subcategory": "Others"
+    },
+    {
+      "id": "vax_group_noncohabitant",
+      "section": "group",
+      "question": "During the pandemic, with how many people in the non-cohabiting group did you have a conversation about vaccines/vaccination programs (in person, over the phone, or online)?",
+      "answer": "Number of people",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "sum",
+          "merged_from": [
+            "vax_group_2",
+            "vax_group_3"
+          ]
+        },
+        {
+          "type": "outliers",
+          "max": 15
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "vax_convo_count_noncohabitants"
+        }
+      ],
+      "category": "Vaccine Conversations (Pandemic)",
+      "subcategory": "Count: Non-cohabiting family"
+    },
+    {
+      "id": "vax_group_colleagues",
+      "section": "group",
+      "question": "During the pandemic, with how many people in the colleagues (co-workers and classmates) group did you have a conversation about vaccines/vaccination programs (in person, over the phone, or online)?",
+      "answer": "Number of people",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "sum",
+          "merged_from": [
+            "vax_group_4",
+            "vax_group_5"
+          ]
+        },
+        {
+          "type": "outliers",
+          "max": 30
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "vax_convo_count_colleagues"
+        }
+      ],
+      "category": "Vaccine Conversations (Pandemic)",
+      "subcategory": "Count: Colleagues"
+    },
+    {
+      "id": "vax_freq_noncohabitant",
+      "section": "group",
+      "question": "During the pandemic, how often did you find yourself participating in a conversation about vaccines/vaccination programs (in person, over the phone, or online) with the non-cohabiting sibling, parents and/or grandparents group?",
+      "answer": "Average of frequency",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "vax_freq_2",
+            "vax_freq_3"
+          ]
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "vax_convo_freq_noncohabitants"
+        }
+      ],
+      "category": "Vaccine Conversations (Pandemic)",
+      "subcategory": "Frequency: Non-cohabiting family"
+    },
+    {
+      "id": "vax_freq_colleagues",
+      "section": "group",
+      "question": "During the pandemic, how often did you find yourself participating in a conversation about vaccines/vaccination programs (in person, over the phone, or online) with the colleagues (co-workers / classmates) group?",
+      "answer": "Average of frequency",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "vax_freq_4",
+            "vax_freq_5"
+          ]
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "vax_convo_freq_colleagues"
+        }
+      ],
+      "category": "Vaccine Conversations (Pandemic)",
+      "subcategory": "Frequency: Colleagues"
+    },
+    {
+      "id": "group_trust_vax",
+      "section": "group",
+      "question": "How much did you trust the information about vaccines/vaccination programs you received from others?",
+      "answer": "Average of trust",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "group_trust_vax_1",
+            "group_trust_vax_2",
+            "group_trust_vax_3",
+            "group_trust_vax_4",
+            "group_trust_vax_5",
+            "group_trust_vax_6",
+            "group_trust_vax_7"
+          ]
+        }
+      ],
+      "category": "Peer Trust (Vaccine Info)",
+      "subcategory": "Trust in info from social contacts"
+    },
+    {
+      "id": "vax_convo_count_cohabitants",
+      "question": "Alias of vax_group_1 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "vax_group_1"
+        }
+      ],
+      "section": "group"
+    },
+    {
+      "id": "vax_convo_count_friends",
+      "question": "Alias of vax_group_6 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "vax_group_6"
+        }
+      ],
+      "section": "group"
+    },
+    {
+      "id": "vax_convo_count_others",
+      "question": "Alias of vax_group_7 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "vax_group_7"
+        }
+      ],
+      "section": "group"
+    },
+    {
+      "id": "vax_convo_count_noncohabitants",
+      "question": "Alias of vax_group_noncohabitant (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "vax_group_noncohabitant"
+        }
+      ],
+      "section": "group"
+    },
+    {
+      "id": "vax_convo_count_colleagues",
+      "question": "Alias of vax_group_colleagues (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "vax_group_colleagues"
+        }
+      ],
+      "section": "group"
+    },
+    {
+      "id": "vax_convo_freq_cohabitants",
+      "question": "Alias of vax_freq_1 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "vax_freq_1"
+        }
+      ],
+      "section": "group"
+    },
+    {
+      "id": "vax_convo_freq_friends",
+      "question": "Alias of vax_freq_6 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "vax_freq_6"
+        }
+      ],
+      "section": "group"
+    },
+    {
+      "id": "vax_convo_freq_others",
+      "question": "Alias of vax_freq_7 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "vax_freq_7"
+        }
+      ],
+      "section": "group"
+    },
+    {
+      "id": "vax_convo_freq_noncohabitants",
+      "question": "Alias of vax_freq_noncohabitant (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "vax_freq_noncohabitant"
+        }
+      ],
+      "section": "group"
+    },
+    {
+      "id": "vax_convo_freq_colleagues",
+      "question": "Alias of vax_freq_colleagues (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "vax_freq_colleagues"
+        }
+      ],
+      "section": "group"
+    }
+  ]
+}

@@ -1,0 +1,1107 @@
+{
+  "encodings": {
+    "moral": {
+      "Not at all relevant": 1,
+      "Not very relevant": 2,
+      "Slightly relevant": 3,
+      "Somewhat relevant": 4,
+      "Very relevant": 5,
+      "Extremely relevant": 6
+    },
+    "moral2": {
+      "Strongly disagree": 1,
+      "Moderately disagree": 2,
+      "Slightly disagree": 3,
+      "Slightly agree": 4,
+      "Moderately agree": 5,
+      "Strongly agree": 6
+    }
+  },
+  "question_group": {
+    "people_num": "How many people of each group do you have?",
+    "medical_conditions": null,
+    "covid_num": "How many times on average has each of these groups contracted COVID-19?",
+    "covax_num": "How many doses of COVID-19 vaccine on average has each of these groups received?",
+    "risk_1": "How dangerous did you think COVID-19 was to your health in the following periods? (1-5)",
+    "risk_2": "How willing were you to be vaccinated against COVID-19 in the following periods? (1-5)",
+    "risk_infection": "In your opinion, how likely are you to contract the following infections today? (1-5)",
+    "risk_illness": "In your opinion, how likely are you to experience serious health consequences if you contract the following infections? (1-5)",
+    "risk_vax": "In your opinion, how likely are you to experience health consequences if you receive the vaccine for the following infections? (1-5)",
+    "emotion_illness": "How much do you fear the following infections? (1-5)",
+    "emotion_vax": "How much do you fear the vaccine for the following infections? (1-5)",
+    "fluvax": "Did you get vaccinated against the flu at least once in the following periods?",
+    "side_effects": "Has anyone in the following groups of people experienced any side effects (apart from arm pain) after being administered a dose of any vaccine?",
+    "vax_group": "During the pandemic, with how many people in the following groups did you have a conversation about vaccines/vaccination programs (in person, over the phone, or online)?",
+    "vax_freq": "During the pandemic, how often did you find yourself participating in a conversation about vaccines/vaccination programs (in person, over the phone, or online) with the following groups?",
+    "opinion": "How much do you agree with the following statements? (1-5)",
+    "opinion_change": "How has your opinion on the following statement changed?",
+    "institut_trust_vax": "How much do you trust the information about vaccines/vaccination programs shared by the following groups? (1-5)",
+    "pandemic_behaviour": "How much do you agree with the following statements? (1-7)",
+    "moral1": "When you decide whether something is right or wrong, to what extent are the following statements relevant to your thinking? (1-6)",
+    "moral2": "How much do you agree with the following statements? (1-5)",
+    "info": "Select the information channels you primarily use",
+    "contact_group": "With how many people in the following groups did you have a direct contact YESTERDAY?",
+    "discussion_group": "Thinking of LAST week, with how many different people in the following groups did you have a relevant conversation with?",
+    "opinion_other": "To what extent do the following groups agree or disagree with the provided statement? (1-7)"
+  },
+  "old_columns": [
+    {
+      "id": "moral1_1",
+      "section": "moral",
+      "question": "When you decide whether something is right or wrong, to what extent is 'Whether or not someone suffered emotionally' relevant to your thinking? (1-6)",
+      "answer": [
+        "Not at all relevant",
+        "Not very relevant",
+        "Extremely relevant",
+        "Slightly relevant",
+        "Very relevant",
+        "Somewhat relevant"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "moral"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "mfq_relevance_care_emotional_suffering"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Care/Harm (relevance)"
+    },
+    {
+      "id": "moral1_2",
+      "section": "moral",
+      "question": "When you decide whether something is right or wrong, to what extent is 'Whether or not some people were treated differently than others' relevant to your thinking? (1-6)",
+      "answer": [
+        "Not at all relevant",
+        "Not very relevant",
+        "Extremely relevant",
+        "Slightly relevant",
+        "Very relevant",
+        "Somewhat relevant"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "moral"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "mfq_relevance_2"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Fairness/Cheating (relevance)"
+    },
+    {
+      "id": "moral1_3",
+      "section": "moral",
+      "question": "When you decide whether something is right or wrong, to what extent is 'Whether or not someone's action showed love for his or her country' relevant to your thinking? (1-6)",
+      "answer": [
+        "Extremely relevant",
+        "Not at all relevant",
+        "Not very relevant",
+        "Very relevant",
+        "Slightly relevant",
+        "Somewhat relevant"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "moral"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "mfq_relevance_3"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Loyalty/Betrayal (relevance)"
+    },
+    {
+      "id": "moral1_4",
+      "section": "moral",
+      "question": "When you decide whether something is right or wrong, to what extent is 'Whether or not someone showed a lack of respect for authority' relevant to your thinking? (1-6)",
+      "answer": [
+        "Not at all relevant",
+        "Not very relevant",
+        "Extremely relevant",
+        "Slightly relevant",
+        "Very relevant",
+        "Somewhat relevant"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "moral"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "mfq_relevance_4"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Authority/Subversion (relevance)"
+    },
+    {
+      "id": "moral1_5",
+      "section": "moral",
+      "question": "When you decide whether something is right or wrong, to what extent is 'Whether or not someone violated standards of purity and decency' relevant to your thinking? (1-6)",
+      "answer": [
+        "Not at all relevant",
+        "Not very relevant",
+        "Extremely relevant",
+        "Slightly relevant",
+        "Very relevant",
+        "Somewhat relevant"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "moral"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "mfq_relevance_5"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Purity/Degradation (relevance)"
+    },
+    {
+      "id": "moral1_6",
+      "section": "moral",
+      "question": "When you decide whether something is right or wrong, to what extent is 'Whether or not someone was good at math' relevant to your thinking? (1-6)",
+      "answer": [
+        "Extremely relevant",
+        "Very relevant",
+        "Somewhat relevant",
+        "Slightly relevant",
+        "Not very relevant",
+        "Not at all relevant"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "moral"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "mfq_relevance_6"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "redundant"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Control/Decoy (math; relevance)"
+    },
+    {
+      "id": "moral1_7",
+      "section": "moral",
+      "question": "When you decide whether something is right or wrong, to what extent is 'Whether or not someone cared for someone weak or vulnerable' relevant to your thinking? (1-6)",
+      "answer": [
+        "Not at all relevant",
+        "Not very relevant",
+        "Slightly relevant",
+        "Extremely relevant",
+        "Somewhat relevant",
+        "Very relevant"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "moral"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "mfq_relevance_care_protect_weak"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Care/Harm (relevance)"
+    },
+    {
+      "id": "moral1_8",
+      "section": "moral",
+      "question": "When you decide whether something is right or wrong, to what extent is 'Whether or not someone cared for someone weak or vulnerable' relevant to your thinking? (1-6)",
+      "answer": [
+        "Not at all relevant",
+        "Not very relevant",
+        "Slightly relevant",
+        "Extremely relevant",
+        "Somewhat relevant",
+        "Very relevant"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "moral"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "mfq_relevance_8"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Care/Harm (relevance; duplicate phrasing)"
+    },
+    {
+      "id": "moral1_9",
+      "section": "moral",
+      "question": "When you decide whether something is right or wrong, to what extent is 'Whether or not someone did something to betray his or her group' relevant to your thinking? (1-6)",
+      "answer": [
+        "Not at all relevant",
+        "Not very relevant",
+        "Slightly relevant",
+        "Extremely relevant",
+        "Somewhat relevant",
+        "Very relevant"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "moral"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "mfq_relevance_9"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Loyalty/Betrayal (relevance)"
+    },
+    {
+      "id": "moral1_10",
+      "section": "moral",
+      "question": "When you decide whether something is right or wrong, to what extent is 'Whether or not someone conformed to the traditions of society' relevant to your thinking? (1-6)",
+      "answer": [
+        "Extremely relevant",
+        "Not at all relevant",
+        "Very relevant",
+        "Not very relevant",
+        "Slightly relevant",
+        "Somewhat relevant"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "moral"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "mfq_relevance_10"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Authority/Tradition (relevance)"
+    },
+    {
+      "id": "moral1_11",
+      "section": "moral",
+      "question": "When you decide whether something is right or wrong, to what extent is 'Whether or not someone did something disgusting' relevant to your thinking? (1-6)",
+      "answer": [
+        "Not at all relevant",
+        "Not very relevant",
+        "Slightly relevant",
+        "Extremely relevant",
+        "Somewhat relevant",
+        "Very relevant"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "moral"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "mfq_relevance_11"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Purity/Degradation (relevance)"
+    },
+    {
+      "id": "moral2_1",
+      "section": "moral",
+      "question": "Please indicate your agreement or disagreement with the statement: 'Compassion for those who are suffering is the most crucial virtue.' (1-6)",
+      "answer": [
+        "Strongly disagree",
+        "Moderately disagree",
+        "Slightly disagree",
+        "Slightly agree",
+        "Strongly agree",
+        "Moderately agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "moral2"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "mfq_agreement_1"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Care/Harm (agreement)"
+    },
+    {
+      "id": "moral2_2",
+      "section": "moral",
+      "question": "Please indicate your agreement or disagreement with the statement: 'When the government makes laws, the number one principle should be ensuring that everyone is treated fairly.' (1-6)",
+      "answer": [
+        "Strongly disagree",
+        "Moderately disagree",
+        "Slightly disagree",
+        "Slightly agree",
+        "Moderately agree",
+        "Strongly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "moral2"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "mfq_agreement_2"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Fairness/Justice (agreement)"
+    },
+    {
+      "id": "moral2_3",
+      "section": "moral",
+      "question": "Please indicate your agreement or disagreement with the statement: 'I am proud of my country's history.' (1-6)",
+      "answer": [
+        "Strongly disagree",
+        "Moderately disagree",
+        "Slightly disagree",
+        "Strongly agree",
+        "Moderately agree",
+        "Slightly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "moral2"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "mfq_agreement_3"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Loyalty/National pride (agreement)"
+    },
+    {
+      "id": "moral2_4",
+      "section": "moral",
+      "question": "Please indicate your agreement or disagreement with the statement: 'Respect for authority is something all children need to learn.' (1-6)",
+      "answer": [
+        "Strongly disagree",
+        "Moderately disagree",
+        "Slightly disagree",
+        "Slightly agree",
+        "Moderately agree",
+        "Strongly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "moral2"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "mfq_agreement_4"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Authority/Respect (agreement)"
+    },
+    {
+      "id": "moral2_5",
+      "section": "moral",
+      "question": "Please indicate your agreement or disagreement with the statement: 'People should not do things that are disgusting, even if no one is harmed.' (1-6)",
+      "answer": [
+        "Strongly disagree",
+        "Moderately disagree",
+        "Slightly disagree",
+        "Slightly agree",
+        "Moderately agree",
+        "Strongly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "moral2"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "mfq_agreement_5"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Purity/Degradation (agreement)"
+    },
+    {
+      "id": "moral2_6",
+      "section": "moral",
+      "question": "Please indicate your agreement or disagreement with the statement: 'It is better to do good than to do bad.' (1-6)",
+      "answer": [
+        "Strongly disagree",
+        "Moderately disagree",
+        "Slightly disagree",
+        "Slightly agree",
+        "Moderately agree",
+        "Strongly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "moral2"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "mfq_agreement_6"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "redundant"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "General virtue (control)"
+    },
+    {
+      "id": "moral2_7",
+      "section": "moral",
+      "question": "Please indicate your agreement or disagreement with the statement: 'One of the worst things a person could do is hurt a defenseless animal.' (1-6)",
+      "answer": [
+        "Strongly disagree",
+        "Moderately disagree",
+        "Slightly disagree",
+        "Slightly agree",
+        "Moderately agree",
+        "Strongly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "moral2"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "mfq_agreement_7"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Care/Harm (agreement)"
+    },
+    {
+      "id": "moral2_8",
+      "section": "moral",
+      "question": "Please indicate your agreement or disagreement with the statement: 'Justice is the most important requirement for a society.' (1-6)",
+      "answer": [
+        "Strongly disagree",
+        "Moderately disagree",
+        "Slightly disagree",
+        "Slightly agree",
+        "Moderately agree",
+        "Strongly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "moral2"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "mfq_agreement_8"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Fairness/Justice (agreement)"
+    },
+    {
+      "id": "moral2_9",
+      "section": "moral",
+      "question": "Please indicate your agreement or disagreement with the statement: 'People should be loyal to their family members, even when they have done something wrong.' (1-6)",
+      "answer": [
+        "Strongly disagree",
+        "Moderately disagree",
+        "Slightly disagree",
+        "Strongly agree",
+        "Moderately agree",
+        "Slightly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "moral2"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "mfq_agreement_9"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Loyalty/Family loyalty (agreement)"
+    },
+    {
+      "id": "moral2_10",
+      "section": "moral",
+      "question": "Please indicate your agreement or disagreement with the statement: 'Men and women each have different roles to play in society.' (1-6)",
+      "answer": [
+        "Moderately disagree",
+        "Strongly disagree",
+        "Slightly disagree",
+        "Strongly agree",
+        "Moderately agree",
+        "Slightly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "moral2"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "mfq_agreement_authority_gender_roles"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Authority/Traditional gender roles (agreement)"
+    },
+    {
+      "id": "moral2_11",
+      "section": "moral",
+      "question": "Please indicate your agreement or disagreement with the statement: 'I would call some acts wrong on the grounds that they are unnatural.' (1-6)",
+      "answer": [
+        "Strongly disagree",
+        "Moderately disagree",
+        "Strongly agree",
+        "Slightly disagree",
+        "Moderately agree",
+        "Slightly agree"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "moral2"
+        },
+        {
+          "type": "removal",
+          "removal_reason": "renamed",
+          "removal_redundant_col": "mfq_agreement_11"
+        }
+      ],
+      "category": "Moral Foundations",
+      "subcategory": "Purity/Naturalness (agreement)"
+    }
+  ],
+  "new_columns": [
+    {
+      "id": "mfq_relevance_care_emotional_suffering",
+      "question": "Alias of moral1_1 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "moral1_1"
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_relevance_care_protect_weak",
+      "question": "Alias of moral1_7 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "moral1_7"
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_agreement_authority_gender_roles",
+      "question": "Alias of moral2_10 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "moral2_10"
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_agreement_1",
+      "question": "Alias of moral2_1 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "moral2_1"
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_relevance_2",
+      "question": "Alias of moral1_2 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "moral1_2"
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_agreement_2",
+      "question": "Alias of moral2_2 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "moral2_2"
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_relevance_3",
+      "question": "Alias of moral1_3 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "moral1_3"
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_agreement_3",
+      "question": "Alias of moral2_3 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "moral2_3"
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_relevance_4",
+      "question": "Alias of moral1_4 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "moral1_4"
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_agreement_4",
+      "question": "Alias of moral2_4 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "moral2_4"
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_relevance_5",
+      "question": "Alias of moral1_5 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "moral1_5"
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_agreement_5",
+      "question": "Alias of moral2_5 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "moral2_5"
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_relevance_6",
+      "question": "Alias of moral1_6 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "moral1_6"
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_agreement_6",
+      "question": "Alias of moral2_6 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "moral2_6"
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_agreement_7",
+      "question": "Alias of moral2_7 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "moral2_7"
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_relevance_8",
+      "question": "Alias of moral1_8 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "moral1_8"
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_agreement_8",
+      "question": "Alias of moral2_8 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "moral2_8"
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_relevance_9",
+      "question": "Alias of moral1_9 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "moral1_9"
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_agreement_9",
+      "question": "Alias of moral2_9 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "moral2_9"
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_relevance_10",
+      "question": "Alias of moral1_10 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "moral1_10"
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_relevance_11",
+      "question": "Alias of moral1_11 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "moral1_11"
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_agreement_11",
+      "question": "Alias of moral2_11 (analysis-friendly)",
+      "transformations": [
+        {
+          "type": "renamed",
+          "rename_from": "moral2_11"
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_relevance_care_idx",
+      "question": "MFQ relevance: Care/Harm",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "mfq_relevance_care_emotional_suffering",
+            "mfq_relevance_care_protect_weak"
+          ]
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_relevance_fairness_idx",
+      "question": "MFQ relevance: Fairness/Cheating",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "mfq_relevance_2",
+            "mfq_relevance_8"
+          ]
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_relevance_loyalty_idx",
+      "question": "MFQ relevance: Loyalty/Betrayal",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "mfq_relevance_3",
+            "mfq_relevance_9"
+          ]
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_relevance_authority_idx",
+      "question": "MFQ relevance: Authority/Subversion",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "mfq_relevance_4",
+            "mfq_relevance_10"
+          ]
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_relevance_purity_idx",
+      "question": "MFQ relevance: Purity/Degradation",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "mfq_relevance_5",
+            "mfq_relevance_11"
+          ]
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_agreement_care_idx",
+      "question": "MFQ agreement: Care/Harm",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "mfq_agreement_1",
+            "mfq_agreement_7"
+          ]
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_agreement_fairness_idx",
+      "question": "MFQ agreement: Fairness/Cheating",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "mfq_agreement_2",
+            "mfq_agreement_8"
+          ]
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_agreement_loyalty_idx",
+      "question": "MFQ agreement: Loyalty/Betrayal",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "mfq_agreement_3",
+            "mfq_agreement_9"
+          ]
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_agreement_authority_idx",
+      "question": "MFQ agreement: Authority/Subversion",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "mfq_agreement_4",
+            "mfq_agreement_authority_gender_roles"
+          ]
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_agreement_purity_idx",
+      "question": "MFQ agreement: Purity/Degradation",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "mfq_agreement_5",
+            "mfq_agreement_11"
+          ]
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_relevance_individualizing_idx",
+      "question": "MFQ relevance: Individualizing (Care, Fairness)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "mfq_relevance_care_idx",
+            "mfq_relevance_fairness_idx"
+          ]
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_relevance_binding_idx",
+      "question": "MFQ relevance: Binding (Loyalty, Authority, Purity)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "mfq_relevance_loyalty_idx",
+            "mfq_relevance_authority_idx",
+            "mfq_relevance_purity_idx"
+          ]
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_agreement_individualizing_idx",
+      "question": "MFQ agreement: Individualizing (Care, Fairness)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "mfq_agreement_care_idx",
+            "mfq_agreement_fairness_idx"
+          ]
+        }
+      ],
+      "section": "moral"
+    },
+    {
+      "id": "mfq_agreement_binding_idx",
+      "question": "MFQ agreement: Binding (Loyalty, Authority, Purity)",
+      "transformations": [
+        {
+          "type": "merged",
+          "merging_type": "mean",
+          "merged_from": [
+            "mfq_agreement_loyalty_idx",
+            "mfq_agreement_authority_idx",
+            "mfq_agreement_purity_idx"
+          ]
+        }
+      ],
+      "section": "moral"
+    }
+  ]
+}

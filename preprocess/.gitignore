@@ -1,0 +1,3 @@
+# Generated preprocessing outputs are either row-level survey data or
+# intermediate reports and should not be versioned in the public repo.
+/output/**

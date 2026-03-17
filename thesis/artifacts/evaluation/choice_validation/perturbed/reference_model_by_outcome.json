@@ -1,0 +1,7 @@
+{
+  "flu_vaccinated_2023_2024": "B_FLU_vaccinated_2023_2024_ENGINES_HABIT",
+  "mask_when_pressure_high": "B_PROTECT_mask_when_pressure_high_ENGINES_REF",
+  "mask_when_symptomatic_crowded": "B_PROTECT_mask_when_symptomatic_crowded_ENGINES_REF",
+  "stay_home_when_symptomatic": "B_PROTECT_stay_home_when_symptomatic_ENGINES_REF",
+  "vax_willingness_T12": "B_COVID_MAIN_vax_willingness_T12_ENGINES_STAKESdanger"
+}

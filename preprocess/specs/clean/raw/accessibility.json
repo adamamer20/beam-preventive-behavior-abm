@@ -1,0 +1,136 @@
+{
+  "encodings": {
+    "categorical": {
+      "Not at all": 1,
+      "Very bad": 1,
+      "Not very": 2,
+      "Bad": 2,
+      "A little": 2,
+      "Fair": 3,
+      "Quite": 3,
+      "Good": 4,
+      "Very": 4,
+      "Very good": 5,
+      "Very Good": 5,
+      "Completely": 5,
+      "Extremely": 5,
+      "I never found information on vaccines on this channel": null,
+      "I prefer not to answer": null
+    }
+  },
+  "question_group": {
+    "people_num": "How many people of each group do you have?",
+    "medical_conditions": null,
+    "covid_num": "How many times on average has each of these groups contracted COVID-19?",
+    "covax_num": "How many doses of COVID-19 vaccine on average has each of these groups received?",
+    "risk_1": "How dangerous did you think COVID-19 was to your health in the following periods? (1-5)",
+    "risk_2": "How willing were you to be vaccinated against COVID-19 in the following periods? (1-5)",
+    "risk_infection": "In your opinion, how likely are you to contract the following infections today? (1-5)",
+    "risk_illness": "In your opinion, how likely are you to experience serious health consequences if you contract the following infections? (1-5)",
+    "risk_vax": "In your opinion, how likely are you to experience health consequences if you receive the vaccine for the following infections? (1-5)",
+    "emotion_illness": "How much do you fear the following infections? (1-5)",
+    "emotion_vax": "How much do you fear the vaccine for the following infections? (1-5)",
+    "fluvax": "Did you get vaccinated against the flu at least once in the following periods?",
+    "side_effects": "Has anyone in the following groups of people experienced any side effects (apart from arm pain) after being administered a dose of any vaccine?",
+    "vax_group": "During the pandemic, with how many people in the following groups did you have a conversation about vaccines/vaccination programs (in person, over the phone, or online)?",
+    "vax_freq": "During the pandemic, how often did you find yourself participating in a conversation about vaccines/vaccination programs (in person, over the phone, or online) with the following groups?",
+    "opinion": "How much do you agree with the following statements? (1-5)",
+    "opinion_change": "How has your opinion on the following statement changed?",
+    "institut_trust_vax": "How much do you trust the information about vaccines/vaccination programs shared by the following groups? (1-5)",
+    "pandemic_behaviour": "How much do you agree with the following statements? (1-7)",
+    "moral1": "When you decide whether something is right or wrong, to what extent are the following statements relevant to your thinking? (1-6)",
+    "moral2": "How much do you agree with the following statements? (1-5)",
+    "info": "Select the information channels you primarily use",
+    "contact_group": "With how many people in the following groups did you have a direct contact YESTERDAY?",
+    "discussion_group": "Thinking of LAST week, with how many different people in the following groups did you have a relevant conversation with?",
+    "opinion_other": "To what extent do the following groups agree or disagree with the provided statement? (1-7)"
+  },
+  "old_columns": [
+    {
+      "id": "booking",
+      "section": "accessibility",
+      "question": "To what extent do you feel able to independently book vaccination appointments for yourself or your family members?",
+      "answer": [
+        "Not at all",
+        "A little",
+        "Very",
+        "Quite",
+        "Completely"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        }
+      ],
+      "category": "Access to Vaccination",
+      "subcategory": "Self-efficacy: booking"
+    },
+    {
+      "id": "vax_hub",
+      "section": "accessibility",
+      "question": "How easy is it for you to independently reach the nearest vaccination facility?",
+      "answer": [
+        "Not at all",
+        "Not very",
+        "Quite",
+        "Very",
+        "Extremely"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": "categorical"
+        }
+      ],
+      "category": "Access to Vaccination",
+      "subcategory": "Proximity/ease to reach facility"
+    },
+    {
+      "id": "impediment",
+      "section": "accessibility",
+      "question": "Which of these contextual factors have in the past been a barrier to your access to vaccination? You may choose more than one answer.",
+      "new_question": "Have you ever faced any difficulties in accessing vaccination?",
+      "answer": [
+        "The vaccination center was too far away or not easily accessible",
+        "There were not enough dates and/or times available to get vaccinated",
+        "The vaccine was not available at the time I wanted to receive it",
+        "I could not leave my home for personal reasons (e.g., caring for a dependent person)",
+        "I could not bear the cost associated with the vaccination (e.g., cost of the vaccine itself, cost to get to the vaccination center, loss of work hours)",
+        "I could not get leave from work to go and get vaccinated",
+        "The information available to me about vaccination was insufficient and/or unreliable",
+        "Other:",
+        "I have never experienced any difficulties"
+      ],
+      "validation_category": "input",
+      "transformations": [
+        {
+          "type": "encoding",
+          "encoding": {
+            "I have never experienced any difficulties": false,
+            "$DEFAULT": true
+          }
+        }
+      ],
+      "category": "Access to Vaccination",
+      "subcategory": "Past access difficulties"
+    },
+    {
+      "id": "impediment_8_TEXT",
+      "section": "accessibility",
+      "question": "Which of these contextual factors have in the past been a barrier to your access to vaccination? You may choose more than one answer.",
+      "answer": "Multiple options including: The vaccination center was too far away or not easily accessible, There were not enough dates and/or times available to get vaccinated, The vaccine was not available at the time I wanted to receive it, etc.",
+      "missing_percentage": 98,
+      "transformations": [
+        {
+          "type": "removal",
+          "removal_reason": "redundant",
+          "removal_redundant_col": "impediment"
+        }
+      ]
+    }
+  ],
+  "new_columns": []
+}

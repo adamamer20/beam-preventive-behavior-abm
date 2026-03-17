@@ -1,0 +1,49 @@
+name: Build
+
+on:
+  schedule:
+    - cron: "0 8 * * 1" # Weekly on Monday at 8 AM UTC
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+
+env:
+  FORCE_COLOR: 1
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.13"]
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install uv & select Python
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: make sync
+
+      - name: Build wheel
+        run: make build
+
+      - name: Test installation from wheel
+        run: |
+          uv pip install --force-reinstall --find-links dist beam-abm
+          uv run python -c "import beam_abm; print(beam_abm.__version__)"
+
+      - name: Upload wheel artifacts
+        uses: actions/upload-artifact@v4
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.13'
+        with:
+          name: wheels
+          path: dist/*.whl

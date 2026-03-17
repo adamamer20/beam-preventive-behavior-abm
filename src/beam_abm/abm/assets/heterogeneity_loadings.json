@@ -1,0 +1,150 @@
+{
+  "version": 1,
+  "axes": {
+    "social_activity": {
+      "columns": [
+        "vax_convo_count_friends",
+        "vax_convo_count_cohabitants",
+        "vax_convo_count_others",
+        "size_friend_group",
+        "size_colleagues_group"
+      ],
+      "means": {
+        "vax_convo_count_friends": 4.305726872246696,
+        "vax_convo_count_cohabitants": 1.3451047379304144,
+        "vax_convo_count_others": 3.6992448080553806,
+        "size_friend_group": 9.525218016722107,
+        "size_colleagues_group": 13.119482154095119
+      },
+      "stds": {
+        "vax_convo_count_friends": 4.900337909206191,
+        "vax_convo_count_cohabitants": 1.382179415429213,
+        "vax_convo_count_others": 5.3629040023091274,
+        "size_friend_group": 14.921110768181856,
+        "size_colleagues_group": 19.73707015151214
+      },
+      "pc1_loadings": {
+        "vax_convo_count_friends": 0.6230294365235771,
+        "vax_convo_count_cohabitants": 0.3132473861473456,
+        "vax_convo_count_others": 0.5238113142084947,
+        "size_friend_group": 0.4379338374636301,
+        "size_colleagues_group": 0.21805058451771536
+      }
+    },
+    "media_exposure": {
+      "columns": [
+        "duration_socialmedia",
+        "duration_infomedia",
+        "trust_social",
+        "trust_onlineinfo"
+      ],
+      "means": {
+        "duration_socialmedia": 1.7384099014054963,
+        "duration_infomedia": 1.691390212472654,
+        "trust_social": 2.140113868495035,
+        "trust_onlineinfo": 2.5966449881284186
+      },
+      "stds": {
+        "duration_socialmedia": 0.6782515565370537,
+        "duration_infomedia": 0.6736634932694411,
+        "trust_social": 0.8474485671559382,
+        "trust_onlineinfo": 0.8454203422644799
+      },
+      "pc1_loadings": {
+        "duration_socialmedia": 0.4372446553213641,
+        "duration_infomedia": 0.4112098588851928,
+        "trust_social": 0.5823316284722184,
+        "trust_onlineinfo": 0.5482822610931486
+      }
+    },
+    "identity_lock": {
+      "columns": [
+        "mfq_agreement_binding_idx",
+        "mfq_relevance_binding_idx"
+      ],
+      "means": {
+        "mfq_agreement_binding_idx": 4.2619572057898045,
+        "mfq_relevance_binding_idx": 3.8577422158290635
+      },
+      "stds": {
+        "mfq_agreement_binding_idx": 0.8989835948101037,
+        "mfq_relevance_binding_idx": 0.9577314925758234
+      },
+      "pc1_loadings": {
+        "mfq_agreement_binding_idx": 0.7071067811865471,
+        "mfq_relevance_binding_idx": 0.7071067811865479
+      }
+    }
+  },
+  "cdf_knots": {
+    "source": "survey",
+    "quantiles": [
+      0.01,
+      0.05,
+      0.1,
+      0.25,
+      0.5,
+      0.75,
+      0.9,
+      0.95,
+      0.99
+    ],
+    "scores": {
+      "alpha_driver": [
+        -4.776241030063327,
+        -4.369821209084288,
+        -3.7258064053459647,
+        -2.3739042891494773,
+        -0.9419239327723259,
+        0.627376718807532,
+        1.9525347748693411,
+        2.7871924502303353,
+        4.605138121703848
+      ],
+      "lambda_driver": [
+        -5.5069244199471274,
+        -4.797717909406231,
+        -4.072786879903279,
+        -2.6754387458850797,
+        -1.0034623881780216,
+        0.7812965357261892,
+        2.455114814326498,
+        3.5469906861688583,
+        5.9089600050861275
+      ],
+      "omega_driver": [
+        -5.085503795423898,
+        -3.14934812768905,
+        -2.2901220986768505,
+        -0.9521900803699384,
+        0.1989933770596708,
+        1.1746337332636259,
+        1.9935436839587437,
+        2.4704350374226567,
+        3.340127155982168
+      ],
+      "phi_driver": [
+        0.0,
+        0.0,
+        0.0,
+        3.0,
+        7.0,
+        13.0,
+        23.0,
+        30.0,
+        41.0
+      ],
+      "theta_driver": [
+        -4.612610534513888,
+        -2.8047310115127364,
+        -1.8592435979067914,
+        -0.5559787669466068,
+        0.3600843349377115,
+        0.9581990241108439,
+        1.3445983593759319,
+        1.49134810350272,
+        1.638097847629508
+      ]
+    }
+  }
+}

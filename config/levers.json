@@ -1,0 +1,91 @@
+{
+  "vax_willingness_T12": {
+    "model_ref": "B_COVID_MAIN_vax_willingness_T12_ENGINES_STAKESdanger",
+    "levers": [
+      "institutional_trust_avg",
+      "fivec_pro_vax_idx",
+      "covid_perceived_danger_T12",
+      "covax_legitimacy_scepticism_idx",
+      "social_norms_vax_avg"
+    ],
+    "include_cols": ["country"]
+  },
+  "mask_when_symptomatic_crowded": {
+    "model_ref": "B_PROTECT_mask_when_symptomatic_crowded_ENGINES_REF",
+    "levers": [
+      "institutional_trust_avg",
+      "fivec_confidence",
+      "fivec_low_constraints",
+      "fivec_low_complacency",
+      "fivec_collective_responsibility",
+      "vaccine_risk_avg",
+      "disease_fear_avg",
+      "infection_likelihood_avg",
+      "severity_if_infected_avg",
+      "group_trust_vax",
+      "social_norms_vax_avg"
+    ],
+    "include_cols": ["country"]
+  },
+  "stay_home_when_symptomatic": {
+    "model_ref": "B_PROTECT_stay_home_when_symptomatic_ENGINES_REF",
+    "levers": [
+      "institutional_trust_avg",
+      "fivec_confidence",
+      "fivec_low_constraints",
+      "fivec_low_complacency",
+      "fivec_collective_responsibility",
+      "vaccine_risk_avg",
+      "disease_fear_avg",
+      "infection_likelihood_avg",
+      "severity_if_infected_avg",
+      "group_trust_vax",
+      "social_norms_vax_avg"
+    ],
+    "include_cols": ["country"]
+  },
+  "mask_when_pressure_high": {
+    "model_ref": "B_PROTECT_mask_when_pressure_high_ENGINES_REF",
+    "levers": [
+      "institutional_trust_avg",
+      "fivec_confidence",
+      "fivec_low_constraints",
+      "fivec_low_complacency",
+      "fivec_collective_responsibility",
+      "vaccine_risk_avg",
+      "disease_fear_avg",
+      "infection_likelihood_avg",
+      "severity_if_infected_avg",
+      "group_trust_vax",
+      "social_norms_vax_avg",
+      "trust_traditional",
+      "trust_onlineinfo",
+      "trust_social",
+      "duration_socialmedia",
+      "duration_infomedia"
+    ],
+    "include_cols": ["country"]
+  },
+  "flu_vaccinated_2023_2024": {
+    "model_ref": "B_FLU_vaccinated_2023_2024_ENGINES_HABIT",
+    "levers": [
+      "institutional_trust_avg",
+      "fivec_pro_vax_idx",
+      "flu_vaccine_risk",
+      "flu_disease_fear",
+      "social_norms_vax_avg"
+    ],
+    "include_cols": ["country"]
+  },
+  "flu_vaccinated_2023_2024_no_habit": {
+    "model_ref": "B_FLU_vaccinated_2023_2024_ENGINES",
+    "levers": [
+      "institutional_trust_avg",
+      "fivec_pro_vax_idx",
+      "flu_vaccine_risk",
+      "flu_disease_fear",
+      "social_norms_vax_avg"
+    ],
+    "include_cols": ["country"]
+  }
+}
