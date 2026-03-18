@@ -12,25 +12,13 @@ SEED = int(os.getenv("SEED", "42"))
 
 PREPROCESSING_OUTPUT_DIR = os.getenv("PREPROCESSING_OUTPUT_DIR", "preprocess/output")
 CLEAN_PROCESSED_FILENAME = os.getenv("CLEAN_PROCESSED_FILENAME", "clean_processed_survey.csv")
-NN_PROCESSED_FILENAME = os.getenv("NN_PROCESSED_FILENAME", "nn_processed_survey.csv")
-LLM_PROCESSED_FILENAME = os.getenv("LLM_PROCESSED_FILENAME", "llm_processed_survey.csv")
 
 CSV_FILE_CLEAN = os.path.join(PREPROCESSING_OUTPUT_DIR, CLEAN_PROCESSED_FILENAME)
-CSV_FILE_NN = os.path.join(PREPROCESSING_OUTPUT_DIR, NN_PROCESSED_FILENAME)
-CSV_FILE_LLM = os.path.join(PREPROCESSING_OUTPUT_DIR, LLM_PROCESSED_FILENAME)
 
 PPP_DATA_FILENAME = os.getenv("PPP_DATA_FILENAME", "eurostat_ppp_2024.csv")
 PPP_DATA_FILE = os.path.join(PREPROCESSING_OUTPUT_DIR, PPP_DATA_FILENAME)
 
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "intfloat/e5-large-v2")
-BASE_PROMPT = os.getenv(
-    "BASE_PROMPT",
-    (
-        "You are a careful social-science assistant. "
-        "Read each respondent profile and produce a single structured prediction "
-        "that follows the provided schema."
-    ),
-)
 
 API_CONFIG = {
     "vllm_base_url": os.getenv("VLLM_BASE_URL", "http://localhost:8000/v1"),
@@ -56,10 +44,7 @@ __all__ = [
     "SEED",
     "PREPROCESSING_OUTPUT_DIR",
     "CSV_FILE_CLEAN",
-    "CSV_FILE_NN",
-    "CSV_FILE_LLM",
     "PPP_DATA_FILE",
     "EMBEDDING_MODEL",
-    "BASE_PROMPT",
     "API_CONFIG",
 ]
