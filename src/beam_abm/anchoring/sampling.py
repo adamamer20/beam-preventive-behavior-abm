@@ -157,15 +157,6 @@ def _prepare_model_matrix(
     return X, y, means
 
 
-def _fit_linear_model(
-    df: pl.DataFrame, *, target_col: str, driver_cols: Sequence[str]
-) -> tuple[LinearRegression, np.ndarray]:
-    X, y, means = _prepare_model_matrix(df, target_col=target_col, driver_cols=driver_cols)
-    model = LinearRegression()
-    model.fit(X, y)
-    return model, means
-
-
 def _fit_xgb_model(
     X: np.ndarray,
     y: np.ndarray,

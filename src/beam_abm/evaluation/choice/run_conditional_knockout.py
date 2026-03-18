@@ -165,18 +165,6 @@ def _infer_outcome(row: dict) -> str | None:
     return None
 
 
-def _infer_outcome_type(row: dict) -> str | None:
-    out_type = row.get("outcome_type")
-    if isinstance(out_type, str) and out_type:
-        return out_type
-    meta = row.get("metadata")
-    if isinstance(meta, dict):
-        out_type = meta.get("outcome_type")
-        if isinstance(out_type, str) and out_type:
-            return out_type
-    return None
-
-
 def _infer_prompt_family(row: dict, fallback: str) -> str:
     family = row.get("prompt_family")
     if isinstance(family, str) and family:

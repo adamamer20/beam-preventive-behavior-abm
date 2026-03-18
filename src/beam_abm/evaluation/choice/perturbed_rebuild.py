@@ -26,39 +26,6 @@ from beam_abm.evaluation.choice.perturbed_ingest import (
 from beam_abm.evaluation.utils.id_utils import normalize_perturbed_dataset_id
 
 
-def _split_row_level_by_outcome(path: Path) -> dict[str, pd.DataFrame]:
-    if not path.exists():
-        return {}
-    df = pd.read_csv(path)
-    if df.empty or "outcome" not in df.columns:
-        return {}
-    out: dict[str, pd.DataFrame] = {}
-    for outcome, g in df.groupby(df["outcome"].astype(str), dropna=False):
-        key = str(outcome).strip()
-        if not key:
-            continue
-        out[key] = g.copy()
-    return out
-
-
-def _split_ice_by_outcome(path: Path) -> dict[str, pd.DataFrame]:
-    if not path.exists():
-        return {}
-    df = pd.read_csv(path)
-    if df.empty:
-        return {}
-    if "outcome" not in df.columns:
-        # Cannot split; treat as unknown_outcome.
-        return {"unknown_outcome": df}
-    out: dict[str, pd.DataFrame] = {}
-    for outcome, g in df.groupby(df["outcome"].astype(str), dropna=False):
-        key = str(outcome).strip()
-        if not key:
-            continue
-        out[key] = g.copy()
-    return out
-
-
 def _row_merge_key(row: dict[str, Any], *, outcome: str | None = None) -> str:
     meta = row.get("metadata") if isinstance(row.get("metadata"), dict) else {}
     target = meta.get("target") or row.get("target") or "unknown_target"

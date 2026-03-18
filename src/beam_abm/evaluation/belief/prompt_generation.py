@@ -365,20 +365,6 @@ def _extract_signals(spec: dict[str, object]) -> list[dict[str, object]]:
     raise ValueError("Belief-update spec must define `signals` as a list.")
 
 
-def _format_column_value_lines(row: dict[str, object], columns: list[str]) -> list[str]:
-    lines: list[str] = []
-    for col in columns:
-        if col not in row:
-            continue
-        value = row.get(col)
-        if _is_missing(value):
-            continue
-        value_float = _safe_float(value)
-        rendered = value_float if value_float is not None else str(value).strip()
-        lines.append(f"{col}: {rendered}")
-    return lines
-
-
 def _belief_update_system_data_only(
     *,
     semantics: str,

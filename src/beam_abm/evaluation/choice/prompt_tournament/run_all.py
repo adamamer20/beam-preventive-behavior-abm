@@ -26,10 +26,6 @@ from beam_abm.evaluation.utils.alignment_utils import (
 )
 
 
-def _all_exist(paths: list[Path]) -> bool:
-    return all(path.exists() for path in paths)
-
-
 def _load_local_module(path: Path, name: str):
     spec = importlib.util.spec_from_file_location(name, path)
     if spec is None or spec.loader is None:
@@ -37,18 +33,6 @@ def _load_local_module(path: Path, name: str):
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
-
-
-def _merge_jsonl(sources: list[Path], dest: Path) -> None:
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    with dest.open("w", encoding="utf-8") as out_handle:
-        for src in sources:
-            if not src.exists():
-                raise FileNotFoundError(f"Missing prompt output: {src}")
-            with src.open("r", encoding="utf-8") as in_handle:
-                for line in in_handle:
-                    if line.strip():
-                        out_handle.write(line)
 
 
 def _get_arg_value(args: list[str], flag: str) -> str | None:
@@ -164,52 +148,6 @@ def _build_default_generate_args(
         if include_input:
             args.extend(["--in-dir", "empirical/output/anchors/pe/mutable_engines/reduced"])
     return args
-
-
-def _contains_strategy(path: Path, strategy: str) -> bool:
-    if not path.exists():
-        return False
-    with path.open("r", encoding="utf-8") as handle:
-        for line in handle:
-            line = line.strip()
-            if not line:
-                continue
-            row = json.loads(line)
-            if str(row.get("strategy") or "data_only") == strategy:
-                return True
-    return False
-
-
-def _filter_out_strategy(path: Path, dest: Path, strategy: str) -> int:
-    removed = 0
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("r", encoding="utf-8") as in_handle, dest.open("w", encoding="utf-8") as out_handle:
-        for line in in_handle:
-            line = line.strip()
-            if not line:
-                continue
-            row = json.loads(line)
-            if str(row.get("strategy") or "data_only") == strategy:
-                removed += 1
-                continue
-            out_handle.write(json.dumps(row, ensure_ascii=False) + "\n")
-    return removed
-
-
-def _filter_to_strategy(path: Path, dest: Path, strategy: str) -> int:
-    kept = 0
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("r", encoding="utf-8") as in_handle, dest.open("w", encoding="utf-8") as out_handle:
-        for line in in_handle:
-            line = line.strip()
-            if not line:
-                continue
-            row = json.loads(line)
-            if str(row.get("strategy") or "data_only") != strategy:
-                continue
-            out_handle.write(json.dumps(row, ensure_ascii=False) + "\n")
-            kept += 1
-    return kept
 
 
 def _normalize_ref_model(name: str) -> str:
@@ -360,53 +298,6 @@ def _baseline_has_all_ids(baseline_path: Path, required_ids: set[str]) -> bool:
     return not missing
 
 
-def _split_jsonl_by_strategy(
-    source: Path,
-    output_dir: Path,
-    prefix: str,
-    *,
-    skip_existing: bool,
-) -> set[str]:
-    if not source.exists():
-        return set()
-
-    output_dir.mkdir(parents=True, exist_ok=True)
-    handles: dict[str, object] = {}
-    strategies_written: set[str] = set()
-
-    try:
-        with source.open("r", encoding="utf-8") as in_handle:
-            for line in in_handle:
-                line = line.strip()
-                if not line:
-                    continue
-                row = json.loads(line)
-                strat = str(row.get("strategy") or "data_only")
-                dest = output_dir / f"{prefix}__{strat}.jsonl"
-                if skip_existing and dest.exists():
-                    continue
-                handle = handles.get(strat)
-                if handle is None:
-                    dest.parent.mkdir(parents=True, exist_ok=True)
-                    handle = dest.open("a", encoding="utf-8")
-                    handles[strat] = handle
-                handle.write(json.dumps(row, ensure_ascii=False) + "\n")
-                strategies_written.add(strat)
-    finally:
-        for handle in handles.values():
-            handle.close()
-
-    return strategies_written
-
-
-def _has_prediction_files(path: Path) -> bool:
-    if path.is_file():
-        return path.exists()
-    if path.is_dir():
-        return any(path.glob("predictions__*.csv"))
-    return False
-
-
 def _find_latest_data_only_samples(
     *,
     output_root: Path,
@@ -447,37 +338,6 @@ def _frozen_unperturbed_prompts_path(
     family: str,
 ) -> Path:
     return output_root / "frozen_prompts" / run_id / "unperturbed" / outcome_batch / f"prompts__{family}.jsonl"
-
-
-def _collect_outcomes_from_prompts(path: Path) -> list[str]:
-    if not path.exists():
-        return []
-    outcomes: set[str] = set()
-    with path.open("r", encoding="utf-8") as handle:
-        for line in handle:
-            line = line.strip()
-            if not line:
-                continue
-            row = json.loads(line)
-            meta = row.get("metadata") if isinstance(row.get("metadata"), dict) else {}
-            raw_outcomes = None
-            if isinstance(meta, dict):
-                raw_outcomes = meta.get("outcomes")
-            if raw_outcomes is None:
-                raw_outcomes = row.get("outcomes")
-            if isinstance(raw_outcomes, list):
-                for outcome in raw_outcomes:
-                    if isinstance(outcome, str) and outcome.strip():
-                        outcomes.add(outcome.strip())
-                continue
-            raw_outcome = None
-            if isinstance(meta, dict):
-                raw_outcome = meta.get("outcome")
-            if raw_outcome is None:
-                raw_outcome = row.get("outcome")
-            if isinstance(raw_outcome, str) and raw_outcome.strip():
-                outcomes.add(raw_outcome.strip())
-    return sorted(outcomes)
 
 
 def main() -> None:

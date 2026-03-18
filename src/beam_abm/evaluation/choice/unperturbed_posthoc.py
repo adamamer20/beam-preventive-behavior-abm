@@ -92,10 +92,6 @@ def _spearman_series(x: pd.Series, y: pd.Series) -> float | None:
     return _pearson(rx, ry)
 
 
-def _is_ignored_path(p: Path) -> bool:
-    return _is_ignored_path_for_scan(p, include_runs=False)
-
-
 def _is_ignored_path_for_scan(p: Path, *, include_runs: bool) -> bool:
     if include_runs:
         return False

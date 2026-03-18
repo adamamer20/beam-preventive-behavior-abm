@@ -657,11 +657,6 @@ def _chapter6_like_delta(values: np.ndarray) -> float:
     return float(max(delta, 0.05))
 
 
-def _edge_set_from_adjacency(adjacency) -> set[tuple[int, int]]:
-    coo = adjacency.tocoo()
-    return set(zip(coo.row.tolist(), coo.col.tolist(), strict=False))
-
-
 def _safe_jsd(p: np.ndarray, q: np.ndarray, eps: float = 1e-12) -> float:
     p_clean = np.nan_to_num(p.astype(np.float64), nan=0.0)
     q_clean = np.nan_to_num(q.astype(np.float64), nan=0.0)
