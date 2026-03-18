@@ -237,16 +237,3 @@ def estimate_within_stratum_nn_distances(
     # distances[:, 0] is self (0), distances[:, 1] is nearest other
     return distances[:, 1].astype(float)
 
-
-def out_of_manifold_flag(
-    *,
-    nearest_distance: float,
-    within_stratum_nn_distances: np.ndarray,
-    percentile: float = 0.95,
-) -> bool:
-    thr = (
-        float(np.quantile(within_stratum_nn_distances, percentile))
-        if within_stratum_nn_distances.size
-        else float("inf")
-    )
-    return bool(nearest_distance > thr)
