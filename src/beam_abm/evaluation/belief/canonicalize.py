@@ -262,16 +262,6 @@ def _canonicalize_samples_sqlite_to_path(*, samples_paths: list[Path], out_path:
             conn.close()
 
 
-def canonicalize_samples(*, samples_paths: list[Path]) -> tuple[list[dict[str, Any]], CanonicalizeStats]:
-    # Back-compat helper: keep the same public signature for any downstream code.
-    # For large runs this would OOM, so we canonicalize to a temp file and read it back.
-    with tempfile.TemporaryDirectory(prefix="belief_update_canon_tmp_") as tmp:
-        tmp_path = Path(tmp) / "samples.jsonl"
-        stats = _canonicalize_samples_sqlite_to_path(samples_paths=samples_paths, out_path=tmp_path)
-        rows = list(iter_jsonl(tmp_path))
-        return rows, stats
-
-
 def iter_run_sample_paths(*, output_root: Path) -> dict[str, list[Path]]:
     """Return model_norm -> list[samples.jsonl paths] across all runs."""
 
