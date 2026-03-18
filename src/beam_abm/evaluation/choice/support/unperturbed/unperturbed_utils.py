@@ -8,11 +8,9 @@ from typing import Any
 
 import numpy as np
 import pandas as pd
-from pydantic import Field, create_model
 
 from beam_abm.empirical.plan_io import extract_predictors_from_model_plan
 from beam_abm.evaluation.prompting import PromptTemplateBuilder
-from beam_abm.llm.schemas.predictions import BinaryPrediction
 
 Quantiles = tuple[float, ...]
 PromptFamily = str
@@ -50,16 +48,6 @@ def parse_prompt_families(single: str | None, multi: str | None) -> list[PromptF
     return families
 
 
-def load_json_arg(raw: str | None, path: str | None) -> Any:
-    if raw and path:
-        raise ValueError("Provide only one of --model-options or --model-options-file")
-    if path:
-        return json.loads(Path(path).read_text(encoding="utf-8"))
-    if raw:
-        return json.loads(raw)
-    return None
-
-
 def load_lever_config(path: Path) -> dict[str, Any]:
     obj: Any = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(obj, dict):
@@ -72,51 +60,6 @@ def load_outcome_types(path: Path) -> dict[str, str]:
     if "column" not in ct.columns or "type" not in ct.columns:
         raise ValueError(f"Column types file missing required columns: {path}")
     return {str(k): str(v).strip().lower() for k, v in ct.set_index("column")["type"].to_dict().items()}
-
-
-def parse_model_options_payload(
-    payload: Any,
-    models: list[str],
-    model_options_type: type,
-) -> tuple[Any | None, dict[str, Any]]:
-    if payload is None:
-        return None, {}
-    if not isinstance(payload, dict):
-        raise TypeError("model options must be a JSON object")
-
-    model_keys = set(models)
-    payload_keys = {str(k) for k in payload.keys()}
-    is_map = payload_keys.issubset(model_keys) and all(isinstance(v, dict) for v in payload.values())
-    if is_map:
-        per_model = {str(k): model_options_type.model_validate(v) for k, v in payload.items()}
-        return None, per_model
-
-    return model_options_type.model_validate(payload), {}
-
-
-def country_income_quantiles(
-    df: pd.DataFrame,
-    *,
-    income_col: str,
-    country_col: str,
-    q: Quantiles,
-) -> dict[str, dict[str, float]]:
-    if income_col not in df.columns or country_col not in df.columns:
-        return {}
-
-    tmp = df[[country_col, income_col]].dropna()
-    if tmp.empty:
-        return {}
-
-    out: dict[str, dict[str, float]] = {}
-    for country, g in tmp.groupby(country_col, dropna=True):
-        arr = pd.to_numeric(g[income_col], errors="coerce").to_numpy(dtype=float)
-        arr = arr[np.isfinite(arr)]
-        if arr.size == 0:
-            continue
-        stats = quantile_summary(arr, q)
-        out[str(country)] = {k: float(v) for k, v in stats.items() if v is not None}
-    return out
 
 
 def fmt_num(x: float) -> str:
@@ -213,65 +156,6 @@ def stratified_sample_indices(
 
     rng.shuffle(out)
     return out[:n]
-
-
-def prediction_model_for(
-    *,
-    outcome_key: str,
-    outcome_type: str,
-    bounds: tuple[float, float] | None,
-) -> type:
-    if outcome_type == "binary":
-        return BinaryPrediction
-    if bounds is not None:
-        lo, hi = bounds
-        return create_model(
-            f"ScalarPrediction_{outcome_key}",
-            prediction=(
-                float,
-                Field(..., ge=float(lo), le=float(hi), description=f"Prediction for {outcome_key}"),
-            ),
-        )
-    return create_model(
-        f"ScalarPrediction_{outcome_key}",
-        prediction=(float, Field(..., description=f"Prediction for {outcome_key}")),
-    )
-
-
-def yes_no(val: Any) -> str | None:
-    if isinstance(val, bool | np.bool_):
-        return "Yes" if val else "No"
-    if isinstance(val, int | float | np.integer | np.floating):
-        fv = float(val)
-        if not np.isfinite(fv) or not fv.is_integer():
-            return None
-        if int(fv) == 1:
-            return "Yes"
-        if int(fv) == 0:
-            return "No"
-    return None
-
-
-def human_prompt_for_family(
-    *,
-    family: PromptFamily,
-    context_line: str,
-    attribute_lines: list[str],
-) -> str:
-    attrs = "\n".join(attribute_lines)
-    if family == "data_only":
-        return f"{context_line}\nAttributes:\n{attrs}"
-    if family == "first_person":
-        return f"Write as if you are the respondent (first-person).\n\n{context_line}\nAttributes:\n{attrs}"
-    if family == "third_person":
-        return f"Write as an analyst describing the respondent (third-person).\n\n{context_line}\nAttributes:\n{attrs}"
-    if family == "multi_expert":
-        return (
-            "You are a panel of experts (behavioral psychologist, epidemiologist, social influence specialist, "
-            "sociodemographic analyst). Consider each perspective, then provide the final prediction JSON.\n\n"
-            f"{context_line}\nAttributes:\n{attrs}"
-        )
-    raise ValueError(f"Unknown prompt family: {family}")
 
 
 def build_prompts(
