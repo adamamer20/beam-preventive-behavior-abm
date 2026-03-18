@@ -236,4 +236,3 @@ def estimate_within_stratum_nn_distances(
     distances, _ = nbrs.kneighbors(pts)
     # distances[:, 0] is self (0), distances[:, 1] is nearest other
     return distances[:, 1].astype(float)
-

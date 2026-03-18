@@ -8,18 +8,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+from beam_abm.evaluation.utils.jsonl import read_jsonl as _read_jsonl
 from beam_abm.llm.prompts.prompts import BELIEF_UPDATE_EXPERT_PROMPTS, EXPERT_PROMPTS, format_attribute_vector
-
-
-def _read_jsonl(path: Path) -> list[dict[str, Any]]:
-    rows: list[dict[str, Any]] = []
-    with path.open("r", encoding="utf-8") as handle:
-        for line in handle:
-            line = line.strip()
-            if not line:
-                continue
-            rows.append(json.loads(line))
-    return rows
 
 
 def _pick_human_prompt(row: dict[str, Any]) -> str | None:

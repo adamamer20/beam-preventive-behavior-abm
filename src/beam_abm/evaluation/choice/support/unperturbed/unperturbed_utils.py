@@ -11,6 +11,8 @@ import pandas as pd
 
 from beam_abm.empirical.plan_io import extract_predictors_from_model_plan
 from beam_abm.evaluation.prompting import PromptTemplateBuilder
+from beam_abm.evaluation.utils.jsonl import read_jsonl as _read_jsonl_shared
+from beam_abm.evaluation.utils.jsonl import write_jsonl as _write_jsonl_shared
 
 Quantiles = tuple[float, ...]
 PromptFamily = str
@@ -312,14 +314,7 @@ def compute_metrics_rows(
 
 
 def read_jsonl(path: Path) -> list[dict]:
-    rows: list[dict] = []
-    with path.open("r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
-            rows.append(json.loads(line))
-    return rows
+    return _read_jsonl_shared(path)
 
 
 def _json_default(obj: Any) -> Any:
@@ -335,10 +330,7 @@ def _json_default(obj: Any) -> Any:
 
 
 def write_jsonl(path: Path, rows: list[dict]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8") as f:
-        for row in rows:
-            f.write(json.dumps(row, ensure_ascii=False, default=_json_default) + "\n")
+    _write_jsonl_shared(path, rows, json_default=_json_default)
 
 
 def build_predictor_cols(

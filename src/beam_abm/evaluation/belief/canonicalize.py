@@ -24,6 +24,7 @@ from typing import Any
 import pandas as pd
 
 from beam_abm.evaluation.choice.canonicalize import normalize_model_slug
+from beam_abm.evaluation.utils.jsonl import write_jsonl as _write_jsonl_shared
 
 
 @dataclass(frozen=True, slots=True)
@@ -50,10 +51,7 @@ def iter_jsonl(path: Path):
 
 
 def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8") as f:
-        for row in rows:
-            f.write(json.dumps(row, ensure_ascii=False) + "\n")
+    _write_jsonl_shared(path, rows)
 
 
 def _is_missing(value: Any) -> bool:

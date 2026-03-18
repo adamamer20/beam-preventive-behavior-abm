@@ -35,6 +35,8 @@ from beam_abm.evaluation.prompting import (
     PromptTemplateBuilder,
     build_clean_spec_index,
 )
+from beam_abm.evaluation.utils.jsonl import read_jsonl as _read_jsonl
+from beam_abm.evaluation.utils.jsonl import write_jsonl as _write_jsonl
 
 EXCLUDED_OUTCOMES = {"flu_vaccinated_2023_2024"}
 
@@ -49,17 +51,6 @@ def _load_json(path: Path) -> dict | list:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def _read_jsonl(path: Path) -> list[dict]:
-    rows: list[dict] = []
-    with path.open("r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
-            rows.append(json.loads(line))
-    return rows
-
-
 def _iter_jsonl_stream(path: Path) -> Iterable[dict[str, Any]]:
     with path.open("r", encoding="utf-8") as f:
         for line in f:
@@ -72,15 +63,6 @@ def _iter_jsonl_stream(path: Path) -> Iterable[dict[str, Any]]:
                 continue
             if isinstance(obj, dict):
                 yield obj
-
-
-def _write_jsonl(path: Path, rows: list[dict]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8") as f:
-        for row in rows:
-            f.write(json.dumps(row, ensure_ascii=False) + "\n")
-
-
 def _prompt_fingerprint(row: dict[str, Any], *, model_hint: str | None = None) -> str:
     model = row.get("model") or model_hint or ""
     messages = row.get("messages")

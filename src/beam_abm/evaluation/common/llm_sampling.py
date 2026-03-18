@@ -26,6 +26,8 @@ from beam_abm.evaluation.artifacts import (
 )
 from beam_abm.evaluation.common.baseline_lookup import _lookup_baseline_value as _lookup_baseline_value_shared
 from beam_abm.evaluation.common.labels import load_possible_numeric_bounds_from_clean_spec
+from beam_abm.evaluation.utils.jsonl import read_jsonl as _read_jsonl
+from beam_abm.evaluation.utils.jsonl import write_jsonl as _write_jsonl
 from beam_abm.evaluation.utils.regex_fallback import regex_extract_prediction
 from beam_abm.llm.backends.factory import get_backend
 from beam_abm.llm.inference import SampleResult, sample_many_concurrent
@@ -43,26 +45,6 @@ def _load_symbol(path: str):
     mod, sym = path.split(":", 1)
     m = __import__(mod, fromlist=[sym])
     return getattr(m, sym)
-
-
-def _read_jsonl(path: Path) -> list[dict]:
-    rows: list[dict] = []
-    with path.open("r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
-            rows.append(json.loads(line))
-    return rows
-
-
-def _write_jsonl(path: Path, rows: list[dict]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8") as f:
-        for row in rows:
-            f.write(json.dumps(row, ensure_ascii=False) + "\n")
-
-
 def _messages_to_prompt_text(messages: list[dict[str, str]]) -> str:
     if not messages:
         return ""

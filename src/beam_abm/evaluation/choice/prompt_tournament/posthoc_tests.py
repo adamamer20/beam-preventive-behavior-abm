@@ -10,6 +10,8 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from beam_abm.evaluation.utils.jsonl import read_jsonl as _read_jsonl_shared
+
 
 def _parse_list(value: object) -> list[float] | None:
     if value is None:
@@ -57,19 +59,7 @@ def _delta(df: pd.DataFrame, *, low_col: str, high_col: str) -> pd.Series:
 
 
 def _read_jsonl(path: Path) -> list[dict[str, Any]]:
-    rows: list[dict[str, Any]] = []
-    with path.open("r", encoding="utf-8") as handle:
-        for line in handle:
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                row = json.loads(line)
-            except json.JSONDecodeError:
-                continue
-            if isinstance(row, dict):
-                rows.append(row)
-    return rows
+    return _read_jsonl_shared(path, dicts_only=True, skip_invalid=True)
 
 
 def _mean_prediction(samples: object) -> float | None:

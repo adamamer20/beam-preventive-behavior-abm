@@ -11,39 +11,16 @@ This output is consumed by `generate_prompts.py --strategy paired_profile`.
 from __future__ import annotations
 
 import argparse
-import json
 from pathlib import Path
 
 import numpy as np
-import pandas as pd
 
-
-def _read_jsonl(path: Path) -> list[dict]:
-    rows: list[dict] = []
-    with path.open("r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
-            rows.append(json.loads(line))
-    return rows
-
-
-def _read_rows(path: Path) -> list[dict]:
-    if path.suffix.lower() == ".parquet":
-        df = pd.read_parquet(path)
-        return df.to_dict(orient="records")
-    if path.suffix.lower() == ".csv":
-        df = pd.read_csv(path)
-        return df.to_dict(orient="records")
-    return _read_jsonl(path)
-
-
-def _write_jsonl(path: Path, rows: list[dict]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8") as f:
-        for row in rows:
-            f.write(json.dumps(row, ensure_ascii=False) + "\n")
+from beam_abm.evaluation.utils.jsonl import (
+    read_rows as _read_rows,
+)
+from beam_abm.evaluation.utils.jsonl import (
+    write_jsonl as _write_jsonl,
+)
 
 
 def main() -> None:

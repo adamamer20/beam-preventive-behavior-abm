@@ -8,6 +8,12 @@ from beam_abm.common.logging import get_logger
 logger = get_logger(__name__)
 
 
+def _reverse_likert(column: pd.Series, *, max_value: int) -> pd.Series:
+    logger.info(f"Reversing 1–{max_value} scale for column '{column.name}'")
+    numeric = pd.to_numeric(column, errors="coerce")
+    return (max_value + 1) - numeric
+
+
 def knowledge_illness(column: pd.Series) -> pd.Series:
     logger.info(f"Starting knowledge_illness transformation for column with {len(column)} rows")
     logger.debug(f"Column name: {column.name}, dtype: {column.dtype}")
@@ -63,23 +69,17 @@ def knowledge_vax(column: pd.Series) -> pd.Series:
 
 def reverse_1_to_7(column: pd.Series) -> pd.Series:
     """Reverse a 1–7 Likert scale: x -> 8 - x."""
-    logger.info(f"Reversing 1–7 scale for column '{column.name}'")
-    col = pd.to_numeric(column, errors="coerce")
-    return 8 - col
+    return _reverse_likert(column, max_value=7)
 
 
 def reverse_1_to_6(column: pd.Series) -> pd.Series:
     """Reverse a 1–6 Likert scale: x -> 7 - x."""
-    logger.info(f"Reversing 1–6 scale for column '{column.name}'")
-    col = pd.to_numeric(column, errors="coerce")
-    return 7 - col
+    return _reverse_likert(column, max_value=6)
 
 
 def reverse_1_to_5(column: pd.Series) -> pd.Series:
     """Reverse a 1–5 Likert scale: x -> 6 - x."""
-    logger.info(f"Reversing 1–5 scale for column '{column.name}'")
-    col = pd.to_numeric(column, errors="coerce")
-    return 6 - col
+    return _reverse_likert(column, max_value=5)
 
 
 def covax_started_any(column: pd.Series) -> pd.Series:

@@ -19,6 +19,8 @@ from beam_abm.evaluation.choice._canonicalize_metrics import compute_metrics_df
 from beam_abm.evaluation.choice._canonicalize_predictions import samples_to_predictions_df
 from beam_abm.evaluation.choice._canonicalize_types import CanonicalizeStats
 from beam_abm.evaluation.common.calibrate_predictions import calibrate_predictions
+from beam_abm.evaluation.utils.jsonl import read_jsonl as _read_jsonl_shared
+from beam_abm.evaluation.utils.jsonl import write_jsonl as _write_jsonl_shared
 
 
 def find_samples_jsonl(dir_path: Path) -> Path | None:
@@ -37,21 +39,10 @@ def find_samples_jsonl(dir_path: Path) -> Path | None:
 
 
 def read_jsonl(path: Path) -> list[dict[str, Any]]:
-    rows: list[dict[str, Any]] = []
-    with path.open("r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
-            obj = json.loads(line)
-            if isinstance(obj, dict):
-                rows.append(obj)
-    return rows
+    return _read_jsonl_shared(path, dicts_only=True)
 
 
 def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-
     def _default(o: Any) -> Any:
         if isinstance(o, np.integer):
             return int(o)
@@ -62,10 +53,7 @@ def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
         if isinstance(o, np.ndarray):
             return o.tolist()
         raise TypeError(f"Not JSON serializable: {type(o)}")
-
-    with path.open("w", encoding="utf-8") as f:
-        for row in rows:
-            f.write(json.dumps(row, ensure_ascii=False, default=_default) + "\n")
+    _write_jsonl_shared(path, rows, json_default=_default)
 
 
 def merge_samples(

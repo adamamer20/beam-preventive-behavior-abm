@@ -433,4 +433,3 @@ def load_possible_numeric_bounds_from_clean_spec(path: Path) -> dict[str, tuple[
         if b is not None:
             out[cid] = b
     return out
-

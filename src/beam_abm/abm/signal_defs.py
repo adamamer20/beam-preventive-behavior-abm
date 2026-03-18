@@ -204,4 +204,3 @@ SIGNAL_CATALOGUE: dict[str, dict[str, object]] = {
         },
     },
 }
-

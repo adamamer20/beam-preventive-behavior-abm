@@ -7,39 +7,12 @@ import json
 from pathlib import Path
 from typing import Any
 
-import pandas as pd
-
 from beam_abm.evaluation.belief.reference import (
     compute_pe_ref_p_table,
     default_ref_state_models,
 )
-
-
-def _read_jsonl(path: Path) -> list[dict[str, Any]]:
-    rows: list[dict[str, Any]] = []
-    with path.open("r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                obj = json.loads(line)
-            except json.JSONDecodeError:
-                continue
-            if isinstance(obj, dict):
-                rows.append(obj)
-    return rows
-
-
-def _read_rows(path: Path) -> pd.DataFrame:
-    suf = path.suffix.lower()
-    if suf == ".parquet":
-        return pd.read_parquet(path)
-    if suf == ".csv":
-        return pd.read_csv(path)
-    if suf == ".jsonl":
-        return pd.DataFrame(_read_jsonl(path))
-    raise ValueError(f"Unsupported input format: {path}")
+from beam_abm.evaluation.utils.jsonl import read_frame as _read_rows
+from beam_abm.evaluation.utils.jsonl import read_jsonl as _read_jsonl
 
 
 def _parse_ref_map(spec: dict[str, Any]) -> dict[str, str]:
@@ -67,7 +40,7 @@ def main() -> None:
     parser.add_argument("--strict-missing-models", action="store_true")
     args = parser.parse_args()
 
-    data_df = _read_rows(Path(args.data))
+    data_df = _read_rows(Path(args.data), skip_invalid_jsonl=True)
     spec = json.loads(Path(args.spec).read_text(encoding="utf-8"))
 
     signals = spec.get("signals") if isinstance(spec.get("signals"), list) else []

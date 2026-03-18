@@ -10,17 +10,7 @@ import numpy as np
 import pandas as pd
 
 from beam_abm.evaluation.utils.id_utils import normalize_perturbed_dataset_id
-
-
-def _read_jsonl(path: Path) -> list[dict]:
-    rows: list[dict] = []
-    with path.open("r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
-            rows.append(json.loads(line))
-    return rows
+from beam_abm.evaluation.utils.jsonl import read_jsonl as _read_jsonl
 
 
 def _extract_samples(row: dict) -> list[float]:

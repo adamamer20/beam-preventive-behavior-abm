@@ -157,24 +157,3 @@ class SurveyPrediction(BaseModel):
             description="When the epidemic pressure is high, I use masks in crowded places",
         ),
     ]
-
-
-# Helper class to define thinking field first
-class ThinkingField(BaseModel):
-    """Helper class to define the thinking field first for chain-of-thought reasoning."""
-
-    thinking: Annotated[str, Field(description="Chain of thought reasoning for the predictions")]
-
-
-class SurveyPredictionWithThinking(SurveyPrediction, ThinkingField):
-    """Survey prediction model with thinking field for chain-of-thought reasoning.
-
-    This model puts the thinking field FIRST to ensure the model generates
-    reasoning before making predictions, which is crucial for effective CoT.
-
-    Uses Pydantic's multiple inheritance field ordering where the last parent
-    class (ThinkingField) takes precedence, ensuring thinking comes before
-    all other fields from SurveyPrediction.
-    """
-
-    pass

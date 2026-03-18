@@ -12,7 +12,7 @@ src/beam_abm/llm/
 ├── prompts/      # prompt builders/templates
 ├── schemas/      # pydantic model configs and prediction schemas
 ├── strategies/   # strategy logic helpers
-├── utils/        # token, retry, logging, and writer utilities
+├── utils/        # token, logging, and helper utilities
 ├── config.py     # runtime settings resolver
 └── inference.py  # backend-agnostic async inference helpers
 ```

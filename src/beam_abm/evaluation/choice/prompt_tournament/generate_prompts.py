@@ -38,27 +38,12 @@ from beam_abm.evaluation.prompting import (
     PromptTemplateBuilder,
     build_clean_spec_index,
 )
-
-
-def _read_jsonl(path: Path) -> list[dict]:
-    rows: list[dict] = []
-    with path.open("r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
-            rows.append(json.loads(line))
-    return rows
-
-
-def _read_rows(path: Path) -> list[dict]:
-    if path.suffix.lower() == ".parquet":
-        df = pd.read_parquet(path)
-        return df.to_dict(orient="records")
-    if path.suffix.lower() == ".csv":
-        df = pd.read_csv(path)
-        return df.to_dict(orient="records")
-    return _read_jsonl(path)
+from beam_abm.evaluation.utils.jsonl import (
+    read_rows as _read_rows,
+)
+from beam_abm.evaluation.utils.jsonl import (
+    write_jsonl as _write_jsonl,
+)
 
 
 def _read_parquet_paths(
@@ -117,15 +102,6 @@ def _read_parquet_paths(
     for p in paths:
         rows.extend(_read_rows(p))
     return rows, False, {}
-
-
-def _write_jsonl(path: Path, rows: list[dict]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8") as f:
-        for row in rows:
-            f.write(json.dumps(row, ensure_ascii=False) + "\n")
-
-
 def _fmt_num(x: float) -> str:
     if float(x).is_integer():
         return str(int(x))

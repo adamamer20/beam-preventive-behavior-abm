@@ -280,4 +280,3 @@ async def sample_many_concurrent(
     all_batches = await asyncio.gather(*[run_for_prompt(i, p) for i, p in enumerate(prompts)])
     results.extend(all_batches)
     return results
-

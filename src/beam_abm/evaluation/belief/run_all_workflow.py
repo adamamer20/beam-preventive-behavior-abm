@@ -30,6 +30,8 @@ from typing import Any
 
 from beam_abm.evaluation.artifacts import utc_timestamp
 from beam_abm.evaluation.choice.canonicalize import normalize_model_slug
+from beam_abm.evaluation.utils.jsonl import read_jsonl as _read_jsonl
+from beam_abm.evaluation.utils.jsonl import write_jsonl as _write_jsonl
 
 
 def _parse_csv_list(value: str | None) -> list[str]:
@@ -51,26 +53,6 @@ def _jsonl_has_rows(path: Path) -> bool:
             if line.strip():
                 return True
     return False
-
-
-def _read_jsonl(path: Path) -> list[dict[str, Any]]:
-    rows: list[dict[str, Any]] = []
-    with path.open("r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
-            payload = json.loads(line)
-            if isinstance(payload, dict):
-                rows.append(payload)
-    return rows
-
-
-def _write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8") as f:
-        for row in rows:
-            f.write(json.dumps(row, ensure_ascii=False) + "\n")
 
 
 def _prompt_row_key(row: dict[str, Any]) -> tuple[str, str, str]:
