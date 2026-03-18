@@ -22,7 +22,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from beam_abm.evaluation.choice.canonicalize import normalize_model_slug
+from beam_abm.evaluation.choice._canonicalize_ids import normalize_model_slug
 from beam_abm.evaluation.common.labels import (
     load_clean_spec_question_answer_maps,
     load_display_groups,

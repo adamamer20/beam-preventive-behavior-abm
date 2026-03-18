@@ -9,57 +9,7 @@ from __future__ import annotations
 
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
-
-
-class ContinuousPrediction(BaseModel):
-    """Continuous outcome on the original scale."""
-
-    prediction: float = Field(..., description="Point prediction on the declared continuous outcome scale")
-    rationale: str | None = Field(default=None, description="Optional short rationale")
-
-
-class BinaryPrediction(BaseModel):
-    """Binary outcome represented by probability of Y=1."""
-
-    p_yes: float = Field(..., ge=0.0, le=1.0, description="P(Y=1) on the declared binary outcome")
-    rationale: str | None = Field(default=None, description="Optional short rationale")
-
-
-class OrdinalPrediction(BaseModel):
-    """Ordinal outcome represented by a categorical distribution.
-
-    `levels` can be strings (e.g., ['strongly_disagree', ...]) or numeric-like.
-    The expected value is computed downstream if levels are numeric-like; otherwise we map
-    to equally spaced ranks 0..K-1.
-    """
-
-    levels: list[str] = Field(..., min_length=2)
-    probs: list[float] = Field(..., min_length=2, description="Probabilities aligned with levels")
-    rationale: str | None = Field(default=None, description="Optional short rationale")
-
-    @model_validator(mode="after")
-    def _validate_probs(self) -> OrdinalPrediction:
-        if len(self.levels) != len(self.probs):
-            raise ValueError("levels and probs must have same length")
-
-        probs = [float(p) for p in self.probs]
-        if any((p < 0.0) or (p > 1.0) for p in probs):
-            raise ValueError("probs must be in [0, 1]")
-
-        s = float(sum(probs))
-        if not (s > 0.0):
-            raise ValueError("sum(probs) must be > 0")
-
-        # Enforce sum(probs)=1 with tolerance; renormalize minor drift.
-        if abs(s - 1.0) > 1e-2:
-            raise ValueError("sum(probs) must be approximately 1")
-        if abs(s - 1.0) > 1e-6:
-            self.probs = [p / s for p in probs]
-        else:
-            self.probs = probs
-
-        return self
+from pydantic import BaseModel, ConfigDict, Field
 
 
 def ordinal_expected_value_and_mapping(
@@ -106,27 +56,6 @@ def ordinal_expected_value_and_mapping(
 
     z = float(sum(pi * xi for pi, xi in zip(p, numeric_levels, strict=False)))
     return z, mapping
-
-
-class PairedContinuousPrediction(BaseModel):
-    """Paired-profile output with low profile as A and high profile as B."""
-
-    A: ContinuousPrediction
-    B: ContinuousPrediction
-
-
-class PairedBinaryPrediction(BaseModel):
-    """Paired-profile output with low profile as A and high profile as B."""
-
-    A: BinaryPrediction
-    B: BinaryPrediction
-
-
-class PairedOrdinalPrediction(BaseModel):
-    """Paired-profile output with low profile as A and high profile as B."""
-
-    A: OrdinalPrediction
-    B: OrdinalPrediction
 
 
 class BeliefUpdatePrediction(BaseModel):

@@ -23,8 +23,7 @@ from typing import Any
 
 import pandas as pd
 
-from beam_abm.evaluation.choice.canonicalize import normalize_model_slug
-from beam_abm.evaluation.utils.jsonl import write_jsonl as _write_jsonl_shared
+from beam_abm.evaluation.choice._canonicalize_ids import normalize_model_slug
 
 
 @dataclass(frozen=True, slots=True)
@@ -48,12 +47,6 @@ def iter_jsonl(path: Path):
                 continue
             if isinstance(obj, dict):
                 yield obj
-
-
-def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
-    _write_jsonl_shared(path, rows)
-
-
 def _is_missing(value: Any) -> bool:
     if value is None:
         return True

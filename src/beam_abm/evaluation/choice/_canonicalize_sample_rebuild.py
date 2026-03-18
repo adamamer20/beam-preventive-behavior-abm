@@ -19,8 +19,7 @@ from beam_abm.evaluation.choice._canonicalize_metrics import compute_metrics_df
 from beam_abm.evaluation.choice._canonicalize_predictions import samples_to_predictions_df
 from beam_abm.evaluation.choice._canonicalize_types import CanonicalizeStats
 from beam_abm.evaluation.common.calibrate_predictions import calibrate_predictions
-from beam_abm.evaluation.utils.jsonl import read_jsonl as _read_jsonl_shared
-from beam_abm.evaluation.utils.jsonl import write_jsonl as _write_jsonl_shared
+from beam_abm.evaluation.utils.jsonl import numpy_json_default, read_jsonl, write_jsonl
 
 
 def find_samples_jsonl(dir_path: Path) -> Path | None:
@@ -36,24 +35,6 @@ def find_samples_jsonl(dir_path: Path) -> Path | None:
         return None
     # Prefer the largest file (typically the combined samples file).
     return max(candidates, key=lambda p: p.stat().st_size)
-
-
-def read_jsonl(path: Path) -> list[dict[str, Any]]:
-    return _read_jsonl_shared(path, dicts_only=True)
-
-
-def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
-    def _default(o: Any) -> Any:
-        if isinstance(o, np.integer):
-            return int(o)
-        if isinstance(o, np.floating):
-            return float(o)
-        if isinstance(o, np.bool_):
-            return bool(o)
-        if isinstance(o, np.ndarray):
-            return o.tolist()
-        raise TypeError(f"Not JSON serializable: {type(o)}")
-    _write_jsonl_shared(path, rows, json_default=_default)
 
 
 def merge_samples(
@@ -94,7 +75,7 @@ def merge_samples(
 
     for path in samples_paths:
         runs_seen += 1
-        run_rows = read_jsonl(path)
+        run_rows = read_jsonl(path, dicts_only=True)
         for row in run_rows:
             rows_in += 1
             dataset_id = _row_dataset_id(row)
@@ -244,7 +225,7 @@ def rebuild_canonical_leaf(
             tmp_cal.mkdir(parents=True, exist_ok=True)
 
             # Uncalibrated artifacts.
-            write_jsonl(tmp_uncal / "samples.jsonl", filtered_rows)
+            write_jsonl(tmp_uncal / "samples.jsonl", filtered_rows, json_default=numpy_json_default)
             pred_df = samples_to_predictions_df(filtered_rows, strategy=strategy)
             pred_df.to_csv(tmp_uncal / "predictions.csv", index=False)
             metrics_uncal = compute_metrics_df(

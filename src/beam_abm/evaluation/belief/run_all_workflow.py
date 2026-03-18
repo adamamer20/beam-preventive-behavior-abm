@@ -29,7 +29,7 @@ from pathlib import Path
 from typing import Any
 
 from beam_abm.evaluation.artifacts import utc_timestamp
-from beam_abm.evaluation.choice.canonicalize import normalize_model_slug
+from beam_abm.evaluation.choice._canonicalize_ids import normalize_model_slug
 from beam_abm.evaluation.utils.jsonl import read_jsonl as _read_jsonl
 from beam_abm.evaluation.utils.jsonl import write_jsonl as _write_jsonl
 

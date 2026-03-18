@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 
 from beam_abm.evaluation.artifacts import utc_timestamp_iso
-from beam_abm.evaluation.belief.reference import compute_choice_like_summary
+from beam_abm.evaluation.belief.reference_summary_metrics import compute_choice_like_summary
 from beam_abm.evaluation.common.labels import load_possible_numeric_bounds_from_clean_spec
 from beam_abm.evaluation.utils.jsonl import read_jsonl as _read_jsonl
 from beam_abm.evaluation.utils.jsonl import write_jsonl as _write_jsonl

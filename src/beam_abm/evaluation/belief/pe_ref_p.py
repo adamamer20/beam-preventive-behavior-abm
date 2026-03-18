@@ -7,10 +7,8 @@ import json
 from pathlib import Path
 from typing import Any
 
-from beam_abm.evaluation.belief.reference import (
-    compute_pe_ref_p_table,
-    default_ref_state_models,
-)
+from beam_abm.evaluation.belief.reference_model_loading import default_ref_state_models
+from beam_abm.evaluation.belief.reference_pe_table import compute_pe_ref_p_table
 from beam_abm.evaluation.utils.jsonl import read_frame as _read_rows
 from beam_abm.evaluation.utils.jsonl import read_jsonl as _read_jsonl
 

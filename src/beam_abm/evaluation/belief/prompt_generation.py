@@ -11,9 +11,7 @@ from types import SimpleNamespace
 import pandas as pd
 
 from beam_abm.empirical.plan_io import extract_predictors_from_model_plan
-from beam_abm.evaluation.belief.reference import (
-    default_ref_state_models,
-)
+from beam_abm.evaluation.belief.reference_model_loading import default_ref_state_models
 from beam_abm.evaluation.common.labels import (
     load_clean_spec_question_answer_maps,
     load_display_groups,

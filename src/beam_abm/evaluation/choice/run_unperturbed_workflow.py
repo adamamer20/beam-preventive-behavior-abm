@@ -20,15 +20,13 @@ from pathlib import Path
 import pandas as pd
 
 from beam_abm.evaluation.artifacts import utc_timestamp
-from beam_abm.evaluation.choice.canonicalize import (
-    find_samples_jsonl,
-    normalize_model_slug,
-    read_jsonl,
-    rebuild_canonical_leaf,
-    write_jsonl,
+from beam_abm.evaluation.choice._canonicalize_ids import normalize_model_slug
+from beam_abm.evaluation.choice._canonicalize_sample_rebuild import find_samples_jsonl, rebuild_canonical_leaf
+from beam_abm.evaluation.choice._canonicalize_summary import (
     write_models_strategies_summary,
     write_strategies_summary,
 )
+from beam_abm.evaluation.utils.jsonl import numpy_json_default, read_jsonl, write_jsonl
 from beam_abm.llm.schemas.predictions import extract_scalar_prediction
 
 
@@ -423,7 +421,7 @@ def main(argv: list[str] | None = None) -> None:
                     continue
                 raise RuntimeError(f"Expected batch samples at {batch_samples_out}")
 
-            batch_rows = read_jsonl(batch_samples_out)
+            batch_rows = read_jsonl(batch_samples_out, dicts_only=True)
 
             for outcome in outcomes:
                 run_leaf = runs_root / run_id / outcome / model_norm / family
@@ -444,8 +442,8 @@ def main(argv: list[str] | None = None) -> None:
                             continue
                         if _row_outcome(r) == outcome:
                             filtered.append(r)
-                    write_jsonl(outcome_samples, filtered)
-                    write_jsonl(outcome_samples_named, filtered)
+                    write_jsonl(outcome_samples, filtered, json_default=numpy_json_default)
+                    write_jsonl(outcome_samples_named, filtered, json_default=numpy_json_default)
                 elif not outcome_samples_named.exists():
                     shutil.copyfile(outcome_samples, outcome_samples_named)
 

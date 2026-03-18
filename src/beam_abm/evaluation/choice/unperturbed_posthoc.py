@@ -246,7 +246,7 @@ def _extract_row_id(dataset_id: object) -> int | None:
     the pipeline centered on a single convention.
     """
 
-    from beam_abm.evaluation.choice.canonicalize import normalize_choice_dataset_id
+    from beam_abm.evaluation.choice._canonicalize_ids import normalize_choice_dataset_id
 
     s = dataset_id.strip() if isinstance(dataset_id, str) else ""
     if not s:

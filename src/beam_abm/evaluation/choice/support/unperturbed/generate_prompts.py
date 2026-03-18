@@ -17,7 +17,6 @@ from beam_abm.evaluation.choice.support.unperturbed.unperturbed_utils import (
     parse_list_arg,
     parse_prompt_families,
     stratified_sample_indices,
-    write_jsonl,
 )
 from beam_abm.evaluation.common.labels import (
     load_clean_spec_question_answer_maps,
@@ -30,6 +29,7 @@ from beam_abm.evaluation.prompting import (
     PromptTemplateBuilder,
     build_clean_spec_index,
 )
+from beam_abm.evaluation.utils.jsonl import numpy_json_default, write_jsonl
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -195,7 +195,7 @@ def main(argv: list[str] | None = None) -> None:
                 rows.append(row)
 
         out_path = outdir / f"prompts__{family}.jsonl"
-        write_jsonl(out_path, rows)
+        write_jsonl(out_path, rows, json_default=numpy_json_default)
 
 
 if __name__ == "__main__":

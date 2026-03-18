@@ -7,6 +7,7 @@ from collections.abc import Callable, Iterable
 from pathlib import Path
 from typing import Any
 
+import numpy as np
 import pandas as pd
 
 
@@ -43,6 +44,20 @@ def write_jsonl(
     with path.open("w", encoding="utf-8") as handle:
         for row in rows:
             handle.write(json.dumps(row, ensure_ascii=False, default=json_default) + "\n")
+
+
+def numpy_json_default(obj: Any) -> Any:
+    """Serialize common NumPy scalar and array values."""
+
+    if isinstance(obj, np.integer):
+        return int(obj)
+    if isinstance(obj, np.floating):
+        return float(obj)
+    if isinstance(obj, np.bool_):
+        return bool(obj)
+    if isinstance(obj, np.ndarray):
+        return obj.tolist()
+    raise TypeError(f"Object of type {obj.__class__.__name__} is not JSON serializable")
 
 
 def read_rows(path: Path, *, skip_invalid_jsonl: bool = False) -> list[dict[str, Any]]:

@@ -15,8 +15,8 @@ from beam_abm.evaluation.choice.support.unperturbed.unperturbed_utils import (
     compute_metrics_rows,
     metrics_filename,
     parse_prompt_families,
-    read_jsonl,
 )
+from beam_abm.evaluation.utils.jsonl import read_jsonl
 from beam_abm.llm.schemas.predictions import extract_scalar_prediction
 
 
@@ -162,7 +162,7 @@ def main(argv: list[str] | None = None) -> None:
         if not samples_path.exists():
             raise FileNotFoundError(f"Samples JSONL not found: {samples_path}")
 
-        rows = read_jsonl(samples_path)
+        rows = read_jsonl(samples_path, dicts_only=True)
         prediction_rows: list[dict[str, Any]] = []
 
         for row in rows:

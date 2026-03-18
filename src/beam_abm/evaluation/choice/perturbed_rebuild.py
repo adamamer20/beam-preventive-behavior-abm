@@ -15,7 +15,8 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from beam_abm.evaluation.choice.canonicalize import normalize_model_slug, write_jsonl
+from beam_abm.evaluation.choice._canonicalize_ids import normalize_model_slug
+from beam_abm.evaluation.choice._canonicalize_sample_rebuild import leaf_lock
 from beam_abm.evaluation.choice.perturbed_alignment import rebuild_alignment_summary
 from beam_abm.evaluation.choice.perturbed_ingest import (
     _iter_jsonl_dicts,
@@ -24,6 +25,7 @@ from beam_abm.evaluation.choice.perturbed_ingest import (
     normalize_model_dirname,
 )
 from beam_abm.evaluation.utils.id_utils import normalize_perturbed_dataset_id
+from beam_abm.evaluation.utils.jsonl import numpy_json_default, write_jsonl
 
 
 def _row_merge_key(row: dict[str, Any], *, outcome: str | None = None) -> str:
@@ -335,8 +337,6 @@ def rebuild_canonical_from_runs(
         lock_path = locks_root / outcome / model / f"{strategy}.lock"
         lock_path.parent.mkdir(parents=True, exist_ok=True)
 
-        from beam_abm.evaluation.choice.canonicalize import leaf_lock
-
         with leaf_lock(lock_path):
             canonical_strategy_root.mkdir(parents=True, exist_ok=True)
 
@@ -355,7 +355,7 @@ def rebuild_canonical_from_runs(
 
                 if samples_paths:
                     merged_rows = _merge_samples_perturbed(samples_paths, outcome=outcome)
-                    write_jsonl(tmp_status / "samples.jsonl", merged_rows)
+                    write_jsonl(tmp_status / "samples.jsonl", merged_rows, json_default=numpy_json_default)
                     _write_row_level_from_samples(
                         samples_path=tmp_status / "samples.jsonl",
                         out_path=tmp_status / "row_level.csv",

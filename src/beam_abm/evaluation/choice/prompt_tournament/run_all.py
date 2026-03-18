@@ -18,7 +18,7 @@ from beam_abm.evaluation.artifacts import (
     utc_timestamp_iso,
     write_run_metadata,
 )
-from beam_abm.evaluation.choice.canonicalize import normalize_model_slug
+from beam_abm.evaluation.choice._canonicalize_ids import normalize_model_slug
 from beam_abm.evaluation.utils import prompt_tournament_utils as pt
 from beam_abm.evaluation.utils.alignment_utils import (
     merge_alignment_into_row_level,

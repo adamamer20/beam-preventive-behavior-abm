@@ -11,8 +11,6 @@ import pandas as pd
 
 from beam_abm.empirical.plan_io import extract_predictors_from_model_plan
 from beam_abm.evaluation.prompting import PromptTemplateBuilder
-from beam_abm.evaluation.utils.jsonl import read_jsonl as _read_jsonl_shared
-from beam_abm.evaluation.utils.jsonl import write_jsonl as _write_jsonl_shared
 
 Quantiles = tuple[float, ...]
 PromptFamily = str
@@ -311,28 +309,6 @@ def compute_metrics_rows(
             }
         )
     return rows
-
-
-def read_jsonl(path: Path) -> list[dict]:
-    return _read_jsonl_shared(path)
-
-
-def _json_default(obj: Any) -> Any:
-    if isinstance(obj, np.integer):
-        return int(obj)
-    if isinstance(obj, np.floating):
-        return float(obj)
-    if isinstance(obj, np.bool_):
-        return bool(obj)
-    if isinstance(obj, np.ndarray):
-        return obj.tolist()
-    raise TypeError(f"Object of type {obj.__class__.__name__} is not JSON serializable")
-
-
-def write_jsonl(path: Path, rows: list[dict]) -> None:
-    _write_jsonl_shared(path, rows, json_default=_json_default)
-
-
 def build_predictor_cols(
     *,
     outcome_key: str,

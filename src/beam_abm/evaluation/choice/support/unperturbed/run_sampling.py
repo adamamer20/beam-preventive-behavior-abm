@@ -11,9 +11,8 @@ from beam_abm.evaluation.choice.support.unperturbed.unperturbed_utils import (
     SUPPORTED_PROMPT_FAMILIES,
     parse_list_arg,
     parse_prompt_families,
-    read_jsonl,
-    write_jsonl,
 )
+from beam_abm.evaluation.utils.jsonl import numpy_json_default, read_jsonl, write_jsonl
 from beam_abm.evaluation.utils.regex_fallback import regex_extract_scalar
 from beam_abm.llm.schemas.predictions import extract_scalar_prediction
 
@@ -212,7 +211,7 @@ def _ensure_baseline_predictions(
             "Missing data_only samples for baseline. Looked in: " + ", ".join(str(p) for p in candidates)
         )
 
-    rows = read_jsonl(samples_path)
+    rows = read_jsonl(samples_path, dicts_only=True)
     # Aggregated sample files include `model` per row; per-model files don't.
     has_model_field = any(isinstance(r, dict) and "model" in r for r in rows)
 
@@ -244,7 +243,7 @@ def _ensure_baseline_predictions(
 
     out_token = batch_model_token or model_token
     out_path = baseline_path or outdir / f"baseline_predictions__data_only__{out_token}.jsonl"
-    write_jsonl(out_path, out_rows)
+    write_jsonl(out_path, out_rows, json_default=numpy_json_default)
     return out_path
 
 
@@ -406,10 +405,10 @@ def main(argv: list[str] | None = None) -> None:
                 _sys.argv = [_sys.argv[0], *argv_local]
                 run_llm_sampling.main()
 
-                for row in read_jsonl(out_path):
+                for row in read_jsonl(out_path, dicts_only=True):
                     out_rows.append({**row, "model": model_name})
 
-            write_jsonl(outdir / "samples__multi_expert.jsonl", out_rows)
+            write_jsonl(outdir / "samples__multi_expert.jsonl", out_rows, json_default=numpy_json_default)
             continue
 
         from beam_abm.evaluation.common import llm_sampling as run_llm_sampling
@@ -471,14 +470,14 @@ def main(argv: list[str] | None = None) -> None:
             _sys.argv = [_sys.argv[0], *argv_local]
             run_llm_sampling.main()
 
-            for row in read_jsonl(out_path):
+            for row in read_jsonl(out_path, dicts_only=True):
                 if isinstance(row, dict):
                     for sample in row.get("samples") or []:
                         if isinstance(sample, dict) and sample.get("prediction_scalar") is None:
                             sample["prediction_scalar"] = _extract_scalar_from_sample(sample)
                 out_rows.append({**row, "model": model_name})
 
-        write_jsonl(outdir / f"samples__{family}.jsonl", out_rows)
+        write_jsonl(outdir / f"samples__{family}.jsonl", out_rows, json_default=numpy_json_default)
 
 
 if __name__ == "__main__":

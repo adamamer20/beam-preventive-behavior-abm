@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from beam_abm.evaluation.belief.reference import compute_pe_ref_p_table
+from beam_abm.evaluation.belief.reference_pe_table import compute_pe_ref_p_table
 
 
 def _write_coefficients(path: Path, rows: list[tuple[str, float]]) -> None:

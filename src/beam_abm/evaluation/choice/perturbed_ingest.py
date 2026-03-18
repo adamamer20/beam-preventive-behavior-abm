@@ -12,7 +12,7 @@ from typing import Any, Literal
 
 import pandas as pd
 
-from beam_abm.evaluation.choice.canonicalize import normalize_model_slug
+from beam_abm.evaluation.choice._canonicalize_ids import normalize_model_slug
 
 CalibrationStatus = Literal["uncalibrated", "calibrated"]
 

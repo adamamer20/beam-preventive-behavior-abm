@@ -28,7 +28,7 @@ from beam_abm.evaluation.belief.canonicalize import (
     rebuild_canonical_from_runs,
     write_summary_metrics,
 )
-from beam_abm.evaluation.choice.canonicalize import normalize_model_slug
+from beam_abm.evaluation.choice._canonicalize_ids import normalize_model_slug
 
 
 def _iter_jsonl_dicts(path: Path):
