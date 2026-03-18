@@ -9,7 +9,6 @@ evaluation workflows.
 src/beam_abm/llm/
 ├── backends/     # backend adapters and backend factory
 ├── clients/      # lower-level clients (e.g. async vLLM manager)
-├── processors/   # core async processing base
 ├── prompts/      # prompt builders/templates
 ├── schemas/      # pydantic model configs and prediction schemas
 ├── strategies/   # strategy logic helpers
@@ -23,7 +22,6 @@ src/beam_abm/llm/
 ```python
 from beam_abm.llm.schemas import ModelConfig, ModelOptions
 from beam_abm.llm.backends import get_backend, AsyncLLMBackend, LLMRequest
-from beam_abm.llm.processors import AsyncSurveyProcessor
 ```
 
 ## Backend selection

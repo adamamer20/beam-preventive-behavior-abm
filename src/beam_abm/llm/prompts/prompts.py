@@ -172,22 +172,3 @@ BELIEF_UPDATE_EXPERT_PROMPTS: dict[str, str] = {
         'If no meaningful change, return {"delta": {}, "fields_used": ["..."]}'
     ),
 }
-
-
-def build_multi_expert_prompts(
-    *,
-    base_prompt: str,
-    attributes: dict[str, Any],
-    task_instructions: str,
-    attribute_key_map: dict[str, str] | None = None,
-    attribute_render: Literal["name", "description", "both"] = "name",
-) -> dict[str, str]:
-    """Build per-expert prompts for a multi-expert strategy."""
-
-    attr_text = format_attribute_vector(
-        attributes, attribute_key_map=attribute_key_map, attribute_render=attribute_render
-    )
-    out: dict[str, str] = {}
-    for name, expert_prompt in EXPERT_PROMPTS.items():
-        out[name] = f"{base_prompt}\n\n{expert_prompt}\n\n{task_instructions}\n\nAttributes:\n{attr_text}"
-    return out
