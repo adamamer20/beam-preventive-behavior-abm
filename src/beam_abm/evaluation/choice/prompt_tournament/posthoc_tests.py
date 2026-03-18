@@ -10,7 +10,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from beam_abm.evaluation.utils.jsonl import read_jsonl as _read_jsonl_shared
+from beam_abm.evaluation.utils.jsonl import read_jsonl
 
 
 def _parse_list(value: object) -> list[float] | None:
@@ -58,10 +58,6 @@ def _delta(df: pd.DataFrame, *, low_col: str, high_col: str) -> pd.Series:
     return pd.to_numeric(df[high_col], errors="coerce") - pd.to_numeric(df[low_col], errors="coerce")
 
 
-def _read_jsonl(path: Path) -> list[dict[str, Any]]:
-    return _read_jsonl_shared(path, dicts_only=True, skip_invalid=True)
-
-
 def _mean_prediction(samples: object) -> float | None:
     if not isinstance(samples, list):
         return None
@@ -84,7 +80,7 @@ def _mean_prediction(samples: object) -> float | None:
 def _load_unperturbed_predictions(samples_path: Path) -> pd.DataFrame:
     if not samples_path.exists():
         return pd.DataFrame(columns=["id", "outcome", "y_unpert", "country", "row_index"])
-    rows = _read_jsonl(samples_path)
+    rows = read_jsonl(samples_path, dicts_only=True, skip_invalid=True)
     pred_rows: list[dict[str, Any]] = []
     for row in rows:
         row_id = row.get("id")

@@ -4,13 +4,13 @@ from __future__ import annotations
 
 import asyncio
 import json
-import random
 from dataclasses import dataclass
 from typing import Any
 
 from beam_abm.llm.backends.factory import get_backend
 from beam_abm.llm.config import get_llm_runtime_settings
 from beam_abm.llm.schemas.model_config import ModelConfig
+from beam_abm.llm.utils.backoff import jittered_exponential_backoff
 
 
 @dataclass(frozen=True)
@@ -37,8 +37,7 @@ def _retry_sleep_seconds(error: Exception, attempt_index: int) -> float:
         cap = 60.0
     if "timed out" in msg or "timeout" in msg:
         base = max(base, 1.0)
-    delay = min(cap, base * (2.0**attempt_index))
-    return delay * (0.5 + random.random())
+    return jittered_exponential_backoff(attempt_index, base=base, cap=cap)
 
 
 async def sample_one(
