@@ -5,12 +5,9 @@ from beam_abm.common.logging import get_logger
 from .models import (
     Column,
     DataCleaningModel,
-    ImputationTransformation,
-    MergedTransformation,
-    RenamedTransformation,
     RenamingTransformation,
-    SplittedTransformation,
 )
+from .semantics import iter_raw_reference_names, normalize_reference_name
 
 logger = get_logger(__name__)
 
@@ -62,24 +59,12 @@ def validate_references_before_processing(
         if not col.transformations:
             continue
         for t in col.transformations:
-            if isinstance(t, MergedTransformation):
-                raw_refs.extend(t.merged_from)
-            elif isinstance(t, SplittedTransformation):
-                raw_refs.append(t.split_from)
-            elif isinstance(t, RenamedTransformation):
-                raw_refs.append(t.rename_from)
-            elif isinstance(t, ImputationTransformation) and isinstance(t.imputation_value, str):
-                if t.imputation_value.startswith("$"):
-                    raw_refs.append(t.imputation_value)
+            raw_refs.extend(iter_raw_reference_names(t))
 
     for raw_ref in raw_refs:
-        if not raw_ref:
+        check_name = normalize_reference_name(raw_ref)
+        if check_name is None:
             continue
-        check_name = raw_ref
-        if check_name.startswith("$"):
-            if check_name in {"$PREDICTION", "$MAX"}:
-                continue
-            check_name = check_name.lstrip("$")
 
         if check_name in spec_ids:
             continue

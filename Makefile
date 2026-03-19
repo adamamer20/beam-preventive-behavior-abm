@@ -125,7 +125,7 @@ preprocess-clean: ## Rebuild output/preprocess/clean_processed_survey.csv from p
 	@echo "✅ Clean spec updated at preprocess/specs/5_clean_transformed_questions.json"
 	@echo "🗑️  Removing existing clean_processed_survey.csv (candidate paths)"; \
 	rm -f preprocess/output/clean_processed_survey.csv output/preprocess/clean_processed_survey.csv || true
-	uv run python preprocess/scripts/main.py --select clean
+	uv run python preprocess/scripts/main.py
 	@echo "✅ CLEAN dataset rebuilt: preprocess/output/clean_processed_survey.csv"
 	@echo "🧮 Generating column type specification..."
 	uv run python preprocess/scripts/build_column_types.py

@@ -15,7 +15,7 @@ preprocess/            Survey cleaning, recoding, and transformation specs
 empirical/             Descriptives, modelling, anchoring, and diagnostics
 evaluation/            LLM micro-validation prompts, runs, and summaries
 abm/                   Agent-based simulation, scenarios, metrics, sensitivity
-src/beam_abm/          Shared package code for survey, empirical, LLM, and ABM logic
+src/beam_abm/          Shared package code for preprocess, empirical, LLM, and ABM logic
 thesis/                Quarto thesis source and thesis-facing artefacts
 docs/                  Project documentation source
 ```
@@ -23,7 +23,7 @@ docs/                  Project documentation source
 Within `src/beam_abm/`, the main package structure is:
 
 ```text
-survey/               Survey loading and cleaning helpers
+preprocess/           Survey ingestion, cleaning, and spec tooling
 empirical/            Shared empirical-model utilities
 anchoring/            Anchor construction and resampling logic
 evaluation/           Choice and belief micro-validation code

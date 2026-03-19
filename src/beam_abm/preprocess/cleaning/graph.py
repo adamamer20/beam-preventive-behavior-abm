@@ -9,13 +9,11 @@ from beam_abm.common.logging import get_logger
 from .models import (
     DataCleaningModel,
     ImputationTransformation,
-    MergedTransformation,
     RemovalTransformation,
-    RenamedTransformation,
     RenamingTransformation,
-    SplittedTransformation,
     Transformation,
 )
+from .semantics import iter_dependency_source_ids
 
 logger = get_logger(__name__)
 
@@ -95,47 +93,8 @@ def build_transformation_graph(
     for nodes_list in column_nodes_map.values():
         for node in nodes_list:
             transformation = node.transformation
-            if isinstance(transformation, MergedTransformation):
-                for src_ref in transformation.merged_from:
-                    src_col_id = resolve_ref(src_ref)
-                    last_src = last_non_removal_node_for_column(src_col_id)
-                    if last_src:
-                        graph.add_edge(last_src, node)
-                        dependency_edges += 1
-                    source_removal_node = removal_node_for_column(src_col_id)
-                    if source_removal_node:
-                        graph.add_edge(node, source_removal_node)
-                        dependency_edges += 1
-            elif isinstance(transformation, RenamedTransformation):
-                src_col_id = resolve_ref(transformation.rename_from)
-                last_src = last_non_removal_node_for_column(src_col_id)
-                if last_src:
-                    graph.add_edge(last_src, node)
-                    dependency_edges += 1
-                source_removal_node = removal_node_for_column(src_col_id)
-                if source_removal_node:
-                    graph.add_edge(node, source_removal_node)
-                    dependency_edges += 1
-            elif isinstance(transformation, SplittedTransformation):
-                src_col_id = resolve_ref(transformation.split_from)
-                last_src = last_non_removal_node_for_column(src_col_id)
-                if last_src:
-                    graph.add_edge(last_src, node)
-                    dependency_edges += 1
-                source_removal_node = removal_node_for_column(src_col_id)
-                if source_removal_node:
-                    graph.add_edge(node, source_removal_node)
-                    dependency_edges += 1
-            elif (
-                isinstance(transformation, ImputationTransformation)
-                and isinstance(transformation.imputation_value, str)
-                and transformation.imputation_value.startswith("$")
-                and transformation.imputation_value not in {"$PREDICTION", "$MAX"}
-            ):
-                src_ref = transformation.imputation_value.lstrip("$")
-                if not src_ref:
-                    continue
-                src_col_id = resolve_ref(src_ref)
+            source_ids = iter_dependency_source_ids(transformation, resolve_ref=resolve_ref)
+            for src_col_id in source_ids:
                 last_src = last_non_removal_node_for_column(src_col_id)
                 if last_src:
                     graph.add_edge(last_src, node)

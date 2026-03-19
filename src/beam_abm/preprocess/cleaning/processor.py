@@ -6,48 +6,16 @@ from beam_abm.common.logging import get_logger
 
 from .encoders import count_answers, extract_number, generate_embeddings
 from .graph import TransformationNode, build_transformation_graph
-from .handlers import DataCleaningHandlersMixin
-from .imputation import run_final_imputation_pass
-from .models import (
-    BinningTransformation,
-    Column,
-    ColumnSubstitutionTransformation,
-    DataCleaningModel,
-    EncodingTransformation,
-    ImputationTransformation,
-    MergedTransformation,
-    MergingTransformation,
-    OutliersTransformation,
-    RemovalTransformation,
-    RenamedTransformation,
-    RenamingTransformation,
-    ScalingTransformation,
-    SplittedTransformation,
-    SplittingTransformation,
-)
+from .imputation import compute_imputation_by_prediction, run_final_imputation_pass
+from .models import Column, DataCleaningModel
 from .references import build_rename_to_map, resolve_ref, validate_references_before_processing
+from .registry import resolve_handler
 from .validation import validate_processed_dataframe
 
 logger = get_logger(__name__)
 
-_TRANSFORMATION_HANDLERS: dict[type[object], str | None] = {
-    OutliersTransformation: "_process_outliers",
-    RemovalTransformation: "_process_removal",
-    EncodingTransformation: "_process_encoding",
-    MergedTransformation: "_process_merge",
-    RenamedTransformation: "_process_renamed",
-    RenamingTransformation: "_process_renaming",
-    MergingTransformation: None,  # metadata/dependency marker only
-    ImputationTransformation: "_process_imputation",
-    SplittedTransformation: "_process_split",
-    SplittingTransformation: None,  # metadata/dependency marker only
-    ScalingTransformation: "_process_scaling",
-    BinningTransformation: "_process_binning",
-    ColumnSubstitutionTransformation: "_process_column_substitution",
-}
 
-
-class DataCleaningProcessor(DataCleaningHandlersMixin):
+class DataCleaningProcessor:
     def __init__(self, model: DataCleaningModel):
         logger.info("Initializing DataCleaningProcessor")
         self.model = model
@@ -103,6 +71,9 @@ class DataCleaningProcessor(DataCleaningHandlersMixin):
 
     def _build_transformation_graph(self) -> list[TransformationNode]:
         return build_transformation_graph(model=self.model, resolve_ref=self._resolve_ref)
+
+    def _compute_imputation_by_prediction(self, col: Column) -> None:
+        compute_imputation_by_prediction(self, col, logger=logger)
 
     def _all_columns(self) -> list[Column]:
         columns = list(self.model.old_columns)
@@ -174,18 +145,8 @@ class DataCleaningProcessor(DataCleaningHandlersMixin):
         shape_before = self.df.shape
 
         try:
-            for transformation_cls, handler_name in _TRANSFORMATION_HANDLERS.items():
-                if not isinstance(t, transformation_cls):
-                    continue
-                if handler_name is None:
-                    marker = transformation_type.replace("Transformation", "").lower()
-                    logger.debug(f"Skipping no-op '{marker}' marker for column '{node.col_id}'")
-                    break
-                getattr(self, handler_name)(col_obj, t)
-                break
-            else:
-                logger.error(f"Unknown transformation type: {transformation_type}")
-                raise ValueError(f"Unknown transformation type: {transformation_type}")
+            handler = resolve_handler(t)
+            handler(self, col_obj, t)
 
             # Record dataframe shape after transformation
             shape_after = self.df.shape
@@ -198,3 +159,23 @@ class DataCleaningProcessor(DataCleaningHandlersMixin):
         except Exception as e:
             logger.error(f"Error applying {transformation_type} to column '{node.col_id}': {e}")
             raise
+
+
+def process_data(model: DataCleaningModel, df: pd.DataFrame) -> pd.DataFrame:
+    """Process a dataframe using the given data cleaning model."""
+    logger.info(f"Processing dataframe with shape {df.shape} using data cleaning model")
+    logger.debug(f"Input dataframe columns: {len(df.columns)}")
+    logger.debug(f"Input dataframe dtypes: {df.dtypes.value_counts().to_dict()}")
+
+    total_missing = df.isnull().sum().sum()
+    if total_missing > 0:
+        logger.info(f"Input dataframe has {total_missing} missing values")
+
+    try:
+        processor = DataCleaningProcessor(model)
+        result_df = processor.process_transformations(df)
+        logger.info(f"Data processing completed successfully - output shape: {result_df.shape}")
+        return result_df
+    except Exception as e:
+        logger.error(f"Error during data processing: {e}")
+        raise

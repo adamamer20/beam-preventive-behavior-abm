@@ -1,13 +1,18 @@
 from __future__ import annotations
 
 from collections import deque
+from pathlib import Path
 from typing import Annotated, Literal
 
 from pydantic import BaseModel
 
+from beam_abm.common.logging import get_logger
+
 AnyType = bool | None | int | float | str
 
 EncodingType = dict[str, AnyType]
+
+logger = get_logger(__name__)
 
 
 class Transformation(BaseModel):
@@ -158,3 +163,33 @@ class DataCleaningModel(BaseModel):
     question_group: dict[str, str | None] | None = None
     old_columns: list[Column]
     new_columns: list[Column] | None = None
+
+
+def load_model(file_path: str) -> DataCleaningModel:
+    """Load a ``DataCleaningModel`` from a JSON file."""
+    logger.info(f"Loading data cleaning model from: {file_path}")
+    path = Path(file_path)
+
+    try:
+        if not path.exists():
+            logger.error(f"Model file not found: {file_path}")
+            raise FileNotFoundError(f"Model file not found: {file_path}")
+
+        model_json = path.read_text(encoding="utf-8")
+        logger.debug(f"Model file size: {len(model_json)} characters")
+
+        model = DataCleaningModel.model_validate_json(model_json)
+
+        old_cols = len(model.old_columns) if model.old_columns else 0
+        new_cols = len(model.new_columns) if model.new_columns else 0
+        encodings = len(model.encodings) if model.encodings else 0
+        bins = len(model.bins) if model.bins else 0
+
+        logger.info(
+            f"Successfully loaded model: {old_cols} old columns, {new_cols} new columns, {encodings} encodings, {bins} bin configs"
+        )
+        return model
+
+    except Exception as e:
+        logger.error(f"Error loading model from {file_path}: {e}")
+        raise

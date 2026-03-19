@@ -5,17 +5,22 @@ from collections import deque
 
 import numpy as np
 import pandas as pd
+import pytest
 
-from beam_abm.survey.cleaning.io import load_model, process_data
-from beam_abm.survey.cleaning.models import (
+from beam_abm.preprocess.cleaning import load_model, process_data
+from beam_abm.preprocess.cleaning.models import (
     Column,
     DataCleaningModel,
     EncodingTransformation,
     ImputationTransformation,
     MergedTransformation,
+    MergingTransformation,
+    OutliersTransformation,
+    SplittingTransformation,
+    Transformation,
 )
-from beam_abm.survey.cleaning.ppp import income_ppp_normalized
-from beam_abm.survey.cleaning.processor import DataCleaningProcessor
+from beam_abm.preprocess.cleaning.ppp import income_ppp_normalized
+from beam_abm.preprocess.cleaning.processor import DataCleaningProcessor
 
 
 def test_load_model_roundtrip(tmp_path) -> None:
@@ -99,7 +104,7 @@ def test_ppp_normalization_path(monkeypatch, tmp_path) -> None:
     ppp_file = tmp_path / "ppp.csv"
     ppp_file.write_text("country_code,ppp_value\nDE,2.0\nFR,4.0\n", encoding="utf-8")
 
-    from beam_abm.survey.cleaning import ppp as ppp_module
+    from beam_abm.preprocess.cleaning import ppp as ppp_module
 
     monkeypatch.setattr(ppp_module, "_PPP_LOOKUP_CACHE", None)
     monkeypatch.setattr(ppp_module, "PPP_DATA_FILE", str(ppp_file))
@@ -111,3 +116,54 @@ def test_ppp_normalization_path(monkeypatch, tmp_path) -> None:
     assert normalized.notna().all()
     assert normalized.iloc[0] == 750.0
     assert normalized.iloc[1] == 625.0
+
+
+def test_transform_dispatch_by_type_runs_registered_handler() -> None:
+    model = DataCleaningModel(
+        old_columns=[
+            Column(
+                id="score",
+                section="demo",
+                transformations=deque([OutliersTransformation(min=0, max=3)]),
+            )
+        ]
+    )
+    df = pd.DataFrame({"score": [-10, 2, 99]})
+    out = process_data(model, df)
+    assert out["score"].tolist() == [0, 2, 3]
+
+
+def test_marker_transforms_are_explicit_noops() -> None:
+    model = DataCleaningModel(
+        old_columns=[
+            Column(
+                id="a",
+                section="demo",
+                transformations=deque(
+                    [
+                        MergingTransformation(merging_in="b"),
+                        SplittingTransformation(split_in={"x": ["y"]}),
+                    ]
+                ),
+            ),
+            Column(id="b", section="demo"),
+        ]
+    )
+    df = pd.DataFrame({"a": [1, 2], "b": [3, 4]})
+    out = process_data(model, df)
+    assert out.equals(df)
+
+
+def test_unknown_transform_type_fails_explicitly() -> None:
+    model = DataCleaningModel(
+        old_columns=[
+            Column(
+                id="score",
+                section="demo",
+                transformations=deque([Transformation(type="unexpected_transform")]),
+            )
+        ]
+    )
+    df = pd.DataFrame({"score": [1, 2, 3]})
+    with pytest.raises(ValueError, match="Unknown transformation type"):
+        process_data(model, df)

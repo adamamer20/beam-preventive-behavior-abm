@@ -102,7 +102,7 @@ nav:
   - API Reference:
     - Overview: api/index.md
     - Common: api/common.md
-    - Survey: api/survey.md
+    - Preprocess: api/survey.md
     - Empirical: api/empirical.md
     - Anchoring: api/anchoring.md
     - Evaluation: api/evaluation.md
