@@ -1,38 +1,3 @@
 # Ignore empirical outputs by default and re-include only compact,
 # aggregate artifacts that are thesis-facing and safe to publish.
 /output/**
-
-!/output/
-!/output/descriptives/
-!/output/descriptives/raw/
-!/output/descriptives/raw/*.csv
-
-!/output/inferential/
-!/output/inferential/raw/
-!/output/inferential/raw/*.csv
-
-!/output/missingness/
-!/output/missingness/*.csv
-
-!/output/modeling/
-!/output/modeling/**
-
-!/output/modeling_portability_noprune/
-!/output/modeling_portability_noprune/*.csv
-!/output/modeling_portability_noprune/*.json
-
-!/output/anchors/
-!/output/anchors/diagnostics/
-!/output/anchors/diagnostics/**/*.csv
-!/output/anchors/diagnostics/**/*.json
-
-!/output/anchors/system/
-!/output/anchors/system/anchor_coords.csv
-!/output/anchors/system/anchor_country_share.csv
-!/output/anchors/system/anchor_country_weights.csv
-!/output/anchors/system/anchor_metadata.json
-!/output/anchors/system/anchor_missingness.csv
-
-# Re-ignore microdata-like or bulky anchor artifacts.
-/output/anchors/**/*.parquet
-/output/anchors/**/*.npz
