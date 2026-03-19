@@ -157,7 +157,12 @@ def build_missingness_plan_pd(
         is_special_structural = col.startswith(SPECIAL_STRUCTURAL_PREFIXES)
         if missing_frac <= 0.0:
             continue
-        if missing_frac > threshold and not is_special_structural:
+        if (
+            missing_frac > threshold
+            and not is_special_structural
+            and col not in COUNTRY_MEDIAN_FILL_COLUMNS
+            and col not in MEDIAN_FILL_COLUMNS
+        ):
             continue
 
         strategy = "mean"
@@ -253,6 +258,9 @@ def _missing_fraction_pl(df: pl.DataFrame, col: str) -> float:
     if dtype.is_numeric() and dtype != pl.Boolean:
         col_float = pl.col(col).cast(pl.Float64, strict=False)
         base = base | col_float.is_nan() | ~col_float.is_finite()
+    elif dtype == pl.String:
+        col_float = pl.col(col).cast(pl.Float64, strict=False)
+        base = base | col_float.is_null() | col_float.is_nan() | ~col_float.is_finite()
     return float(df.select(base.mean()).item())
 
 
@@ -297,13 +305,26 @@ def build_missingness_plan_pl(
         if col not in df.columns:
             continue
         dtype = df.schema.get(col)
-        if dtype is None or not (dtype.is_numeric() or dtype == pl.Boolean):
+        is_numeric_like = bool(
+            dtype is not None
+            and (
+                dtype.is_numeric()
+                or dtype == pl.Boolean
+                or (dtype == pl.String and (col in COUNTRY_MEDIAN_FILL_COLUMNS or col in MEDIAN_FILL_COLUMNS))
+            )
+        )
+        if not is_numeric_like:
             continue
         missing_frac = _missing_fraction_pl(df, col)
         is_special_structural = col.startswith(SPECIAL_STRUCTURAL_PREFIXES)
         if missing_frac <= 0.0:
             continue
-        if missing_frac > threshold and not is_special_structural:
+        if (
+            missing_frac > threshold
+            and not is_special_structural
+            and col not in COUNTRY_MEDIAN_FILL_COLUMNS
+            and col not in MEDIAN_FILL_COLUMNS
+        ):
             continue
 
         strategy = "mean"
@@ -394,13 +415,19 @@ def apply_missingness_plan_pl(
         if col not in out.columns:
             continue
         dtype = out.schema.get(col)
-        if dtype is None or not (dtype.is_numeric() or dtype == pl.Boolean):
+        is_numeric_like = bool(
+            dtype is not None
+            and (
+                dtype.is_numeric()
+                or dtype == pl.Boolean
+                or (dtype == pl.String and (col in COUNTRY_MEDIAN_FILL_COLUMNS or col in MEDIAN_FILL_COLUMNS))
+            )
+        )
+        if not is_numeric_like:
             continue
         indicator = missingness_indicator_name(col)
         col_float = pl.col(col).cast(pl.Float64, strict=False)
-        missing_expr = pl.col(col).is_null()
-        if dtype.is_numeric() and dtype != pl.Boolean:
-            missing_expr = missing_expr | col_float.is_nan() | ~col_float.is_finite()
+        missing_expr = pl.col(col).is_null() | col_float.is_null() | col_float.is_nan() | ~col_float.is_finite()
         if indicator not in out.columns:
             out = out.with_columns(missing_expr.cast(pl.Float64).alias(indicator))
 
@@ -411,13 +438,23 @@ def apply_missingness_plan_pl(
             and country_col in out.columns
         ):
             mapping = plan.country_fill_values.get(col, {})
-            fill_df = pl.DataFrame({country_col: list(mapping.keys()), f"{col}__fill": list(mapping.values())})
-            out = out.join(fill_df, on=country_col, how="left")
-            fill_expr = pl.coalesce([pl.col(f"{col}__fill"), pl.lit(fill_value)])
-            out = out.with_columns(pl.when(missing_expr).then(fill_expr).otherwise(pl.col(col)).alias(col))
-            out = out.drop(f"{col}__fill")
+            if mapping:
+                key_dtype = out.schema.get(country_col) or pl.Utf8
+                fill_df = pl.DataFrame(
+                    {
+                        country_col: list(mapping.keys()),
+                        f"{col}__fill": list(mapping.values()),
+                    },
+                    schema={country_col: key_dtype, f"{col}__fill": pl.Float64},
+                )
+                out = out.join(fill_df, on=country_col, how="left")
+                fill_expr = pl.coalesce([pl.col(f"{col}__fill"), pl.lit(fill_value)])
+                out = out.with_columns(pl.when(missing_expr).then(fill_expr).otherwise(col_float).alias(col))
+                out = out.drop(f"{col}__fill")
+            else:
+                out = out.with_columns(pl.when(missing_expr).then(pl.lit(fill_value)).otherwise(col_float).alias(col))
         else:
-            out = out.with_columns(pl.when(missing_expr).then(pl.lit(fill_value)).otherwise(pl.col(col)).alias(col))
+            out = out.with_columns(pl.when(missing_expr).then(pl.lit(fill_value)).otherwise(col_float).alias(col))
 
     return out
 
@@ -536,6 +573,11 @@ def drop_nonfinite_rows_pl(df: pl.DataFrame, cols: Sequence[str], *, context: st
             continue
         if dtype.is_numeric() and dtype != pl.Boolean:
             exprs.append(base & pl.col(col).is_finite())
+        elif dtype == pl.Boolean:
+            exprs.append(base)
+        elif dtype == pl.String:
+            col_float = pl.col(col).cast(pl.Float64, strict=False)
+            exprs.append(base & col_float.is_not_null() & col_float.is_finite())
         else:
             exprs.append(base)
     cleaned = df.filter(pl.all_horizontal(exprs))

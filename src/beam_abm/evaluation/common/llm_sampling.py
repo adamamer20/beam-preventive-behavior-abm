@@ -45,6 +45,8 @@ def _load_symbol(path: str):
     mod, sym = path.split(":", 1)
     m = __import__(mod, fromlist=[sym])
     return getattr(m, sym)
+
+
 def _messages_to_prompt_text(messages: list[dict[str, str]]) -> str:
     if not messages:
         return ""

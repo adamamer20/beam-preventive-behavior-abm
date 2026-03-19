@@ -1589,6 +1589,8 @@ def run_anchor_pe(config: PerturbationConfig) -> None:
                     .with_columns(
                         (pl.col("ice_plus_1sd") - pl.col("ice_base")).alias("se_1sd"),
                         (pl.col("ice_plus_1sd") - pl.col("ice_minus_1sd")).alias("se_pm1sd"),
+                    )
+                    .with_columns(
                         pl.col("se_1sd").alias("shock_effect_1sd"),
                         pl.col("se_pm1sd").alias("shock_effect_pm1sd"),
                     )

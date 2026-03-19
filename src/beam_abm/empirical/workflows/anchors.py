@@ -1,26 +1,20 @@
-"""Compute reference PE on the full respondent set.
-
-This script mirrors `anchors.py pe` but evaluates ICE/PE on all respondents
-from the input CSV (not the sampled anchor eval subset). It also emits
-eval-level off-manifold diagnostics:
-
-- `pe_off_manifold_eval.csv` (per eval_id x lever x grid_point flag)
-- `pe_off_manifold_eval_summary.csv` (aggregated rates/counts)
-"""
+"""Empirical anchor workflows (build, diagnostics, PE, full-population PE)."""
 
 from __future__ import annotations
 
-import argparse
 import json
 import math
 from pathlib import Path
 
 import polars as pl
 
+from beam_abm.anchoring.build import AnchorConfig, build_anchor_system, default_core_features
+from beam_abm.anchoring.diagnostics import DiagnosticsConfig, run_anchor_diagnostics
 from beam_abm.anchoring.sampling import PerturbationConfig, run_anchor_pe
-from beam_abm.empirical.io import parse_list_arg
+from beam_abm.empirical.io import parse_list_arg, slugify
 from beam_abm.empirical.missingness import DEFAULT_MISSINGNESS_THRESHOLD
 from beam_abm.empirical.plan_io import extract_predictors_from_model_plan
+from beam_abm.empirical.taxonomy import DEFAULT_COLUMN_TYPES_PATH
 from beam_abm.settings import CSV_FILE_CLEAN, SEED
 
 
@@ -305,19 +299,28 @@ def _write_block_rank_metrics(
     summary.write_csv(outdir / "pe_block_rank_kendall_tau.csv")
 
 
-def _resolve_levers_and_drivers(args: argparse.Namespace) -> tuple[tuple[str, ...], tuple[str, ...], str | None]:
-    levers = tuple(parse_list_arg(args.levers)) if args.levers else ()
-    driver_cols = tuple(parse_list_arg(args.driver_cols)) if args.driver_cols else ()
+def _resolve_levers_and_drivers(
+    *,
+    target_col: str,
+    driver_cols_raw: str | None,
+    levers_raw: str | None,
+    lever_config: Path | None,
+    lever_key: str | None,
+    lever_scope: str,
+    country_col: str,
+    model_plan: Path,
+) -> tuple[tuple[str, ...], tuple[str, ...], str | None]:
+    levers = tuple(parse_list_arg(levers_raw)) if levers_raw else ()
+    driver_cols = tuple(parse_list_arg(driver_cols_raw)) if driver_cols_raw else ()
     model_ref: str | None = None
     policy_levers: tuple[str, ...] = levers
 
-    if args.lever_config:
-        config_path = Path(args.lever_config)
-        lever_data = json.loads(config_path.read_text(encoding="utf-8"))
-        lever_key = args.lever_key or args.target_col
-        if lever_key not in lever_data:
-            raise ValueError(f"lever_key '{lever_key}' not found in {config_path}")
-        entry = lever_data[lever_key]
+    if lever_config:
+        lever_data = json.loads(lever_config.read_text(encoding="utf-8"))
+        resolved_key = lever_key or target_col
+        if resolved_key not in lever_data:
+            raise ValueError(f"lever_key '{resolved_key}' not found in {lever_config}")
+        entry = lever_data[resolved_key]
         if isinstance(entry, list):
             levers = tuple(str(c) for c in entry)
             policy_levers = levers
@@ -326,7 +329,7 @@ def _resolve_levers_and_drivers(args: argparse.Namespace) -> tuple[tuple[str, ..
         elif isinstance(entry, dict):
             levers_obj = entry.get("levers") or entry.get("targets") or entry.get("cols")
             if not isinstance(levers_obj, list) or not levers_obj:
-                raise ValueError(f"lever_key '{lever_key}' missing non-empty 'levers' in {config_path}")
+                raise ValueError(f"lever_key '{resolved_key}' missing non-empty 'levers' in {lever_config}")
             levers = tuple(str(c) for c in levers_obj)
             policy_levers = levers
             model_ref_obj = entry.get("model_ref")
@@ -336,41 +339,40 @@ def _resolve_levers_and_drivers(args: argparse.Namespace) -> tuple[tuple[str, ..
                 if model_ref:
                     driver_cols = tuple(
                         extract_predictors_from_model_plan(
-                            model_plan_path=Path(args.model_plan),
+                            model_plan_path=model_plan,
                             model_name=model_ref,
                             drop_suffixes=("_missing",),
-                            drop_cols=(str(args.country_col),),
+                            drop_cols=(country_col,),
                         )
                     )
                 else:
                     predictors_obj = entry.get("predictors") or entry.get("driver_cols") or entry.get("attributes")
                     if not isinstance(predictors_obj, list) or not predictors_obj:
                         raise ValueError(
-                            f"lever_key '{lever_key}' missing non-empty 'predictors' or 'model_ref' in {config_path}"
+                            f"lever_key '{resolved_key}' missing non-empty 'predictors' or 'model_ref' in {lever_config}"
                         )
-                    country_col = str(args.country_col)
                     driver_cols = tuple(str(c) for c in predictors_obj if str(c) != country_col)
         else:
-            raise ValueError(f"Unsupported lever_config entry type for key '{lever_key}': {type(entry)}")
+            raise ValueError(f"Unsupported lever_config entry type for key '{resolved_key}': {type(entry)}")
 
     if levers:
         merged = list(dict.fromkeys([*driver_cols, *levers]))
         driver_cols = tuple(merged)
 
-    lever_scope = str(args.lever_scope).strip()
-    if lever_scope == "policy":
+    resolved_scope = str(lever_scope).strip()
+    if resolved_scope == "policy":
         selected_levers = tuple(dict.fromkeys(policy_levers or levers))
-    elif lever_scope == "all_predictors":
+    elif resolved_scope == "all_predictors":
         selected_levers = tuple(dict.fromkeys(driver_cols))
-    elif lever_scope == "non_policy":
+    elif resolved_scope == "non_policy":
         policy_set = set(policy_levers or levers)
         selected_levers = tuple(col for col in driver_cols if col not in policy_set)
     else:
-        raise ValueError(f"Unsupported lever scope: {lever_scope}")
+        raise ValueError(f"Unsupported lever scope: {resolved_scope}")
 
     if not selected_levers:
         raise ValueError(
-            f"No levers selected for lever scope '{lever_scope}' and target '{args.target_col}'. "
+            f"No levers selected for lever scope '{resolved_scope}' and target '{target_col}'. "
             "Check lever config / model plan coverage."
         )
 
@@ -395,129 +397,272 @@ def _build_full_eval_profiles(input_csv: Path, out_path: Path, *, country_col: s
     df.write_parquet(out_path)
 
 
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Compute full-population anchor PE references.")
-    parser.add_argument("--input", default=CSV_FILE_CLEAN)
-    parser.add_argument("--anchors-dir", default="empirical/output/anchors/system")
-    parser.add_argument("--outdir", required=True)
-    parser.add_argument("--country-col", default="country")
-    parser.add_argument("--target-col", required=True)
-    parser.add_argument("--driver-cols", default=None)
-    parser.add_argument("--levers", default=None)
-    parser.add_argument("--lever-config", default=None)
-    parser.add_argument("--lever-key", default=None)
-    parser.add_argument(
-        "--lever-scope",
-        choices=("policy", "non_policy", "all_predictors"),
-        default="policy",
-        help="Which predictors to perturb: policy levers (default), non-policy predictors, or all predictors.",
+def run_anchor_build_workflow(
+    *,
+    input_csv: Path = CSV_FILE_CLEAN,
+    outdir: Path = Path("empirical/output/anchors/system"),
+    column_types_path: Path = DEFAULT_COLUMN_TYPES_PATH,
+    features: str | None = None,
+    country_col: str = "country",
+    normalization: str = "demean_country_then_global_scale",
+    missingness_threshold: float = 0.35,
+    anchor_k: int = 10,
+    neighbor_k: int = 200,
+    globality_min_countries: int = 3,
+    globality_pi_threshold: float = 0.05,
+    globality_pi_factor: float | None = None,
+    pca_components: int = 0,
+    pca_variance_target: float = 0.97,
+    tau: float | None = None,
+    tau_method: str = "knn_quantile",
+    tau_keff_target: float | None = None,
+    tau_knn_k: int = 10,
+    tau_quantile: float = 0.5,
+    tau_sample_n: int = 5000,
+    seed: int = SEED,
+) -> None:
+    selected_features = tuple(parse_list_arg(features)) if features else default_core_features()
+    cfg = AnchorConfig(
+        input_csv=input_csv,
+        outdir=outdir,
+        column_types_path=column_types_path,
+        features=selected_features,
+        country_col=country_col,
+        normalization=normalization,
+        missingness_threshold=float(missingness_threshold),
+        anchor_k=int(anchor_k),
+        neighbor_k=int(neighbor_k),
+        globality_min_countries=int(globality_min_countries),
+        globality_pi_threshold=float(globality_pi_threshold),
+        globality_pi_factor=float(globality_pi_factor) if globality_pi_factor is not None else None,
+        pca_components=int(pca_components),
+        pca_variance_target=float(pca_variance_target) if pca_variance_target else None,
+        tau=tau,
+        tau_method=str(tau_method),
+        tau_keff_target=float(tau_keff_target) if tau_keff_target is not None else None,
+        tau_knn_k=int(tau_knn_k),
+        tau_quantile=float(tau_quantile),
+        tau_sample_n=int(tau_sample_n),
+        seed=int(seed),
     )
-    parser.add_argument("--neighborhood-features", default=None)
-    parser.add_argument("--neighbor-k", type=int, default=200)
-    parser.add_argument("--min-n", type=int, default=200)
-    parser.add_argument("--oom-percentile", type=float, default=0.95)
-    parser.add_argument(
-        "--off-manifold-method",
-        choices=("distance_nn", "conditional_tail"),
-        default="conditional_tail",
-        help="Off-manifold rule for perturbed points (default: conditional_tail).",
-    )
-    parser.add_argument(
-        "--conditional-tail-alpha",
-        type=float,
-        default=0.05,
-        help="Tail-probability cutoff for conditional-tail off-manifold flags.",
-    )
-    parser.add_argument(
-        "--conditional-tail-knn-k",
-        type=int,
-        default=200,
-        help="k for local conditional CDF estimation in conditional-tail mode.",
-    )
-    parser.add_argument("--propensity-slices", default=None)
-    parser.add_argument("--propensity-outcome", default=None)
-    parser.add_argument("--propensity-slice-col", default="slice")
-    parser.add_argument("--ref-models", default="linear")
-    parser.add_argument("--xgb-n-estimators", type=int, default=300)
-    parser.add_argument("--xgb-max-depth", type=int, default=4)
-    parser.add_argument("--xgb-learning-rate", type=float, default=0.05)
-    parser.add_argument("--xgb-subsample", type=float, default=0.8)
-    parser.add_argument("--xgb-colsample-bytree", type=float, default=0.8)
-    parser.add_argument("--fallback-min-n", type=int, default=300)
-    parser.add_argument("--fallback-min-delta-z", type=float, default=0.25)
-    parser.add_argument("--fallback-quantiles", default="0.10,0.90")
-    parser.add_argument("--fallback-quantiles-wide", default="0.05,0.95")
-    parser.add_argument("--fallback-nonzero-quantile", type=float, default=0.50)
-    parser.add_argument("--predictor-missingness-threshold", type=float, default=None)
-    parser.add_argument("--seed", type=int, default=SEED)
-    parser.add_argument("--model-plan", default="empirical/output/modeling/model_plan.json")
-    parser.add_argument(
-        "--keep-full-eval-profiles",
-        action="store_true",
-        help="Keep intermediate full eval parquet in output directory.",
-    )
-    return parser.parse_args()
+    build_anchor_system(cfg)
 
 
-def main() -> None:
-    args = parse_args()
-    outdir = Path(args.outdir)
-    outdir.mkdir(parents=True, exist_ok=True)
+def run_anchor_diagnostics_workflow(
+    *,
+    input_csv: Path = CSV_FILE_CLEAN,
+    anchors_dir: Path = Path("empirical/output/anchors/system"),
+    outdir: Path = Path("empirical/output/anchors/diagnostics"),
+    country_col: str = "country",
+    missingness_threshold: float = 0.35,
+    normalization: str = "demean_country_then_global_scale",
+    coverage_k_grid: str = "5,10,15,20,25",
+    bootstrap_runs: int = 20,
+    bootstrap_subsample_frac: float = 0.8,
+    globality_pi_threshold: float = 0.05,
+    seed: int = SEED,
+) -> None:
+    k_grid = tuple(int(x) for x in parse_list_arg(coverage_k_grid))
+    cfg = DiagnosticsConfig(
+        input_csv=input_csv,
+        anchors_dir=anchors_dir,
+        outdir=outdir,
+        country_col=country_col,
+        missingness_threshold=float(missingness_threshold),
+        normalization=normalization,
+        coverage_k_grid=k_grid,
+        bootstrap_runs=int(bootstrap_runs),
+        bootstrap_subsample_frac=float(bootstrap_subsample_frac),
+        globality_pi_threshold=float(globality_pi_threshold),
+        seed=int(seed),
+    )
+    run_anchor_diagnostics(cfg)
 
-    levers, driver_cols, model_ref = _resolve_levers_and_drivers(args)
 
-    full_eval_path = outdir / "_eval_profiles_full.parquet"
-    _build_full_eval_profiles(Path(args.input), full_eval_path, country_col=str(args.country_col))
+def run_anchor_pe_workflow(
+    *,
+    input_csv: Path = CSV_FILE_CLEAN,
+    anchors_dir: Path = Path("empirical/output/anchors/system"),
+    outdir: Path | None = None,
+    country_col: str = "country",
+    target_col: str = "protective_behaviour_avg",
+    driver_cols: str | None = None,
+    levers: str | None = None,
+    lever_config: Path | None = None,
+    lever_key: str | None = None,
+    lever_scope: str = "policy",
+    neighborhood_features: str | None = None,
+    neighbor_k: int = 200,
+    min_n: int = 200,
+    oom_percentile: float = 0.95,
+    propensity_slices: Path | None = None,
+    propensity_outcome: str | None = None,
+    propensity_slice_col: str = "slice",
+    ref_models: str = "linear",
+    xgb_n_estimators: int = 300,
+    xgb_max_depth: int = 4,
+    xgb_learning_rate: float = 0.05,
+    xgb_subsample: float = 0.8,
+    xgb_colsample_bytree: float = 0.8,
+    fallback_min_n: int = 300,
+    fallback_min_delta_z: float = 0.25,
+    fallback_quantiles: str = "0.10,0.90",
+    fallback_quantiles_wide: str = "0.05,0.95",
+    fallback_nonzero_quantile: float = 0.50,
+    predictor_missingness_threshold: float | None = None,
+    seed: int = SEED,
+    model_plan: Path = Path("empirical/output/modeling/model_plan.json"),
+) -> None:
+    selected_levers, resolved_driver_cols, _ = _resolve_levers_and_drivers(
+        target_col=target_col,
+        driver_cols_raw=driver_cols,
+        levers_raw=levers,
+        lever_config=lever_config,
+        lever_key=lever_key,
+        lever_scope=lever_scope,
+        country_col=country_col,
+        model_plan=model_plan,
+    )
+
+    resolved_outdir = outdir
+    if resolved_outdir is None:
+        root = anchors_dir.parent
+        resolved_outdir = root / "pe" / slugify(target_col)
 
     cfg = PerturbationConfig(
-        input_csv=Path(args.input),
-        anchors_dir=Path(args.anchors_dir),
-        outdir=outdir,
-        country_col=str(args.country_col),
-        target_col=str(args.target_col),
-        driver_cols=driver_cols,
-        levers=levers,
-        neighborhood_features=tuple(parse_list_arg(args.neighborhood_features)) if args.neighborhood_features else (),
-        neighbor_k=int(args.neighbor_k),
-        min_n=int(args.min_n),
-        oom_percentile=float(args.oom_percentile),
-        off_manifold_method=str(args.off_manifold_method),
-        conditional_tail_alpha=float(args.conditional_tail_alpha),
-        conditional_tail_knn_k=int(args.conditional_tail_knn_k),
-        propensity_slices_path=Path(args.propensity_slices) if args.propensity_slices else None,
-        propensity_outcome=args.propensity_outcome,
-        propensity_slice_col=str(args.propensity_slice_col),
+        input_csv=input_csv,
+        anchors_dir=anchors_dir,
+        outdir=resolved_outdir,
+        country_col=country_col,
+        target_col=target_col,
+        driver_cols=resolved_driver_cols,
+        levers=selected_levers,
+        neighborhood_features=tuple(parse_list_arg(neighborhood_features)) if neighborhood_features else (),
+        neighbor_k=int(neighbor_k),
+        min_n=int(min_n),
+        oom_percentile=float(oom_percentile),
+        propensity_slices_path=propensity_slices,
+        propensity_outcome=propensity_outcome,
+        propensity_slice_col=propensity_slice_col,
         predictor_missingness_threshold=(
-            float(args.predictor_missingness_threshold)
-            if args.predictor_missingness_threshold is not None
+            float(predictor_missingness_threshold)
+            if predictor_missingness_threshold is not None
             else DEFAULT_MISSINGNESS_THRESHOLD
         ),
-        seed=int(args.seed),
-        fallback_min_n=int(args.fallback_min_n),
-        fallback_min_delta_z=float(args.fallback_min_delta_z),
-        fallback_quantiles=tuple(float(x) for x in str(args.fallback_quantiles).split(",")),
-        fallback_quantiles_wide=tuple(float(x) for x in str(args.fallback_quantiles_wide).split(",")),
-        fallback_nonzero_quantile=float(args.fallback_nonzero_quantile),
-        ref_models=tuple(parse_list_arg(args.ref_models)),
+        seed=int(seed),
+        fallback_min_n=int(fallback_min_n),
+        fallback_min_delta_z=float(fallback_min_delta_z),
+        fallback_quantiles=tuple(float(x) for x in str(fallback_quantiles).split(",")),
+        fallback_quantiles_wide=tuple(float(x) for x in str(fallback_quantiles_wide).split(",")),
+        fallback_nonzero_quantile=float(fallback_nonzero_quantile),
+        ref_models=tuple(parse_list_arg(ref_models)),
+        xgb_n_estimators=int(xgb_n_estimators),
+        xgb_max_depth=int(xgb_max_depth),
+        xgb_learning_rate=float(xgb_learning_rate),
+        xgb_subsample=float(xgb_subsample),
+        xgb_colsample_bytree=float(xgb_colsample_bytree),
+    )
+    run_anchor_pe(cfg)
+
+
+def run_anchor_full_pe_workflow(
+    *,
+    input_csv: Path = CSV_FILE_CLEAN,
+    anchors_dir: Path = Path("empirical/output/anchors/system"),
+    outdir: Path,
+    country_col: str = "country",
+    target_col: str,
+    driver_cols: str | None = None,
+    levers: str | None = None,
+    lever_config: Path | None = None,
+    lever_key: str | None = None,
+    lever_scope: str = "policy",
+    neighborhood_features: str | None = None,
+    neighbor_k: int = 200,
+    min_n: int = 200,
+    oom_percentile: float = 0.95,
+    off_manifold_method: str = "conditional_tail",
+    conditional_tail_alpha: float = 0.05,
+    conditional_tail_knn_k: int = 200,
+    propensity_slices: Path | None = None,
+    propensity_outcome: str | None = None,
+    propensity_slice_col: str = "slice",
+    ref_models: str = "linear",
+    xgb_n_estimators: int = 300,
+    xgb_max_depth: int = 4,
+    xgb_learning_rate: float = 0.05,
+    xgb_subsample: float = 0.8,
+    xgb_colsample_bytree: float = 0.8,
+    fallback_min_n: int = 300,
+    fallback_min_delta_z: float = 0.25,
+    fallback_quantiles: str = "0.10,0.90",
+    fallback_quantiles_wide: str = "0.05,0.95",
+    fallback_nonzero_quantile: float = 0.50,
+    predictor_missingness_threshold: float | None = None,
+    seed: int = SEED,
+    model_plan: Path = Path("empirical/output/modeling/model_plan.json"),
+    keep_full_eval_profiles: bool = False,
+) -> None:
+    outdir.mkdir(parents=True, exist_ok=True)
+    selected_levers, resolved_driver_cols, model_ref = _resolve_levers_and_drivers(
+        target_col=target_col,
+        driver_cols_raw=driver_cols,
+        levers_raw=levers,
+        lever_config=lever_config,
+        lever_key=lever_key,
+        lever_scope=lever_scope,
+        country_col=country_col,
+        model_plan=model_plan,
+    )
+
+    full_eval_path = outdir / "_eval_profiles_full.parquet"
+    _build_full_eval_profiles(input_csv, full_eval_path, country_col=country_col)
+
+    cfg = PerturbationConfig(
+        input_csv=input_csv,
+        anchors_dir=anchors_dir,
+        outdir=outdir,
+        country_col=country_col,
+        target_col=target_col,
+        driver_cols=resolved_driver_cols,
+        levers=selected_levers,
+        neighborhood_features=tuple(parse_list_arg(neighborhood_features)) if neighborhood_features else (),
+        neighbor_k=int(neighbor_k),
+        min_n=int(min_n),
+        oom_percentile=float(oom_percentile),
+        off_manifold_method=off_manifold_method,
+        conditional_tail_alpha=float(conditional_tail_alpha),
+        conditional_tail_knn_k=int(conditional_tail_knn_k),
+        propensity_slices_path=propensity_slices,
+        propensity_outcome=propensity_outcome,
+        propensity_slice_col=propensity_slice_col,
+        predictor_missingness_threshold=(
+            float(predictor_missingness_threshold)
+            if predictor_missingness_threshold is not None
+            else DEFAULT_MISSINGNESS_THRESHOLD
+        ),
+        seed=int(seed),
+        fallback_min_n=int(fallback_min_n),
+        fallback_min_delta_z=float(fallback_min_delta_z),
+        fallback_quantiles=tuple(float(x) for x in str(fallback_quantiles).split(",")),
+        fallback_quantiles_wide=tuple(float(x) for x in str(fallback_quantiles_wide).split(",")),
+        fallback_nonzero_quantile=float(fallback_nonzero_quantile),
+        ref_models=tuple(parse_list_arg(ref_models)),
         eval_profiles_path=full_eval_path,
         compute_eval_off_manifold=True,
-        xgb_n_estimators=int(args.xgb_n_estimators),
-        xgb_max_depth=int(args.xgb_max_depth),
-        xgb_learning_rate=float(args.xgb_learning_rate),
-        xgb_subsample=float(args.xgb_subsample),
-        xgb_colsample_bytree=float(args.xgb_colsample_bytree),
+        xgb_n_estimators=int(xgb_n_estimators),
+        xgb_max_depth=int(xgb_max_depth),
+        xgb_learning_rate=float(xgb_learning_rate),
+        xgb_subsample=float(xgb_subsample),
+        xgb_colsample_bytree=float(xgb_colsample_bytree),
     )
     run_anchor_pe(cfg)
     _write_block_rank_metrics(
         outdir=outdir,
-        model_plan_path=Path(args.model_plan),
+        model_plan_path=model_plan,
         model_ref=model_ref,
-        outcome=str(args.target_col),
+        outcome=target_col,
     )
 
-    if not args.keep_full_eval_profiles and full_eval_path.exists():
+    if not keep_full_eval_profiles and full_eval_path.exists():
         full_eval_path.unlink()
-
-
-if __name__ == "__main__":
-    main()

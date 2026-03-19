@@ -309,6 +309,8 @@ def compute_metrics_rows(
             }
         )
     return rows
+
+
 def build_predictor_cols(
     *,
     outcome_key: str,

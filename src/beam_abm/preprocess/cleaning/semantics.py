@@ -82,7 +82,7 @@ def iter_raw_reference_names(transformation: Transformation) -> Iterable[str]:
         return
 
     if isinstance(transformation, ImputationTransformation):
-        if isinstance(transformation.imputation_value, str):
+        if isinstance(transformation.imputation_value, str) and transformation.imputation_value.startswith("$"):
             yield transformation.imputation_value
 
 

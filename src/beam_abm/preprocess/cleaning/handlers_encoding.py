@@ -54,7 +54,9 @@ def process_encoding(context, col: Column, transformation: EncodingTransformatio
         elif encoding == "$EMBEDDING":
             logger.info(f"Applying embedding encoding to column '{col.id}'")
             embedding_prompt = transformation.embedding_prompt or ""
-            logger.debug(f"Embedding prompt (raw): {embedding_prompt[:100] + '...' if embedding_prompt else '<default>'}")
+            logger.debug(
+                f"Embedding prompt (raw): {embedding_prompt[:100] + '...' if embedding_prompt else '<default>'}"
+            )
 
             question_text = col.new_question or col.question
             context.df[col.id] = context.generate_embeddings(
@@ -264,9 +266,7 @@ def process_imputation(context, col: Column, transformation: ImputationTransform
                     raw=source_col_raw,
                     resolved=source_col,
                 )
-                raise ValueError(
-                    f"Imputation source column '{source_col_raw}' (resolved to '{source_col}') not found"
-                )
+                raise ValueError(f"Imputation source column '{source_col_raw}' (resolved to '{source_col}') not found")
             logger.info(f"Using combine_first imputation from column '{source_col}'")
 
             source_missing = context.df[source_col].isnull().sum()

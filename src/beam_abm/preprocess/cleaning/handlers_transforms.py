@@ -320,7 +320,9 @@ def process_column_substitution(context, col: Column, transformation: ColumnSubs
                 stacklevel=2,
             )
 
-        sub_col_stats = sub_df[col.id].describe() if sub_df[col.id].dtype in ["int64", "float64"] else sub_df[col.id].value_counts()
+        sub_col_stats = (
+            sub_df[col.id].describe() if sub_df[col.id].dtype in ["int64", "float64"] else sub_df[col.id].value_counts()
+        )
         logger.debug(f"Substitution column statistics: {sub_col_stats}")
 
         original_dtype = context.df[col.id].dtype if col.id in context.df.columns else None

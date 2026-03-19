@@ -47,6 +47,8 @@ def iter_jsonl(path: Path):
                 continue
             if isinstance(obj, dict):
                 yield obj
+
+
 def _is_missing(value: Any) -> bool:
     if value is None:
         return True

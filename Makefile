@@ -190,8 +190,8 @@ anchors-pe-full: ## Compute full-respondent PE refs for B models (mutable engine
 	@for target in vax_willingness_T12 flu_vaccinated_2023_2024 flu_vaccinated_2023_2024_no_habit mask_when_symptomatic_crowded stay_home_when_symptomatic mask_when_pressure_high; do \
 		target_col="$$target"; \
 		if [ "$$target" = "flu_vaccinated_2023_2024_no_habit" ]; then target_col="flu_vaccinated_2023_2024"; fi; \
-		uv run python empirical/scripts/anchors_full_ref_pe.py --input preprocess/output/clean_processed_survey.csv --anchors-dir $(ANCHORS_OUTDIR) --outdir empirical/output/anchors/pe/mutable_engines/full/$$target --target-col $$target_col --lever-config config/levers.json --lever-key $$target --lever-scope policy; \
-		uv run python empirical/scripts/anchors_full_ref_pe.py --input preprocess/output/clean_processed_survey.csv --anchors-dir $(ANCHORS_OUTDIR) --outdir empirical/output/anchors/pe/stable_stratifiers/full/$$target --target-col $$target_col --lever-config config/levers.json --lever-key $$target --lever-scope non_policy; \
+		uv run python empirical/scripts/anchors.py pe-full --input preprocess/output/clean_processed_survey.csv --anchors-dir $(ANCHORS_OUTDIR) --outdir empirical/output/anchors/pe/mutable_engines/full/$$target --target-col $$target_col --lever-config config/levers.json --lever-key $$target --lever-scope policy; \
+		uv run python empirical/scripts/anchors.py pe-full --input preprocess/output/clean_processed_survey.csv --anchors-dir $(ANCHORS_OUTDIR) --outdir empirical/output/anchors/pe/stable_stratifiers/full/$$target --target-col $$target_col --lever-config config/levers.json --lever-key $$target --lever-scope non_policy; \
 	done
 	@echo "✅ Full mutable-engine PE refs written under empirical/output/anchors/pe/mutable_engines/full/*"
 	@echo "✅ Full stable-stratifier PE refs written under empirical/output/anchors/pe/stable_stratifiers/full/*"

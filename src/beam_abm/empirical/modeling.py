@@ -344,9 +344,6 @@ def fit_model(
     """Fit a single model specification."""
     if spec.outcome not in df.columns:
         raise ValueError(f"Outcome column '{spec.outcome}' not found in dataframe")
-    formula, missing = _prepare_formula(spec, df, column_types, reference_levels)
-    if missing:
-        logger.warning(f"Model {spec.name} missing predictors: {', '.join(sorted(missing))}")
 
     needed_cols = [term for term in spec.predictor_list() if term in df.columns]
     needed_cols.append(spec.outcome)
@@ -373,6 +370,9 @@ def fit_model(
     if weight_column and weight_column in working and not pd.api.types.is_numeric_dtype(working[weight_column]):
         raise TypeError(f"Weight column '{weight_column}' must be numeric; got {working[weight_column].dtype}")
     working = working.dropna()
+    formula, missing = _prepare_formula(spec, working, column_types, reference_levels)
+    if missing:
+        logger.warning(f"Model {spec.name} missing predictors: {', '.join(sorted(missing))}")
     weights = working[weight_column] if weight_column and weight_column in working.columns else None
     logger.info(f"Fitting {spec.name} ({working.shape[0]} rows) with formula: {formula}")
 

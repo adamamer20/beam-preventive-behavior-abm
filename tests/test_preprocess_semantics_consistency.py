@@ -8,6 +8,7 @@ from beam_abm.preprocess.cleaning.models import (
     Column,
     DataCleaningModel,
     EncodingTransformation,
+    ImputationTransformation,
     MergedTransformation,
     RenamingTransformation,
 )
@@ -84,3 +85,26 @@ def test_reference_and_dependency_semantics_are_consistent(tmp_path) -> None:
     )
     rows = build_derivations(spec_path=spec_path, out_path=out_path, include_splits=False)
     assert any(r.col == "derived" and r.derivation_col == "alias_raw" and r.method == "merged:mean" for r in rows)
+
+
+def test_literal_imputation_value_is_not_treated_as_column_reference() -> None:
+    model = DataCleaningModel(
+        old_columns=[
+            Column(
+                id="political_identity",
+                section="demo",
+                transformations=deque([ImputationTransformation(imputation_value="I haven't expressed a preference")]),
+            )
+        ]
+    )
+
+    all_columns = list(model.old_columns)
+    spec_ids = {c.id for c in all_columns}
+    rename_to_map = build_rename_to_map(all_columns)
+
+    final_refs = validate_references_before_processing(
+        model=model,
+        spec_ids=spec_ids,
+        rename_to_map=rename_to_map,
+    )
+    assert final_refs == set()

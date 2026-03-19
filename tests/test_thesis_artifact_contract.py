@@ -6,8 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from empirical.scripts.export_thesis_artifacts import export_thesis_artifacts as export_empirical_thesis_artifacts
-from evaluation.scripts.export_thesis_artifacts import export_thesis_artifacts as export_evaluation_thesis_artifacts
+from beam_abm.empirical.export import export_thesis_artifacts as export_empirical_thesis_artifacts
 
 FORBIDDEN_RUNTIME_REF_RE = re.compile(r"(preprocess/output|empirical/output|evaluation/output|abm/output)")
 ARTIFACT_REF_RE = re.compile(r"['\"]\.\./thesis/artifacts/([^'\"]+)['\"]")
@@ -21,6 +20,16 @@ def _thesis_contract_files(root: Path) -> list[Path]:
     files = list((root / "thesis").glob("*.qmd"))
     files.extend((root / "thesis" / "utils").rglob("*.py"))
     return sorted(files)
+
+
+def _load_evaluation_exporter(root: Path):
+    script_path = root / "evaluation" / "scripts" / "export_thesis_artifacts.py"
+    spec = importlib.util.spec_from_file_location("evaluation_thesis_exporter", script_path)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Unable to load evaluation thesis exporter: {script_path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 def _load_abm_exporter(root: Path):
@@ -38,7 +47,8 @@ def exported_artifacts_root() -> Path:
     root = _repo_root()
     try:
         export_empirical_thesis_artifacts(root)
-        export_evaluation_thesis_artifacts(root)
+        evaluation_exporter = _load_evaluation_exporter(root)
+        evaluation_exporter.export_thesis_artifacts(root)
         abm_exporter = _load_abm_exporter(root)
         abm_exporter.export_thesis_artifacts(root)
     except (FileNotFoundError, RuntimeError) as exc:

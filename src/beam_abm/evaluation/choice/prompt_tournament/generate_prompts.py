@@ -102,6 +102,8 @@ def _read_parquet_paths(
     for p in paths:
         rows.extend(_read_rows(p))
     return rows, False, {}
+
+
 def _fmt_num(x: float) -> str:
     if float(x).is_integer():
         return str(int(x))

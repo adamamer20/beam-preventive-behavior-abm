@@ -63,6 +63,8 @@ def _iter_jsonl_stream(path: Path) -> Iterable[dict[str, Any]]:
                 continue
             if isinstance(obj, dict):
                 yield obj
+
+
 def _prompt_fingerprint(row: dict[str, Any], *, model_hint: str | None = None) -> str:
     model = row.get("model") or model_hint or ""
     messages = row.get("messages")

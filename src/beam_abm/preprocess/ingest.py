@@ -80,4 +80,3 @@ def load_raw_survey_df() -> pd.DataFrame:
     else:
         logger.error(f"Failed to get cookies from share link. HTTP Status Code: {response_share.status_code}")
         raise requests.HTTPError(f"Share link access failed with status {response_share.status_code}")
-
