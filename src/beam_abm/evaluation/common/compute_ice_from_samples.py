@@ -2,12 +2,29 @@
 
 from __future__ import annotations
 
-import argparse
+from pathlib import Path
 
+from beam_abm.cli import parser_compat as cli
 from beam_abm.evaluation.common.ice_from_samples import compute_ice_from_samples
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
+
+def compute_ice_step(
+    *,
+    in_path: str | Path,
+    out_path: str | Path,
+    summary_out: str | Path | None = None,
+    paired_profile_swap_on_b_then_a: bool = False,
+) -> None:
+    compute_ice_from_samples(
+        in_path=in_path,
+        out_path=out_path,
+        summary_out=summary_out,
+        paired_profile_swap_on_b_then_a=paired_profile_swap_on_b_then_a,
+    )
+
+
+def run_cli(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument("--in", dest="in_path", required=True)
     parser.add_argument("--out", dest="out_path", required=True)
     parser.add_argument(
@@ -24,10 +41,11 @@ if __name__ == "__main__":
             "so that ice_low always corresponds to the low profile and ice_high to the high profile."
         ),
     )
-    args = parser.parse_args()
-    compute_ice_from_samples(
+    args = parser.parse_args(argv)
+    compute_ice_step(
         in_path=args.in_path,
         out_path=args.out_path,
         summary_out=args.summary_out,
         paired_profile_swap_on_b_then_a=args.paired_profile_swap_on_b_then_a,
     )
+

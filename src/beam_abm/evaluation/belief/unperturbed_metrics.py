@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import argparse
 import json
 import math
 from pathlib import Path
@@ -11,6 +10,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from beam_abm.cli import parser_compat as cli
 from beam_abm.evaluation.utils.jsonl import read_jsonl as _read_jsonl
 from beam_abm.evaluation.utils.jsonl import write_jsonl as _write_jsonl
 
@@ -224,8 +224,8 @@ def _strategy_summary(rows: list[dict[str, Any]], mutable_state: list[str]) -> d
     return summary
 
 
-def main(argv: list[str] | None = None) -> None:
-    parser = argparse.ArgumentParser()
+def run_cli(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument("--in", dest="in_path", required=True, help="Input canonical samples JSONL.")
     parser.add_argument("--spec", dest="spec_path", required=True, help="Belief target spec JSON.")
     parser.add_argument("--outdir", required=True, help="Canonical model output directory.")
@@ -273,5 +273,4 @@ def main(argv: list[str] | None = None) -> None:
     _write_json(outdir / "overall_summary.json", {"strategies": strategy_summaries})
 
 
-if __name__ == "__main__":
-    main()
+

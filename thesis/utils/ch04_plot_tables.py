@@ -16,7 +16,7 @@ import polars as pl
 from matplotlib.colors import TwoSlopeNorm
 from matplotlib.patches import Rectangle
 
-from beam_abm.evaluation import belief_pe_ref_p as _belief_pe_ref_p
+from beam_abm.evaluation.belief.reference_model_loading import default_ref_state_models
 from utils.chapter_io import read_csv_fast
 from utils.engine_labels import BELIEF_OUTCOME_ORDER, CHOICE_ENGINE_BLOCK_ALIASES, label_choice_engine_block
 from utils.plot_style import apply_thesis_matplotlib_style
@@ -7635,7 +7635,7 @@ def build_belief_unperturbed_difficulty_rows(
             return out
         attr_df_std = _standardize_reference_predictors(attr_df, modeling_dir=modeling_dir)
 
-        ref_model_map = _belief_pe_ref_p.default_ref_state_models()
+        ref_model_map = default_ref_state_models()
         ref_model_map.update(ref_map_meta)
         model_cache: dict[str, object | None] = {}
 

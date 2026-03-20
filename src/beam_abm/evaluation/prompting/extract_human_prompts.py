@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-import argparse
 from pathlib import Path
 from typing import Any
 
+from beam_abm.cli import parser_compat as cli
 from beam_abm.evaluation.utils.jsonl import read_jsonl as _read_jsonl
 from beam_abm.evaluation.utils.jsonl import write_jsonl as _write_jsonl
 
@@ -39,8 +39,36 @@ def _pick_system_prompt(row: dict[str, Any]) -> str | None:
     return None
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
+def extract_human_prompts_step(
+    *,
+    in_path: str | Path,
+    out_path: str | Path,
+    include_system: bool = False,
+    include_metadata: bool = False,
+) -> int:
+    rows = _read_jsonl(Path(in_path))
+    out_rows: list[dict[str, Any]] = []
+    for row in rows:
+        human_prompt = _pick_human_prompt(row)
+        if human_prompt is None:
+            continue
+        item: dict[str, Any] = {
+            "id": row.get("id"),
+            "strategy": row.get("strategy"),
+            "human_prompt": human_prompt,
+        }
+        if include_system:
+            item["system_prompt"] = _pick_system_prompt(row)
+        if include_metadata and isinstance(row.get("metadata"), dict):
+            item["metadata"] = row.get("metadata")
+        out_rows.append(item)
+
+    _write_jsonl(Path(out_path), out_rows)
+    return len(out_rows)
+
+
+def run_cli(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument("--in", dest="in_path", required=True, help="Input prompt JSONL file")
     parser.add_argument("--out", dest="out_path", required=True, help="Output JSONL file")
     parser.add_argument(
@@ -54,28 +82,14 @@ def main() -> None:
         help="Include metadata field when present",
     )
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
-    rows = _read_jsonl(Path(args.in_path))
-    out_rows: list[dict[str, Any]] = []
-    for row in rows:
-        human_prompt = _pick_human_prompt(row)
-        if human_prompt is None:
-            continue
-        item: dict[str, Any] = {
-            "id": row.get("id"),
-            "strategy": row.get("strategy"),
-            "human_prompt": human_prompt,
-        }
-        if args.include_system:
-            item["system_prompt"] = _pick_system_prompt(row)
-        if args.include_metadata and isinstance(row.get("metadata"), dict):
-            item["metadata"] = row.get("metadata")
-        out_rows.append(item)
-
-    _write_jsonl(Path(args.out_path), out_rows)
-    print(f"Wrote {len(out_rows)} prompts to {args.out_path}")
+    count = extract_human_prompts_step(
+        in_path=args.in_path,
+        out_path=args.out_path,
+        include_system=bool(args.include_system),
+        include_metadata=bool(args.include_metadata),
+    )
+    print(f"Wrote {count} prompts to {args.out_path}")
 
 
-if __name__ == "__main__":
-    main()

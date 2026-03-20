@@ -3,10 +3,7 @@
 from __future__ import annotations
 
 import shlex
-import subprocess
-import sys
 from collections.abc import Callable
-from pathlib import Path
 
 from beam_abm.evaluation.artifacts import resolve_run_id
 
@@ -36,16 +33,8 @@ def split_args(
     return shlex.split(text)
 
 
-def run_step(step: Callable[[], None], argv: list[str]) -> None:
-    sys.argv = [sys.argv[0], *argv]
-    step()
-
-
-def run_step_subprocess(script: Path, argv: list[str], *, cwd: Path) -> None:
-    cmd = [sys.executable, str(script), *argv]
-    result = subprocess.run(cmd, cwd=str(cwd), check=False)
-    if result.returncode != 0:
-        raise SystemExit(result.returncode)
+def run_step(step: Callable[..., None], argv: list[str]) -> None:
+    step(argv)
 
 
 def resolve_run_tag(run_tag: str | None, *, timestamp_output: bool) -> str | None:

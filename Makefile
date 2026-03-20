@@ -198,26 +198,26 @@ anchors-pe-full: ## Compute full-respondent PE refs for B models (mutable engine
 
 anchors-pe-ref-p: ## Compute PE_ref_P refs for P models (upstream signals + background traits, reduced/full)
 	@echo "🧪 Computing PE_ref_P for upstream signals (reduced + full)..."
-	@uv run python -m beam_abm.evaluation.belief.pe_ref_p \
+	@uv run python evaluation/scripts/run_belief_pe_ref_p.py \
 		--data empirical/output/anchors/eval/eval_profiles.parquet \
 		--spec evaluation/specs/belief_update_targets.json \
 		--out empirical/output/anchors/pe/upstream_signals/reduced/pe_ref_p_rows.parquet \
 		--meta-out empirical/output/anchors/pe/upstream_signals/reduced/pe_ref_p_signal_metadata.json \
 		--id-col row_id --country-col country
-	@uv run python -m beam_abm.evaluation.belief.pe_ref_p \
+	@uv run python evaluation/scripts/run_belief_pe_ref_p.py \
 		--data preprocess/output/clean_processed_survey.csv \
 		--spec evaluation/specs/belief_update_targets.json \
 		--out empirical/output/anchors/pe/upstream_signals/full/pe_ref_p_rows.parquet \
 		--meta-out empirical/output/anchors/pe/upstream_signals/full/pe_ref_p_signal_metadata.json \
 		--id-col row_id --country-col country
 	@echo "🧪 Computing PE_ref_P for background traits (reduced + full)..."
-	@uv run python -m beam_abm.evaluation.belief.pe_ref_p \
+	@uv run python evaluation/scripts/run_belief_pe_ref_p.py \
 		--data empirical/output/anchors/eval/eval_profiles.parquet \
 		--spec evaluation/specs/belief_update_background_traits.json \
 		--out empirical/output/anchors/pe/background_traits/reduced/pe_ref_p_rows.parquet \
 		--meta-out empirical/output/anchors/pe/background_traits/reduced/pe_ref_p_signal_metadata.json \
 		--id-col row_id --country-col country
-	@uv run python -m beam_abm.evaluation.belief.pe_ref_p \
+	@uv run python evaluation/scripts/run_belief_pe_ref_p.py \
 		--data preprocess/output/clean_processed_survey.csv \
 		--spec evaluation/specs/belief_update_background_traits.json \
 		--out empirical/output/anchors/pe/background_traits/full/pe_ref_p_rows.parquet \

@@ -9,11 +9,8 @@ Outputs are written to a separate ablation root by default.
 
 from __future__ import annotations
 
-import argparse
 import hashlib
-import importlib.util
 import json
-import sys
 from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
@@ -22,6 +19,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from beam_abm.cli import parser_compat as cli
 from beam_abm.evaluation.choice._canonicalize_ids import normalize_model_slug
 from beam_abm.evaluation.common.labels import (
     load_clean_spec_question_answer_maps,
@@ -693,38 +691,8 @@ def _write_posthoc_outputs(
     by_model_strategy.to_csv(out_dir / "posthoc_rank_error_by_model_strategy.csv", index=False)
 
 
-def _load_local_main(module_path: Path, attr: str = "main"):
-    module_name = module_path.stem
-    spec = importlib.util.spec_from_file_location(module_name, module_path)
-    if spec is None or spec.loader is None:
-        raise ImportError(f"Unable to load {module_path}")
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[module_name] = module
-    spec.loader.exec_module(module)
-    return getattr(module, attr)
-
-
-def _load_local_module(module_path: Path, module_name: str):
-    spec = importlib.util.spec_from_file_location(module_name, module_path)
-    if spec is None or spec.loader is None:
-        raise ImportError(f"Unable to load {module_path}")
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[module_name] = module
-    spec.loader.exec_module(module)
-    return module
-
-
-def _call_script_main(main_func, argv_list: list[str]) -> None:
-    saved = list(sys.argv)
-    try:
-        sys.argv = [saved[0], *argv_list]
-        main_func(argv_list)
-    finally:
-        sys.argv = saved
-
-
-def main(argv: list[str] | None = None) -> None:
-    parser = argparse.ArgumentParser()
+def run_cli(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument(
         "--prompts",
         required=False,
@@ -885,10 +853,9 @@ def main(argv: list[str] | None = None) -> None:
         )
         return
 
-    support_dir = Path(__file__).resolve().parent / "support" / "unperturbed"
-    utils = _load_local_module(support_dir / "unperturbed_utils.py", "unperturbed_utils")
-    run_sampling_main = _load_local_main(support_dir / "run_sampling.py")
-    compute_metrics_main = _load_local_main(support_dir / "compute_metrics.py")
+    from beam_abm.evaluation.choice.support.unperturbed import unperturbed_utils as utils
+    from beam_abm.evaluation.choice.support.unperturbed.compute_metrics import run_cli as compute_metrics
+    from beam_abm.evaluation.choice.support.unperturbed.run_sampling import run_cli as run_sampling
 
     base_prompts: list[dict] = []
     prompts_path = Path(args.prompts) if args.prompts else None
@@ -1079,7 +1046,7 @@ def main(argv: list[str] | None = None) -> None:
                     if args.azure_api_version is not None:
                         sample_args.extend(["--azure-api-version", str(args.azure_api_version)])
 
-                    _call_script_main(run_sampling_main, sample_args)
+                    run_sampling(sample_args)
 
                     missing_samples_path = tmp_dir / f"samples__{args.strategy}.jsonl"
                     if missing_samples_path.exists():
@@ -1106,7 +1073,7 @@ def main(argv: list[str] | None = None) -> None:
                     "--prompt-family",
                     str(args.strategy),
                 ]
-                _call_script_main(compute_metrics_main, metrics_args)
+                compute_metrics(metrics_args)
 
             if not predictions_path.exists():
                 missing_outputs.append((outcome, block.name, str(uncal_dir)))
@@ -1151,7 +1118,3 @@ def main(argv: list[str] | None = None) -> None:
         missing_path.parent.mkdir(parents=True, exist_ok=True)
         missing_df = pd.DataFrame(missing_outputs, columns=["outcome", "block", "path"])
         missing_df.to_csv(missing_path, index=False)
-
-
-if __name__ == "__main__":
-    main()

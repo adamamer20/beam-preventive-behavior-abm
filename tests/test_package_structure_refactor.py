@@ -15,6 +15,13 @@ FORBIDDEN_EVAL_LIBRARY_CLI_RE = re.compile(
     r"^\s*import\s+argparse\b|^\s*from\s+argparse\s+import\b|^\s*def\s+main\s*\(",
     re.MULTILINE,
 )
+FORBIDDEN_EVAL_LIBRARY_CLI_SHIM_RE = re.compile(
+    r"^\s*from\s+beam_abm\.cli\s+import\s+argparse_shim\b",
+    re.MULTILINE,
+)
+FORBIDDEN_EVAL_BRIDGING_RE = re.compile(
+    r"\bsys\.argv\b|\bimportlib\.util\b|\binspect\b|run_step_subprocess\(|[A-Za-z_][A-Za-z0-9_]*\.main\b",
+)
 FORBIDDEN_EMPIRICAL_LIBRARY_CLI_RE = re.compile(
     r"^\s*import\s+argparse\b|^\s*from\s+argparse\s+import\b",
     re.MULTILINE,
@@ -72,7 +79,20 @@ def test_evaluation_library_has_no_cli_entrypoints() -> None:
     eval_root = root / "src" / "beam_abm" / "evaluation"
     for path in eval_root.rglob("*.py"):
         text = path.read_text(encoding="utf-8", errors="ignore")
-        if FORBIDDEN_EVAL_LIBRARY_CLI_RE.search(text):
+        if FORBIDDEN_EVAL_LIBRARY_CLI_RE.search(text) or FORBIDDEN_EVAL_LIBRARY_CLI_SHIM_RE.search(text):
+            offenders.append(str(path.relative_to(root)))
+
+    assert offenders == []
+
+
+def test_evaluation_library_has_no_script_style_bridging_patterns() -> None:
+    root = Path(__file__).resolve().parents[1]
+    offenders: list[str] = []
+
+    eval_root = root / "src" / "beam_abm" / "evaluation"
+    for path in eval_root.rglob("*.py"):
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if FORBIDDEN_EVAL_BRIDGING_RE.search(text):
             offenders.append(str(path.relative_to(root)))
 
     assert offenders == []
@@ -113,6 +133,37 @@ def test_tests_do_not_import_empirical_scripts_except_cli_smoke() -> None:
             continue
         text = path.read_text(encoding="utf-8", errors="ignore")
         if re.search(r"^\s*(?:from|import)\s+empirical\.scripts(?:\.|\b)", text, flags=re.MULTILINE):
+            offenders.append(str(path.relative_to(root)))
+
+    assert offenders == []
+
+
+def test_tests_do_not_import_evaluation_scripts_except_cli_smoke() -> None:
+    root = Path(__file__).resolve().parents[1]
+    offenders: list[str] = []
+
+    for path in (root / "tests").rglob("*.py"):
+        if path.name == "test_evaluation_cli_smoke.py":
+            continue
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if re.search(r"^\s*(?:from|import)\s+evaluation\.scripts(?:\.|\b)", text, flags=re.MULTILINE):
+            offenders.append(str(path.relative_to(root)))
+
+    assert offenders == []
+
+
+def test_evaluation_scripts_do_not_import_src_evaluation_modules() -> None:
+    root = Path(__file__).resolve().parents[1]
+    offenders: list[str] = []
+
+    scripts_root = root / "evaluation" / "scripts"
+    for path in scripts_root.rglob("*.py"):
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if re.search(
+            r"^\s*(?:from|import)\s+beam_abm\.evaluation\.(?!(workflows|export)(?:\.|\b))",
+            text,
+            flags=re.MULTILINE,
+        ):
             offenders.append(str(path.relative_to(root)))
 
     assert offenders == []

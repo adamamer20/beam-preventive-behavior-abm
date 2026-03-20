@@ -2,12 +2,37 @@
 
 from __future__ import annotations
 
-import argparse
+from pathlib import Path
 
+from beam_abm.cli import parser_compat as cli
 from beam_abm.evaluation.common.calibrate_predictions import calibrate_predictions
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
+
+def calibrate_predictions_step(
+    *,
+    in_path: str | Path,
+    out_path: str | Path,
+    calibration_out: str | Path,
+    n_folds: int = 5,
+    seed: int = 13,
+    country_col: str = "country",
+    eps: float = 1e-6,
+    bounds_source: str = "true",
+) -> None:
+    calibrate_predictions(
+        in_path=in_path,
+        out_path=out_path,
+        calibration_out=calibration_out,
+        n_folds=n_folds,
+        seed=seed,
+        country_col=country_col,
+        eps=eps,
+        bounds_source=bounds_source,
+    )
+
+
+def run_cli(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument("--in", dest="in_path", required=True, help="Predictions CSV or directory.")
     parser.add_argument("--out", dest="out_path", required=True, help="Output calibrated CSV.")
     parser.add_argument("--calibration-out", dest="cal_out", required=True, help="Output calibration JSON.")
@@ -21,8 +46,8 @@ if __name__ == "__main__":
         default="true",
         help="Use y_true min/max as bounds for linear calibration.",
     )
-    args = parser.parse_args()
-    calibrate_predictions(
+    args = parser.parse_args(argv)
+    calibrate_predictions_step(
         in_path=args.in_path,
         out_path=args.out_path,
         calibration_out=args.cal_out,
@@ -32,3 +57,4 @@ if __name__ == "__main__":
         eps=args.eps,
         bounds_source=args.bounds_source,
     )
+

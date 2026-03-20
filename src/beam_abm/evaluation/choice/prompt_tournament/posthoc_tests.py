@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import argparse
 import json
 from pathlib import Path
 from typing import Any
@@ -10,6 +9,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from beam_abm.cli import parser_compat as cli
 from beam_abm.evaluation.utils.jsonl import read_jsonl
 
 
@@ -512,8 +512,8 @@ def _determinism_summary(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     return pd.concat([summary, pooled], ignore_index=True), row_df
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
+def run_cli(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument(
         "--output-root",
         default="evaluation/output/prompt_tournament",
@@ -527,7 +527,7 @@ def main() -> None:
     parser.add_argument("--skip-reliability", action="store_true")
     parser.add_argument("--skip-determinism", action="store_true")
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     output_root = Path(args.output_root)
     strategies_filter = [s.strip() for s in args.strategies.split(",") if s.strip()] if args.strategies else None
@@ -644,5 +644,4 @@ def main() -> None:
                 rel_summary.to_csv(posthoc_dir / "reliability_summary.csv", index=False)
 
 
-if __name__ == "__main__":
-    main()
+

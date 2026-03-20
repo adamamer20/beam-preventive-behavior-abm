@@ -1,9 +1,5 @@
-"""Evaluation utilities for choice and belief validation."""
+"""Public evaluation API surface."""
 
-from beam_abm.llm.schemas.predictions import extract_scalar_prediction
-
-from .artifacts import PromptTournamentOutputPaths
-from .belief import reference as belief_pe_ref_p
 from .common.calibration import (
     BinaryPlattCalibrator,
     IsotonicCountryCalibrator,
@@ -15,9 +11,6 @@ from .common.calibration import (
 )
 
 __all__ = [
-    "extract_scalar_prediction",
-    "PromptTournamentOutputPaths",
-    "belief_pe_ref_p",
     "BinaryPlattCalibrator",
     "IsotonicCountryCalibrator",
     "LinearCalibrator",

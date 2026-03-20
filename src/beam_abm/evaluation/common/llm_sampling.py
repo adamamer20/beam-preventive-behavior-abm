@@ -5,7 +5,6 @@ This module hosts the core sampling CLI logic for reuse in phase runners.
 
 from __future__ import annotations
 
-import argparse
 import asyncio
 import atexit
 import json
@@ -16,6 +15,7 @@ from typing import Any
 import pandas as pd
 from pydantic import Field, ValidationError, create_model
 
+from beam_abm.cli import parser_compat as cli
 from beam_abm.common.logging import get_logger
 from beam_abm.evaluation.artifacts import (
     build_conversation_id,
@@ -764,8 +764,8 @@ def _lookup_baseline_value(
     )
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
+def run_cli(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument("--in", dest="in_path", required=True, help="Input JSONL of prompts")
     parser.add_argument("--out", dest="out_path", required=True, help="Output JSONL of sampled responses")
     parser.add_argument(
@@ -919,7 +919,7 @@ def main() -> None:
     parser.add_argument("--task", default="Return predictions on the declared outcome scale as JSON.")
     parser.add_argument("--method", default="microvalidation")
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     if args.backend == "azure_openai" and args.two_pass:
         logger.warning("Azure OpenAI backend does not support two-pass structuring; disabling --two-pass.")
@@ -2372,5 +2372,4 @@ def main() -> None:
     return
 
 
-if __name__ == "__main__":
-    main()
+

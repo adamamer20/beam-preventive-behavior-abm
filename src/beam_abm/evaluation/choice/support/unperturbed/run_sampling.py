@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-import argparse
 import json
 from pathlib import Path
 from typing import Any
 
+from beam_abm.cli import parser_compat as cli
 from beam_abm.evaluation.choice.support.unperturbed.unperturbed_utils import (
     SUPPORTED_PROMPT_FAMILIES,
     parse_list_arg,
@@ -247,8 +247,8 @@ def _ensure_baseline_predictions(
     return out_path
 
 
-def main(argv: list[str] | None = None) -> None:
-    parser = argparse.ArgumentParser()
+def run_cli(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument("--prompts", default=None, help="Prompt JSONL path or directory")
     parser.add_argument("--outdir", default="evaluation/output/debug_unperturbed")
     parser.add_argument("--prompt-family", default=None)
@@ -289,7 +289,7 @@ def main(argv: list[str] | None = None) -> None:
         dest="max_model_len",
         type=int,
         default=None,
-        help=argparse.SUPPRESS,
+        help=cli.SUPPRESS,
     )
     parser.add_argument("--max-retries", type=int, default=3)
     parser.add_argument("--max-concurrency", type=int, default=1024)
@@ -400,10 +400,7 @@ def main(argv: list[str] | None = None) -> None:
                         argv_local.extend(["--azure-api-version", str(args.azure_api_version)])
                     argv_local.extend(["--azure-model-hint", str(model_name)])
 
-                import sys as _sys
-
-                _sys.argv = [_sys.argv[0], *argv_local]
-                run_llm_sampling.main()
+                run_llm_sampling.run_cli(argv_local)
 
                 for row in read_jsonl(out_path, dicts_only=True):
                     out_rows.append({**row, "model": model_name})
@@ -465,10 +462,7 @@ def main(argv: list[str] | None = None) -> None:
                     argv_local.extend(["--azure-api-version", str(args.azure_api_version)])
                 argv_local.extend(["--azure-model-hint", str(model_name)])
 
-            import sys as _sys
-
-            _sys.argv = [_sys.argv[0], *argv_local]
-            run_llm_sampling.main()
+            run_llm_sampling.run_cli(argv_local)
 
             for row in read_jsonl(out_path, dicts_only=True):
                 if isinstance(row, dict):
@@ -480,5 +474,4 @@ def main(argv: list[str] | None = None) -> None:
         write_jsonl(outdir / f"samples__{family}.jsonl", out_rows, json_default=numpy_json_default)
 
 
-if __name__ == "__main__":
-    main()
+

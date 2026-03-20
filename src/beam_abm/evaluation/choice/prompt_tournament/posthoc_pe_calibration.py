@@ -2,14 +2,14 @@
 
 from __future__ import annotations
 
-import argparse
 from pathlib import Path
 
 import pandas as pd
 
-from beam_abm.evaluation.common.apply_pe_calibration_to_ice import main as apply_pe_calibration_step
-from beam_abm.evaluation.common.calibrate_pe_gains import main as pe_calibrate_step
-from beam_abm.evaluation.common.compute_alignment import main as align_step
+from beam_abm.cli import parser_compat as cli
+from beam_abm.evaluation.common.apply_pe_calibration_to_ice import run_cli as apply_pe_calibration_step
+from beam_abm.evaluation.common.calibrate_pe_gains import run_cli as pe_calibrate_step
+from beam_abm.evaluation.common.compute_alignment import run_cli as align_step
 from beam_abm.evaluation.utils import prompt_tournament_utils as pt
 from beam_abm.evaluation.utils.alignment_utils import summarize_alignment_rows
 
@@ -59,8 +59,8 @@ def _resolve_outcomes_from_ice(ice_path: Path) -> list[str]:
     return outcomes
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
+def run_cli(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument(
         "--output-root",
         default="evaluation/output/prompt_tournament/perturbed",
@@ -79,7 +79,7 @@ def main() -> None:
         default=1.0,
         help="Fallback alpha when no calibrator is available (default: 1.0)",
     )
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     root = Path(args.output_root)
     ref_models = [_normalize_ref_model(m) for m in args.ref_models.split(",") if m.strip()]
@@ -204,5 +204,4 @@ def main() -> None:
                             path.unlink(missing_ok=True)
 
 
-if __name__ == "__main__":
-    main()
+

@@ -10,15 +10,13 @@ evaluation/output/choice_validation/unperturbed/
 
 from __future__ import annotations
 
-import argparse
-import importlib.util
 import json
 import shutil
-import sys
 from pathlib import Path
 
 import pandas as pd
 
+from beam_abm.cli import parser_compat as cli
 from beam_abm.evaluation.artifacts import utc_timestamp
 from beam_abm.evaluation.choice._canonicalize_ids import normalize_model_slug
 from beam_abm.evaluation.choice._canonicalize_sample_rebuild import find_samples_jsonl, rebuild_canonical_leaf
@@ -26,18 +24,12 @@ from beam_abm.evaluation.choice._canonicalize_summary import (
     write_models_strategies_summary,
     write_strategies_summary,
 )
+from beam_abm.evaluation.choice.run_conditional_knockout import run_cli as run_conditional_knockout
+from beam_abm.evaluation.choice.support.unperturbed.run_phase import run_cli as run_unperturbed_phase
+from beam_abm.evaluation.choice.unperturbed_posthoc import run_cli as run_unperturbed_posthoc
+from beam_abm.evaluation.common.calibrate_llm_predictions import run_cli as calibrate_llm_predictions
 from beam_abm.evaluation.utils.jsonl import numpy_json_default, read_jsonl, write_jsonl
 from beam_abm.llm.schemas.predictions import extract_scalar_prediction
-
-
-def _load_local_module(module_name: str, module_path: Path):
-    spec = importlib.util.spec_from_file_location(module_name, module_path)
-    if spec is None or spec.loader is None:
-        raise ImportError(f"Unable to load {module_name} from {module_path}")
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[module_name] = module
-    spec.loader.exec_module(module)
-    return module
 
 
 def _parse_csv_list(value: str | None) -> list[str]:
@@ -50,7 +42,7 @@ def _summaries_root(root: Path) -> Path:
     return root / "_summary"
 
 
-def _load_model_options_payload(args: argparse.Namespace) -> object | None:
+def _load_model_options_payload(args: cli.Namespace) -> object | None:
     if args.model_options and args.model_options_file:
         raise ValueError("Provide only one of --model-options or --model-options-file")
     if args.model_options_file:
@@ -140,8 +132,8 @@ def rebuild_summaries(root: Path) -> None:
         pd.DataFrame(global_rows).to_csv(out_dir / "all_outcomes_models_strategies.csv", index=False)
 
 
-def main(argv: list[str] | None = None) -> None:
-    parser = argparse.ArgumentParser()
+def run_choice_unperturbed(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument(
         "--output-root",
         default="evaluation/output/choice_validation/unperturbed",
@@ -197,18 +189,6 @@ def main(argv: list[str] | None = None) -> None:
     runs_root = root / "_runs"
     locks_root = root / "_locks"
     run_id = args.run_id or utc_timestamp()
-
-    # Load unperturbed runner without relying on import-time sys.path.
-    support_dir = Path(__file__).resolve().parent / "support" / "unperturbed"
-    _load_local_module("unperturbed_utils", support_dir / "unperturbed_utils.py")
-    phase_path = support_dir / "run_phase.py"
-    spec = importlib.util.spec_from_file_location("choice_validation_unperturbed_run_phase", phase_path)
-    if spec is None or spec.loader is None:
-        raise ImportError(f"Unable to load unperturbed runner from {phase_path}")
-    unperturbed_phase = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(unperturbed_phase)
-
-    from beam_abm.evaluation.common.calibrate_llm_predictions import main as calibrate_cli
 
     outcomes = _parse_csv_list(args.outcomes)
     families = _parse_csv_list(args.prompt_families)
@@ -368,21 +348,21 @@ def main(argv: list[str] | None = None) -> None:
             frozen_prompts = frozen_dir / f"prompts__{family}.jsonl"
 
             if not repair_mode and not frozen_prompts.exists():
-                sys.argv = [
-                    sys.argv[0],
-                    "generate-prompts",
-                    "--outdir",
-                    str(frozen_dir),
-                    "--prompt-family",
-                    family,
-                    "--outcomes",
-                    ",".join(outcomes),
-                    "--n",
-                    str(int(args.n)),
-                    "--seed",
-                    str(int(args.seed)),
-                ]
-                unperturbed_phase.main()
+                run_unperturbed_phase(
+                    [
+                        "generate-prompts",
+                        "--outdir",
+                        str(frozen_dir),
+                        "--prompt-family",
+                        family,
+                        "--outcomes",
+                        ",".join(outcomes),
+                        "--n",
+                        str(int(args.n)),
+                        "--seed",
+                        str(int(args.seed)),
+                    ],
+                )
 
             batch_leaf = runs_root / run_id / "_batch" / model_norm / family
             batch_uncal = batch_leaf / "uncalibrated"
@@ -390,8 +370,7 @@ def main(argv: list[str] | None = None) -> None:
 
             batch_samples_out = batch_uncal / f"samples__{family}.jsonl"
             if not repair_mode and not batch_samples_out.exists():
-                sys.argv = [
-                    sys.argv[0],
+                sample_args = [
                     "sample",
                     "--prompts",
                     str(frozen_prompts),
@@ -411,10 +390,10 @@ def main(argv: list[str] | None = None) -> None:
                     str(int(args.max_concurrency)),
                 ]
                 if args.model_options_file:
-                    sys.argv.extend(["--model-options-file", str(args.model_options_file)])
+                    sample_args.extend(["--model-options-file", str(args.model_options_file)])
                 elif args.model_options:
-                    sys.argv.extend(["--model-options", str(args.model_options)])
-                unperturbed_phase.main()
+                    sample_args.extend(["--model-options", str(args.model_options)])
+                run_unperturbed_phase(sample_args)
 
             if not batch_samples_out.exists():
                 if repair_mode:
@@ -453,52 +432,42 @@ def main(argv: list[str] | None = None) -> None:
                 # Metrics (uncalibrated).
                 metrics_uncal = uncal_dir / f"metrics_summary__{family}.csv"
                 if repair_mode or not metrics_uncal.exists():
-                    sys.argv = [
-                        sys.argv[0],
-                        "metrics",
-                        "--outdir",
-                        str(uncal_dir),
-                        "--prompt-family",
-                        family,
-                    ]
-                    unperturbed_phase.main()
+                    run_unperturbed_phase(
+                        ["metrics", "--outdir", str(uncal_dir), "--prompt-family", family],
+                    )
 
                 # Calibrate.
                 calibration_out = cal_dir / "calibration.json"
                 calibrated_predictions = cal_dir / "predictions_calibrated.csv"
                 if repair_mode or not (calibration_out.exists() and calibrated_predictions.exists()):
-                    saved = list(sys.argv)
-                    try:
-                        sys.argv = [
-                            saved[0],
+                    calibrate_llm_predictions(
+                        [
                             "--in",
                             str(uncal_dir),
                             "--out",
                             str(calibrated_predictions),
                             "--calibration-out",
                             str(calibration_out),
-                        ]
-                        calibrate_cli()
-                    finally:
-                        sys.argv = saved
+                        ],
+                    )
 
                 # Metrics (calibrated).
                 metrics_cal = cal_dir / f"metrics_summary_calibrated__{family}.csv"
                 if repair_mode or not metrics_cal.exists():
-                    sys.argv = [
-                        sys.argv[0],
-                        "metrics",
-                        "--predictions",
-                        str(calibrated_predictions),
-                        "--outdir",
-                        str(cal_dir),
-                        "--prompt-family",
-                        family,
-                        "--metrics-only",
-                        "--pred-col",
-                        "y_pred_cal",
-                    ]
-                    unperturbed_phase.main()
+                    run_unperturbed_phase(
+                        [
+                            "metrics",
+                            "--predictions",
+                            str(calibrated_predictions),
+                            "--outdir",
+                            str(cal_dir),
+                            "--prompt-family",
+                            family,
+                            "--metrics-only",
+                            "--pred-col",
+                            "y_pred_cal",
+                        ],
+                    )
 
                 # Update canonical leaf from existing canonical + this run.
                 canonical_leaf = root / outcome / model_norm / family
@@ -522,21 +491,11 @@ def main(argv: list[str] | None = None) -> None:
     rebuild_summaries(root)
 
     if not bool(args.skip_posthoc):
-        # Load posthoc script locally and run against canonical outputs.
-        posthoc_path = Path(__file__).with_name("unperturbed_posthoc.py")
-        posthoc = _load_local_module("choice_validation_unperturbed_posthoc", posthoc_path)
-        posthoc.main(
-            [
-                "--output-root",
-                str(root),
-            ]
-        )
+        run_unperturbed_posthoc(["--output-root", str(root)])
 
     if not bool(args.skip_block_ablation):
-        block_path = Path(__file__).with_name("run_conditional_knockout.py")
-        block = _load_local_module("choice_validation_unperturbed_block_ablation", block_path)
         model_for_ablation = _parse_csv_list(args.models)[0] if _parse_csv_list(args.models) else "openai/gpt-oss-20b"
-        block.main(
+        run_conditional_knockout(
             [
                 "--full-root",
                 str(root),
@@ -548,7 +507,3 @@ def main(argv: list[str] | None = None) -> None:
                 "data_only",
             ]
         )
-
-
-if __name__ == "__main__":
-    main()

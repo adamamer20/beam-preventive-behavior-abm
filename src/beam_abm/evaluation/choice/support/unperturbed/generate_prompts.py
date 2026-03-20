@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-import argparse
 import json
 from pathlib import Path
 
 import pandas as pd
 
+from beam_abm.cli import parser_compat as cli
 from beam_abm.evaluation.choice.support.unperturbed.unperturbed_utils import (
     SUPPORTED_PROMPT_FAMILIES,
     build_predictor_cols,
@@ -32,8 +32,8 @@ from beam_abm.evaluation.prompting import (
 from beam_abm.evaluation.utils.jsonl import numpy_json_default, write_jsonl
 
 
-def main(argv: list[str] | None = None) -> None:
-    parser = argparse.ArgumentParser()
+def run_cli(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument("--input", default="preprocess/output/clean_processed_survey.csv")
     parser.add_argument("--outdir", default="evaluation/output/debug_unperturbed")
     parser.add_argument(
@@ -198,5 +198,4 @@ def main(argv: list[str] | None = None) -> None:
         write_jsonl(out_path, rows, json_default=numpy_json_default)
 
 
-if __name__ == "__main__":
-    main()
+

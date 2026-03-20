@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import argparse
 import re
 from pathlib import Path
 from typing import Any
@@ -10,6 +9,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from beam_abm.cli import parser_compat as cli
 from beam_abm.evaluation.choice.support.unperturbed.unperturbed_utils import (
     SUPPORTED_PROMPT_FAMILIES,
     compute_metrics_rows,
@@ -116,8 +116,8 @@ def _write_predictions(outdir: Path, family: str, df: pd.DataFrame) -> None:
     df.to_csv(outdir / f"predictions__{family}__all.csv", index=False)
 
 
-def main(argv: list[str] | None = None) -> None:
-    parser = argparse.ArgumentParser()
+def run_cli(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument("--samples", default=None, help="Samples JSONL path or directory")
     parser.add_argument("--predictions", default=None, help="Predictions CSV path or directory")
     parser.add_argument("--outdir", default="evaluation/output/debug_unperturbed")
@@ -193,5 +193,4 @@ def main(argv: list[str] | None = None) -> None:
         metrics_df.to_csv(outdir / metrics_filename(family=family, pred_col="y_pred"), index=False)
 
 
-if __name__ == "__main__":
-    main()
+

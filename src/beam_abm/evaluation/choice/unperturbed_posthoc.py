@@ -12,13 +12,13 @@ This is safe to run repeatedly.
 
 from __future__ import annotations
 
-import argparse
 import json
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
+from beam_abm.cli import parser_compat as cli
 from beam_abm.evaluation.choice.posthoc import (
     compute_slice_spearman,
     compute_y_decile_errors_from_df,
@@ -1124,8 +1124,8 @@ def _bootstrap_posthoc_ci(
     return out
 
 
-def main(argv: list[str] | None = None) -> None:
-    parser = argparse.ArgumentParser()
+def run_cli(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument(
         "--output-root",
         default="evaluation/output/choice_validation/unperturbed",
@@ -1644,5 +1644,4 @@ def main(argv: list[str] | None = None) -> None:
         )
 
 
-if __name__ == "__main__":
-    main()
+

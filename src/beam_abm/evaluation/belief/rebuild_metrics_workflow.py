@@ -11,23 +11,22 @@ It is safe to run repeatedly.
 
 from __future__ import annotations
 
-import argparse
 import json
 import math
 import shutil
-import subprocess
-import sys
 from pathlib import Path
 from typing import Any
 
 import pandas as pd
 
+from beam_abm.cli import parser_compat as cli
 from beam_abm.evaluation.belief.canonicalize import (
     clear_summary_metrics,
     migrate_legacy_prompt_tournament_outputs,
     rebuild_canonical_from_runs,
     write_summary_metrics,
 )
+from beam_abm.evaluation.belief.update_alignment import run_cli as update_alignment
 from beam_abm.evaluation.choice._canonicalize_ids import normalize_model_slug
 
 
@@ -301,8 +300,8 @@ def _write_model_signal_summary(*, output_root: Path, model: str, canonical_mode
     return out_path
 
 
-def main(argv: list[str] | None = None) -> None:
-    parser = argparse.ArgumentParser()
+def run_cli(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument(
         "--output-root",
         default="evaluation/output/belief_update_validation",
@@ -384,12 +383,7 @@ def main(argv: list[str] | None = None) -> None:
         if not samples_path.exists():
             continue
 
-        # 1) Recompute alignment metrics (writes per-strategy signal trees + overall_summary.json).
-        # Do this in a fresh subprocess so memory is released between models.
-        cmd = [
-            sys.executable,
-            "-m",
-            "beam_abm.evaluation.belief.update_alignment",
+        update_args = [
             "--in",
             str(samples_path),
             "--spec",
@@ -416,10 +410,10 @@ def main(argv: list[str] | None = None) -> None:
             str(float(args.denom)),
         ]
         if args.eps_map:
-            cmd.extend(["--eps-map", str(args.eps_map)])
+            update_args.extend(["--eps-map", str(args.eps_map)])
         if args.moderation_by_anchor:
-            cmd.append("--moderation-by-anchor")
-        subprocess.run(cmd, check=True)
+            update_args.append("--moderation-by-anchor")
+        update_alignment(update_args)
 
         # 2) Write summary_metrics.csv for this model.
         out = _write_model_strategy_summary(output_root=output_root, model=model, canonical_model_dir=model_dir)
@@ -458,7 +452,3 @@ def main(argv: list[str] | None = None) -> None:
         out.parent.mkdir(parents=True, exist_ok=True)
         df.to_csv(out, index=False)
         print(f"Wrote {out}")
-
-
-if __name__ == "__main__":
-    main()

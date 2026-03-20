@@ -2,12 +2,41 @@
 
 from __future__ import annotations
 
-import argparse
+from pathlib import Path
 
+from beam_abm.cli import parser_compat as cli
 from beam_abm.evaluation.common.alignment_metrics import compute_alignment_metrics
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
+
+def compute_alignment_step(
+    *,
+    ref: str | Path,
+    llm: str | Path,
+    out: str | Path,
+    order_out: str | Path,
+    truth: str | Path | None = None,
+    truth_y_col: str = "y_true",
+    denom: float = 1.0,
+    boot: int = 1000,
+    epsilon_ref: float = 0.03,
+    epsilon_move_mult: float = 3.0,
+) -> None:
+    compute_alignment_metrics(
+        ref=ref,
+        llm=llm,
+        out=out,
+        order_out=order_out,
+        truth=truth,
+        truth_y_col=truth_y_col,
+        denom=denom,
+        boot=boot,
+        epsilon_ref=epsilon_ref,
+        epsilon_move_mult=epsilon_move_mult,
+    )
+
+
+def run_cli(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument("--ref", required=True, help="Reference ICE CSV")
     parser.add_argument("--llm", required=True, help="LLM ICE CSV")
     parser.add_argument(
@@ -42,8 +71,8 @@ if __name__ == "__main__":
         default=3.0,
         help=("Multiplier for the false-movement threshold epsilon_move = epsilon_ref * multiplier (default: 3)."),
     )
-    args = parser.parse_args()
-    compute_alignment_metrics(
+    args = parser.parse_args(argv)
+    compute_alignment_step(
         ref=args.ref,
         llm=args.llm,
         out=args.out,
@@ -55,3 +84,4 @@ if __name__ == "__main__":
         epsilon_ref=args.epsilon_ref,
         epsilon_move_mult=args.epsilon_move_mult,
     )
+

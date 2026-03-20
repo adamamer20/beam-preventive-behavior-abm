@@ -2,11 +2,9 @@
 
 from __future__ import annotations
 
-import argparse
-import importlib.util
-import sys
 from pathlib import Path
 
+from beam_abm.cli import parser_compat as cli
 from beam_abm.evaluation.choice.support.unperturbed.unperturbed_utils import parse_prompt_families
 
 
@@ -23,24 +21,15 @@ def _build_args(*pairs: tuple[str, object]) -> list[str]:
     return args
 
 
-def _load_local_main(module_filename: str, attr: str = "main"):
-    module_path = Path(__file__).with_name(module_filename)
-    spec = importlib.util.spec_from_file_location(module_filename, module_path)
-    if spec is None or spec.loader is None:
-        raise ImportError(f"Unable to load {module_path}")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return getattr(module, attr)
-
-
-def main() -> None:
-    if len(sys.argv) > 1:
-        first_arg = sys.argv[1]
+def run_cli(argv: list[str] | None = None) -> None:
+    effective_argv = list(argv) if argv is not None else None
+    if effective_argv and len(effective_argv) > 0:
+        first_arg = effective_argv[0]
         valid_steps = {"generate-prompts", "sample", "metrics", "calibrate", "apply-calibration", "all"}
         if not first_arg.startswith("-") and first_arg not in valid_steps:
-            sys.argv.insert(1, "--outdir")
+            effective_argv = ["--outdir", *effective_argv]
 
-    base = argparse.ArgumentParser()
+    base = cli.ArgumentParser()
     base.add_argument(
         "step",
         nargs="?",
@@ -48,23 +37,21 @@ def main() -> None:
         choices=["generate-prompts", "sample", "metrics", "calibrate", "apply-calibration", "all"],
         help="Unperturbed step to run.",
     )
-    args, rest = base.parse_known_args()
+    args, rest = base.parse_known_args(effective_argv)
 
     if args.step == "calibrate":
-        from beam_abm.evaluation.common.calibrate_llm_predictions import main as step_main
+        from beam_abm.evaluation.common.calibrate_llm_predictions import run_cli as step_run_cli
 
-        sys.argv = [sys.argv[0], *rest]
-        step_main()
+        step_run_cli(rest)
         return
 
     if args.step == "apply-calibration":
-        from beam_abm.evaluation.common.apply_calibration_to_predictions import main as step_main
+        from beam_abm.evaluation.common.apply_calibration_to_predictions import run_cli as step_run_cli
 
-        sys.argv = [sys.argv[0], *rest]
-        step_main()
+        step_run_cli(rest)
         return
 
-    parser = argparse.ArgumentParser()
+    parser = cli.ArgumentParser()
     parser.add_argument("--input", default="preprocess/output/clean_processed_survey.csv")
     parser.add_argument("--outdir", default="evaluation/output/debug_unperturbed")
     parser.add_argument("--outcomes", default=None)
@@ -110,7 +97,7 @@ def main() -> None:
         dest="max_model_len",
         type=int,
         default=None,
-        help=argparse.SUPPRESS,
+        help=cli.SUPPRESS,
     )
     parser.add_argument("--max-retries", type=int, default=3)
     parser.add_argument("--max-concurrency", type=int, default=1024)
@@ -121,9 +108,9 @@ def main() -> None:
     parsed = parser.parse_args(rest)
     families = parse_prompt_families(parsed.prompt_family, parsed.prompt_families)
 
-    compute_metrics = _load_local_main("compute_metrics.py")
-    generate_prompts = _load_local_main("generate_prompts.py")
-    run_sampling = _load_local_main("run_sampling.py")
+    from beam_abm.evaluation.choice.support.unperturbed.compute_metrics import run_cli as compute_metrics
+    from beam_abm.evaluation.choice.support.unperturbed.generate_prompts import run_cli as generate_prompts
+    from beam_abm.evaluation.choice.support.unperturbed.run_sampling import run_cli as run_sampling
 
     if args.step in {"generate-prompts", "all"}:
         generate_args = _build_args(
@@ -188,15 +175,7 @@ def main() -> None:
             return
 
         if args.step == "all":
-            from beam_abm.evaluation.common.calibrate_llm_predictions import main as calibrate_main
-
-            def _run_calibrate(argv_args: list[str]) -> None:
-                saved_argv = sys.argv
-                try:
-                    sys.argv = [saved_argv[0], *argv_args]
-                    calibrate_main()
-                finally:
-                    sys.argv = saved_argv
+            from beam_abm.evaluation.common.calibrate_llm_predictions import run_cli as run_calibrate
 
             outdir_path = Path(parsed.outdir)
             run_tag = outdir_path.name
@@ -222,9 +201,5 @@ def main() -> None:
                     parsed.strata_col,
                 ]
 
-                _run_calibrate(calibrate_args)
+                run_calibrate(calibrate_args)
         return
-
-
-if __name__ == "__main__":
-    main()

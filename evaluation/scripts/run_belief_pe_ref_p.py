@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import typer
 
-from beam_abm.evaluation.workflows.belief import run_belief_perturbed
+from beam_abm.evaluation.workflows.belief import run_belief_pe_ref_p
 
 app = typer.Typer(
     add_completion=False,
@@ -12,7 +12,7 @@ app = typer.Typer(
 
 @app.callback(invoke_without_command=True)
 def main(ctx: typer.Context) -> None:
-    run_belief_perturbed(list(ctx.args))
+    run_belief_pe_ref_p(list(ctx.args))
 
 
 if __name__ == "__main__":

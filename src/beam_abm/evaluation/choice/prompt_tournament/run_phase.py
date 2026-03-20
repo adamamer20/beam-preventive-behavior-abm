@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
-import argparse
-import sys
+from beam_abm.cli import parser_compat as cli
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
+def run_cli(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument(
         "step",
         choices=[
@@ -22,68 +21,52 @@ def main() -> None:
         ],
         help="Phase step to run.",
     )
-    args, rest = parser.parse_known_args()
+    args, rest = parser.parse_known_args(argv)
 
     if args.step == "generate-prompts":
-        from beam_abm.evaluation.choice.prompt_tournament import generate_prompts as step
+        from beam_abm.evaluation.choice.prompt_tournament.generate_prompts import run_cli as step_run_cli
 
-        sys.argv = [sys.argv[0], *rest]
-        step.main()
+        step_run_cli(rest)
         return
 
     if args.step == "build-paired-profiles":
-        from beam_abm.evaluation.choice.prompt_tournament import build_paired_profiles as step
+        from beam_abm.evaluation.choice.prompt_tournament.build_paired_profiles import run_cli as step_run_cli
 
-        sys.argv = [sys.argv[0], *rest]
-        step.main()
+        step_run_cli(rest)
         return
 
     if args.step == "sample":
-        from beam_abm.evaluation.common.llm_sampling import main as step_main
+        from beam_abm.evaluation.common.llm_sampling import run_cli as step_run_cli
 
-        sys.argv = [sys.argv[0], *rest]
-        step_main()
+        step_run_cli(rest)
         return
 
     if args.step == "ice":
-        from beam_abm.evaluation.common.compute_ice_from_samples import main as step_main
+        from beam_abm.evaluation.common.compute_ice_from_samples import run_cli as step_run_cli
 
-        sys.argv = [sys.argv[0], *rest]
-        step_main()
+        step_run_cli(rest)
         return
 
     if args.step == "align":
-        from beam_abm.evaluation.common.compute_alignment import main as step_main
+        from beam_abm.evaluation.common.compute_alignment import run_cli as step_run_cli
 
-        sys.argv = [sys.argv[0], *rest]
-        step_main()
+        step_run_cli(rest)
         return
 
     if args.step == "calibrate":
-        from beam_abm.evaluation.common.calibrate_llm_predictions import main as step_main
+        from beam_abm.evaluation.common.calibrate_llm_predictions import run_cli as step_run_cli
 
-        sys.argv = [sys.argv[0], *rest]
-        step_main()
+        step_run_cli(rest)
         return
 
     if args.step == "apply-calibration":
-        from beam_abm.evaluation.common.apply_calibration_to_ice import main as step_main
+        from beam_abm.evaluation.common.apply_calibration_to_ice import run_cli as step_run_cli
 
-        sys.argv = [sys.argv[0], *rest]
-        step_main()
+        step_run_cli(rest)
         return
 
     if args.step == "unperturbed":
-        from pathlib import Path
+        from beam_abm.evaluation.choice.support.unperturbed.run_phase import run_cli as step_run_cli
 
-        support_dir = Path(__file__).resolve().parents[1] / "support" / "unperturbed"
-        sys.path.insert(0, str(support_dir))
-        import run_phase as step
-
-        sys.argv = [sys.argv[0], *rest]
-        step.main()
+        step_run_cli(rest)
         return
-
-
-if __name__ == "__main__":
-    main()

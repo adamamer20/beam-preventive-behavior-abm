@@ -10,11 +10,11 @@ This output is consumed by `generate_prompts.py --strategy paired_profile`.
 
 from __future__ import annotations
 
-import argparse
 from pathlib import Path
 
 import numpy as np
 
+from beam_abm.cli import parser_compat as cli
 from beam_abm.evaluation.utils.jsonl import (
     read_rows as _read_rows,
 )
@@ -23,12 +23,12 @@ from beam_abm.evaluation.utils.jsonl import (
 )
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
+def run_cli(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument("--in", dest="in_path", required=True)
     parser.add_argument("--out", dest="out_path", required=True)
     parser.add_argument("--seed", type=int, default=42)
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     rows = _read_rows(Path(args.in_path))
     rng = np.random.default_rng(args.seed)
@@ -103,5 +103,4 @@ def main() -> None:
     _write_jsonl(Path(args.out_path), out)
 
 
-if __name__ == "__main__":
-    main()
+

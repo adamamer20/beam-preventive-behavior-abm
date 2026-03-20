@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
-import argparse
 import json
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
+
+from beam_abm.cli import parser_compat as cli
 
 
 def _ensure_columns(df: pd.DataFrame, cols: list[str], *, label: str) -> None:
@@ -42,8 +43,8 @@ def _parse_group_cols(raw: str | None) -> list[str]:
     return [c.strip() for c in raw.split(",") if c.strip()]
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
+def run_cli(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument("--ref-ice", required=True, help="Reference ICE CSV")
     parser.add_argument("--llm-ice", required=True, help="LLM ICE CSV")
     parser.add_argument("--out", required=True, help="Output calibration JSON")
@@ -53,7 +54,7 @@ def main() -> None:
         help="Comma-separated grouping columns (default: outcome,target,strategy)",
     )
     parser.add_argument("--min-rows", type=int, default=1, help="Minimum rows per group to fit a gain")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     ref = pd.read_csv(args.ref_ice)
     llm = pd.read_csv(args.llm_ice)
@@ -125,5 +126,4 @@ def main() -> None:
     out_path.write_text(json.dumps(out_payload, indent=2), encoding="utf-8")
 
 
-if __name__ == "__main__":
-    main()
+

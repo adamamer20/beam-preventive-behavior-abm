@@ -2,18 +2,19 @@
 
 from __future__ import annotations
 
-import argparse
 import json
-import subprocess
-import sys
 from pathlib import Path
 from typing import Any
 
+import pandas as pd
+
+from beam_abm.cli import parser_compat as cli
 from beam_abm.evaluation.belief.canonicalize import (
     clear_summary_metrics,
     rebuild_canonical_from_runs,
     write_summary_metrics,
 )
+from beam_abm.evaluation.belief.unperturbed_metrics import run_cli as summarize_unperturbed_metrics
 
 
 def _coerce_scalar(value: object) -> float | str | None:
@@ -60,8 +61,8 @@ def _summarize_model(*, output_root: Path, model_dir: Path) -> Path | None:
     return out_path
 
 
-def main(argv: list[str] | None = None) -> None:
-    parser = argparse.ArgumentParser()
+def run_cli(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument(
         "--output-root",
         default="evaluation/output/belief_update_validation/unperturbed",
@@ -102,27 +103,23 @@ def main(argv: list[str] | None = None) -> None:
         if not samples_path.exists():
             continue
 
-        cmd = [
-            sys.executable,
-            "-m",
-            "beam_abm.evaluation.belief.unperturbed_metrics",
-            "--in",
-            str(samples_path),
-            "--spec",
-            str(Path(args.spec)),
-            "--outdir",
-            str(model_dir),
-        ]
-        subprocess.run(cmd, check=True)
+        summarize_unperturbed_metrics(
+            [
+                "--in",
+                str(samples_path),
+                "--spec",
+                str(Path(args.spec)),
+                "--outdir",
+                str(model_dir),
+            ],
+        )
         out_path = _summarize_model(output_root=output_root, model_dir=model_dir)
         if out_path is None or not out_path.exists():
             continue
         try:
-            import pandas as pd
-
             df = pd.read_csv(out_path)
             all_rows.extend(df.to_dict(orient="records"))
-        except (ImportError, OSError, ValueError):
+        except (OSError, ValueError):
             continue
 
     if all_rows:
@@ -130,7 +127,3 @@ def main(argv: list[str] | None = None) -> None:
             rows=all_rows,
             out_path=output_root / "summary_metrics" / "all_models_strategies.csv",
         )
-
-
-if __name__ == "__main__":
-    main()

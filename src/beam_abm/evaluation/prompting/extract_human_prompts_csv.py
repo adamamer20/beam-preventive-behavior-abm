@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-import argparse
 import csv
 import json
 from pathlib import Path
 from typing import Any
 
+from beam_abm.cli import parser_compat as cli
 from beam_abm.evaluation.utils.jsonl import read_jsonl as _read_jsonl
 from beam_abm.llm.prompts.prompts import BELIEF_UPDATE_EXPERT_PROMPTS, EXPERT_PROMPTS, format_attribute_vector
 
@@ -120,8 +120,56 @@ def _parse_list(raw: str | None) -> list[str]:
     return [item.strip() for item in raw.split(",") if item.strip()]
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
+def extract_human_prompts_csv_step(
+    *,
+    in_path: str | Path,
+    out_path: str | Path,
+    include_system: bool = False,
+    include_metadata: bool = False,
+    include_messages: bool = False,
+    metadata_keys: list[str] | None = None,
+) -> int:
+    selected_metadata_keys = metadata_keys or []
+    rows = _read_jsonl(Path(in_path))
+    out_rows: list[dict[str, Any]] = []
+    for row in rows:
+        human_prompt = _pick_human_prompt(row)
+        if human_prompt is None:
+            continue
+        item: dict[str, Any] = {
+            "id": row.get("id"),
+            "strategy": row.get("strategy"),
+            "human_prompt": human_prompt,
+        }
+        if include_system:
+            item["system_prompt"] = _pick_system_prompt(row)
+        if include_messages:
+            messages = _build_messages(row)
+            item["messages"] = json.dumps(messages, ensure_ascii=False) if messages is not None else None
+        metadata = row.get("metadata") if isinstance(row.get("metadata"), dict) else None
+        if include_metadata:
+            item["metadata"] = json.dumps(metadata, ensure_ascii=False) if metadata is not None else None
+        if selected_metadata_keys:
+            for key in selected_metadata_keys:
+                item[key] = metadata.get(key) if isinstance(metadata, dict) else None
+        out_rows.append(item)
+
+    destination = Path(out_path)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    fieldnames: list[str] = []
+    for row in out_rows:
+        for key in row.keys():
+            if key not in fieldnames:
+                fieldnames.append(key)
+    with destination.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(out_rows)
+    return len(out_rows)
+
+
+def run_cli(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument("--in", dest="in_path", required=True, help="Input prompt JSONL file")
     parser.add_argument("--out", dest="out_path", required=True, help="Output CSV file")
     parser.add_argument(
@@ -145,46 +193,17 @@ def main() -> None:
         help="Comma-separated metadata keys to extract into separate columns",
     )
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     metadata_keys = _parse_list(args.metadata_keys)
 
-    rows = _read_jsonl(Path(args.in_path))
-    out_rows: list[dict[str, Any]] = []
-    for row in rows:
-        human_prompt = _pick_human_prompt(row)
-        if human_prompt is None:
-            continue
-        item: dict[str, Any] = {
-            "id": row.get("id"),
-            "strategy": row.get("strategy"),
-            "human_prompt": human_prompt,
-        }
-        if args.include_system:
-            item["system_prompt"] = _pick_system_prompt(row)
-        if args.include_messages:
-            messages = _build_messages(row)
-            item["messages"] = json.dumps(messages, ensure_ascii=False) if messages is not None else None
-        metadata = row.get("metadata") if isinstance(row.get("metadata"), dict) else None
-        if args.include_metadata:
-            item["metadata"] = json.dumps(metadata, ensure_ascii=False) if metadata is not None else None
-        if metadata_keys:
-            for key in metadata_keys:
-                item[key] = metadata.get(key) if isinstance(metadata, dict) else None
-        out_rows.append(item)
-
-    out_path = Path(args.out_path)
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    fieldnames: list[str] = []
-    for row in out_rows:
-        for key in row.keys():
-            if key not in fieldnames:
-                fieldnames.append(key)
-    with out_path.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerows(out_rows)
-    print(f"Wrote {len(out_rows)} prompts to {out_path}")
+    count = extract_human_prompts_csv_step(
+        in_path=args.in_path,
+        out_path=args.out_path,
+        include_system=bool(args.include_system),
+        include_metadata=bool(args.include_metadata),
+        include_messages=bool(args.include_messages),
+        metadata_keys=metadata_keys,
+    )
+    print(f"Wrote {count} prompts to {args.out_path}")
 
 
-if __name__ == "__main__":
-    main()

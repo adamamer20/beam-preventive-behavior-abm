@@ -13,11 +13,8 @@ canonical `_runs/` layout, with a migration log.
 
 from __future__ import annotations
 
-import argparse
 import json
-import os
 import shutil
-import sys
 from datetime import UTC, datetime
 from functools import lru_cache
 from pathlib import Path
@@ -25,6 +22,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from beam_abm.cli import parser_compat as cli
 from beam_abm.evaluation.choice._canonicalize_ids import normalize_model_slug
 from beam_abm.evaluation.choice.perturbed_ingest import (
     ingest_prompt_tournament_root_to_runs,
@@ -33,6 +31,10 @@ from beam_abm.evaluation.choice.perturbed_ingest import (
 )
 from beam_abm.evaluation.choice.perturbed_rebuild import rebuild_canonical_from_runs
 from beam_abm.evaluation.choice.perturbed_summary import write_global_summary
+from beam_abm.evaluation.common.apply_calibration_to_ice import apply_calibration_to_ice_step
+from beam_abm.evaluation.common.compute_alignment import compute_alignment_step
+from beam_abm.evaluation.common.compute_block_alignment import compute_block_alignment_step
+from beam_abm.evaluation.common.compute_ice_from_samples import compute_ice_step
 from beam_abm.evaluation.common.metrics import gini_alignment, spearman_alignment
 from beam_abm.evaluation.utils.alignment_utils import summarize_alignment_rows
 
@@ -108,8 +110,6 @@ def _compute_block_alignment(
     Returns scalar metrics suitable for attaching to summary_metrics.
     """
 
-    from beam_abm.evaluation.common.compute_block_alignment import main as block_main
-
     try:
         llm_df = pd.read_csv(llm_ice, usecols=["target"])  # type: ignore[arg-type]
     except (OSError, ValueError, pd.errors.ParserError):
@@ -140,26 +140,16 @@ def _compute_block_alignment(
 
     block_out = status_dir / ("_block_alignment.csv" if ref == "linear" else f"_block_alignment__ref_{ref}.csv")
 
-    saved = list(sys.argv)
     try:
-        sys.argv = [
-            sys.argv[0],
-            "--ref-ice",
-            str(ref_ice),
-            "--llm-ice",
-            str(llm_ice),
-            "--block-map",
-            str(block_map_path),
-            "--topk",
-            str(int(topk)),
-            "--out",
-            str(block_out),
-        ]
-        block_main()
-    except (SystemExit, ValueError):
+        compute_block_alignment_step(
+            ref_ice=ref_ice,
+            llm_ice=llm_ice,
+            block_map=block_map_path,
+            topk=int(topk),
+            out=block_out,
+        )
+    except ValueError:
         return {}
-    finally:
-        sys.argv = saved
 
     try:
         block_df = pd.read_csv(block_out) if block_out.exists() else pd.DataFrame([])
@@ -672,8 +662,6 @@ def _iter_uncalibrated_leaf_status_dirs(root: Path) -> list[Path]:
 
 
 def _rebuild_ice(*, status_dir: Path) -> None:
-    from beam_abm.evaluation.common.compute_ice_from_samples import main as ice_main
-
     samples_path = status_dir / "samples.jsonl"
     if not samples_path.exists():
         return
@@ -681,23 +669,12 @@ def _rebuild_ice(*, status_dir: Path) -> None:
     out_path = status_dir / "ice_llm.csv"
     summary_out = status_dir / "_ice_noncompliance.csv"
 
-    saved = list(sys.argv)
-    try:
-        sys.argv = [
-            sys.argv[0],
-            "--in",
-            str(samples_path),
-            "--out",
-            str(out_path),
-            "--summary-out",
-            str(summary_out),
-        ]
-        # Ensure paired-profile order handling is stable for this codebase.
-        # (This matches the runner's behavior when enabled.)
-        sys.argv.append("--paired-profile-swap-on-b-then-a")
-        ice_main()
-    finally:
-        sys.argv = saved
+    compute_ice_step(
+        in_path=samples_path,
+        out_path=out_path,
+        summary_out=summary_out,
+        paired_profile_swap_on_b_then_a=True,
+    )
 
 
 def _rebuild_alignment(
@@ -711,8 +688,6 @@ def _rebuild_alignment(
     use_model_ref_for_linear: bool,
     ref_model_by_outcome: dict[str, str],
 ) -> None:
-    from beam_abm.evaluation.common.compute_alignment import main as align_main
-
     ice_path = status_dir / "ice_llm.csv"
     if not ice_path.exists():
         return
@@ -750,22 +725,12 @@ def _rebuild_alignment(
                 summary.to_csv(summary_out, index=False)
             continue
 
-        saved = list(sys.argv)
-        try:
-            sys.argv = [
-                sys.argv[0],
-                "--ref",
-                str(ref_ice),
-                "--llm",
-                str(ice_path),
-                "--out",
-                str(metrics_out),
-                "--order-out",
-                str(order_out),
-            ]
-            align_main()
-        finally:
-            sys.argv = saved
+        compute_alignment_step(
+            ref=ref_ice,
+            llm=ice_path,
+            out=metrics_out,
+            order_out=order_out,
+        )
 
         # Summarize alignment into the canonical summary_metrics.csv.
         try:
@@ -918,8 +883,6 @@ def _rerun_calibration_from_unperturbed(
     use_model_ref_for_linear: bool,
     ref_model_by_outcome: dict[str, str],
 ) -> None:
-    from beam_abm.evaluation.common.apply_calibration_to_ice import main as apply_calibration_step
-
     uncal_leaves = _iter_uncalibrated_leaf_status_dirs(output_root)
     print(f"Found {len(uncal_leaves)} uncalibrated _runs leaves")
 
@@ -978,23 +941,15 @@ def _rerun_calibration_from_unperturbed(
         if src_row.exists() and (force or not (cal_dir / "row_level.csv").exists()):
             _copy_row_level_with_status(src=src_row, dst=cal_dir / "row_level.csv", calibration_status="calibrated")
 
-        saved = list(sys.argv)
         try:
-            sys.argv = [
-                sys.argv[0],
-                "--llm-ice",
-                str(ice_in),
-                "--calibration",
-                str(cal_file),
-                "--out",
-                str(ice_out),
-            ]
-            apply_calibration_step()
-        except SystemExit:
+            apply_calibration_to_ice_step(
+                llm_ice=ice_in,
+                calibration=cal_file,
+                out=ice_out,
+            )
+        except ValueError:
             # Treat CLI failures as a skip; do not stop the rebuild.
             continue
-        finally:
-            sys.argv = saved
 
         # Recompute alignment summaries for the calibrated leaf.
         _rebuild_alignment(
@@ -1009,8 +964,8 @@ def _rerun_calibration_from_unperturbed(
         )
 
 
-def main(argv: list[str] | None = None) -> None:
-    parser = argparse.ArgumentParser()
+def run_cli(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument(
         "--output-root",
         default="evaluation/output/choice_validation/perturbed",
@@ -1102,7 +1057,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--ref-models", default="linear", help="Comma-separated reference models (default: linear).")
     parser.add_argument(
         "--use-model-ref-for-linear",
-        action=argparse.BooleanOptionalAction,
+        action=cli.BooleanOptionalAction,
         default=True,
         help=(
             "When aligning against ref_model=linear, prefer per-outcome model_ref ICE "
@@ -1598,7 +1553,3 @@ def main(argv: list[str] | None = None) -> None:
             )
 
 
-if __name__ == "__main__":
-    # Respect the project root when invoked from elsewhere.
-    os.environ.setdefault("PROJECT_ROOT", str(Path(__file__).resolve().parents[4]))
-    main()

@@ -7,7 +7,6 @@ still contains `response_text`.
 
 from __future__ import annotations
 
-import argparse
 import csv
 import hashlib
 import json
@@ -20,6 +19,7 @@ from typing import Any, Final
 
 import pandas as pd
 
+from beam_abm.cli import parser_compat as cli
 from beam_abm.evaluation.utils.regex_fallback import regex_extract_prediction
 from beam_abm.llm.schemas.predictions import (
     extract_paired_scalar_predictions,
@@ -216,10 +216,131 @@ def _recover_samples_for_row(
     return recovered
 
 
-def main() -> None:
+def repair_samples_from_conversations_step(
+    *,
+    samples: str | Path,
+    conversations: str | Path,
+    out: str | Path,
+    strategies: str = "data_only,paired_profile",
+    chunksize: int = 200_000,
+    max_samples_per_record: int | None = None,
+    prefer_validation_success: bool = False,
+    force: bool = False,
+    report_out: str | Path | None = None,
+) -> tuple[int, int]:
     _configure_logging()
 
-    parser = argparse.ArgumentParser()
+    samples_path = Path(samples)
+    conv_path = Path(conversations)
+    out_path = Path(out)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+
+    strategy_set = {s.strip() for s in str(strategies).split(",") if s.strip()}
+    if not strategy_set:
+        raise ValueError("No strategies provided")
+
+    LOGGER.info("Scanning samples JSONL to find rows needing repair...")
+    needed: set[PromptKey] = set()
+    prompt_by_pair: dict[tuple[str, str], dict[str, str]] = defaultdict(dict)
+    total_rows = 0
+    repair_rows = 0
+    for row in _iter_jsonl(samples_path):
+        total_rows += 1
+        if _needs_repair(row, strategies=strategy_set, force=bool(force)):
+            key = _row_log_key(row)
+            if key is not None:
+                needed.add(key)
+                pair = (key.record_id, key.prompt_strategy)
+                human_prompt = row.get("human_prompt")
+                if isinstance(human_prompt, str) and human_prompt.strip():
+                    prompt_by_pair[pair][key.prompt_hash] = human_prompt
+                repair_rows += 1
+    LOGGER.info("Found %s/%s rows needing repair across strategies=%s", repair_rows, total_rows, sorted(strategy_set))
+
+    LOGGER.info("Indexing conversation CSV for needed rows (streaming)...")
+    conv_index = _build_conversation_index(
+        conversations_csv=conv_path,
+        needed_keys=needed,
+        prompt_by_pair=dict(prompt_by_pair),
+        chunksize=int(chunksize),
+        prefer_validation_success=bool(prefer_validation_success),
+    )
+    LOGGER.info("Conversation index size: %s", len(conv_index))
+
+    repaired_count = 0
+    still_missing = 0
+    report_rows: list[dict[str, Any]] = []
+
+    LOGGER.info("Writing repaired JSONL...")
+    with out_path.open("w", encoding="utf-8") as out_f:
+        for row in _iter_jsonl(samples_path):
+            if not _needs_repair(row, strategies=strategy_set, force=bool(force)):
+                out_f.write(json.dumps(row, ensure_ascii=False) + "\n")
+                continue
+
+            key = _row_log_key(row)
+            if key is None or key not in conv_index:
+                still_missing += 1
+                report_rows.append(
+                    {
+                        "id": row.get("id"),
+                        "strategy": row.get("strategy"),
+                        "status": "missing_conversation_rows",
+                        "recovered_samples": 0,
+                    }
+                )
+                out_f.write(json.dumps(row, ensure_ascii=False) + "\n")
+                continue
+
+            strategy = str(row.get("strategy"))
+            recovered = _recover_samples_for_row(
+                row=row,
+                bucket=conv_index[key],
+                strategy=strategy,
+                max_samples=max_samples_per_record,
+            )
+            if recovered:
+                row = dict(row)
+                row["samples"] = recovered
+                repaired_count += 1
+                report_rows.append(
+                    {
+                        "id": row.get("id"),
+                        "strategy": strategy,
+                        "status": "repaired",
+                        "recovered_samples": len(recovered),
+                    }
+                )
+            else:
+                still_missing += 1
+                report_rows.append(
+                    {
+                        "id": row.get("id"),
+                        "strategy": strategy,
+                        "status": "conversation_rows_but_no_parse",
+                        "recovered_samples": 0,
+                    }
+                )
+
+            out_f.write(json.dumps(row, ensure_ascii=False) + "\n")
+
+    LOGGER.info("Repaired rows: %s", repaired_count)
+    LOGGER.info("Still missing after repair: %s", still_missing)
+
+    if report_out:
+        report_path = Path(report_out)
+        report_path.parent.mkdir(parents=True, exist_ok=True)
+        with report_path.open("w", encoding="utf-8", newline="") as f:
+            writer = csv.DictWriter(f, fieldnames=["id", "strategy", "status", "recovered_samples"])
+            writer.writeheader()
+            for r in report_rows:
+                writer.writerow(r)
+
+    return repaired_count, still_missing
+
+
+def run_cli(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument("--samples", required=True, help="Input samples JSONL (e.g. samples__direct.jsonl)")
     parser.add_argument("--conversations", required=True, help="Conversation CSV (conversations_*.csv)")
     parser.add_argument("--out", required=True, help="Output repaired JSONL")
@@ -255,114 +376,17 @@ def main() -> None:
         default=None,
         help="Optional CSV report of what was repaired",
     )
-    args = parser.parse_args()
-
-    samples_path = Path(args.samples)
-    conv_path = Path(args.conversations)
-    out_path = Path(args.out)
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-
-    strategies = {s.strip() for s in str(args.strategies).split(",") if s.strip()}
-    if not strategies:
-        raise ValueError("No strategies provided")
-
-    LOGGER.info("Scanning samples JSONL to find rows needing repair...")
-    needed: set[PromptKey] = set()
-    prompt_by_pair: dict[tuple[str, str], dict[str, str]] = defaultdict(dict)
-    total_rows = 0
-    repair_rows = 0
-    for row in _iter_jsonl(samples_path):
-        total_rows += 1
-        if _needs_repair(row, strategies=strategies, force=bool(args.force)):
-            key = _row_log_key(row)
-            if key is not None:
-                needed.add(key)
-                pair = (key.record_id, key.prompt_strategy)
-                human_prompt = row.get("human_prompt")
-                if isinstance(human_prompt, str) and human_prompt.strip():
-                    prompt_by_pair[pair][key.prompt_hash] = human_prompt
-                repair_rows += 1
-    LOGGER.info("Found %s/%s rows needing repair across strategies=%s", repair_rows, total_rows, sorted(strategies))
-
-    LOGGER.info("Indexing conversation CSV for needed rows (streaming)...")
-    conv_index = _build_conversation_index(
-        conversations_csv=conv_path,
-        needed_keys=needed,
-        prompt_by_pair=dict(prompt_by_pair),
+    args = parser.parse_args(argv)
+    repair_samples_from_conversations_step(
+        samples=args.samples,
+        conversations=args.conversations,
+        out=args.out,
+        strategies=args.strategies,
         chunksize=int(args.chunksize),
+        max_samples_per_record=args.max_samples_per_record,
         prefer_validation_success=bool(args.prefer_validation_success),
+        force=bool(args.force),
+        report_out=args.report_out,
     )
-    LOGGER.info("Conversation index size: %s", len(conv_index))
-
-    repaired_count = 0
-    still_missing = 0
-    report_rows: list[dict[str, Any]] = []
-
-    LOGGER.info("Writing repaired JSONL...")
-    with out_path.open("w", encoding="utf-8") as out_f:
-        for row in _iter_jsonl(samples_path):
-            if not _needs_repair(row, strategies=strategies, force=bool(args.force)):
-                out_f.write(json.dumps(row, ensure_ascii=False) + "\n")
-                continue
-
-            key = _row_log_key(row)
-            if key is None or key not in conv_index:
-                still_missing += 1
-                report_rows.append(
-                    {
-                        "id": row.get("id"),
-                        "strategy": row.get("strategy"),
-                        "status": "missing_conversation_rows",
-                        "recovered_samples": 0,
-                    }
-                )
-                out_f.write(json.dumps(row, ensure_ascii=False) + "\n")
-                continue
-
-            strategy = str(row.get("strategy"))
-            recovered = _recover_samples_for_row(
-                row=row,
-                bucket=conv_index[key],
-                strategy=strategy,
-                max_samples=args.max_samples_per_record,
-            )
-            if recovered:
-                row = dict(row)
-                row["samples"] = recovered
-                repaired_count += 1
-                report_rows.append(
-                    {
-                        "id": row.get("id"),
-                        "strategy": strategy,
-                        "status": "repaired",
-                        "recovered_samples": len(recovered),
-                    }
-                )
-            else:
-                still_missing += 1
-                report_rows.append(
-                    {
-                        "id": row.get("id"),
-                        "strategy": strategy,
-                        "status": "conversation_rows_but_no_parse",
-                        "recovered_samples": 0,
-                    }
-                )
-
-            out_f.write(json.dumps(row, ensure_ascii=False) + "\n")
-
-    LOGGER.info("Repaired rows: %s", repaired_count)
-    LOGGER.info("Still missing after repair: %s", still_missing)
-
-    if args.report_out:
-        report_path = Path(args.report_out)
-        report_path.parent.mkdir(parents=True, exist_ok=True)
-        with report_path.open("w", encoding="utf-8", newline="") as f:
-            writer = csv.DictWriter(f, fieldnames=["id", "strategy", "status", "recovered_samples"])
-            writer.writeheader()
-            for r in report_rows:
-                writer.writerow(r)
 
 
-if __name__ == "__main__":
-    main()

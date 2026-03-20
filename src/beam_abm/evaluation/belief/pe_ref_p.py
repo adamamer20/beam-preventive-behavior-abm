@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-import argparse
 import json
 from pathlib import Path
 from typing import Any
 
+from beam_abm.cli import parser_compat as cli
 from beam_abm.evaluation.belief.reference_model_loading import default_ref_state_models
 from beam_abm.evaluation.belief.reference_pe_table import compute_pe_ref_p_table
 from beam_abm.evaluation.utils.jsonl import read_frame as _read_rows
@@ -22,8 +22,8 @@ def _parse_ref_map(spec: dict[str, Any]) -> dict[str, str]:
     return default_ref_state_models()
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
+def run_belief_pe_ref_p(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument("--data", required=True, help="Baseline profiles (csv/parquet/jsonl).")
     parser.add_argument("--spec", required=True, help="Belief-update spec JSON.")
     parser.add_argument("--out", required=True, help="Output PE_ref_P rows (parquet/csv).")
@@ -36,7 +36,7 @@ def main() -> None:
     parser.add_argument("--epsilon-ref", type=float, default=0.03)
     parser.add_argument("--top-n-primary", type=int, default=1)
     parser.add_argument("--strict-missing-models", action="store_true")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     data_df = _read_rows(Path(args.data), skip_invalid_jsonl=True)
     spec = json.loads(Path(args.spec).read_text(encoding="utf-8"))
@@ -100,5 +100,3 @@ def main() -> None:
     meta_path.write_text(json.dumps(meta_payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
-if __name__ == "__main__":
-    main()

@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import argparse
 import json
 import math
 from pathlib import Path
@@ -11,6 +10,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from beam_abm.cli import parser_compat as cli
 from beam_abm.evaluation.artifacts import utc_timestamp_iso
 from beam_abm.evaluation.belief.reference_summary_metrics import compute_choice_like_summary
 from beam_abm.evaluation.common.labels import load_possible_numeric_bounds_from_clean_spec
@@ -296,8 +296,8 @@ def _ensure_dir(path: Path) -> None:
     path.mkdir(parents=True, exist_ok=True)
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
+def run_cli(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument("--in", dest="in_path", required=True, help="Input JSONL from run_llm_sampling.py")
     parser.add_argument("--spec", dest="spec_path", required=True, help="Belief update targets JSON")
     parser.add_argument("--outdir", dest="outdir", required=True, help="Output directory root")
@@ -317,7 +317,7 @@ def main() -> None:
     parser.add_argument("--alpha-secondary", type=float, default=0.33)
     parser.add_argument("--top-n-primary", type=int, default=1)
     parser.add_argument("--denom", type=float, default=1.0, help="NMAE denominator for choice-style summaries.")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     spec = json.loads(Path(args.spec_path).read_text(encoding="utf-8"))
     mutable_state = [str(x) for x in spec.get("mutable_state", []) if str(x).strip()]
@@ -1014,5 +1014,4 @@ def main() -> None:
     _write_json(outdir / "overall_summary.json", {"strategies": strategy_summary})
 
 
-if __name__ == "__main__":
-    main()
+

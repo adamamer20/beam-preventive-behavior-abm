@@ -12,50 +12,13 @@ The goal is to standardize perturbed outputs to match the unperturbed philosophy
 
 from __future__ import annotations
 
-import argparse
-import importlib.util
-import inspect
 import os
 import shlex
-import sys
 from pathlib import Path
 
-
-def _load_local_main(script_path: Path):
-    spec = importlib.util.spec_from_file_location("_perturbed_prompt_tournament", script_path)
-    if spec is None or spec.loader is None:
-        raise ImportError(f"Unable to load module from {script_path}")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    if not hasattr(module, "main"):
-        raise ImportError(f"No main() found in {script_path}")
-    return module.main
-
-
-def _call_main(main_func, argv_list: list[str]) -> None:
-    """Invoke a script-style main() with an argv list.
-
-    Some of our phase runners expose `main()` that reads `sys.argv` directly
-    (zero-arg signature). Others accept an `argv` parameter.
-    """
-
-    try:
-        sig = inspect.signature(main_func)
-        params = list(sig.parameters.values())
-    except (TypeError, ValueError):
-        params = []
-
-    if not params:
-        saved_argv = list(sys.argv)
-        try:
-            sys.argv = [saved_argv[0], *argv_list]
-            main_func()
-        finally:
-            sys.argv = saved_argv
-        return
-
-    # Fallback: pass argv list as the first argument.
-    main_func(argv_list)
+from beam_abm.cli import parser_compat as cli
+from beam_abm.evaluation.choice.prompt_tournament.run_all import run_cli as run_prompt_tournament
+from beam_abm.evaluation.choice.rebuild_perturbed_metrics import run_cli as rebuild_perturbed_metrics
 
 
 def _ensure_flag_in_args_str(args_str: str | None, flag: str, value: str) -> str:
@@ -72,8 +35,8 @@ def _ensure_flag_in_args_str(args_str: str | None, flag: str, value: str) -> str
     return shlex.join(tokens)
 
 
-def main(argv: list[str] | None = None) -> None:
-    parser = argparse.ArgumentParser()
+def run_choice_perturbed(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument(
         "--output-root",
         default="evaluation/output/choice_validation/perturbed",
@@ -215,10 +178,6 @@ def main(argv: list[str] | None = None) -> None:
         if sample_tokens:
             args.sample_args = shlex.join(sample_tokens)
 
-    # 1) Run the prompt-tournament runner into staging.
-    runner_path = Path(__file__).resolve().parent / "prompt_tournament" / "run_all.py"
-    runner_main = _load_local_main(runner_path)
-
     saved_env = dict(os.environ)
     try:
         os.environ["PROMPT_TOURNAMENT_OUTPUT_ROOT"] = str(staging_root)
@@ -275,20 +234,13 @@ def main(argv: list[str] | None = None) -> None:
             if args.skip_pe_calibration:
                 prompt_tournament_argv.append("--skip-pe-calibration")
 
-            _call_main(runner_main, prompt_tournament_argv)
+            run_prompt_tournament(prompt_tournament_argv)
     finally:
         os.environ.clear()
         os.environ.update(saved_env)
 
     # 2) Ingest into canonical `_runs/` and 3) rebuild canonical leaves.
-    rebuild_path = Path(__file__).resolve().parent / "rebuild_perturbed_metrics.py"
-    spec = importlib.util.spec_from_file_location("_choice_validation_perturbed_rebuild", rebuild_path)
-    if spec is None or spec.loader is None:
-        raise ImportError(f"Unable to load rebuild script from {rebuild_path}")
-    rebuild_mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(rebuild_mod)
-
-    rebuild_mod.main(
+    rebuild_perturbed_metrics(
         [
             "--output-root",
             str(output_root),
@@ -304,9 +256,3 @@ def main(argv: list[str] | None = None) -> None:
             "--rerun-calibration",
         ]
     )
-
-
-if __name__ == "__main__":
-    # Ensure code that reads PROJECT_ROOT (git hash, etc.) behaves consistently.
-    os.environ.setdefault("PROJECT_ROOT", str(Path(__file__).resolve().parents[4]))
-    main()

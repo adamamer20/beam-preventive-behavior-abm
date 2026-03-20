@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-import argparse
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
+from beam_abm.cli import parser_compat as cli
 from beam_abm.evaluation.common.calibration import BinaryPlattCalibrator, LinearCalibrator, load_calibrators
 
 
@@ -91,8 +91,8 @@ def _apply_calibration_to_df(
     return df
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
+def run_cli(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument("--in", dest="in_path", required=True, help="Predictions CSV or directory.")
     parser.add_argument("--calibration", required=True, help="Calibration JSON from calibrate_llm_predictions.py")
     parser.add_argument("--out", dest="out_path", required=True, help="Output CSV or directory")
@@ -101,7 +101,7 @@ def main() -> None:
     parser.add_argument("--out-col", default="y_pred_cal")
     parser.add_argument("--country-col", default="country")
     parser.add_argument("--keep-raw", action="store_true")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     in_path = Path(args.in_path)
     out_path = Path(args.out_path)
@@ -131,5 +131,4 @@ def main() -> None:
         df.to_csv(dest, index=False)
 
 
-if __name__ == "__main__":
-    main()
+

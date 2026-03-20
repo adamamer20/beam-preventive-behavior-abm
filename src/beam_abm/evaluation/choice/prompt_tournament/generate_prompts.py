@@ -16,7 +16,6 @@ Output JSONL:
 
 from __future__ import annotations
 
-import argparse
 import json
 import math
 import re
@@ -24,6 +23,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from beam_abm.cli import parser_compat as cli
 from beam_abm.empirical.io import parse_list_arg
 from beam_abm.empirical.missingness import SPECIAL_STRUCTURAL_PREFIXES
 from beam_abm.empirical.plan_io import extract_predictors_from_model_plan
@@ -110,14 +110,14 @@ def _fmt_num(x: float) -> str:
     return f"{x:.3f}".rstrip("0").rstrip(".")
 
 
-def main() -> None:
-    task_parser = argparse.ArgumentParser(add_help=False)
+def run_cli(argv: list[str] | None = None) -> None:
+    task_parser = cli.ArgumentParser(add_help=False)
     task_parser.add_argument("--mv-task", choices=["choice", "belief_update"], default="choice")
     task_args, remaining_argv = task_parser.parse_known_args()
     if task_args.mv_task == "belief_update":
         from beam_abm.evaluation.belief.prompt_generation import generate_belief_prompts
 
-        belief_parser = argparse.ArgumentParser()
+        belief_parser = cli.ArgumentParser()
         belief_parser.add_argument("--data", required=True, help="Input CSV/Parquet/JSONL with baseline state rows.")
         belief_parser.add_argument(
             "--pe-ref-p",
@@ -178,7 +178,7 @@ def main() -> None:
         )
         return
 
-    parser = argparse.ArgumentParser()
+    parser = cli.ArgumentParser()
     parser.add_argument("--in", dest="in_path", default=None)
     parser.add_argument(
         "--in-dir",
@@ -2534,5 +2534,4 @@ def main() -> None:
     _write_jsonl(Path(args.out_path), prompts)
 
 
-if __name__ == "__main__":
-    main()
+

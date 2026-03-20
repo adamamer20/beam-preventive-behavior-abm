@@ -19,17 +19,21 @@ evaluation/output/belief_update_validation/
 
 from __future__ import annotations
 
-import argparse
-import importlib.util
-import inspect
 import json
-import sys
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
+from beam_abm.cli import parser_compat as cli
 from beam_abm.evaluation.artifacts import utc_timestamp
+from beam_abm.evaluation.belief.rebuild_canonical_workflow import run_cli as rebuild_canonical_workflow
+from beam_abm.evaluation.belief.rebuild_metrics_workflow import run_cli as rebuild_metrics_workflow
+from beam_abm.evaluation.belief.rebuild_unperturbed_metrics_workflow import (
+    run_cli as rebuild_unperturbed_metrics_workflow,
+)
 from beam_abm.evaluation.choice._canonicalize_ids import normalize_model_slug
+from beam_abm.evaluation.choice.prompt_tournament.generate_prompts import run_cli as generate_prompts
+from beam_abm.evaluation.common.llm_sampling import run_cli as run_llm_sampling
 from beam_abm.evaluation.utils.jsonl import read_jsonl as _read_jsonl
 from beam_abm.evaluation.utils.jsonl import write_jsonl as _write_jsonl
 
@@ -69,41 +73,6 @@ def _sample_count(row: dict[str, Any]) -> int:
     return len(samples)
 
 
-def _load_local_main(script_path: Path):
-    spec = importlib.util.spec_from_file_location(script_path.stem, script_path)
-    if spec is None or spec.loader is None:
-        raise ImportError(f"Unable to load module from {script_path}")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    if not hasattr(module, "main"):
-        raise ImportError(f"No main() found in {script_path}")
-    return module.main
-
-
-def _call_main(main_func, argv_list: list[str]) -> None:
-    """Invoke a script-style main() with an argv list.
-
-    Some of our scripts accept `main(argv)` while others read `sys.argv`.
-    """
-
-    try:
-        sig = inspect.signature(main_func)
-        params = list(sig.parameters.values())
-    except (TypeError, ValueError):
-        params = []
-
-    if params:
-        main_func(argv_list)
-        return
-
-    saved = list(sys.argv)
-    try:
-        sys.argv = [saved[0], *argv_list]
-        main_func()
-    finally:
-        sys.argv = saved
-
-
 def _run_sampling(
     *,
     models_csv: str,
@@ -121,8 +90,6 @@ def _run_sampling(
     run_type: str,
     skip_existing_samples: bool,
 ) -> None:
-    from beam_abm.evaluation.common.llm_sampling import main as sample_main
-
     prompts_rows = _read_jsonl(prompts_path)
 
     for model in _parse_csv_list(models_csv):
@@ -189,12 +156,7 @@ def _run_sampling(
             else:
                 sampler_args.extend(["--model-options", json.dumps({"max-model-len": int(max_model_len)})])
 
-            saved = list(sys.argv)
-            try:
-                sys.argv = [sys.argv[0], *sampler_args]
-                sample_main()
-            finally:
-                sys.argv = saved
+            run_llm_sampling(sampler_args)
 
         if not bool(skip_existing_samples) or not _jsonl_has_rows(samples_path):
             _run_sampler(in_path=prompts_path, out_path=samples_path, k_for_run=int(k))
@@ -256,8 +218,8 @@ def _run_sampling(
         _write_jsonl(samples_path, merged_rows)
 
 
-def main(argv: list[str] | None = None) -> None:
-    parser = argparse.ArgumentParser()
+def run_belief_perturbed(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument(
         "--output-root",
         default="evaluation/output/belief_update_validation",
@@ -384,9 +346,7 @@ def main(argv: list[str] | None = None) -> None:
         spec_dst.write_text(spec_src.read_text(encoding="utf-8"), encoding="utf-8")
 
     # 1) Generate prompts.
-    gen_path = Path(__file__).resolve().parents[1] / "choice" / "prompt_tournament" / "generate_prompts.py"
     if not args.skip_generate:
-        gen_main = _load_local_main(gen_path)
         gen_argv = [
             "--mv-task",
             "belief_update",
@@ -429,7 +389,7 @@ def main(argv: list[str] | None = None) -> None:
             gen_argv.extend(["--keep-anchors", str(args.keep_anchors)])
         if int(args.n_per_anchor_country) > 0:
             gen_argv.extend(["--n-per-anchor-country", str(int(args.n_per_anchor_country))])
-        _call_main(gen_main, gen_argv)
+        generate_prompts(gen_argv)
 
     # 2) Sample per model.
     if not args.skip_sample:
@@ -451,14 +411,10 @@ def main(argv: list[str] | None = None) -> None:
         )
 
     # 3) Rebuild canonical.
-    canonical_path = Path(__file__).resolve().parent / "rebuild_canonical_workflow.py"
-    canonical_main = _load_local_main(canonical_path)
-    _call_main(canonical_main, ["--output-root", str(output_root)])
+    rebuild_canonical_workflow(["--output-root", str(output_root)])
 
     # 4) Rebuild metrics.
     if not args.skip_metrics:
-        metrics_path = Path(__file__).resolve().parent / "rebuild_metrics_workflow.py"
-        metrics_main = _load_local_main(metrics_path)
         metrics_argv = [
             "--output-root",
             str(output_root),
@@ -487,7 +443,7 @@ def main(argv: list[str] | None = None) -> None:
             metrics_argv.extend(["--eps-map", str(args.eps_map)])
         if args.moderation_by_anchor:
             metrics_argv.append("--moderation-by-anchor")
-        _call_main(metrics_main, metrics_argv)
+        rebuild_metrics_workflow(metrics_argv)
 
     # 5) Optional unperturbed belief pipeline.
     if args.with_unperturbed:
@@ -506,7 +462,6 @@ def main(argv: list[str] | None = None) -> None:
             unpert_spec_dst.write_text(spec_src.read_text(encoding="utf-8"), encoding="utf-8")
 
         if not args.skip_generate:
-            unpert_gen_main = _load_local_main(gen_path)
             unpert_gen_argv = [
                 "--mv-task",
                 "belief_update",
@@ -549,7 +504,7 @@ def main(argv: list[str] | None = None) -> None:
                 unpert_gen_argv.extend(["--keep-anchors", str(args.keep_anchors)])
             if int(args.n_per_anchor_country) > 0:
                 unpert_gen_argv.extend(["--n-per-anchor-country", str(int(args.n_per_anchor_country))])
-            _call_main(unpert_gen_main, unpert_gen_argv)
+            generate_prompts(unpert_gen_argv)
 
         if not args.skip_sample:
             _run_sampling(
@@ -569,15 +524,10 @@ def main(argv: list[str] | None = None) -> None:
                 skip_existing_samples=bool(args.skip_existing_samples),
             )
 
-        unpert_canonical_path = Path(__file__).resolve().parent / "rebuild_canonical_workflow.py"
-        unpert_canonical_main = _load_local_main(unpert_canonical_path)
-        _call_main(unpert_canonical_main, ["--output-root", str(unpert_output_root)])
+        rebuild_canonical_workflow(["--output-root", str(unpert_output_root)])
 
         if not args.skip_metrics:
-            unpert_metrics_path = Path(__file__).resolve().parent / "rebuild_unperturbed_metrics_workflow.py"
-            unpert_metrics_main = _load_local_main(unpert_metrics_path)
-            _call_main(
-                unpert_metrics_main,
+            rebuild_unperturbed_metrics_workflow(
                 [
                     "--output-root",
                     str(unpert_output_root),
@@ -585,7 +535,3 @@ def main(argv: list[str] | None = None) -> None:
                     str(spec_src),
                 ],
             )
-
-
-if __name__ == "__main__":
-    main()

@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import argparse
 import json
 import os
 import shutil
@@ -12,6 +11,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from beam_abm.cli import parser_compat as cli
 from beam_abm.common import get_logger
 from beam_abm.evaluation.artifacts import (
     PromptTournamentOutputPaths,
@@ -352,8 +352,8 @@ def _summarize_alignment(path: Path) -> dict[str, object]:
     return summary.iloc[0].to_dict()
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
+def run_cli(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument(
         "--output-root",
         default=os.getenv("PROMPT_TOURNAMENT_OUTPUT_ROOT", "evaluation/output/prompt_tournament"),
@@ -370,7 +370,7 @@ def main() -> None:
     parser.add_argument("--run-tag", default="temp_sweep", help="Base tag for sweep outputs.")
     parser.add_argument(
         "--timestamp-output",
-        action=argparse.BooleanOptionalAction,
+        action=cli.BooleanOptionalAction,
         default=True,
         help="Append UTC timestamp to run tag.",
     )
@@ -397,7 +397,7 @@ def main() -> None:
         help="Disable unique-id sampling and keep all prompt rows.",
     )
     parser.add_argument("--ids-seed", type=int, default=0, help="Seed for unique-id sampling.")
-    parser.add_argument("--shuffle", action=argparse.BooleanOptionalAction, default=True, help="Shuffle prompts.")
+    parser.add_argument("--shuffle", action=cli.BooleanOptionalAction, default=True, help="Shuffle prompts.")
     parser.add_argument(
         "--n-ids-per-target",
         type=int,
@@ -413,7 +413,7 @@ def main() -> None:
     )
     parser.add_argument(
         "--dedup-levers",
-        action=argparse.BooleanOptionalAction,
+        action=cli.BooleanOptionalAction,
         default=True,
         help="Enable multi-outcome deduplication in prompt generation.",
     )
@@ -446,7 +446,7 @@ def main() -> None:
         help="Optional JSON for model options (overrides max-model-len).",
     )
     parser.add_argument("--resume", action="store_true", help="Skip steps if outputs exist.")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     outcomes = _parse_list_arg(args.keep_outcomes)
     targets = _parse_list_arg(args.keep_targets)
@@ -496,15 +496,16 @@ def main() -> None:
     prompts_full = sweep_dir / "prompts_full.jsonl"
     prompts_shared = sweep_dir / "prompts.jsonl"
 
-    from beam_abm.evaluation.choice.prompt_tournament import generate_prompts as generate_prompts_step
-    from beam_abm.evaluation.common.compute_alignment import main as align_step
-    from beam_abm.evaluation.common.compute_ice_from_samples import main as ice_step
-    from beam_abm.evaluation.common.llm_sampling import main as sample_step
+    from beam_abm.evaluation.choice.prompt_tournament import posthoc_tests as posthoc_step
+    from beam_abm.evaluation.choice.prompt_tournament.generate_prompts import run_cli as generate_prompts_step
+    from beam_abm.evaluation.common.compute_alignment import run_cli as align_step
+    from beam_abm.evaluation.common.compute_ice_from_samples import run_cli as ice_step
+    from beam_abm.evaluation.common.llm_sampling import run_cli as sample_step
 
     if not (config.resume and prompts_shared.exists()):
         logger.info("Generating prompts for sweep.")
         generate_args = _build_generate_args(config, prompts_full)
-        pt.run_step(generate_prompts_step.main, generate_args)
+        pt.run_step(generate_prompts_step, generate_args)
         if config.n_ids_per_target is not None:
             kept_by_target = _sample_paired_ids_per_target(
                 source=prompts_full,
@@ -527,8 +528,6 @@ def main() -> None:
 
     prompt_count = _count_jsonl_rows(prompts_shared)
     logger.info(f"Prompt count: {prompt_count}")
-
-    import posthoc_tests as posthoc_step
 
     summary_rows: list[dict[str, object]] = []
 
@@ -631,7 +630,7 @@ def main() -> None:
                 "--skip-midpoint",
                 "--skip-reliability",
             ]
-            pt.run_step(posthoc_step.main, posthoc_args)
+            pt.run_step(posthoc_step.run_cli, posthoc_args)
 
         determinism_path = base_dir / "posthoc" / "determinism_summary.csv"
         det_df = _load_determinism_summary(determinism_path)
@@ -669,5 +668,3 @@ def main() -> None:
         logger.info(f"Wrote sweep summary: {summary_path}")
 
 
-if __name__ == "__main__":
-    main()

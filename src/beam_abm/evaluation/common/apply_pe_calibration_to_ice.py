@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
-import argparse
 import json
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
+
+from beam_abm.cli import parser_compat as cli
 
 
 def _load_calibration(path: Path) -> dict:
@@ -46,22 +47,16 @@ def _dump_samples(values: list[float] | None) -> str | None:
     return json.dumps([float(v) for v in values])
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--llm-ice", required=True, help="Input LLM ICE CSV")
-    parser.add_argument("--calibration", required=True, help="Calibration JSON from calibrate_pe_gains.py")
-    parser.add_argument("--out", required=True, help="Output PE-calibrated ICE CSV")
-    parser.add_argument(
-        "--fallback-alpha",
-        type=float,
-        default=1.0,
-        help="Fallback alpha when no calibrator is available (default: 1.0)",
-    )
-    parser.add_argument("--keep-raw", action="store_true", help="Keep raw ICE columns with _raw suffix")
-    args = parser.parse_args()
-
-    llm = pd.read_csv(args.llm_ice)
-    payload = _load_calibration(Path(args.calibration))
+def apply_pe_calibration_to_ice_step(
+    *,
+    llm_ice: str | Path,
+    calibration: str | Path,
+    out: str | Path,
+    fallback_alpha: float = 1.0,
+    keep_raw: bool = False,
+) -> None:
+    llm = pd.read_csv(llm_ice)
+    payload = _load_calibration(Path(calibration))
 
     group_cols = [str(c) for c in payload.get("group_cols", [])]
     if not group_cols:
@@ -76,7 +71,7 @@ def main() -> None:
         if col not in llm.columns:
             raise KeyError(f"LLM ICE missing required column: {col}")
 
-    if args.keep_raw:
+    if keep_raw:
         for col in ice_cols:
             llm[f"{col}_raw"] = llm[col]
         for col in ["ice_low_samples", "ice_high_samples"]:
@@ -99,7 +94,7 @@ def main() -> None:
         key = tuple(str(r.get(col, "")) for col in group_cols)
         alpha = cal_map.get(key)
         if alpha is None or not np.isfinite(alpha):
-            return float(args.fallback_alpha)
+            return float(fallback_alpha)
         return float(alpha)
 
     for idx, row in llm.iterrows():
@@ -143,10 +138,30 @@ def main() -> None:
             adjusted = [mid + alpha * (v - mid) for v in samples]
             llm.at[idx, sample_col] = _dump_samples(adjusted)
 
-    out_path = Path(args.out)
+    out_path = Path(out)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     llm.to_csv(out_path, index=False)
 
 
-if __name__ == "__main__":
-    main()
+def run_cli(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
+    parser.add_argument("--llm-ice", required=True, help="Input LLM ICE CSV")
+    parser.add_argument("--calibration", required=True, help="Calibration JSON from calibrate_pe_gains.py")
+    parser.add_argument("--out", required=True, help="Output PE-calibrated ICE CSV")
+    parser.add_argument(
+        "--fallback-alpha",
+        type=float,
+        default=1.0,
+        help="Fallback alpha when no calibrator is available (default: 1.0)",
+    )
+    parser.add_argument("--keep-raw", action="store_true", help="Keep raw ICE columns with _raw suffix")
+    args = parser.parse_args(argv)
+    apply_pe_calibration_to_ice_step(
+        llm_ice=args.llm_ice,
+        calibration=args.calibration,
+        out=args.out,
+        fallback_alpha=float(args.fallback_alpha),
+        keep_raw=bool(args.keep_raw),
+    )
+
+

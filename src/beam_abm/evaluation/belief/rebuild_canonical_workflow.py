@@ -9,14 +9,14 @@ evaluation/output/belief_update_validation/
 
 from __future__ import annotations
 
-import argparse
 from pathlib import Path
 
+from beam_abm.cli import parser_compat as cli
 from beam_abm.evaluation.belief.canonicalize import rebuild_canonical_from_runs
 
 
-def main(argv: list[str] | None = None) -> None:
-    parser = argparse.ArgumentParser()
+def run_cli(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument(
         "--output-root",
         default="evaluation/output/belief_update_validation",
@@ -39,5 +39,4 @@ def main(argv: list[str] | None = None) -> None:
         )
 
 
-if __name__ == "__main__":
-    main()
+

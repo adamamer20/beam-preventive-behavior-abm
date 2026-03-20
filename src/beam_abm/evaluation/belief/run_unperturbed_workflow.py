@@ -2,15 +2,20 @@
 
 from __future__ import annotations
 
-import argparse
 from pathlib import Path
 
+from beam_abm.cli import parser_compat as cli
 from beam_abm.evaluation.artifacts import utc_timestamp
-from beam_abm.evaluation.belief.run_all_workflow import _call_main, _load_local_main, _run_sampling
+from beam_abm.evaluation.belief.rebuild_canonical_workflow import run_cli as rebuild_canonical_workflow
+from beam_abm.evaluation.belief.rebuild_unperturbed_metrics_workflow import (
+    run_cli as rebuild_unperturbed_metrics_workflow,
+)
+from beam_abm.evaluation.belief.run_all_workflow import _run_sampling
+from beam_abm.evaluation.choice.prompt_tournament.generate_prompts import run_cli as generate_prompts
 
 
-def main(argv: list[str] | None = None) -> None:
-    parser = argparse.ArgumentParser()
+def run_belief_unperturbed(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument(
         "--output-root",
         default="evaluation/output/belief_update_validation/unperturbed",
@@ -82,9 +87,7 @@ def main(argv: list[str] | None = None) -> None:
     if spec_src.exists() and not spec_dst.exists():
         spec_dst.write_text(spec_src.read_text(encoding="utf-8"), encoding="utf-8")
 
-    gen_path = Path(__file__).resolve().parents[1] / "choice" / "prompt_tournament" / "generate_prompts.py"
     if not args.skip_generate:
-        gen_main = _load_local_main(gen_path)
         gen_argv = [
             "--mv-task",
             "belief_update",
@@ -127,7 +130,7 @@ def main(argv: list[str] | None = None) -> None:
             gen_argv.extend(["--keep-anchors", str(args.keep_anchors)])
         if int(args.n_per_anchor_country) > 0:
             gen_argv.extend(["--n-per-anchor-country", str(int(args.n_per_anchor_country))])
-        _call_main(gen_main, gen_argv)
+        generate_prompts(gen_argv)
 
     if not args.skip_sample:
         _run_sampling(
@@ -147,21 +150,9 @@ def main(argv: list[str] | None = None) -> None:
             skip_existing_samples=bool(args.skip_existing_samples),
         )
 
-    canonical_main = _load_local_main(Path(__file__).resolve().parent / "rebuild_canonical_workflow.py")
-    _call_main(canonical_main, ["--output-root", str(output_root)])
+    rebuild_canonical_workflow(["--output-root", str(output_root)])
 
     if not args.skip_metrics:
-        metrics_main = _load_local_main(Path(__file__).resolve().parent / "rebuild_unperturbed_metrics_workflow.py")
-        _call_main(
-            metrics_main,
-            [
-                "--output-root",
-                str(output_root),
-                "--spec",
-                str(spec_src),
-            ],
+        rebuild_unperturbed_metrics_workflow(
+            ["--output-root", str(output_root), "--spec", str(spec_src)],
         )
-
-
-if __name__ == "__main__":
-    main()

@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import argparse
-import importlib.util
 import json
 import os
 import time
@@ -11,6 +9,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from beam_abm.cli import parser_compat as cli
 from beam_abm.evaluation.artifacts import (
     PromptTournamentOutputPaths,
     build_run_metadata,
@@ -24,15 +23,6 @@ from beam_abm.evaluation.utils.alignment_utils import (
     merge_alignment_into_row_level,
     summarize_alignment_rows,
 )
-
-
-def _load_local_module(path: Path, name: str):
-    spec = importlib.util.spec_from_file_location(name, path)
-    if spec is None or spec.loader is None:
-        raise ImportError(f"Unable to load module: {path}")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
 
 
 def _get_arg_value(args: list[str], flag: str) -> str | None:
@@ -111,7 +101,7 @@ def _build_default_generate_args(
     outcome_batch: str,
     keep_outcome_list: list[str],
     include_input: bool,
-    build_paired_profiles_step: object,
+    build_paired_profiles_step: callable,
 ) -> list[str]:
     args: list[str] = [
         "--out",
@@ -135,7 +125,7 @@ def _build_default_generate_args(
                         continue
                     tmp_path = paired_out.parent / f"paired_profiles__{outcome}.jsonl"
                     build_args = f"--in {design_path} --out {tmp_path}"
-                    pt.run_step(build_paired_profiles_step.main, pt.split_args(build_args))
+                    pt.run_step(build_paired_profiles_step, pt.split_args(build_args))
                     tmp_paths.append(tmp_path)
                 paired_out.parent.mkdir(parents=True, exist_ok=True)
                 with paired_out.open("w", encoding="utf-8") as dst:
@@ -340,8 +330,8 @@ def _frozen_unperturbed_prompts_path(
     return output_root / "frozen_prompts" / run_id / "unperturbed" / outcome_batch / f"prompts__{family}.jsonl"
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
+def run_cli(argv: list[str] | None = None) -> None:
+    parser = cli.ArgumentParser()
     parser.add_argument(
         "--prompt-families",
         default="data_only,first_person,third_person,multi_expert,paired_profile",
@@ -418,7 +408,7 @@ def main() -> None:
     )
     parser.add_argument("--posthoc-args", default=None)
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     families = [f.strip() for f in args.prompt_families.split(",") if f.strip()]
     keep_outcomes = args.keep_outcomes
@@ -427,21 +417,23 @@ def main() -> None:
     if not ref_models:
         ref_models = ["linear"]
 
-    from beam_abm.evaluation.choice.prompt_tournament import build_paired_profiles as build_paired_profiles_step
-    from beam_abm.evaluation.choice.prompt_tournament import generate_prompts as generate_prompts_step
-    from beam_abm.evaluation.common.apply_calibration_to_ice import main as apply_calibration_step
-    from beam_abm.evaluation.common.apply_pe_calibration_to_ice import main as apply_pe_calibration_step
-    from beam_abm.evaluation.common.calibrate_llm_predictions import main as calibrate_step
-    from beam_abm.evaluation.common.calibrate_pe_gains import main as pe_calibrate_step
-    from beam_abm.evaluation.common.compute_alignment import main as align_step
-    from beam_abm.evaluation.common.compute_ice_from_samples import main as ice_step
-    from beam_abm.evaluation.common.llm_sampling import main as sample_step
-
-    project_root = Path(__file__).resolve().parents[5]
-    support_dir = Path(__file__).resolve().parents[1] / "support" / "unperturbed"
-    unperturbed_script = support_dir / "run_phase.py"
-    unperturbed_utils = _load_local_module(support_dir / "unperturbed_utils.py", "unperturbed_utils")
-    UNPERTURBED_FAMILIES = unperturbed_utils.SUPPORTED_PROMPT_FAMILIES
+    from beam_abm.evaluation.choice.prompt_tournament import posthoc_tests as posthoc_step
+    from beam_abm.evaluation.choice.prompt_tournament.build_paired_profiles import (
+        run_cli as build_paired_profiles_step,
+    )
+    from beam_abm.evaluation.choice.prompt_tournament.generate_prompts import run_cli as generate_prompts_step
+    from beam_abm.evaluation.choice.support.unperturbed.run_phase import run_cli as run_unperturbed_phase
+    from beam_abm.evaluation.choice.support.unperturbed.unperturbed_utils import (
+        SUPPORTED_PROMPT_FAMILIES as UNPERTURBED_FAMILIES,
+    )
+    from beam_abm.evaluation.choice.support.unperturbed.unperturbed_utils import metrics_filename
+    from beam_abm.evaluation.common.apply_calibration_to_ice import run_cli as apply_calibration_step
+    from beam_abm.evaluation.common.apply_pe_calibration_to_ice import run_cli as apply_pe_calibration_step
+    from beam_abm.evaluation.common.calibrate_llm_predictions import run_cli as calibrate_step
+    from beam_abm.evaluation.common.calibrate_pe_gains import run_cli as pe_calibrate_step
+    from beam_abm.evaluation.common.compute_alignment import run_cli as align_step
+    from beam_abm.evaluation.common.compute_ice_from_samples import run_cli as ice_step
+    from beam_abm.evaluation.common.llm_sampling import run_cli as sample_step
 
     run_id = pt.resolve_run_tag(args.run_tag, timestamp_output=args.timestamp_output) or utc_timestamp()
     output_root = Path(os.getenv("PROMPT_TOURNAMENT_OUTPUT_ROOT", "evaluation/output/prompt_tournament"))
@@ -549,7 +541,7 @@ def main() -> None:
                         build_paired_profiles_step=build_paired_profiles_step,
                     )
                     generate_args = [*base_args, *override_args]
-                    pt.run_step(generate_prompts_step.main, generate_args)
+                    pt.run_step(generate_prompts_step, generate_args)
                     if not frozen_prompts.exists():
                         _copy_if_missing(prompts_path, frozen_prompts)
 
@@ -759,7 +751,6 @@ def main() -> None:
         unperturbed_families = [family for family in families if family in UNPERTURBED_FAMILIES]
         calibration_by_family: dict[str, Path] = {}
         if unperturbed_families:
-            metrics_filename = unperturbed_utils.metrics_filename
             for family in unperturbed_families:
                 uncal_paths = PromptTournamentOutputPaths(
                     run_type="unperturbed",
@@ -792,7 +783,7 @@ def main() -> None:
                         "--outcomes",
                         ",".join(strategy_outcomes),
                     ]
-                    pt.run_step_subprocess(unperturbed_script, gen_args, cwd=project_root)
+                    pt.run_step(run_unperturbed_phase, gen_args)
 
                 if not (resume and uncal_paths.prompts_path().exists()):
                     _copy_if_missing(frozen_unperturbed_prompts, uncal_paths.prompts_path())
@@ -827,7 +818,7 @@ def main() -> None:
                     else:
                         sample_args.extend(["--model-options", str(override_model_options or default_model_options)])
 
-                    pt.run_step_subprocess(unperturbed_script, sample_args, cwd=project_root)
+                    pt.run_step(run_unperturbed_phase, sample_args)
 
                 metrics_out = base_dir / metrics_filename(family=family, pred_col="y_pred")
                 if not (resume and metrics_out.exists()):
@@ -838,7 +829,7 @@ def main() -> None:
                         "--prompt-family",
                         family,
                     ]
-                    pt.run_step_subprocess(unperturbed_script, metrics_args, cwd=project_root)
+                    pt.run_step(run_unperturbed_phase, metrics_args)
 
                 if metrics_out.exists():
                     metrics_df = pd.read_csv(metrics_out)
@@ -922,7 +913,7 @@ def main() -> None:
                         "--pred-col",
                         "y_pred_cal",
                     ]
-                    pt.run_step_subprocess(unperturbed_script, metrics_args, cwd=project_root)
+                    pt.run_step(run_unperturbed_phase, metrics_args)
 
                 if metrics_cal_out.exists():
                     metrics_df = pd.read_csv(metrics_cal_out)
@@ -1208,18 +1199,12 @@ def main() -> None:
                 write_run_metadata(paths_cal.run_metadata_path(), cal_meta)
 
         if not args.skip_posthoc:
-            posthoc_script = Path(__file__).with_name("posthoc_tests.py")
-            if posthoc_script.exists():
-                posthoc_args = pt.split_args(
-                    args.posthoc_args,
-                    model=model_name,
-                    model_slug=model_slug,
-                )
-                posthoc_args = _set_arg_value(posthoc_args, "--output-root", str(output_root))
-                posthoc_args = _set_arg_value(posthoc_args, "--run-id", str(run_id))
-                posthoc_args = _set_arg_value(posthoc_args, "--model-slug", str(model_slug))
-                pt.run_step_subprocess(posthoc_script, posthoc_args, cwd=project_root)
-
-
-if __name__ == "__main__":
-    main()
+            posthoc_args = pt.split_args(
+                args.posthoc_args,
+                model=model_name,
+                model_slug=model_slug,
+            )
+            posthoc_args = _set_arg_value(posthoc_args, "--output-root", str(output_root))
+            posthoc_args = _set_arg_value(posthoc_args, "--run-id", str(run_id))
+            posthoc_args = _set_arg_value(posthoc_args, "--model-slug", str(model_slug))
+            pt.run_step(posthoc_step.run_cli, posthoc_args)
