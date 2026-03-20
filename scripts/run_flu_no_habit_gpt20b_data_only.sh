@@ -74,7 +74,7 @@ MODEL_OPTIONS="${MODEL_OPTIONS:-{\"reasoning\":{\"effort\":\"medium\"}}}"
 K="${K:-4}"
 MAX_CONCURRENCY="${MAX_CONCURRENCY:-24}"
 
-uv run python evaluation/scripts/run_choice_validation_perturbed.py \
+uv run python evaluation/scripts/run_behavioural_outcomes_perturbed.py \
   --output-root "$OUTPUT_ROOT" \
   --run-tag "$RUN_TAG" \
   --models "$MODEL" \

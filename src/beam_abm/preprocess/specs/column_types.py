@@ -34,7 +34,7 @@ import typer
 from beartype import beartype
 
 from beam_abm.common.logging import get_logger
-from beam_abm.empirical.taxonomy import (
+from beam_abm.decision_function.taxonomy import (
     DEFAULT_COLUMN_TYPES_PATH,
     OUTCOME_EXACT,
     OUTCOME_PREFIXES,

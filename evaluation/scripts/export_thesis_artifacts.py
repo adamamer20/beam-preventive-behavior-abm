@@ -4,7 +4,7 @@ from pathlib import Path
 
 import typer
 
-from beam_abm.evaluation.export import export_thesis_artifacts
+from beam_abm.llm_microvalidation.export import export_thesis_artifacts
 
 app = typer.Typer(add_completion=False)
 

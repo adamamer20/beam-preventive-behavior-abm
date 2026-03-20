@@ -3,14 +3,14 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from beam_abm.evaluation.common.grids import (
+from beam_abm.llm.schemas.predictions import extract_scalar_prediction
+from beam_abm.llm_microvalidation.shared.grids import (
     build_grid_for_target,
     estimate_within_stratum_nn_distances,
     fit_pca,
     knn_realize_pc,
     knn_realize_scalar,
 )
-from beam_abm.llm.schemas.predictions import extract_scalar_prediction
 
 
 def test_extract_scalar_prediction_variants() -> None:

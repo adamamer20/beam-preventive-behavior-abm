@@ -4,7 +4,7 @@ import re
 from pathlib import Path
 
 FORBIDDEN_IMPORT_RE = re.compile(
-    r"\bbeam_abm\.(analysis|microvalidation|llm_behaviour|preprocessing|config|load_df|utils)\b"
+    r"\bbeam_abm\.(analysis|microvalidation|llm_behaviour|preprocessing|config|load_df|utils|empirical|evaluation)\b"
 )
 FORBIDDEN_PIPELINE_PATH_RE = re.compile(r"\b(0_preprocessing|1_dataset_analysis|3_llm_microvalidation|4_abm)\b")
 FORBIDDEN_SRC_SCRIPT_IMPORT_RE = re.compile(
@@ -76,12 +76,12 @@ def test_src_library_does_not_import_external_scripts() -> None:
     assert offenders == []
 
 
-def test_evaluation_library_has_no_cli_entrypoints() -> None:
+def test_llm_microvalidation_library_has_no_cli_entrypoints() -> None:
     root = Path(__file__).resolve().parents[1]
     offenders: list[str] = []
 
-    eval_root = root / "src" / "beam_abm" / "evaluation"
-    for path in eval_root.rglob("*.py"):
+    llm_microvalidation_root = root / "src" / "beam_abm" / "llm_microvalidation"
+    for path in llm_microvalidation_root.rglob("*.py"):
         text = path.read_text(encoding="utf-8", errors="ignore")
         if FORBIDDEN_EVAL_LIBRARY_CLI_RE.search(text) or FORBIDDEN_EVAL_LIBRARY_CLI_SHIM_RE.search(text):
             offenders.append(str(path.relative_to(root)))
@@ -89,12 +89,12 @@ def test_evaluation_library_has_no_cli_entrypoints() -> None:
     assert offenders == []
 
 
-def test_evaluation_library_has_no_script_style_bridging_patterns() -> None:
+def test_llm_microvalidation_library_has_no_script_style_bridging_patterns() -> None:
     root = Path(__file__).resolve().parents[1]
     offenders: list[str] = []
 
-    eval_root = root / "src" / "beam_abm" / "evaluation"
-    for path in eval_root.rglob("*.py"):
+    llm_microvalidation_root = root / "src" / "beam_abm" / "llm_microvalidation"
+    for path in llm_microvalidation_root.rglob("*.py"):
         text = path.read_text(encoding="utf-8", errors="ignore")
         if FORBIDDEN_EVAL_BRIDGING_RE.search(text):
             offenders.append(str(path.relative_to(root)))
@@ -102,12 +102,12 @@ def test_evaluation_library_has_no_script_style_bridging_patterns() -> None:
     assert offenders == []
 
 
-def test_empirical_library_does_not_import_script_entrypoints() -> None:
+def test_decision_function_library_does_not_import_script_entrypoints() -> None:
     root = Path(__file__).resolve().parents[1]
     offenders: list[str] = []
 
-    empirical_root = root / "src" / "beam_abm" / "empirical"
-    for path in empirical_root.rglob("*.py"):
+    decision_function_root = root / "src" / "beam_abm" / "decision_function"
+    for path in decision_function_root.rglob("*.py"):
         text = path.read_text(encoding="utf-8", errors="ignore")
         if FORBIDDEN_SRC_SCRIPT_IMPORT_RE.search(text):
             offenders.append(str(path.relative_to(root)))
@@ -115,12 +115,12 @@ def test_empirical_library_does_not_import_script_entrypoints() -> None:
     assert offenders == []
 
 
-def test_empirical_library_has_no_argparse_usage() -> None:
+def test_decision_function_library_has_no_argparse_usage() -> None:
     root = Path(__file__).resolve().parents[1]
     offenders: list[str] = []
 
-    empirical_root = root / "src" / "beam_abm" / "empirical"
-    for path in empirical_root.rglob("*.py"):
+    decision_function_root = root / "src" / "beam_abm" / "decision_function"
+    for path in decision_function_root.rglob("*.py"):
         text = path.read_text(encoding="utf-8", errors="ignore")
         if FORBIDDEN_EMPIRICAL_LIBRARY_CLI_RE.search(text):
             offenders.append(str(path.relative_to(root)))
@@ -141,12 +141,12 @@ def test_abm_library_has_no_cli_entrypoints() -> None:
     assert offenders == []
 
 
-def test_tests_do_not_import_empirical_scripts_except_cli_smoke() -> None:
+def test_tests_do_not_import_decision_function_scripts_except_cli_smoke() -> None:
     root = Path(__file__).resolve().parents[1]
     offenders: list[str] = []
 
     for path in (root / "tests").rglob("*.py"):
-        if path.name == "test_empirical_cli_smoke.py":
+        if path.name == "test_decision_function_cli_smoke.py":
             continue
         text = path.read_text(encoding="utf-8", errors="ignore")
         if re.search(r"^\s*(?:from|import)\s+empirical\.scripts(?:\.|\b)", text, flags=re.MULTILINE):
@@ -155,12 +155,12 @@ def test_tests_do_not_import_empirical_scripts_except_cli_smoke() -> None:
     assert offenders == []
 
 
-def test_tests_do_not_import_evaluation_scripts_except_cli_smoke() -> None:
+def test_tests_do_not_import_llm_microvalidation_scripts_except_cli_smoke() -> None:
     root = Path(__file__).resolve().parents[1]
     offenders: list[str] = []
 
     for path in (root / "tests").rglob("*.py"):
-        if path.name == "test_evaluation_cli_smoke.py":
+        if path.name == "test_llm_microvalidation_cli_smoke.py":
             continue
         text = path.read_text(encoding="utf-8", errors="ignore")
         if re.search(r"^\s*(?:from|import)\s+evaluation\.scripts(?:\.|\b)", text, flags=re.MULTILINE):
@@ -183,7 +183,7 @@ def test_tests_do_not_import_abm_scripts_except_cli_smoke() -> None:
     assert offenders == []
 
 
-def test_evaluation_scripts_do_not_import_src_evaluation_modules() -> None:
+def test_llm_microvalidation_scripts_do_not_import_noncanonical_llm_microvalidation_modules() -> None:
     root = Path(__file__).resolve().parents[1]
     offenders: list[str] = []
 
@@ -191,7 +191,7 @@ def test_evaluation_scripts_do_not_import_src_evaluation_modules() -> None:
     for path in scripts_root.rglob("*.py"):
         text = path.read_text(encoding="utf-8", errors="ignore")
         if re.search(
-            r"^\s*(?:from|import)\s+beam_abm\.evaluation\.(?!(workflows|export)(?:\.|\b))",
+            r"^\s*(?:from|import)\s+beam_abm\.llm_microvalidation\.(?!(workflows|export)(?:\.|\b))",
             text,
             flags=re.MULTILINE,
         ):

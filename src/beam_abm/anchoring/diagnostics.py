@@ -22,7 +22,7 @@ from beam_abm.anchoring.build import (
     build_anchor_neighborhoods,
 )
 from beam_abm.common.logging import get_logger
-from beam_abm.empirical.io import ensure_outdir
+from beam_abm.decision_function.io import ensure_outdir
 from beam_abm.settings import CSV_FILE_CLEAN, SEED
 
 logger = get_logger(__name__)

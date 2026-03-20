@@ -45,5 +45,5 @@ These commands write under `empirical/output/`, especially:
 To export the empirical outputs used by the thesis, run:
 
 ```bash
-make empirical-export-thesis
+make decision-function-export-thesis
 ```

@@ -16,21 +16,21 @@ Use the top-level `Makefile` for all routine commands.
 
 Reusable package code for this stage lives in:
 
-- `src/beam_abm/evaluation/`
+- `src/beam_abm/llm_microvalidation/`
 - `src/beam_abm/llm/`
 
 ## Main commands
 
 ```bash
-make evaluation-run-choice-unperturbed
-make evaluation-run-choice-perturbed
-make evaluation-run-belief-unperturbed
-make evaluation-run-belief-perturbed
-make evaluation-export-thesis
+make llm-microvalidation-run-behavioural-outcomes-baseline
+make llm-microvalidation-run-behavioural-outcomes-perturbed
+make llm-microvalidation-run-psychological-profiles-baseline
+make llm-microvalidation-run-psychological-profiles-perturbed
+make llm-microvalidation-export-thesis
 make thesis-artifacts
 ```
 
-- `make evaluation-export-thesis` exports the evaluation outputs needed by the
+- `make llm-microvalidation-export-thesis` exports the evaluation outputs needed by the
   thesis.
 - `make thesis-artifacts` refreshes the full tracked thesis artefact contract,
   including the evaluation exports.
@@ -48,8 +48,8 @@ The thesis-facing export writes under:
 
 The runtime script surface is intentionally minimal:
 
-- `evaluation/scripts/run_choice_validation_unperturbed.py`
-- `evaluation/scripts/run_choice_validation_perturbed.py`
-- `evaluation/scripts/run_belief_update_unperturbed.py`
-- `evaluation/scripts/run_belief_update_perturbed.py`
+- `evaluation/scripts/run_behavioural_outcomes_baseline.py`
+- `evaluation/scripts/run_behavioural_outcomes_perturbed.py`
+- `evaluation/scripts/run_psychological_profiles_baseline.py`
+- `evaluation/scripts/run_psychological_profiles_perturbed.py`
 - `evaluation/scripts/export_thesis_artifacts.py`

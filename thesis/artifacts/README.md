@@ -14,8 +14,8 @@ Runtime output trees remain local working state and are intentionally ignored.
 To refresh this contract after running domain pipelines, use the explicit
 export targets:
 
-- `make empirical-export-thesis`
-- `make evaluation-export-thesis`
+- `make decision-function-export-thesis`
+- `make llm-microvalidation-export-thesis`
 - `make abm-export-thesis`
 - `make thesis-artifacts`
 

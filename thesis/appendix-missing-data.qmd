@@ -5,7 +5,7 @@ Because some predictors are missing by design, especially in conditionally admin
 ```{python}
 #| echo: false
 from IPython.display import Markdown
-from beam_abm.empirical.missingness import DEFAULT_MISSINGNESS_THRESHOLD
+from beam_abm.decision_function.missingness import DEFAULT_MISSINGNESS_THRESHOLD
 
 MISSINGNESS_TAU = DEFAULT_MISSINGNESS_THRESHOLD
 

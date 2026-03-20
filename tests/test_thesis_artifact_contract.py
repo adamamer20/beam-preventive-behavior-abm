@@ -6,8 +6,8 @@ from pathlib import Path
 import pytest
 
 from beam_abm.abm.export import export_thesis_artifacts as export_abm_thesis_artifacts
-from beam_abm.empirical.export import export_thesis_artifacts as export_empirical_thesis_artifacts
-from beam_abm.evaluation.export import export_thesis_artifacts as export_evaluation_thesis_artifacts
+from beam_abm.decision_function.export import export_thesis_artifacts as export_empirical_thesis_artifacts
+from beam_abm.llm_microvalidation.export import export_thesis_artifacts as export_evaluation_thesis_artifacts
 
 FORBIDDEN_RUNTIME_REF_RE = re.compile(r"(preprocess/output|empirical/output|evaluation/output|abm/output)")
 ARTIFACT_REF_RE = re.compile(r"['\"]\.\./thesis/artifacts/([^'\"]+)['\"]")

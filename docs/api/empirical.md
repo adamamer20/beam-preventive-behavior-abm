@@ -1,3 +1,3 @@
 # Empirical
 
-::: beam_abm.empirical
+::: beam_abm.decision_function

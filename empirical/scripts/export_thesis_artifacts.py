@@ -4,7 +4,7 @@ from pathlib import Path
 
 import typer
 
-from beam_abm.empirical.export import export_thesis_artifacts
+from beam_abm.decision_function.export import export_thesis_artifacts
 
 
 def main(

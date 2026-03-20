@@ -1,4 +1,4 @@
-.PHONY: help setup dev dev-install test quick-test test-cov lint format check quality pre-commit docs docs-build clean build publish upgrade sync paper-render paper-preview paper-check thesis-render thesis-render-cached thesis-preview thesis-artifacts empirical-export-thesis evaluation-run-choice-unperturbed evaluation-run-choice-perturbed evaluation-run-belief-unperturbed evaluation-run-belief-perturbed evaluation-export-thesis abm-export-thesis clean-spec-post-general preprocess-clean descriptives fetch-ppp inferential modeling-aggregate anchors anchors-pe-reduced anchors-pe-full anchors-pe-ref-p anchors-build anchors-diagnostics abm-diagnostics abm-run-scenarios abm-sensitivity-full abm-sensitivity-full-posthoc
+.PHONY: help setup dev dev-install test quick-test test-cov lint format check quality pre-commit docs docs-build clean build publish upgrade sync paper-render paper-preview paper-check thesis-render thesis-render-cached thesis-preview thesis-artifacts decision-function-export-thesis llm-microvalidation-run-behavioural-outcomes-baseline llm-microvalidation-run-behavioural-outcomes-perturbed llm-microvalidation-run-psychological-profiles-baseline llm-microvalidation-run-psychological-profiles-perturbed llm-microvalidation-export-thesis abm-export-thesis clean-spec-post-general preprocess-clean descriptives fetch-ppp inferential modeling-aggregate anchors anchors-pe-reduced anchors-pe-full anchors-pe-ref-p anchors-build anchors-diagnostics abm-diagnostics abm-run-scenarios abm-sensitivity-full abm-sensitivity-full-posthoc
 
 MODELING_WORKERS ?= 8
 ANCHOR_K ?= 10
@@ -138,24 +138,24 @@ preprocess-clean: ## Rebuild output/preprocess/clean_processed_survey.csv from p
 
 descriptives: ## Compute descriptive statistics for cleaned survey (writes empirical/output/descriptives)
 	@echo "📊 Computing descriptive statistics..."
-	uv run python empirical/scripts/compute_descriptives.py --input preprocess/output/clean_processed_survey.csv --outdir empirical/output/descriptives
+	uv run python empirical/scripts/descriptive_statistics.py --input preprocess/output/clean_processed_survey.csv --outdir empirical/output/descriptives
 	@echo "✅ Descriptives written to empirical/output/descriptives"
 
 inferential: ## Compute inferential statistics for cleaned survey (writes empirical/output/inferential)
 	@echo "📈 Running inferential statistics..."
-	uv run python empirical/scripts/inferential_analysis.py --input preprocess/output/clean_processed_survey.csv --outdir empirical/output/inferential
+	uv run python empirical/scripts/inferential_statistics.py --input preprocess/output/clean_processed_survey.csv --outdir empirical/output/inferential
 	@echo "✅ Inferential analysis written to empirical/output/inferential"
 
 # MODELING
 
 modeling: ## Run structural backbone models and block importance (LOBO/LOBI)
 	@echo "🧠 Running structural backbone models and block importance..."
-	uv run python empirical/scripts/modeling.py run --input preprocess/output/clean_processed_survey.csv --outdir empirical/output/modeling --max-workers $(MODELING_WORKERS)
+	uv run python empirical/scripts/backbone_models.py run --input preprocess/output/clean_processed_survey.csv --outdir empirical/output/modeling --max-workers $(MODELING_WORKERS)
 	@echo "✅ Modeling outputs written under empirical/output/modeling (per-model coefficients/lobo/lobi)"
 
 block-importance: ## Compute LOBO/LOBI block importance only
 	@echo "🧩 Computing LOBO/LOBI block importance (no refits)..."
-	uv run python empirical/scripts/modeling.py block-importance --input preprocess/output/clean_processed_survey.csv --outdir empirical/output/modeling --max-workers $(MODELING_WORKERS)
+	uv run python empirical/scripts/backbone_models.py block-importance --input preprocess/output/clean_processed_survey.csv --outdir empirical/output/modeling --max-workers $(MODELING_WORKERS)
 	@echo "✅ Block-importance outputs written under empirical/output/modeling"
 
 
@@ -166,12 +166,12 @@ anchors: anchors-build anchors-diagnostics anchors-pe-reduced anchors-pe-full an
 
 anchors-build: ## Build anchor system
 	@echo "🧩 Building anchors..."
-	uv run python empirical/scripts/anchors.py build --input preprocess/output/clean_processed_survey.csv --outdir $(ANCHORS_OUTDIR) --anchor-k $(ANCHOR_K) --neighbor-k $(NEIGHBOR_K) --globality-min-countries $(GLOBALITY_MIN_COUNTRIES) --globality-pi-threshold $(GLOBALITY_PI_THRESHOLD) $(ANCHOR_GLOBALITY_FACTOR_ARG) --pca-variance-target $(PCA_VARIANCE_TARGET) --tau-method $(TAU_METHOD) $(ANCHOR_TAU_ARG) $(ANCHOR_TAU_KEFF_ARG) --tau-knn-k $(TAU_KNN_K) --tau-quantile $(TAU_QUANTILE) --tau-sample-n $(TAU_SAMPLE_N)
+	uv run python empirical/scripts/anchor_prototypes.py build --input preprocess/output/clean_processed_survey.csv --outdir $(ANCHORS_OUTDIR) --anchor-k $(ANCHOR_K) --neighbor-k $(NEIGHBOR_K) --globality-min-countries $(GLOBALITY_MIN_COUNTRIES) --globality-pi-threshold $(GLOBALITY_PI_THRESHOLD) $(ANCHOR_GLOBALITY_FACTOR_ARG) --pca-variance-target $(PCA_VARIANCE_TARGET) --tau-method $(TAU_METHOD) $(ANCHOR_TAU_ARG) $(ANCHOR_TAU_KEFF_ARG) --tau-knn-k $(TAU_KNN_K) --tau-quantile $(TAU_QUANTILE) --tau-sample-n $(TAU_SAMPLE_N)
 	@echo "✅ Anchor outputs written to $(ANCHORS_OUTDIR)"
 
 anchors-diagnostics: ## Run anchor diagnostics
 	@echo "🧪 Running anchor diagnostics..."
-	uv run python empirical/scripts/anchors.py diagnostics --input preprocess/output/clean_processed_survey.csv --anchors-dir $(ANCHORS_OUTDIR) --outdir empirical/output/anchors/diagnostics
+	uv run python empirical/scripts/anchor_prototypes.py diagnostics --input preprocess/output/clean_processed_survey.csv --anchors-dir $(ANCHORS_OUTDIR) --outdir empirical/output/anchors/diagnostics
 	@echo "✅ Diagnostics written to empirical/output/anchors/diagnostics"
 
 anchors-pe-reduced: ## Compute reduced-anchor PE refs for B models (mutable engines + stable stratifiers)
@@ -179,8 +179,8 @@ anchors-pe-reduced: ## Compute reduced-anchor PE refs for B models (mutable engi
 	@for target in vax_willingness_T12 flu_vaccinated_2023_2024 flu_vaccinated_2023_2024_no_habit mask_when_symptomatic_crowded stay_home_when_symptomatic mask_when_pressure_high; do \
 		target_col="$$target"; \
 		if [ "$$target" = "flu_vaccinated_2023_2024_no_habit" ]; then target_col="flu_vaccinated_2023_2024"; fi; \
-		uv run python empirical/scripts/anchors.py pe --input preprocess/output/clean_processed_survey.csv --anchors-dir $(ANCHORS_OUTDIR) --outdir empirical/output/anchors/pe/mutable_engines/reduced/$$target --target-col $$target_col --lever-config config/levers.json --lever-key $$target --lever-scope policy; \
-		uv run python empirical/scripts/anchors.py pe --input preprocess/output/clean_processed_survey.csv --anchors-dir $(ANCHORS_OUTDIR) --outdir empirical/output/anchors/pe/stable_stratifiers/reduced/$$target --target-col $$target_col --lever-config config/levers.json --lever-key $$target --lever-scope non_policy; \
+		uv run python empirical/scripts/anchor_prototypes.py pe --input preprocess/output/clean_processed_survey.csv --anchors-dir $(ANCHORS_OUTDIR) --outdir empirical/output/anchors/pe/mutable_engines/reduced/$$target --target-col $$target_col --lever-config config/levers.json --lever-key $$target --lever-scope policy; \
+		uv run python empirical/scripts/anchor_prototypes.py pe --input preprocess/output/clean_processed_survey.csv --anchors-dir $(ANCHORS_OUTDIR) --outdir empirical/output/anchors/pe/stable_stratifiers/reduced/$$target --target-col $$target_col --lever-config config/levers.json --lever-key $$target --lever-scope non_policy; \
 	done
 	@echo "✅ Reduced mutable-engine PE refs written under empirical/output/anchors/pe/mutable_engines/reduced/*"
 	@echo "✅ Reduced stable-stratifier PE refs written under empirical/output/anchors/pe/stable_stratifiers/reduced/*"
@@ -190,34 +190,34 @@ anchors-pe-full: ## Compute full-respondent PE refs for B models (mutable engine
 	@for target in vax_willingness_T12 flu_vaccinated_2023_2024 flu_vaccinated_2023_2024_no_habit mask_when_symptomatic_crowded stay_home_when_symptomatic mask_when_pressure_high; do \
 		target_col="$$target"; \
 		if [ "$$target" = "flu_vaccinated_2023_2024_no_habit" ]; then target_col="flu_vaccinated_2023_2024"; fi; \
-		uv run python empirical/scripts/anchors.py pe-full --input preprocess/output/clean_processed_survey.csv --anchors-dir $(ANCHORS_OUTDIR) --outdir empirical/output/anchors/pe/mutable_engines/full/$$target --target-col $$target_col --lever-config config/levers.json --lever-key $$target --lever-scope policy; \
-		uv run python empirical/scripts/anchors.py pe-full --input preprocess/output/clean_processed_survey.csv --anchors-dir $(ANCHORS_OUTDIR) --outdir empirical/output/anchors/pe/stable_stratifiers/full/$$target --target-col $$target_col --lever-config config/levers.json --lever-key $$target --lever-scope non_policy; \
+		uv run python empirical/scripts/anchor_prototypes.py pe-full --input preprocess/output/clean_processed_survey.csv --anchors-dir $(ANCHORS_OUTDIR) --outdir empirical/output/anchors/pe/mutable_engines/full/$$target --target-col $$target_col --lever-config config/levers.json --lever-key $$target --lever-scope policy; \
+		uv run python empirical/scripts/anchor_prototypes.py pe-full --input preprocess/output/clean_processed_survey.csv --anchors-dir $(ANCHORS_OUTDIR) --outdir empirical/output/anchors/pe/stable_stratifiers/full/$$target --target-col $$target_col --lever-config config/levers.json --lever-key $$target --lever-scope non_policy; \
 	done
 	@echo "✅ Full mutable-engine PE refs written under empirical/output/anchors/pe/mutable_engines/full/*"
 	@echo "✅ Full stable-stratifier PE refs written under empirical/output/anchors/pe/stable_stratifiers/full/*"
 
 anchors-pe-ref-p: ## Compute PE_ref_P refs for P models (upstream signals + background traits, reduced/full)
 	@echo "🧪 Computing PE_ref_P for upstream signals (reduced + full)..."
-	@uv run python evaluation/scripts/run_belief_pe_ref_p.py \
+	@uv run python evaluation/scripts/run_psychological_profile_reference_effects.py \
 		--data empirical/output/anchors/eval/eval_profiles.parquet \
 		--spec evaluation/specs/belief_update_targets.json \
 		--out empirical/output/anchors/pe/upstream_signals/reduced/pe_ref_p_rows.parquet \
 		--meta-out empirical/output/anchors/pe/upstream_signals/reduced/pe_ref_p_signal_metadata.json \
 		--id-col row_id --country-col country
-	@uv run python evaluation/scripts/run_belief_pe_ref_p.py \
+	@uv run python evaluation/scripts/run_psychological_profile_reference_effects.py \
 		--data preprocess/output/clean_processed_survey.csv \
 		--spec evaluation/specs/belief_update_targets.json \
 		--out empirical/output/anchors/pe/upstream_signals/full/pe_ref_p_rows.parquet \
 		--meta-out empirical/output/anchors/pe/upstream_signals/full/pe_ref_p_signal_metadata.json \
 		--id-col row_id --country-col country
 	@echo "🧪 Computing PE_ref_P for background traits (reduced + full)..."
-	@uv run python evaluation/scripts/run_belief_pe_ref_p.py \
+	@uv run python evaluation/scripts/run_psychological_profile_reference_effects.py \
 		--data empirical/output/anchors/eval/eval_profiles.parquet \
 		--spec evaluation/specs/belief_update_background_traits.json \
 		--out empirical/output/anchors/pe/background_traits/reduced/pe_ref_p_rows.parquet \
 		--meta-out empirical/output/anchors/pe/background_traits/reduced/pe_ref_p_signal_metadata.json \
 		--id-col row_id --country-col country
-	@uv run python evaluation/scripts/run_belief_pe_ref_p.py \
+	@uv run python evaluation/scripts/run_psychological_profile_reference_effects.py \
 		--data preprocess/output/clean_processed_survey.csv \
 		--spec evaluation/specs/belief_update_background_traits.json \
 		--out empirical/output/anchors/pe/background_traits/full/pe_ref_p_rows.parquet \
@@ -228,24 +228,24 @@ anchors-pe-ref-p: ## Compute PE_ref_P refs for P models (upstream signals + back
 
 
 # Thesis (Quarto book) commands
-empirical-export-thesis: ## Export compact empirical artifacts to thesis/artifacts/empirical
+decision-function-export-thesis: ## Export compact empirical artifacts to thesis/artifacts/empirical
 	@echo "📦 Exporting empirical thesis artifacts..."
 	@uv run python empirical/scripts/export_thesis_artifacts.py
 	@echo "✅ Empirical thesis artifacts exported."
 
-evaluation-run-choice-unperturbed: ## Run choice-validation unperturbed workflow
-	@uv run python evaluation/scripts/run_choice_validation_unperturbed.py
+llm-microvalidation-run-behavioural-outcomes-baseline: ## Run choice-validation unperturbed workflow
+	@uv run python evaluation/scripts/run_behavioural_outcomes_baseline.py
 
-evaluation-run-choice-perturbed: ## Run choice-validation perturbed workflow
-	@uv run python evaluation/scripts/run_choice_validation_perturbed.py
+llm-microvalidation-run-behavioural-outcomes-perturbed: ## Run choice-validation perturbed workflow
+	@uv run python evaluation/scripts/run_behavioural_outcomes_perturbed.py
 
-evaluation-run-belief-unperturbed: ## Run belief-update unperturbed workflow
-	@uv run python evaluation/scripts/run_belief_update_unperturbed.py
+llm-microvalidation-run-psychological-profiles-baseline: ## Run belief-update unperturbed workflow
+	@uv run python evaluation/scripts/run_psychological_profiles_baseline.py
 
-evaluation-run-belief-perturbed: ## Run belief-update perturbed workflow
-	@uv run python evaluation/scripts/run_belief_update_perturbed.py
+llm-microvalidation-run-psychological-profiles-perturbed: ## Run belief-update perturbed workflow
+	@uv run python evaluation/scripts/run_psychological_profiles_perturbed.py
 
-evaluation-export-thesis: ## Export compact evaluation artifacts to thesis/artifacts/evaluation
+llm-microvalidation-export-thesis: ## Export compact evaluation artifacts to thesis/artifacts/evaluation
 	@echo "📦 Exporting evaluation thesis artifacts..."
 	@uv run python evaluation/scripts/export_thesis_artifacts.py
 	@echo "✅ Evaluation thesis artifacts exported."
@@ -255,7 +255,7 @@ abm-export-thesis: ## Export compact ABM artifacts to thesis/artifacts/abm
 	@uv run python abm/scripts/export_thesis_artifacts.py
 	@echo "✅ ABM thesis artifacts exported."
 
-thesis-artifacts: empirical-export-thesis evaluation-export-thesis abm-export-thesis ## Build all tracked thesis artifact contracts
+thesis-artifacts: decision-function-export-thesis llm-microvalidation-export-thesis abm-export-thesis ## Build all tracked thesis artifact contracts
 	@echo "✅ All thesis artifacts exported under thesis/artifacts/."
 
 thesis-render: ## Render thesis from tracked thesis/artifacts contract (HTML, PDF, DOCX); CACHE=1 to reuse cache

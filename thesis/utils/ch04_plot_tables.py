@@ -16,7 +16,7 @@ import polars as pl
 from matplotlib.colors import TwoSlopeNorm
 from matplotlib.patches import Rectangle
 
-from beam_abm.evaluation.belief.reference_model_loading import default_ref_state_models
+from beam_abm.llm_microvalidation.psychological_profiles.reference_model_loading import default_ref_state_models
 from utils.chapter_io import read_csv_fast
 from utils.engine_labels import BELIEF_OUTCOME_ORDER, CHOICE_ENGINE_BLOCK_ALIASES, label_choice_engine_block
 from utils.plot_style import apply_thesis_matplotlib_style

@@ -1,6 +1,6 @@
 """Regression tests for baseline lookup key normalization."""
 
-from beam_abm.evaluation.common.baseline_lookup import _lookup_baseline_value
+from beam_abm.llm_microvalidation.shared.baselines import _lookup_baseline_value
 
 
 def test_lookup_baseline_value_accepts_outcome_prefixed_baseline_ids() -> None:
