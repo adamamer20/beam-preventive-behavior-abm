@@ -252,8 +252,6 @@ evaluation-export-thesis: ## Export compact evaluation artifacts to thesis/artif
 
 abm-export-thesis: ## Export compact ABM artifacts to thesis/artifacts/abm
 	@echo "📦 Exporting ABM thesis artifacts..."
-	@echo "📋 Refreshing canonical ABM scenario summary for thesis export..."
-	uv run python abm/scripts/update_canonical_summary.py
 	@uv run python abm/scripts/export_thesis_artifacts.py
 	@echo "✅ ABM thesis artifacts exported."
 
@@ -336,12 +334,12 @@ ABM_SENSITIVITY_REFRESH_FLAGSHIP_SCENARIOS ?=
 
 abm-diagnostics: ## Run unified diagnostics (all suites)
 	@echo "🧪 Running ABM diagnostics (all suites)..."
-	uv run python -m beam_abm.abm.cli diagnostics \
+	uv run python abm/scripts/abm.py diagnostics \
 		--suite all \
 		--n-agents $(ABM_DIAG_N_AGENTS) \
 		--n-steps $(ABM_DIAG_N_STEPS) \
 		--n-reps $(ABM_DIAG_N_REPS) \
-		--seeds $(ABM_DIAG_SEEDS) \
+		--seeds "$(ABM_DIAG_SEEDS)" \
 		--output-dir $(ABM_DIAG_OUTDIR)
 	@echo "✅ Diagnostics complete!"
 
@@ -353,8 +351,8 @@ abm-run-scenarios: ## Execute scenarios resolved from scenario_defs (default: al
 		exit 1; \
 	fi; \
 	echo "🚀 Running scenario_defs scenarios: $$SCENS"; \
-	uv run python -m beam_abm.abm.cli run \
-		--scenario $$SCENS \
+	uv run python abm/scripts/abm.py run \
+		--scenario "$$SCENS" \
 		--effect-regime $(ABM_EFFECT_REGIME) \
 		--n-agents $(ABM_N_AGENTS) \
 		--n-steps $(ABM_N_STEPS) \

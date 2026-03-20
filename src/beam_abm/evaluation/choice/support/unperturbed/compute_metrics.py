@@ -191,6 +191,3 @@ def run_cli(argv: list[str] | None = None) -> None:
         metrics_rows = compute_metrics_rows(pred_df, pred_col="y_pred")
         metrics_df = pd.DataFrame(metrics_rows)
         metrics_df.to_csv(outdir / metrics_filename(family=family, pred_col="y_pred"), index=False)
-
-
-

@@ -98,5 +98,3 @@ def run_belief_pe_ref_p(argv: list[str] | None = None) -> None:
     meta_path = Path(args.meta_out)
     meta_path.parent.mkdir(parents=True, exist_ok=True)
     meta_path.write_text(json.dumps(meta_payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-
-

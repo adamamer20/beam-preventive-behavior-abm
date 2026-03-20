@@ -196,6 +196,3 @@ def run_cli(argv: list[str] | None = None) -> None:
 
         out_path = outdir / f"prompts__{family}.jsonl"
         write_jsonl(out_path, rows, json_default=numpy_json_default)
-
-
-

@@ -129,6 +129,3 @@ def run_cli(argv: list[str] | None = None) -> None:
             dest = out_path
         dest.parent.mkdir(parents=True, exist_ok=True)
         df.to_csv(dest, index=False)
-
-
-

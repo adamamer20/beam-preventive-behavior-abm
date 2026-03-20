@@ -163,5 +163,3 @@ def run_cli(argv: list[str] | None = None) -> None:
         fallback_alpha=float(args.fallback_alpha),
         keep_raw=bool(args.keep_raw),
     )
-
-

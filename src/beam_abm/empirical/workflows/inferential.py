@@ -11,6 +11,7 @@ import polars as pl
 from beartype import beartype
 
 from beam_abm.common.logging import get_logger
+from beam_abm.empirical.derivations import DerivationSkipper, build_skipper, load_derivations
 from beam_abm.empirical.inferential import (
     HighlightCriteria,
     InferentialResult,
@@ -25,7 +26,6 @@ from beam_abm.empirical.inferential import (
     generate_predictor_predictor_views,
     to_canonical_raw_format,
 )
-from beam_abm.empirical.derivations import DerivationSkipper, build_skipper, load_derivations
 from beam_abm.empirical.io import (
     build_type_buckets,
     ensure_outdir,
@@ -557,7 +557,6 @@ def _write_outputs(
 
     # Spec: stop organizing outputs as by_hypothesis/…
     # Hypothesis metadata can remain an optional external lens.
-
 
 
 def run_inferential_workflow(

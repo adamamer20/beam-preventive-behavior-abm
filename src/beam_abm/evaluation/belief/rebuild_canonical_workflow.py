@@ -37,6 +37,3 @@ def run_cli(argv: list[str] | None = None) -> None:
             f"{model}: runs={stats.runs_seen} rows {stats.rows_in}->{stats.rows_out} "
             f"samples {stats.samples_in}->{stats.samples_out}"
         )
-
-
-

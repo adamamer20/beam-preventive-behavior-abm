@@ -666,5 +666,3 @@ def run_cli(argv: list[str] | None = None) -> None:
         summary_path = sweep_dir / "sweep_summary.csv"
         summary_df.to_csv(summary_path, index=False)
         logger.info(f"Wrote sweep summary: {summary_path}")
-
-

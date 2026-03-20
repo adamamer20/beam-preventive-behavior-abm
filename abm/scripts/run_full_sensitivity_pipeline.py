@@ -1,33 +1,27 @@
 #!/usr/bin/env python3
-"""Run the full ABM sensitivity pipeline.
-
-Usage
------
-uv run python scripts/run_full_sensitivity_pipeline.py
-"""
+"""Run the full ABM sensitivity pipeline."""
 
 from __future__ import annotations
 
 import argparse
 import sys
-import time
 from pathlib import Path
 
 from loguru import logger
 
-from beam_abm.abm.sensitivity_pipeline import (
+from beam_abm.abm.workflows import (
     DEFAULT_FLAGSHIP_SCENARIOS,
     DEFAULT_OUTPUT_METRICS,
-    SensitivityPipelineConfig,
-    run_full_sensitivity_pipeline,
+    parse_csv_tuple,
+    run_full_sensitivity_pipeline_workflow,
 )
 
 
 def _parse_csv_list(value: str) -> tuple[str, ...]:
-    entries = tuple(item.strip() for item in value.split(",") if item.strip())
-    if not entries:
-        raise argparse.ArgumentTypeError("Expected a non-empty comma-separated list.")
-    return entries
+    try:
+        return parse_csv_tuple(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(str(exc)) from exc
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -97,36 +91,28 @@ def _build_parser() -> argparse.ArgumentParser:
 def main() -> None:
     logger.remove()
     logger.add(sys.stderr, level="INFO")
-
-    parser = _build_parser()
-    args = parser.parse_args()
-
-    config = SensitivityPipelineConfig(
+    args = _build_parser().parse_args()
+    run_full_sensitivity_pipeline_workflow(
         output_dir=args.output_dir,
         n_agents=args.n_agents,
         n_steps=args.n_steps,
+        seed=args.seed,
         seed_offsets=tuple(args.seed_offsets),
-        base_seed=args.seed,
         morris_trajectories=args.morris_trajectories,
         morris_levels=args.morris_levels,
         lhc_samples=args.lhc_samples,
         sobol_base_samples=args.sobol_base_samples,
         shortlist_target=args.shortlist_target,
         shortlist_max=args.shortlist_max,
-        shortlist_sigma_quantile=args.sigma_quantile,
+        sigma_quantile=args.sigma_quantile,
         surrogate_min_r2=args.surrogate_min_r2,
+        max_workers=args.max_workers,
         outputs=tuple(args.outputs),
         flagship_scenarios=tuple(args.flagship_scenarios),
         effect_metric=args.effect_metric,
         persist_run_data=args.persist_run_data,
-        max_workers=args.max_workers,
         resume_from_morris_raw=args.resume_from_morris_raw,
     )
-
-    start = time.perf_counter()
-    run_full_sensitivity_pipeline(config)
-    elapsed = time.perf_counter() - start
-    logger.info("Full sensitivity pipeline completed in {elapsed:.1f}s", elapsed=elapsed)
 
 
 if __name__ == "__main__":

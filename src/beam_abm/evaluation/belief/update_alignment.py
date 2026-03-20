@@ -1012,6 +1012,3 @@ def run_cli(argv: list[str] | None = None) -> None:
             _write_json(outdir / strategy / "strategy_summary.json", summary)
 
     _write_json(outdir / "overall_summary.json", {"strategies": strategy_summary})
-
-
-

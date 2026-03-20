@@ -101,6 +101,3 @@ def run_cli(argv: list[str] | None = None) -> None:
         )
 
     _write_jsonl(Path(args.out_path), out)
-
-
-

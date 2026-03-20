@@ -642,6 +642,3 @@ def run_cli(argv: list[str] | None = None) -> None:
                     cal["outcome"] = "unknown"
                 rel_summary = _reliability_summary(llm, cal)
                 rel_summary.to_csv(posthoc_dir / "reliability_summary.csv", index=False)
-
-
-

@@ -2370,6 +2370,3 @@ def run_cli(argv: list[str] | None = None) -> None:
         row_level_path.parent.mkdir(parents=True, exist_ok=True)
         pd.DataFrame(row_level).to_csv(row_level_path, index=False)
     return
-
-
-

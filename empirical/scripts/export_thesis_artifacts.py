@@ -12,7 +12,7 @@ def main(
         Path(__file__).resolve().parents[2],
         "--repo-root",
         help="Repository root containing empirical/output and thesis/artifacts.",
-    )
+    ),
 ) -> None:
     export_thesis_artifacts(repo_root.resolve())
     print("Exported empirical thesis artifacts.")

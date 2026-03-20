@@ -202,6 +202,3 @@ def run_cli(argv: list[str] | None = None) -> None:
                     for order_paths in order_paths_by_ref.values():
                         for path in order_paths:
                             path.unlink(missing_ok=True)
-
-
-

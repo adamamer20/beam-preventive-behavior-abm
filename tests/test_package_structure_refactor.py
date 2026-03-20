@@ -26,6 +26,10 @@ FORBIDDEN_EMPIRICAL_LIBRARY_CLI_RE = re.compile(
     r"^\s*import\s+argparse\b|^\s*from\s+argparse\s+import\b",
     re.MULTILINE,
 )
+FORBIDDEN_ABM_LIBRARY_CLI_RE = re.compile(
+    r"^\s*import\s+argparse\b|^\s*from\s+argparse\s+import\b|^\s*def\s+main\s*\(",
+    re.MULTILINE,
+)
 
 
 def _iter_checked_files(root: Path) -> list[Path]:
@@ -124,6 +128,19 @@ def test_empirical_library_has_no_argparse_usage() -> None:
     assert offenders == []
 
 
+def test_abm_library_has_no_cli_entrypoints() -> None:
+    root = Path(__file__).resolve().parents[1]
+    offenders: list[str] = []
+
+    abm_root = root / "src" / "beam_abm" / "abm"
+    for path in abm_root.rglob("*.py"):
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if FORBIDDEN_ABM_LIBRARY_CLI_RE.search(text):
+            offenders.append(str(path.relative_to(root)))
+
+    assert offenders == []
+
+
 def test_tests_do_not_import_empirical_scripts_except_cli_smoke() -> None:
     root = Path(__file__).resolve().parents[1]
     offenders: list[str] = []
@@ -152,6 +169,20 @@ def test_tests_do_not_import_evaluation_scripts_except_cli_smoke() -> None:
     assert offenders == []
 
 
+def test_tests_do_not_import_abm_scripts_except_cli_smoke() -> None:
+    root = Path(__file__).resolve().parents[1]
+    offenders: list[str] = []
+
+    for path in (root / "tests").rglob("*.py"):
+        if path.name == "test_abm_cli_smoke.py":
+            continue
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if re.search(r"^\s*(?:from|import)\s+abm\.scripts(?:\.|\b)", text, flags=re.MULTILINE):
+            offenders.append(str(path.relative_to(root)))
+
+    assert offenders == []
+
+
 def test_evaluation_scripts_do_not_import_src_evaluation_modules() -> None:
     root = Path(__file__).resolve().parents[1]
     offenders: list[str] = []
@@ -164,6 +195,23 @@ def test_evaluation_scripts_do_not_import_src_evaluation_modules() -> None:
             text,
             flags=re.MULTILINE,
         ):
+            offenders.append(str(path.relative_to(root)))
+
+    assert offenders == []
+
+
+def test_abm_scripts_do_not_import_noncanonical_abm_library_modules() -> None:
+    root = Path(__file__).resolve().parents[1]
+    offenders: list[str] = []
+    scripts_root = root / "abm" / "scripts"
+    pattern = re.compile(
+        r"^\s*(?:from|import)\s+beam_abm\.abm\.(?!(workflows|export|sensitivity_pipeline)(?:\.|\b))",
+        re.MULTILINE,
+    )
+
+    for path in scripts_root.rglob("*.py"):
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if pattern.search(text):
             offenders.append(str(path.relative_to(root)))
 
     assert offenders == []

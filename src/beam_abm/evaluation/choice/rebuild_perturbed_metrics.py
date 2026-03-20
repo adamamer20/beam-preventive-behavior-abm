@@ -1551,5 +1551,3 @@ def run_cli(argv: list[str] | None = None) -> None:
                 model_plan_path=model_plan_path,
                 ref_model_by_outcome=ref_model_by_outcome,
             )
-
-

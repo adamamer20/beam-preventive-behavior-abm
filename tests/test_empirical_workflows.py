@@ -6,11 +6,11 @@ from typing import Any
 import polars as pl
 
 from beam_abm.empirical.export import export_thesis_artifacts
+from beam_abm.empirical.missingness import drop_nonfinite_rows_pl
 from beam_abm.empirical.workflows import anchors as anchor_workflows
+from beam_abm.empirical.workflows import modeling as modeling_workflows
 from beam_abm.empirical.workflows.descriptives import run_descriptives_workflow
 from beam_abm.empirical.workflows.inferential import run_inferential_workflow
-from beam_abm.empirical.workflows import modeling as modeling_workflows
-from beam_abm.empirical.missingness import drop_nonfinite_rows_pl
 
 
 def _write_minimal_dataset(path: Path) -> None:

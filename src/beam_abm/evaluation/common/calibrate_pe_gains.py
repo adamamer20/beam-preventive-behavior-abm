@@ -124,6 +124,3 @@ def run_cli(argv: list[str] | None = None) -> None:
     out_path = Path(args.out)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(out_payload, indent=2), encoding="utf-8")
-
-
-

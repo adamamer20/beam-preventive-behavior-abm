@@ -2532,6 +2532,3 @@ def run_cli(argv: list[str] | None = None) -> None:
         prompts = prompts[: max(0, int(args.limit))]
 
     _write_jsonl(Path(args.out_path), prompts)
-
-
-

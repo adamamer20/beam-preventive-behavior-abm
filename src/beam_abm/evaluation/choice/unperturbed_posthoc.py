@@ -1642,6 +1642,3 @@ def run_cli(argv: list[str] | None = None) -> None:
             lever_config=Path(args.lever_config) if args.lever_config else None,
             out=Path(args.ref_benchmark_out) if args.ref_benchmark_out else None,
         )
-
-
-

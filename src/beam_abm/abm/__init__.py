@@ -21,5 +21,6 @@ __all__ = [
     "diagnostics",
     "io",
     "outcome_scales",
-    "cli",
+    "workflows",
+    "export",
 ]

@@ -738,7 +738,6 @@ def _summarize_boolean_groups(df: pl.DataFrame, groups: dict[str, list[str]]) ->
     return out
 
 
-
 def run_descriptives_workflow(
     *,
     input_path: Path = CSV_FILE_CLEAN,

@@ -472,6 +472,3 @@ def run_cli(argv: list[str] | None = None) -> None:
                 out_rows.append({**row, "model": model_name})
 
         write_jsonl(outdir / f"samples__{family}.jsonl", out_rows, json_default=numpy_json_default)
-
-
-

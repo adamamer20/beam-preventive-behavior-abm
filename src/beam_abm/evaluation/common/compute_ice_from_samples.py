@@ -48,4 +48,3 @@ def run_cli(argv: list[str] | None = None) -> None:
         summary_out=args.summary_out,
         paired_profile_swap_on_b_then_a=args.paired_profile_swap_on_b_then_a,
     )
-

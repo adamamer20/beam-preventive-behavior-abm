@@ -25,6 +25,12 @@ make abm-sensitivity-full
 make abm-export-thesis
 ```
 
+Canonical ABM command surface:
+
+```bash
+uv run python abm/scripts/abm.py --help
+```
+
 - `make abm-diagnostics` runs the ABM diagnostics suites.
 - `make abm-run-scenarios` runs the scenario set resolved from `scenario_defs`.
 - `make abm-sensitivity-full` runs the full sensitivity pipeline.

@@ -111,5 +111,3 @@ def run_cli(argv: list[str] | None = None) -> None:
         country_col=args.country_col,
         keep_raw=bool(args.keep_raw),
     )
-
-

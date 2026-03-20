@@ -91,5 +91,3 @@ def run_cli(argv: list[str] | None = None) -> None:
         include_metadata=bool(args.include_metadata),
     )
     print(f"Wrote {count} prompts to {args.out_path}")
-
-

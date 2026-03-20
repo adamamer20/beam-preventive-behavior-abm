@@ -388,5 +388,3 @@ def run_cli(argv: list[str] | None = None) -> None:
         force=bool(args.force),
         report_out=args.report_out,
     )
-
-

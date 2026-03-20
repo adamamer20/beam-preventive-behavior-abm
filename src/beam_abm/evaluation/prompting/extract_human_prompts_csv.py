@@ -205,5 +205,3 @@ def run_cli(argv: list[str] | None = None) -> None:
         metadata_keys=metadata_keys,
     )
     print(f"Wrote {count} prompts to {args.out_path}")
-
-
