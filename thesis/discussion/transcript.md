@@ -89,4 +89,38 @@ So the boundary is quite clear. Off-the-shelf LLMs can recover some baseline str
 
 That is why, in the next step, I return to the survey-grounded relationships and use them as the core of the simulator.
 
-<!--- ABM ----->
+<!--- ABM Specification----->
+
+So, in the final step, I build the agent-based model.
+
+There is however a significant modelling challenge. The survey only gives cross-sectional behavioural relationships, and doesn't give a law of motion it does not directly tell how the same individual updates over time. So the ABM has to bridge that gap in a disciplined way.
+
+The solution I use is a partial-adjustment dynamic. Each agent has a set of mutable behavioural states, and these states move gradually toward time-varying targets. These targets are anchored in the survey-grounded equations, but adjustment is only partial. The key modelling assumption is a local one: near the current state, the between-person gradients estimated from the survey are treated as informative about the direction and relative strength of within-person change. 
+
+Adjustment is allowed to differ across constructs. Trust- and norm-related variables move more slowly, while more situational appraisals, such as perceived danger or infection risk, move faster.
+
+Beyond the dynamic update, the model introduces social interaction explicitly. The contact structure is built from recurring local ties (household-like links), and more occasional contacts. Social influence then works through two main mechanisms. First, peer-pulling. Trust- and risk-related states are pulled toward those of the contacts, with homophily making similar contacts more likely. Second, agents update their descriptive norms for vaccination and NPI behaviour by observing preventive behaviour in their contacts. The rule uses a threshold mechanism: low visible adoption has little effect, but once prevention becomes sufficiently visible, perceived prevalence rises more quickly and then saturates. 
+
+Finally, in addition to social dynamics, The model then closes the loop with a local incidence signal. Each locality carries an incidence signal that can rise, but only within bounds, and that gradually decays unless it is sustained by continued transmission pressure. Higher local protection dampens later incidence, while higher local incidence feeds back into perceived danger and related risk states.
+
+<!--- ABM Results ----->
+
+Once the ABM is specified, I compare a set of counterfactual interventions with different temporal forms, because policy interventions and epidemic shocks do not operate on the same timescale. Some are sustained campaigns, lasting 9 months, because they represent longer-running efforts such as norm or credibility campaigns. Some are one-tick pulses, because they represent short-lived shocks. The outbreak-wave scenario instead represents a temporary but much stronger worsening of epidemic conditions, with a peak around three times the baseline level. Their intensity is standardized using one-sided 1-IQR shifts in the relevant variable, following the same low-to-high convention used earlier in the reference perturbation analysis.
+
+The intervention results reveal four distinct dynamic profiles. Norm-based interventions generate the largest cumulative effects, not because they have the strongest one-step leverage, but because their influence persists and accumulates through social reinforcement and slow adjustment. Outbreak waves, by contrast, produce sharper responses through perceived risk, but these are more short-lived and relax more quickly once epidemic pressure declines. Credibility-related interventions are asymmetric: legitimacy repair mainly increases vaccination willingness, whereas institutional-trust repair has broader spillovers across both vaccination and non-pharmaceutical prevention. If effects are normalized by intervention duration, some credibility shocks, especially legitimacy-related ones, also stand out for their strong short-run impact on vaccination willingness. Access facilitation behaves differently again, because it creates a substitution effect. It can initially raise vaccination, but once protection increases, incidence pressure falls, perceived risk declines, and other precautions may weaken through feedback. So improving one preventive margin does not necessarily raise prevention everywhere else; in the model, this compensatory mechanism is strong enough that the overall net effect turns negative.
+
+Finally, I run a robustness screening using Morris sensitivity analysis.
+
+The idea here is not to ask whether every parameter matters equally, but to ask where each intervention’s effect is most sensitive. I group the uncertainty into four broad mechanism families: persistence, social diffusion, incidence feedback, and stochasticity.
+
+The resulting pattern is quite interpretable.
+
+Credibility-focused interventions depend mostly on persistence, which makes sense because their effects are carried by how slowly trust- and legitimacy-related states relax.
+
+Norm campaigns depend most strongly on social diffusion, which is exactly what we would expect if their persistence is sustained by reinforcement and network propagation.
+
+Access facilitation is more sensitive to stochasticity and incidence feedback, because it acts more directly on vaccination and less through the socially reinforcing parts of the model.
+
+A final useful result is that cumulative rankings are often more robust than late-horizon rankings. This is consistent with the mean-reverting structure of the ABM: interventions can differ strongly in total cumulative effect, even if their month-12 levels are much closer together or even reversed.
+
+So the ABM does not just simulate alternative policies. It also helps distinguish between interventions that are sharp but transient, interventions that are gradual but persistent, and interventions whose effects spill across behavioural domains through feedback.
