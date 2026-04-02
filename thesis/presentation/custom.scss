@@ -1,0 +1,437 @@
+/*-- scss:defaults --*/
+
+// Academic blue palette
+$primary-blue: #1e3a5f;           // Deep academic blue - primary accent
+$secondary-blue: #2d5a87;         // Medium blue - headers
+$highlight-blue: #4a90c2;         // Lighter blue - highlights
+$accent-blue: #6ba3d6;            // Soft blue - subtle accents
+$light-blue: #e8f1f8;             // Very light blue - backgrounds
+
+// Neutral palette
+$dark-gray: #2c3e50;              // Primary text
+$medium-gray: #5d6d7e;            // Secondary text
+$light-gray: #95a5a6;             // Muted text
+$border-gray: #dce4ec;            // Borders
+$background-white: #fafbfc;       // Slide background
+
+// Typography
+$presentation-heading-font: 'Inter', 'Source Sans Pro', 'Helvetica Neue', sans-serif !default;
+$presentation-font: 'Inter', 'Source Sans Pro', 'Helvetica Neue', sans-serif !default;
+$code-font: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace !default;
+
+// Sizing
+$presentation-font-size-root: 36px;
+$presentation-h1-font-size: 1.6em;
+$presentation-h2-font-size: 1.3em;
+$presentation-h3-font-size: 1.1em;
+$presentation-line-height: 1.4;
+
+// Colors assignment
+$body-bg: $background-white;
+$body-color: $dark-gray;
+$link-color: $highlight-blue;
+$selection-bg: $accent-blue;
+
+/*-- scss:rules --*/
+
+// Global slide styling
+.reveal .slides {
+  text-align: left;
+}
+
+.reveal .slides section {
+  padding: 40px 60px;
+}
+
+// Headings
+.reveal h1 {
+  color: $primary-blue;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.6em;
+  border-bottom: 3px solid $highlight-blue;
+  padding-bottom: 0.3em;
+}
+
+.reveal h2 {
+  color: $secondary-blue;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.5em;
+}
+
+.reveal h3 {
+  color: $medium-gray;
+  font-weight: 500;
+  margin-bottom: 0.4em;
+}
+
+// Body text
+.reveal p {
+  margin-bottom: 0.8em;
+  line-height: 1.5;
+}
+
+// Lists
+.reveal ul, .reveal ol {
+  margin-left: 1em;
+  margin-bottom: 0.8em;
+}
+
+.reveal li {
+  margin-bottom: 0.5em;
+  line-height: 1.4;
+}
+
+.reveal ul ul, .reveal ol ol {
+  margin-top: 0.3em;
+  font-size: 0.9em;
+  color: $medium-gray;
+}
+
+// Title slide (Quarto auto-generated)
+.reveal .quarto-title-block {
+  text-align: center;
+  padding-top: 80px;
+  
+  h1.title {
+    font-size: 1.5em;
+    color: $primary-blue;
+    border-bottom: none;
+    margin-bottom: 0.3em;
+    line-height: 1.2;
+    font-weight: 600;
+  }
+  
+  .subtitle {
+    font-size: 0.75em;
+    color: $secondary-blue;
+    font-weight: 400;
+    margin-bottom: 2em;
+    margin-top: 0.5em;
+  }
+  
+  .quarto-title-authors {
+    margin-top: 2em;
+    
+    .quarto-title-author {
+      font-size: 0.8em;
+      color: $dark-gray;
+      font-weight: 500;
+    }
+  }
+  
+  .quarto-title-meta {
+    margin-top: 1em;
+    
+    .quarto-title-meta-contents {
+      font-size: 0.6em;
+      color: $medium-gray;
+    }
+  }
+}
+
+// Legacy title-slide class (for manual slides)
+.reveal .title-slide {
+  text-align: center;
+  
+  h1 {
+    font-size: 1.4em;
+    border-bottom: none;
+    margin-bottom: 0.3em;
+    line-height: 1.2;
+  }
+  
+  .subtitle {
+    font-size: 0.7em;
+    color: $secondary-blue;
+    font-weight: 400;
+    margin-bottom: 1.5em;
+  }
+  
+  .author {
+    font-size: 0.65em;
+    color: $dark-gray;
+    margin-bottom: 0.3em;
+  }
+  
+  .institute {
+    font-size: 0.5em;
+    color: $medium-gray;
+  }
+  
+  .date {
+    font-size: 0.5em;
+    color: $light-gray;
+    margin-top: 1.5em;
+  }
+}
+
+// Emphasis classes
+.reveal .takeaway {
+  font-size: 1.1em;
+  font-weight: 500;
+  color: $primary-blue;
+  border-left: 4px solid $highlight-blue;
+  padding-left: 0.8em;
+  margin: 1em 0;
+}
+
+.reveal .muted {
+  color: $medium-gray;
+  font-size: 0.85em;
+}
+
+.reveal .highlight {
+  color: $highlight-blue;
+  font-weight: 500;
+}
+
+// Boxes and cards
+.reveal .concept-box {
+  background: $light-blue;
+  border-radius: 8px;
+  padding: 1em 1.2em;
+  margin: 0.8em 0;
+  border-left: 4px solid $highlight-blue;
+}
+
+.reveal .result-box {
+  background: linear-gradient(135deg, $light-blue 0%, #f0f4f8 100%);
+  border-radius: 8px;
+  padding: 1em 1.2em;
+  margin: 0.8em 0;
+  border: 1px solid $border-gray;
+}
+
+// Two-column layouts
+.reveal .columns {
+  display: flex;
+  gap: 2em;
+  align-items: flex-start;
+}
+
+.reveal .column {
+  flex: 1;
+}
+
+.reveal .column-60 {
+  flex: 1.5;
+}
+
+.reveal .column-40 {
+  flex: 1;
+}
+
+// Data cards
+.reveal .data-card {
+  background: white;
+  border: 1px solid $border-gray;
+  border-radius: 6px;
+  padding: 0.8em 1em;
+  text-align: center;
+  
+  .card-number {
+    font-size: 1.8em;
+    font-weight: 600;
+    color: $primary-blue;
+    line-height: 1;
+  }
+  
+  .card-label {
+    font-size: 0.7em;
+    color: $medium-gray;
+    margin-top: 0.3em;
+  }
+}
+
+// Pipeline/flow styling
+.reveal .pipeline-step {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  margin: 0.5em 0;
+  
+  .step-number {
+    background: $primary-blue;
+    color: white;
+    width: 2em;
+    height: 2em;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  
+  .step-content {
+    flex: 1;
+  }
+}
+
+// Block/construct labels
+.reveal .block-tag {
+  display: inline-block;
+  background: $light-blue;
+  color: $secondary-blue;
+  padding: 0.2em 0.6em;
+  border-radius: 4px;
+  font-size: 0.8em;
+  font-weight: 500;
+  margin: 0.15em;
+}
+
+// Figures and diagrams
+.reveal figure {
+  margin: 1em 0;
+  text-align: center;
+}
+
+.reveal figcaption {
+  font-size: 0.7em;
+  color: $medium-gray;
+  margin-top: 0.5em;
+}
+
+// Mermaid diagram styling
+.reveal .mermaid {
+  margin: 1em auto;
+}
+
+// Code blocks (minimal use)
+.reveal pre {
+  font-size: 0.6em;
+  background: #f8f9fa;
+  border-radius: 4px;
+  padding: 0.8em;
+}
+
+.reveal code {
+  font-family: $code-font;
+  font-size: 0.85em;
+  background: $light-blue;
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+}
+
+// Backup slides marker
+.reveal .backup-marker {
+  background: $medium-gray;
+  color: white;
+  font-size: 0.6em;
+  padding: 0.2em 0.5em;
+  border-radius: 3px;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+// Small text for notes
+.reveal .small {
+  font-size: 0.75em;
+  color: $medium-gray;
+}
+
+// Country flags row
+.reveal .country-row {
+  display: flex;
+  justify-content: center;
+  gap: 1.5em;
+  margin: 1em 0;
+  
+  .country-item {
+    text-align: center;
+    
+    .country-flag {
+      font-size: 1.5em;
+    }
+    
+    .country-name {
+      font-size: 0.6em;
+      color: $medium-gray;
+    }
+  }
+}
+
+// Outcome categories
+.reveal .outcome-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1em;
+  margin: 1em 0;
+}
+
+// Horizontal rule
+.reveal hr {
+  border: none;
+  border-top: 1px solid $border-gray;
+  margin: 1em 0;
+}
+
+// Tables
+.reveal table {
+  font-size: 0.75em;
+  border-collapse: collapse;
+  margin: 0.8em 0;
+  width: 100%;
+}
+
+.reveal table th {
+  background: $light-blue;
+  color: $primary-blue;
+  font-weight: 600;
+  padding: 0.6em 0.8em;
+  text-align: left;
+  border-bottom: 2px solid $highlight-blue;
+}
+
+.reveal table td {
+  padding: 0.5em 0.8em;
+  border-bottom: 1px solid $border-gray;
+}
+
+.reveal table tr:last-child td {
+  border-bottom: none;
+}
+
+.reveal table tr:nth-child(even) {
+  background: rgba($light-blue, 0.3);
+}
+
+// Smaller tables class
+.reveal .smaller table {
+  font-size: 0.65em;
+}
+
+// Speaker notes (not displayed)
+.reveal aside.notes {
+  display: none;
+}
+
+// Progress bar
+.reveal .progress {
+  background: $border-gray;
+  height: 4px;
+}
+
+.reveal .progress span {
+  background: $highlight-blue;
+}
+
+// Slide numbers
+.reveal .slide-number {
+  font-size: 14px;
+  color: $light-gray;
+  background: transparent;
+}
+
+// Equations
+.reveal .MathJax {
+  font-size: 0.95em;
+}
+
+// Transitions
+.reveal .slides section {
+  transition: none;
+}

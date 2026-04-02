@@ -1,0 +1,1008 @@
+---
+title: "From Survey Data to Behavioural ABMs"
+subtitle: "Evaluating the Limits of LLM Agents in Preventive Behaviour Modelling"
+author: "Adam Amer"
+institute: "MSc Economic and Social Sciences · University of Bocconi"
+date: "April 2025"
+format:
+  revealjs:
+    theme: [simple, custom.scss]
+    slide-number: true
+    progress: true
+    hash: true
+    navigation-mode: linear
+    controls: true
+    center: false
+    width: 1600
+    height: 900
+    margin: 0.05
+    transition: none
+    title-slide-attributes:
+      data-background-color: "#fafbfc"
+    mermaid:
+      theme: neutral
+    self-contained: true
+    embed-resources: true
+execute:
+  echo: false
+  warning: false
+---
+
+
+<!-- ============================================= -->
+<!-- SLIDE 2: RESEARCH MOTIVATION -->
+<!-- ============================================= -->
+
+## Policy requires counterfactual reasoning
+
+:::: {.columns}
+
+::: {.column width="55%"}
+
+**The core challenge:**
+
+- Policymakers need to know what would happen under alternative interventions
+- Social systems resist clean randomisation
+- Outcomes shaped by heterogeneous agents, mutual influence, feedback
+
+<br>
+
+**Agent-based models offer a computational lab**
+
+- Simulate interventions from the bottom up
+- But aggregate fit is not enough
+- Different micro-mechanisms → similar macro-outcomes
+
+:::
+
+::: {.column width="45%"}
+
+```{mermaid}
+%%| fig-width: 6
+%%| fig-height: 4.5
+flowchart TD
+    subgraph Problem["Policy Challenge"]
+        Q[What would happen<br/>under intervention X?]
+    end
+    
+    subgraph Barriers["Why It's Hard"]
+        B1[Cannot randomise<br/>many policies]
+        B2[Heterogeneous<br/>individuals]
+        B3[Mutual influence<br/>& feedback]
+    end
+    
+    subgraph Solution["Computational Approach"]
+        ABM[Agent-Based<br/>Models]
+    end
+    
+    subgraph Caveat["But..."]
+        C[Aggregate fit ≠<br/>correct mechanisms]
+    end
+    
+    Q --> B1 & B2 & B3
+    B1 & B2 & B3 --> ABM
+    ABM --> C
+    
+    style Problem fill:#e8f1f8,stroke:#1e3a5f
+    style Solution fill:#e8f1f8,stroke:#1e3a5f
+    style Caveat fill:#fff5f5,stroke:#c0392b
+```
+
+:::
+
+::::
+
+::: {.notes}
+Policy design is fundamentally counterfactual. In social sciences, clean experiments are rare. ABMs can move this logic into computation, but they face the identification problem: aggregate fit doesn't guarantee correct micro-mechanisms.
+:::
+
+
+<!-- ============================================= -->
+<!-- SLIDE 3: THESIS PROPOSAL - PIPELINE -->
+<!-- ============================================= -->
+
+## A disciplined pipeline from empirics to simulation
+
+```{mermaid}
+%%| fig-width: 14
+%%| fig-height: 5
+flowchart LR
+    subgraph Phase1["1  Empirical Backbone"]
+        D[Cross-country<br/>survey data] --> R[Compact<br/>representation]
+        R --> E[Fitted behavioural<br/>equations]
+    end
+    
+    subgraph Phase2["2  LLM Micro-Validation"]
+        E --> T[Test LLM<br/>agents]
+        T --> B[Baseline<br/>patterns]
+        T --> P[Perturbed<br/>responses]
+    end
+    
+    subgraph Phase3["3  Survey-Grounded ABM"]
+        E --> ABM[Behavioural<br/>core]
+        ABM --> DYN[+ Social interaction<br/>+ Epidemic feedback]
+        DYN --> INT[Policy<br/>comparison]
+    end
+    
+    Phase1 --> Phase2
+    Phase1 --> Phase3
+    
+    style Phase1 fill:#e8f1f8,stroke:#1e3a5f
+    style Phase2 fill:#eef5ed,stroke:#27ae60
+    style Phase3 fill:#fef5e7,stroke:#d68910
+```
+
+<br>
+
+::: {.takeaway}
+Three-step design: empirical grounding → LLM evaluation → hybrid simulation
+:::
+
+
+<!-- ============================================= -->
+<!-- SLIDE 4: EMPIRICAL BACKBONE - DATA -->
+<!-- ============================================= -->
+
+## Empirical backbone: Data and outcomes
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+**Cross-country survey**
+
+::: {.country-row}
+::: {.country-item}
+[🇮🇹]{.country-flag}
+[Italy]{.country-name}
+:::
+::: {.country-item}
+[🇪🇸]{.country-flag}
+[Spain]{.country-name}
+:::
+::: {.country-item}
+[🇫🇷]{.country-flag}
+[France]{.country-name}
+:::
+::: {.country-item}
+[🇩🇪]{.country-flag}
+[Germany]{.country-name}
+:::
+::: {.country-item}
+[🇭🇺]{.country-flag}
+[Hungary]{.country-name}
+:::
+::: {.country-item}
+[🇬🇧]{.country-flag}
+[UK]{.country-name}
+:::
+:::
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="50%"}
+::: {.data-card}
+[~22,000]{.card-number}
+[respondents]{.card-label}
+:::
+:::
+
+::: {.column width="50%"}
+::: {.data-card}
+[2024]{.card-number}
+[survey wave]{.card-label}
+:::
+:::
+
+::::
+
+:::
+
+::: {.column width="60%"}
+
+**Core prevention outcomes**
+
+| Outcome | Description |
+|---------|-------------|
+| **COVID vaccination** | Willingness at first/second dose phase |
+| **Flu vaccination** | 2023/2024 uptake |
+| **Masking (symptomatic)** | When ill in crowded places |
+| **Stay home (symptomatic)** | When showing symptoms |
+| **Masking (high pressure)** | Under epidemic conditions |
+
+<br>
+
+**Survey covers:** demographics, health, COVID/flu experience, vaccine beliefs, information environment, social exposure, trust, barriers, moral orientations
+
+:::
+
+::::
+
+
+<!-- ============================================= -->
+<!-- SLIDE 5: EMPIRICAL BACKBONE - METHOD -->
+<!-- ============================================= -->
+
+## From high-dimensional survey to compact backbone
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+**Reduction pipeline**
+
+```{mermaid}
+%%| fig-width: 6
+%%| fig-height: 4.5
+flowchart TD
+    A[Raw survey items<br/>~100+ questions] --> B[Derived variables<br/>& indices]
+    B --> C[Theory-guided<br/>blocks]
+    C --> D[Fitted equations<br/>per outcome]
+    D --> E[Retained backbone<br/>unique signal only]
+    
+    style A fill:#f8f9fa,stroke:#5d6d7e
+    style E fill:#e8f1f8,stroke:#1e3a5f
+```
+
+:::
+
+::: {.column width="50%"}
+
+**Theory-guided blocks**
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+[Stakes]{.block-tag}
+[Trust]{.block-tag}
+[Legitimacy]{.block-tag}
+[Disposition]{.block-tag}
+
+:::
+
+::: {.column width="50%"}
+
+[Habit]{.block-tag}
+[Moral orientation]{.block-tag}
+[Constraints]{.block-tag}
+[Norms]{.block-tag}
+
+:::
+
+::::
+
+<br>
+
+**Goal:** A compact, interpretable representation that:
+
+- Carries into LLM evaluation
+- Anchors the ABM behavioural core
+- Identifies unique signal per block
+
+:::
+
+::::
+
+
+<!-- ============================================= -->
+<!-- SLIDE 6: EMPIRICAL RESULTS - BLOCK IMPORTANCE -->
+<!-- ============================================= -->
+
+## Prevention has a compact but outcome-specific structure
+
+:::: {.columns}
+
+::: {.column width="45%"}
+
+**Key finding:**
+
+The same broad blocks recur, but their **relative importance changes** by outcome
+
+<br>
+
+**COVID vaccination**
+
+- Dominant: [Stakes]{.block-tag}
+- Supporting: [Trust]{.block-tag} [Legitimacy]{.block-tag} [Disposition]{.block-tag}
+
+<br>
+
+**Flu vaccination**
+
+- Dominant: [Habit]{.block-tag}
+- Without habit: age + health become central
+
+<br>
+
+**Non-pharmaceutical (NPIs)**
+
+- Dominant: [Moral orientation]{.block-tag}
+- Supporting: [Stakes]{.block-tag}
+
+:::
+
+::: {.column width="55%"}
+
+**Block importance by outcome**
+
+<div style="font-size: 0.75em;">
+
+| Block | COVID Vax | Flu Vax | NPIs |
+|:------|:---------:|:-------:|:----:|
+| **Stakes** | ████ | █ | ██ |
+| **Trust** | ██ | █ | █ |
+| **Legitimacy** | ██ | · | · |
+| **Disposition** | ██ | █ | █ |
+| **Habit** | █ | ████ | · |
+| **Moral orient.** | · | · | ███ |
+
+</div>
+
+::: {.small}
+████ = dominant · ██/███ = important · █ = present · · = negligible
+:::
+
+:::
+
+::::
+
+::: {.takeaway}
+Same framework, different weights — behaviour-specific policy levers
+:::
+
+
+<!-- ============================================= -->
+<!-- SLIDE 7: EMPIRICAL RESULTS - PERTURBATION -->
+<!-- ============================================= -->
+
+## Which levers actually move behaviour?
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+**Reference perturbation effect**
+
+Move one variable from typical low → typical high, holding rest fixed
+
+<br>
+
+**Results align with block importance:**
+
+| Outcome | Strongest lever |
+|---------|-----------------|
+| COVID vaccination | Stakes, Disposition, Trust |
+| Flu vaccination | Limited short-run leverage (habit-driven) |
+| NPIs | Dispersed effects (headroom matters) |
+
+<br>
+
+::: {.concept-box}
+**Headroom effect:** Profiles already near ceiling/floor show limited response to shifts
+:::
+
+:::
+
+::: {.column width="50%"}
+
+```{mermaid}
+%%| fig-width: 6.5
+%%| fig-height: 5
+flowchart TB
+    subgraph Input["Perturbation Design"]
+        direction LR
+        LOW[Low profile<br/>value] -->|"Shift"| HIGH[High profile<br/>value]
+    end
+    
+    subgraph Model["Fitted Equation"]
+        EQ[Predict outcome<br/>change]
+    end
+    
+    subgraph Result["Reference Effect"]
+        direction TB
+        R1["Stakes → COVID vax: ↑↑↑"]
+        R2["Habit → Flu vax: ↑ (inertial)"]
+        R3["Moral → NPIs: ↑↑"]
+    end
+    
+    Input --> Model --> Result
+    
+    style Input fill:#e8f1f8,stroke:#1e3a5f
+    style Model fill:#f8f9fa,stroke:#5d6d7e
+    style Result fill:#eef5ed,stroke:#27ae60
+```
+
+:::
+
+::::
+
+
+<!-- ============================================= -->
+<!-- SLIDE 8: LLM EVALUATION - DESIGN -->
+<!-- ============================================= -->
+
+## LLM micro-validation: Testing against the empirical benchmark
+
+:::: {.columns}
+
+::: {.column width="55%"}
+
+**Evaluation design:**
+
+| Setting | Question |
+|---------|----------|
+| **Unperturbed** | Can LLM reconstruct baseline survey patterns? |
+| **Perturbed** | Does LLM respond correctly to controlled shifts? |
+
+<br>
+
+**Two accuracy dimensions:**
+
+1. **Level accuracy** — Predict correct value
+2. **Rank agreement** — Order respondents correctly (low → high propensity)
+
+<br>
+
+**Applied to:**
+
+- Behavioural outcomes (vaccination, NPIs)
+- Psychological profile variables (state dimensions for simulation)
+
+:::
+
+::: {.column width="45%"}
+
+```{mermaid}
+%%| fig-width: 5.5
+%%| fig-height: 5
+flowchart TD
+    subgraph Benchmark["Empirical Benchmark"]
+        E1[Survey-grounded<br/>patterns]
+    end
+    
+    subgraph Tests["Evaluation Matrix"]
+        T1[Unperturbed<br/>baseline]
+        T2[Perturbed<br/>shifts]
+    end
+    
+    subgraph Metrics["Assessment"]
+        M1[Level<br/>accuracy]
+        M2[Rank<br/>agreement]
+    end
+    
+    subgraph Targets["Variables"]
+        V1[Behavioural<br/>outcomes]
+        V2[Profile<br/>states]
+    end
+    
+    Benchmark --> Tests
+    Tests --> Metrics
+    Metrics --> Targets
+    
+    style Benchmark fill:#e8f1f8,stroke:#1e3a5f
+    style Tests fill:#f8f9fa,stroke:#5d6d7e
+    style Targets fill:#eef5ed,stroke:#27ae60
+```
+
+:::
+
+::::
+
+
+<!-- ============================================= -->
+<!-- SLIDE 9: LLM RESULTS - BASELINE -->
+<!-- ============================================= -->
+
+## Baseline structure is partly recovered
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+**Mixed but non-trivial results:**
+
+<br>
+
+::: {.result-box}
+**✓ Ranking** — LLMs can order respondents from lower to higher propensity
+:::
+
+<br>
+
+::: {.result-box}
+**✗ Level accuracy** — Predictions compress toward the middle
+:::
+
+<br>
+
+**Central-tendency compression:**
+
+- Low values overpredicted
+- High values underpredicted
+- Heterogeneity reduced
+
+<br>
+
+::: {.muted}
+Same pattern appears for psychological profile variables — would make simulated agents too similar
+:::
+
+:::
+
+::: {.column width="50%"}
+
+**Baseline performance pattern**
+
+<div style="display: flex; align-items: flex-end; height: 200px; gap: 60px; justify-content: center; margin-top: 40px;">
+<div style="text-align: center;">
+<div style="background: linear-gradient(to top, #1e3a5f 0%, #4a90c2 100%); width: 80px; height: 130px; border-radius: 4px 4px 0 0;"></div>
+<div style="margin-top: 10px; font-size: 0.8em; color: #5d6d7e;">Ranking<br/>✓ Moderate</div>
+</div>
+<div style="text-align: center;">
+<div style="background: linear-gradient(to top, #95a5a6 0%, #bdc3c7 100%); width: 80px; height: 80px; border-radius: 4px 4px 0 0;"></div>
+<div style="margin-top: 10px; font-size: 0.8em; color: #5d6d7e;">Level<br/>✗ Weak</div>
+</div>
+</div>
+
+<br>
+
+::: {.concept-box}
+**Implication:** LLMs are better at *relative* ordering than *absolute* positioning
+:::
+
+:::
+
+::::
+
+
+<!-- ============================================= -->
+<!-- SLIDE 10: LLM RESULTS - COUNTERFACTUAL BREAKDOWN -->
+<!-- ============================================= -->
+
+## Counterfactual coherence breaks down
+
+:::: {.columns}
+
+::: {.column width="55%"}
+
+**Under controlled perturbations:**
+
+- Responses often too weak or too strong
+- Effects too diffuse across respondents
+- Paired comparisons help somewhat
+- **Effect sizes remain miscalibrated**
+
+<br>
+
+**Core problem:**
+
+LLMs spread effects too widely instead of preserving the selective structure from the empirical benchmark
+
+<br>
+
+::: {.takeaway}
+Off-the-shelf LLMs are not reliable as behavioural update mechanisms for counterfactual ABMs
+:::
+
+:::
+
+::: {.column width="45%"}
+
+```{mermaid}
+%%| fig-width: 5.5
+%%| fig-height: 5.5
+flowchart TD
+    subgraph Baseline["Baseline"]
+        B[Moderate<br/>ranking recovery]
+    end
+    
+    subgraph Perturbed["Under Perturbation"]
+        P1[Too weak<br/>or too strong]
+        P2[Too diffuse<br/>across profiles]
+        P3[Effect sizes<br/>miscalibrated]
+    end
+    
+    subgraph Boundary["Clear Boundary"]
+        X[❌ Not suitable for<br/>counterfactual ABM]
+    end
+    
+    Baseline --> Perturbed
+    Perturbed --> Boundary
+    
+    style Baseline fill:#eef5ed,stroke:#27ae60
+    style Perturbed fill:#fff5f5,stroke:#c0392b
+    style Boundary fill:#fff5f5,stroke:#c0392b
+```
+
+:::
+
+::::
+
+::: {.notes}
+This is one of the key contribution slides. The boundary is clear: baseline plausibility is not enough for simulation.
+:::
+
+
+<!-- ============================================= -->
+<!-- SLIDE 11: ABM ARCHITECTURE -->
+<!-- ============================================= -->
+
+## ABM architecture: Survey-grounded behavioural core
+
+```{mermaid}
+%%| fig-width: 14
+%%| fig-height: 6
+flowchart LR
+    subgraph Core["Behavioural Core"]
+        direction TB
+        SURVEY[Survey-grounded<br/>equations] --> TARGETS[Time-varying<br/>targets]
+        TARGETS --> PARTIAL[Partial<br/>adjustment]
+    end
+    
+    subgraph Dynamics["Dynamic Mechanisms"]
+        direction TB
+        PEER[Peer exposure<br/>homophily-weighted]
+        NORM[Norm updating<br/>threshold contagion]
+        SOCIAL[Social<br/>interaction]
+        PEER --> SOCIAL
+        NORM --> SOCIAL
+    end
+    
+    subgraph Feedback["Epidemic Feedback"]
+        direction TB
+        INC[Local incidence<br/>signal]
+        PROTECT[Protection<br/>dampens spread]
+        RISK[Feeds back to<br/>perceived risk]
+        INC --> PROTECT
+        PROTECT --> RISK
+    end
+    
+    Core --> Dynamics
+    Dynamics --> Feedback
+    Feedback --> Core
+    
+    style Core fill:#e8f1f8,stroke:#1e3a5f
+    style Dynamics fill:#eef5ed,stroke:#27ae60
+    style Feedback fill:#fef5e7,stroke:#d68910
+```
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="33%"}
+**Partial adjustment**
+
+States move gradually toward targets; trust/norms adjust slowly, risk appraisals faster
+:::
+
+::: {.column width="33%"}
+**Social influence**
+
+Peer-pulling on trust/risk; norm updating via threshold visibility
+:::
+
+::: {.column width="33%"}
+**Incidence loop**
+
+Higher protection → lower incidence → lower perceived risk
+:::
+
+::::
+
+
+<!-- ============================================= -->
+<!-- SLIDE 12: ABM INTERVENTIONS -->
+<!-- ============================================= -->
+
+## Interventions reveal distinct dynamic profiles
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+**Four intervention types compared:**
+
+| Type | Duration | Mechanism |
+|------|----------|-----------|
+| **Norm campaigns** | 9 months | Social reinforcement |
+| **Credibility repair** | 9 months | Trust/legitimacy |
+| **Outbreak wave** | Pulse | Risk salience |
+| **Access facilitation** | 9 months | Barrier removal |
+
+<br>
+
+**Key findings:**
+
+::: {.result-box}
+**Norms** → Largest cumulative effects (persist through social reinforcement)
+:::
+
+::: {.result-box}
+**Outbreak** → Sharp but short-lived (relaxes when pressure declines)
+:::
+
+::: {.result-box}
+**Credibility** → Asymmetric spillovers (legitimacy ≠ trust)
+:::
+
+::: {.result-box}
+**Access** → Substitution effect (↑ vaccination → ↓ incidence → ↓ other precautions)
+:::
+
+:::
+
+::: {.column width="50%"}
+
+**Cumulative effect profiles**
+
+<div style="display: flex; align-items: flex-end; height: 220px; gap: 30px; justify-content: center; margin-top: 20px;">
+<div style="text-align: center;">
+<div style="background: linear-gradient(to top, #1e3a5f 0%, #2d5a87 100%); width: 65px; height: 180px; border-radius: 4px 4px 0 0;"></div>
+<div style="margin-top: 8px; font-size: 0.7em; color: #5d6d7e;">Norms</div>
+</div>
+<div style="text-align: center;">
+<div style="background: linear-gradient(to top, #2d5a87 0%, #4a90c2 100%); width: 65px; height: 120px; border-radius: 4px 4px 0 0;"></div>
+<div style="margin-top: 8px; font-size: 0.7em; color: #5d6d7e;">Credibility</div>
+</div>
+<div style="text-align: center;">
+<div style="background: linear-gradient(to top, #4a90c2 0%, #6ba3d6 100%); width: 65px; height: 75px; border-radius: 4px 4px 0 0;"></div>
+<div style="margin-top: 8px; font-size: 0.7em; color: #5d6d7e;">Outbreak</div>
+</div>
+<div style="text-align: center;">
+<div style="background: linear-gradient(to top, #95a5a6 0%, #bdc3c7 100%); width: 65px; height: 35px; border-radius: 4px 4px 0 0;"></div>
+<div style="margin-top: 8px; font-size: 0.7em; color: #5d6d7e;">Access</div>
+</div>
+</div>
+
+<br>
+
+::: {.concept-box}
+**Substitution insight:** Improving one prevention margin does not necessarily raise prevention everywhere
+:::
+
+:::
+
+::::
+
+
+<!-- ============================================= -->
+<!-- SLIDE 13: ABM SENSITIVITY -->
+<!-- ============================================= -->
+
+## Sensitivity analysis: Where do effects come from?
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+**Morris screening by mechanism family:**
+
+| Family | Description |
+|--------|-------------|
+| **Persistence** | How slowly states relax |
+| **Social diffusion** | Network propagation strength |
+| **Incidence feedback** | Behaviour ↔ epidemic loop |
+| **Stochasticity** | Random variation |
+
+<br>
+
+**Interpretable pattern:**
+
+- **Credibility** → most sensitive to *persistence*
+- **Norms** → most sensitive to *social diffusion*
+- **Access** → sensitive to *stochasticity* + *incidence feedback*
+
+:::
+
+::: {.column width="50%"}
+
+**Sensitivity by mechanism family**
+
+<div style="font-size: 0.75em;">
+
+| Intervention | Persistence | Diffusion | Incidence | Stochastic |
+|:-------------|:-----------:|:---------:|:---------:|:----------:|
+| **Credibility** | ███ | █ | █ | █ |
+| **Norms** | █ | ███ | █ | █ |
+| **Access** | █ | █ | ██ | ██ |
+
+</div>
+
+::: {.small}
+███ = primary driver · ██ = important · █ = minor
+:::
+
+<br>
+
+::: {.concept-box}
+**Robustness:** Cumulative rankings often more robust than month-12 rankings (mean-reverting dynamics)
+:::
+
+:::
+
+::::
+
+
+<!-- ============================================= -->
+<!-- SLIDE 14: TAKEAWAYS -->
+<!-- ============================================= -->
+
+## Takeaways
+
+<br>
+
+::: {.takeaway style="font-size: 1.2em; margin-bottom: 1.5em;"}
+**1.** Prevention behaviour has a **compact but outcome-specific** empirical structure — same blocks, different weights
+:::
+
+::: {.takeaway style="font-size: 1.2em; margin-bottom: 1.5em;"}
+**2.** Off-the-shelf LLMs recover some baseline patterns but are **not counterfactually disciplined** for behavioural updating in simulation
+:::
+
+::: {.takeaway style="font-size: 1.2em; margin-bottom: 1.5em;"}
+**3.** A **survey-grounded hybrid pipeline** — empirical backbone + dynamic mechanisms — offers a more credible route to policy simulation
+:::
+
+<br>
+<br>
+
+::: {style="text-align: center; color: #5d6d7e; font-size: 0.9em;"}
+**Thank you**
+
+Questions?
+:::
+
+
+<!-- ============================================= -->
+<!-- BACKUP SLIDES -->
+<!-- ============================================= -->
+
+## {.center background-color="#1e3a5f"}
+
+::: {style="color: white; font-size: 1.5em; text-align: center;"}
+**Backup Slides**
+:::
+
+
+<!-- ============================================= -->
+<!-- BACKUP: BLOCK DICTIONARY -->
+<!-- ============================================= -->
+
+## Construct / block dictionary {.smaller}
+
+::: {.backup-marker}
+BACKUP
+:::
+
+| Block | Components | Description |
+|-------|------------|-------------|
+| **Stakes** | Perceived danger, fear, infection likelihood, vulnerability | How threatened does the person feel? |
+| **Institutional Trust** | Trust in government, health authorities, science | Confidence in public institutions |
+| **Legitimacy** | Acceptance of vaccine rollout, governance process | Was the policy process fair? |
+| **Disposition** | Vaccine confidence, general attitudes | Pre-existing stance toward vaccines |
+| **Habit** | Past vaccination behaviour | Routine vs. deliberative decision |
+| **Moral Orientation** | Individualising vs. binding foundations | Prosocial vs. authority-based framing |
+| **Norms** | Perceived prevalence, social expectations | What do others do and expect? |
+| **Constraints** | Access barriers, time, information | Practical obstacles |
+
+
+<!-- ============================================= -->
+<!-- BACKUP: LLM EVALUATION DETAILS -->
+<!-- ============================================= -->
+
+## LLM evaluation: Prompt strategies {.smaller}
+
+::: {.backup-marker}
+BACKUP
+:::
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+**Prompting variants tested:**
+
+- Zero-shot description
+- Profile-with-demographics
+- Chain-of-thought reasoning
+- Paired comparison (explicit contrast)
+
+<br>
+
+**Models evaluated:**
+
+- GPT-4 / GPT-3.5
+- Claude variants
+- Open-source alternatives
+
+:::
+
+::: {.column width="50%"}
+
+**Metrics:**
+
+| Metric | Measures |
+|--------|----------|
+| MAE | Level accuracy |
+| Spearman ρ | Rank agreement |
+| Calibration slope | Compression degree |
+| Paired accuracy | Contrast discrimination |
+
+<br>
+
+::: {.muted}
+Full results in appendix
+:::
+
+:::
+
+::::
+
+
+<!-- ============================================= -->
+<!-- BACKUP: ABM EQUATIONS -->
+<!-- ============================================= -->
+
+## ABM equations: Partial adjustment {.smaller}
+
+::: {.backup-marker}
+BACKUP
+:::
+
+**State update:**
+
+$$
+s_{i,u}(t+1) = s_{i,u}(t) + \kappa_u\big(\tilde s_{i,u}(t)-s_{i,u}(t)\big)
+$$
+
+where $\kappa_u \in \{k_{\text{fast}}, k_{\text{slow}}\}$
+
+<br>
+
+**Target composition:**
+
+$$
+\tilde s_{i,u}(t) = s_{i,u}^{\text{base}} + \Delta^{\text{policy}}(t) + \Delta^{\text{social}}(t) + \Delta^{\text{incidence}}(t)
+$$
+
+<br>
+
+**Norm updating (threshold):**
+
+$$
+\text{norm}_{i}(t+1) = \text{norm}_{i}(t) + \alpha_i \cdot \mathbb{1}\left[\text{observed} > \theta_i\right] \cdot g(\text{observed})
+$$
+
+
+<!-- ============================================= -->
+<!-- BACKUP: MORRIS SENSITIVITY -->
+<!-- ============================================= -->
+
+## Morris sensitivity: Full results {.smaller}
+
+::: {.backup-marker}
+BACKUP
+:::
+
+**Elementary effects screening:**
+
+- Parameter space partitioned into mechanism families
+- μ* captures average absolute effect
+- σ captures interaction/non-linearity
+
+<br>
+
+**Key insights:**
+
+1. Credibility interventions → persistence parameters dominate
+2. Norm interventions → social diffusion parameters dominate
+3. Access interventions → mixed (incidence + stochastic)
+4. Cumulative AUC rankings more stable than point-in-time rankings
+
+::: {.muted}
+Confirms that intervention types work through distinct mechanisms, and that model structure drives the differentiation
+:::
