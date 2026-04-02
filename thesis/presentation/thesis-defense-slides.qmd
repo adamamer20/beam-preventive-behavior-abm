@@ -27,10 +27,6 @@ execute:
   warning: false
 ---
 
-<!-- ============================================= -->
-<!-- SLIDE 2: RESEARCH MOTIVATION -->
-<!-- ============================================= -->
-
 ## Policy requires counterfactual reasoning
 
 :::: {.columns}
