@@ -27,64 +27,20 @@ execute:
   warning: false
 ---
 
-## Policy requires counterfactual reasoning
+## Research motivation: Policy needs counterfactuals
 
-:::: {.columns}
+**Core challenge**
 
-::: {.column width="55%"}
-
-**The core challenge:**
-
-- Policymakers need to know what would happen under alternative interventions
-- Social systems resist clean randomisation
-- Outcomes shaped by heterogeneous agents, mutual influence, feedback
+- Policymakers need to reason about alternative interventions
+- Social systems are hard to randomise cleanly
+- Outcomes depend on heterogeneity, interaction, and feedback
 
 <br>
 
-**Agent-based models offer a computational lab**
+**Why ABMs**
 
-- Simulate interventions from the bottom up
-- But aggregate fit is not enough
-- Different micro-mechanisms → similar macro-outcomes
-
-:::
-
-::: {.column width="45%"}
-
-```{mermaid}
-%%| fig-width: 6
-%%| fig-height: 4.5
-flowchart TD
-    subgraph Problem["Policy Challenge"]
-        Q[What would happen<br/>under intervention X?]
-    end
-    
-    subgraph Barriers["Why It's Hard"]
-        B1[Cannot randomise<br/>many policies]
-        B2[Heterogeneous<br/>individuals]
-        B3[Mutual influence<br/>& feedback]
-    end
-    
-    subgraph Solution["Computational Approach"]
-        ABM[Agent-Based<br/>Models]
-    end
-    
-    subgraph Caveat["But..."]
-        C[Aggregate fit ≠<br/>correct mechanisms]
-    end
-    
-    Q --> B1 & B2 & B3
-    B1 & B2 & B3 --> ABM
-    ABM --> C
-    
-    style Problem fill:#e8f1f8,stroke:#1e3a5f
-    style Solution fill:#e8f1f8,stroke:#1e3a5f
-    style Caveat fill:#fff5f5,stroke:#c0392b
-```
-
-:::
-
-::::
+- They provide a computational laboratory for counterfactuals
+- But aggregate fit alone does not identify the correct mechanism
 
 ::: {.notes}
 Policy design is fundamentally counterfactual. In social sciences, clean experiments are rare. ABMs can move this logic into computation, but they face the identification problem: aggregate fit doesn't guarantee correct micro-mechanisms.
