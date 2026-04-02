@@ -1,4 +1,4 @@
-.PHONY: help setup dev dev-install test quick-test test-cov lint format check quality pre-commit docs docs-build clean build publish upgrade sync paper-render paper-preview paper-check thesis-render thesis-render-cached thesis-preview thesis-artifacts decision-function-export-thesis llm-microvalidation-run-behavioural-outcomes-baseline llm-microvalidation-run-behavioural-outcomes-perturbed llm-microvalidation-run-psychological-profiles-baseline llm-microvalidation-run-psychological-profiles-perturbed llm-microvalidation-export-thesis abm-export-thesis clean-spec-post-general preprocess-clean descriptives fetch-ppp inferential modeling-aggregate anchors anchors-pe-reduced anchors-pe-full anchors-pe-ref-p anchors-build anchors-diagnostics abm-diagnostics abm-run-scenarios abm-sensitivity-full abm-sensitivity-full-posthoc
+.PHONY: help setup dev dev-install test quick-test test-cov lint format check quality pre-commit docs docs-build clean build publish upgrade sync paper-render paper-preview paper-check thesis-render thesis-render-cached thesis-preview thesis-render-one presentation-render presentation-serve thesis-artifacts decision-function-export-thesis llm-microvalidation-run-behavioural-outcomes-baseline llm-microvalidation-run-behavioural-outcomes-perturbed llm-microvalidation-run-psychological-profiles-baseline llm-microvalidation-run-psychological-profiles-perturbed llm-microvalidation-export-thesis abm-export-thesis clean-spec-post-general preprocess-clean descriptives fetch-ppp inferential modeling-aggregate anchors anchors-pe-reduced anchors-pe-full anchors-pe-ref-p anchors-build anchors-diagnostics abm-diagnostics abm-run-scenarios abm-sensitivity-full abm-sensitivity-full-posthoc
 
 MODELING_WORKERS ?= 8
 ANCHOR_K ?= 10
@@ -296,6 +296,27 @@ thesis-render-one: ## Render a single thesis page (HTML + PDF): make thesis-rend
 		cd thesis && LOG_TO_CONSOLE=0 LOG_LEVEL=CRITICAL QUARTO_PYTHON=$$THESIS_PY quarto render "$(FILE)" --to html && \
 		LOG_TO_CONSOLE=0 LOG_LEVEL=CRITICAL QUARTO_PYTHON=$$THESIS_PY quarto render "$(FILE)" --to pdf
 	@echo "✅ Single page rendered (HTML + PDF)!"
+
+presentation-render: ## Render thesis presentation slides (RevealJS HTML)
+	@echo "🎞️  Rendering thesis presentation..."
+	@if [ ! -d thesis/node_modules ]; then \
+		echo "📦 Installing thesis Mermaid pre-render dependencies (npm)..."; \
+		cd thesis && npm install; \
+	fi
+	@THESIS_PY=$$(uv run python -c 'import sys; print(sys.executable)'); \
+		echo "Using QUARTO_PYTHON=$$THESIS_PY"; \
+		cd thesis/presentation && LOG_TO_CONSOLE=0 LOG_LEVEL=CRITICAL QUARTO_PYTHON=$$THESIS_PY quarto render thesis-defense-slides.qmd --to revealjs
+	@echo "✅ Presentation rendered: thesis/presentation/thesis-defense-slides.html"
+
+presentation-serve: ## Serve thesis presentation slides locally with Quarto preview
+	@echo "👀 Serving thesis presentation..."
+	@if [ ! -d thesis/node_modules ]; then \
+		echo "📦 Installing thesis Mermaid pre-render dependencies (npm)..."; \
+		cd thesis && npm install; \
+	fi
+	@THESIS_PY=$$(uv run python -c 'import sys; print(sys.executable)'); \
+		echo "Using QUARTO_PYTHON=$$THESIS_PY"; \
+		cd thesis/presentation && LOG_TO_CONSOLE=0 LOG_LEVEL=CRITICAL QUARTO_PYTHON=$$THESIS_PY quarto preview thesis-defense-slides.qmd --to revealjs --no-browser
 
 # =============================================================================
 # ABM targets

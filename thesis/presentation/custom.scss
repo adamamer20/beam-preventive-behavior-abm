@@ -92,7 +92,7 @@ $selection-bg: $accent-blue;
 // Title slide (Quarto auto-generated)
 .reveal .quarto-title-block {
   text-align: center;
-  padding-top: 80px;
+  padding-top: 68px;
   
   h1.title {
     font-size: 1.5em;
@@ -104,18 +104,18 @@ $selection-bg: $accent-blue;
   }
   
   .subtitle {
-    font-size: 0.75em;
+    font-size: 0.69em;
     color: $secondary-blue;
-    font-weight: 400;
-    margin-bottom: 2em;
+    font-weight: 350;
+    margin-bottom: 1.7em;
     margin-top: 0.5em;
   }
   
   .quarto-title-authors {
-    margin-top: 2em;
+    margin-top: 1.35em;
     
     .quarto-title-author {
-      font-size: 0.8em;
+      font-size: 0.82em;
       color: $dark-gray;
       font-weight: 500;
     }
@@ -129,12 +129,55 @@ $selection-bg: $accent-blue;
       color: $medium-gray;
     }
   }
+
+  .date {
+    display: none;
+  }
+  
+  .quarto-title-author-name {
+    font-size: 1.14em;
+    display: block !important;
+    margin-bottom: 0.18em !important;
+  }
+
+  .quarto-title-affiliation {
+    font-size: 0.88em;
+    color: $primary-blue;
+    line-height: 1.28;
+    padding-top: 0.06em;
+    margin-bottom: 0;
+  }
+
+  .quarto-title-affiliation br {
+    display: none;
+  }
+
+  .title-slide-degree {
+    display: block;
+  }
+
+  .title-slide-advisors {
+    display: block;
+    margin-top: 0.22em;
+  }
+
+  .title-slide-meta-line {
+    display: block;
+    font-size: 0.92em;
+    color: $dark-gray;
+    line-height: 1.18;
+    margin-top: 0;
+  }
+
+  .title-slide-advisors > .title-slide-meta-line + .title-slide-meta-line {
+    margin-top: 0.1em;
+  }
 }
 
 // Legacy title-slide class (for manual slides)
 .reveal .title-slide {
   text-align: center;
-  
+
   h1 {
     font-size: 1.4em;
     border-bottom: none;

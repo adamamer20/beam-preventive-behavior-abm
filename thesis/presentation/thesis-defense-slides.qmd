@@ -2,8 +2,7 @@
 title: "From Survey Data to Behavioural ABMs"
 subtitle: "Evaluating the Limits of LLM Agents in Preventive Behaviour Modelling"
 author: "Adam Amer"
-institute: "MSc Economic and Social Sciences · University of Bocconi"
-date: "April 2025"
+institute: "<span class='title-slide-degree'>MSc in Artificial Intelligence · Bocconi University</span><span class='title-slide-advisors'><span class='title-slide-meta-line'><strong>Supervisor:</strong> Prof. Alessia Melegaro</span><span class='title-slide-meta-line'><strong>Advisor:</strong> Lorenzo Lucchini</span></span>"
 format:
   revealjs:
     theme: [simple, custom.scss]
@@ -27,7 +26,6 @@ execute:
   echo: false
   warning: false
 ---
-
 
 <!-- ============================================= -->
 <!-- SLIDE 2: RESEARCH MOTIVATION -->
