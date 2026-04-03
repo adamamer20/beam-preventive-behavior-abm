@@ -27,20 +27,27 @@ execute:
   warning: false
 ---
 
-## Research motivation: Policy needs counterfactuals
+## Research motivation: Policy needs counterfactuals {.smaller}
 
 **Core challenge**
 
 - Policymakers need to reason about alternative interventions
 - Social systems are hard to randomise cleanly
-- Outcomes depend on heterogeneity, interaction, and feedback
+- Outcomes depend on **heterogeneity, interaction, and feedback**
 
 <br>
 
-**Why ABMs**
+**Possible solution: ABMs**
 
-- They provide a computational laboratory for counterfactuals
-- But aggregate fit alone does not identify the correct mechanism
+- They provide a computational laboratory for counterfactual policy analysis
+- But aggregate fit alone does not identify the right **micro-mechanism**
+
+<br>
+
+**LLMs as the micro-mechanism?**
+
+- They promise richer behavioural rules
+- But that promise must be tested
 
 ::: {.notes}
 Policy design is fundamentally counterfactual. In social sciences, clean experiments are rare. ABMs can move this logic into computation, but they face the identification problem: aggregate fit doesn't guarantee correct micro-mechanisms.
