@@ -43,6 +43,10 @@ $selection-bg: $accent-blue;
   padding: 40px 60px;
 }
 
+.reveal .slides section.slide {
+  top: 0 !important;
+}
+
 // Headings
 .reveal h1 {
   color: $primary-blue;
@@ -322,9 +326,13 @@ $selection-bg: $accent-blue;
 
 .reveal .slides section.pipeline-slide > .pipeline-grid {
   position: absolute;
-  left: 50%;
-  top: 50.5%;
-  transform: translate(-50%, -50%);
+  top: 190px;
+  right: 60px;
+  bottom: 110px;
+  left: 60px;
+  width: min(1440px, calc(100% - 120px));
+  margin: 0 auto;
+  align-content: center;
 }
 
 // Two-column layouts
