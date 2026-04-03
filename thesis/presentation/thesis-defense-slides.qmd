@@ -64,21 +64,21 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 <div class="pipeline-grid">
   <div class="pipeline-card pipeline-card-blue">
     <div class="pipeline-title">1. Empirical backbone</div>
-    <div class="pipeline-body">Survey micro-data<br>→ compact behavioural blocks<br>→ reference equations</div>
+    <div class="pipeline-body">Survey micro-data<br>→ theory-guided blocks<br>→ reference equations</div>
   </div>
 
   <div class="pipeline-arrow">→</div>
 
   <div class="pipeline-card pipeline-card-mid">
     <div class="pipeline-title">2. LLM micro-validation</div>
-    <div class="pipeline-body">Baseline reconstruction<br>+ perturbed response tests<br>against the empirical benchmark</div>
+    <div class="pipeline-body">• baseline reconstruction<br>• perturbed response tests</div>
   </div>
 
   <div class="pipeline-arrow">→</div>
 
   <div class="pipeline-card pipeline-card-light">
     <div class="pipeline-title">3. Survey-grounded ABM</div>
-    <div class="pipeline-body">Survey-grounded behavioural core<br>→ dynamic simulation<br>→ policy comparison</div>
+    <div class="pipeline-body">• social interaction<br>• epidemic feedback<br>→ policy comparison</div>
   </div>
 </div>
 ```
