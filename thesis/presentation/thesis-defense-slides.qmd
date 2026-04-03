@@ -64,7 +64,7 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 <div class="pipeline-grid">
   <div class="pipeline-card pipeline-card-blue">
     <div class="pipeline-title">1. Empirical backbone</div>
-    <div class="pipeline-body">Survey micro-data<br>→ theory-guided blocks<br>→ reference equations</div>
+    <div class="pipeline-body">survey micro-data<br>→ theory-guided blocks<br>→ reference equations</div>
   </div>
 
   <div class="pipeline-arrow">→</div>
