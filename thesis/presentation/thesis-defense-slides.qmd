@@ -58,42 +58,30 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 <!-- SLIDE 3: THESIS PROPOSAL - PIPELINE -->
 <!-- ============================================= -->
 
-## A disciplined pipeline from empirics to simulation
+## Thesis Proposal: From empirics to simulation {.pipeline-slide}
 
-```{mermaid}
-%%| fig-width: 14
-%%| fig-height: 5
-flowchart LR
-    subgraph Phase1["1  Empirical Backbone"]
-        D[Cross-country<br/>survey data] --> R[Compact<br/>representation]
-        R --> E[Fitted behavioural<br/>equations]
-    end
-    
-    subgraph Phase2["2  LLM Micro-Validation"]
-        E --> T[Test LLM<br/>agents]
-        T --> B[Baseline<br/>patterns]
-        T --> P[Perturbed<br/>responses]
-    end
-    
-    subgraph Phase3["3  Survey-Grounded ABM"]
-        E --> ABM[Behavioural<br/>core]
-        ABM --> DYN[+ Social interaction<br/>+ Epidemic feedback]
-        DYN --> INT[Policy<br/>comparison]
-    end
-    
-    Phase1 --> Phase2
-    Phase1 --> Phase3
-    
-    style Phase1 fill:#e8f1f8,stroke:#1e3a5f
-    style Phase2 fill:#eef5ed,stroke:#27ae60
-    style Phase3 fill:#fef5e7,stroke:#d68910
+```{=html}
+<div class="pipeline-grid">
+  <div class="pipeline-card pipeline-card-blue">
+    <div class="pipeline-title">1. Empirical backbone</div>
+    <div class="pipeline-body">Survey micro-data<br>→ compact behavioural blocks<br>→ reference equations</div>
+  </div>
+
+  <div class="pipeline-arrow">→</div>
+
+  <div class="pipeline-card pipeline-card-mid">
+    <div class="pipeline-title">2. LLM micro-validation</div>
+    <div class="pipeline-body">Baseline reconstruction<br>+ perturbed response tests<br>against the empirical benchmark</div>
+  </div>
+
+  <div class="pipeline-arrow">→</div>
+
+  <div class="pipeline-card pipeline-card-light">
+    <div class="pipeline-title">3. Survey-grounded ABM</div>
+    <div class="pipeline-body">Survey-grounded behavioural core<br>→ dynamic simulation<br>→ policy comparison</div>
+  </div>
+</div>
 ```
-
-<br>
-
-::: {.takeaway}
-Three-step design: empirical grounding → LLM evaluation → hybrid simulation
-:::
 
 
 <!-- ============================================= -->

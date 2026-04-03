@@ -247,6 +247,86 @@ $selection-bg: $accent-blue;
   border: 1px solid $border-gray;
 }
 
+.reveal .pipeline-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr;
+  align-items: center;
+  column-gap: 1.1rem;
+  width: min(1440px, calc(100% - 120px));
+  margin: 0 auto;
+}
+
+.reveal .pipeline-card {
+  width: 100%;
+  min-height: 220px;
+  box-sizing: border-box;
+  background: #f6f9fc;
+  border-radius: 16px;
+  border: 2px solid $border-gray;
+  padding: 1.1rem 1.24rem;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.reveal .pipeline-title {
+  color: $primary-blue;
+  font-size: 0.82em;
+  font-weight: 700;
+  line-height: 1.18;
+  margin-bottom: 0.9rem;
+}
+
+.reveal .pipeline-body {
+  color: $dark-gray;
+  font-size: 0.56em;
+  line-height: 1.32;
+}
+
+.reveal .pipeline-card-blue {
+  background: #f4f8fc;
+  border-color: $primary-blue;
+}
+
+.reveal .pipeline-card-mid {
+  background: #f6f9fc;
+  border-color: $secondary-blue;
+}
+
+.reveal .pipeline-card-light {
+  background: #f8fbfd;
+  border-color: $highlight-blue;
+}
+
+.reveal .pipeline-arrow {
+  color: $secondary-blue;
+  font-size: 2.55rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+}
+
+.reveal .slides section.pipeline-slide {
+  position: relative;
+  min-height: 100%;
+}
+
+.reveal .slides section.pipeline-slide > h2 {
+  margin-bottom: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.reveal .slides section.pipeline-slide > .pipeline-grid {
+  position: absolute;
+  left: 50%;
+  top: 50.5%;
+  transform: translate(-50%, -50%);
+}
+
 // Two-column layouts
 .reveal .columns {
   display: flex;
