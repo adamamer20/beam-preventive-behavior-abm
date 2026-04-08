@@ -314,7 +314,7 @@ $selection-bg: $accent-blue;
 }
 
 .reveal .slides section.pipeline-slide {
-  position: relative;
+  position: absolute;
   min-height: 100%;
 }
 
@@ -325,6 +325,28 @@ $selection-bg: $accent-blue;
 }
 
 .reveal .slides section.pipeline-slide > .pipeline-grid {
+  position: absolute;
+  top: 190px;
+  right: 60px;
+  bottom: 110px;
+  left: 60px;
+  width: min(1440px, calc(100% - 120px));
+  margin: 0 auto;
+  align-content: center;
+}
+
+.reveal .slides section.backbone-slide {
+  position: absolute;
+  min-height: 100%;
+}
+
+.reveal .slides section.backbone-slide > h2 {
+  margin-bottom: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.reveal .slides section.backbone-slide > .backbone-grid {
   position: absolute;
   top: 190px;
   right: 60px;
@@ -462,6 +484,104 @@ $selection-bg: $accent-blue;
 .reveal .small {
   font-size: 0.75em;
   color: $medium-gray;
+}
+
+.reveal .data-inline {
+  display: block;
+  margin-top: 1.1rem;
+  line-height: 1.45;
+}
+
+.reveal .data-domains {
+  display: block;
+  margin-top: 0.9rem;
+  line-height: 1.45;
+  max-width: 92%;
+}
+
+.reveal .outcome-sub {
+  display: block;
+  margin-left: 1.1rem;
+  color: $medium-gray;
+  font-size: 0.82em;
+  line-height: 1.4;
+}
+
+.reveal .backbone-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 2.4rem;
+  margin-top: 0;
+  align-items: start;
+}
+
+.reveal .backbone-panel {
+  min-height: 460px;
+  padding: 1rem 0.2rem 0.4rem;
+  border-top: 1px solid rgba($secondary-blue, 0.16);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.reveal .backbone-panel-title {
+  color: $primary-blue;
+  font-size: 0.82em;
+  font-weight: 700;
+  line-height: 1.18;
+  margin-bottom: 1.1rem;
+}
+
+.reveal .backbone-text-block {
+  margin-bottom: 1.05rem;
+}
+
+.reveal .backbone-text-item {
+  color: $primary-blue;
+  font-size: 0.78em;
+  font-weight: 650;
+  line-height: 1.22;
+  margin-bottom: 0.58rem;
+}
+
+.reveal .backbone-meta {
+  display: grid;
+  gap: 0.72rem;
+  max-width: 95%;
+}
+
+.reveal .backbone-meta-line {
+  color: $medium-gray;
+  font-size: 0.5em;
+  line-height: 1.42;
+}
+
+.reveal .backbone-meta-label {
+  color: $secondary-blue;
+  font-weight: 600;
+}
+
+.reveal .backbone-outcomes-table {
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 0.62em;
+}
+
+.reveal .backbone-outcomes-table th {
+  background: rgba($light-blue, 0.7);
+}
+
+.reveal .backbone-outcomes-table td:first-child {
+  width: 42%;
+  font-weight: 600;
+  color: $primary-blue;
+}
+
+.reveal .backbone-outcomes-table td {
+  vertical-align: top;
+  line-height: 1.38;
+  padding-top: 0.72em;
+  padding-bottom: 0.72em;
 }
 
 // Country flags row

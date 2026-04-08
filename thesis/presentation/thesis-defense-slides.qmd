@@ -88,82 +88,50 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 <!-- SLIDE 4: EMPIRICAL BACKBONE - DATA -->
 <!-- ============================================= -->
 
-## Empirical backbone: Data and outcomes
+## Empirical backbone: Data and outcomes {.backbone-slide}
 
-:::: {.columns}
+```{=html}
+<div class="backbone-grid">
+  <div class="backbone-panel">
+    <div class="backbone-panel-title">Survey base</div>
+    <div class="backbone-text-block">
+      <div class="backbone-text-item">~22,000 respondents</div>
+      <div class="backbone-text-item">6 European countries</div>
+      <div class="backbone-text-item">2024 survey wave</div>
+    </div>
+    <div class="backbone-meta">
+      <div class="backbone-meta-line"><span class="backbone-meta-label">Countries:</span> Italy, Spain, France, Germany, Hungary, UK</div>
+      <div class="backbone-meta-line"><span class="backbone-meta-label">Survey domains:</span> demographics, health, vaccine beliefs, information environment, social exposure, trust, barriers, moral orientation</div>
+    </div>
+  </div>
 
-::: {.column width="40%"}
-
-**Cross-country survey**
-
-::: {.country-row}
-::: {.country-item}
-[🇮🇹]{.country-flag}
-[Italy]{.country-name}
-:::
-::: {.country-item}
-[🇪🇸]{.country-flag}
-[Spain]{.country-name}
-:::
-::: {.country-item}
-[🇫🇷]{.country-flag}
-[France]{.country-name}
-:::
-::: {.country-item}
-[🇩🇪]{.country-flag}
-[Germany]{.country-name}
-:::
-::: {.country-item}
-[🇭🇺]{.country-flag}
-[Hungary]{.country-name}
-:::
-::: {.country-item}
-[🇬🇧]{.country-flag}
-[UK]{.country-name}
-:::
-:::
-
-<br>
-
-:::: {.columns}
-
-::: {.column width="50%"}
-::: {.data-card}
-[~22,000]{.card-number}
-[respondents]{.card-label}
-:::
-:::
-
-::: {.column width="50%"}
-::: {.data-card}
-[2024]{.card-number}
-[survey wave]{.card-label}
-:::
-:::
-
-::::
-
-:::
-
-::: {.column width="60%"}
-
-**Core prevention outcomes**
-
-| Outcome | Description |
-|---------|-------------|
-| **COVID vaccination** | Willingness at first/second dose phase |
-| **Flu vaccination** | 2023/2024 uptake |
-| **Masking (symptomatic)** | When ill in crowded places |
-| **Stay home (symptomatic)** | When showing symptoms |
-| **Masking (high pressure)** | Under epidemic conditions |
-
-<br>
-
-**Survey covers:** demographics, health, COVID/flu experience, vaccine beliefs, information environment, social exposure, trust, barriers, moral orientations
-
-:::
-
-::::
+  <div class="backbone-panel">
+    <div class="backbone-panel-title">Core prevention outcomes</div>
+    <table class="backbone-outcomes-table">
+      <thead>
+        <tr>
+          <th>Outcome</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>COVID vaccination willingness</td>
+          <td>first/second dose phase</td>
+        </tr>
+        <tr>
+          <td>Flu vaccination</td>
+          <td>2023/2024 uptake</td>
+        </tr>
+        <tr>
+          <td>NPI behaviours</td>
+          <td>masking when symptomatic<br>staying home when symptomatic<br>masking under high epidemic pressure</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+```
 
 
 <!-- ============================================= -->
