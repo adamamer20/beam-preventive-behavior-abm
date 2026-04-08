@@ -240,12 +240,12 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 
 ```{=html}
 <div class="perturbation-slide-grid">
-  <div class="perturbation-slide-explainer">Reference perturbation effect: shift one variable from typical low to typical high, holding the rest fixed.</div>
+  <div class="perturbation-slide-explainer">Reference perturbation effect: fitted outcome change under a realistic low-to-high shift.</div>
 
   <div class="perturbation-slide-figure-wrap">
     <img
       class="perturbation-slide-figure"
-      src="assets/fig-mutable-ref-3x2.png"
+      src="assets/fig-mutable-ref-3x2-cropped.png"
       alt="Reference perturbation effects for retained variables by outcome, shown in a 3 by 2 panel layout."
     />
   </div>
