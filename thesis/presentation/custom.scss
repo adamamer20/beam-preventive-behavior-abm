@@ -704,6 +704,73 @@ $selection-bg: $accent-blue;
   font-weight: 700;
 }
 
+.reveal .slides section.empirical-heatmap-slide {
+  position: absolute;
+  min-height: 100%;
+}
+
+.reveal .slides section.empirical-heatmap-slide > h2 {
+  margin-bottom: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.reveal .empirical-heatmap-grid {
+  position: absolute;
+  top: 180px;
+  right: 60px;
+  bottom: 95px;
+  left: 60px;
+  width: min(1440px, calc(100% - 120px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.72fr) minmax(300px, 0.62fr);
+  gap: 1.7rem;
+  align-items: center;
+}
+
+.reveal .empirical-heatmap-figure-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.reveal .empirical-heatmap-figure-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+}
+
+.reveal .empirical-heatmap-figure {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  max-height: 590px;
+  object-fit: contain;
+}
+
+.reveal .empirical-heatmap-takeaways {
+  display: grid;
+  gap: 1rem;
+  align-content: center;
+  align-self: center;
+  margin-top: 0.35rem;
+}
+
+.reveal .empirical-heatmap-takeaway {
+  color: $primary-blue;
+  font-size: 0.6em;
+  line-height: 1.4;
+  padding-left: 0.9rem;
+  border-left: 2px solid rgba($highlight-blue, 0.42);
+}
+
+.reveal .empirical-heatmap-label {
+  color: $secondary-blue;
+  font-weight: 700;
+}
+
 // Country flags row
 .reveal .country-row {
   display: flex;

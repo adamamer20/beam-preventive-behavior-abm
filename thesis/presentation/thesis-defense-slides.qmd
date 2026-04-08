@@ -200,67 +200,36 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 <!-- SLIDE 6: EMPIRICAL RESULTS - BLOCK IMPORTANCE -->
 <!-- ============================================= -->
 
-## Prevention has a compact but outcome-specific structure
+## Empirical results: Prevention is compact but outcome-specific {.empirical-heatmap-slide}
 
-:::: {.columns}
+```{=html}
+<div class="empirical-heatmap-grid">
+  <div class="empirical-heatmap-figure-panel">
+    <div class="empirical-heatmap-figure-wrap">
+      <img
+        class="empirical-heatmap-figure"
+        src="assets/fig-lobo-bic-block-outcome-cropped.png"
+        alt="Heatmap of block importance by outcome from the thesis."
+      />
+    </div>
+  </div>
 
-::: {.column width="45%"}
-
-**Key finding:**
-
-The same broad blocks recur, but their **relative importance changes** by outcome
-
-<br>
-
-**COVID vaccination**
-
-- Dominant: [Stakes]{.block-tag}
-- Supporting: [Trust]{.block-tag} [Legitimacy]{.block-tag} [Disposition]{.block-tag}
-
-<br>
-
-**Flu vaccination**
-
-- Dominant: [Habit]{.block-tag}
-- Without habit: age + health become central
-
-<br>
-
-**Non-pharmaceutical (NPIs)**
-
-- Dominant: [Moral orientation]{.block-tag}
-- Supporting: [Stakes]{.block-tag}
-
-:::
-
-::: {.column width="55%"}
-
-**Block importance by outcome**
-
-<div style="font-size: 0.75em;">
-
-| Block | COVID Vax | Flu Vax | NPIs |
-|:------|:---------:|:-------:|:----:|
-| **Stakes** | ████ | █ | ██ |
-| **Trust** | ██ | █ | █ |
-| **Legitimacy** | ██ | · | · |
-| **Disposition** | ██ | █ | █ |
-| **Habit** | █ | ████ | · |
-| **Moral orient.** | · | · | ███ |
-
+  <div class="empirical-heatmap-takeaways">
+    <div class="empirical-heatmap-takeaway">
+      <span class="empirical-heatmap-label">COVID vaccination willingness:</span>
+      stakes, with trust, legitimacy, and disposition also contributing
+    </div>
+    <div class="empirical-heatmap-takeaway">
+      <span class="empirical-heatmap-label">Flu vaccination:</span>
+      dominated by habit
+    </div>
+    <div class="empirical-heatmap-takeaway">
+      <span class="empirical-heatmap-label">NPIs:</span>
+      moral orientation, with stakes still relevant
+    </div>
+  </div>
 </div>
-
-::: {.small}
-████ = dominant · ██/███ = important · █ = present · · = negligible
-:::
-
-:::
-
-::::
-
-::: {.takeaway}
-Same framework, different weights — behaviour-specific policy levers
-:::
+```
 
 
 <!-- ============================================= -->
