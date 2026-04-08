@@ -94,14 +94,19 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 <div class="backbone-grid">
   <div class="backbone-panel">
     <div class="backbone-panel-title">Survey base</div>
-    <div class="backbone-text-block">
-      <div class="backbone-text-item">~22,000 respondents</div>
-      <div class="backbone-text-item">6 European countries</div>
-      <div class="backbone-text-item">2024 survey wave</div>
-    </div>
-    <div class="backbone-meta">
-      <div class="backbone-meta-line"><span class="backbone-meta-label">Countries:</span> Italy, Spain, France, Germany, Hungary, UK</div>
-      <div class="backbone-meta-line"><span class="backbone-meta-label">Survey domains:</span> demographics, health, vaccine beliefs, information environment, social exposure, trust, barriers, moral orientation</div>
+    <div class="backbone-structured-text">
+      <div class="backbone-text-section">
+        <div class="backbone-text-label">Sample</div>
+        <div class="backbone-text-content">~22,000 respondents · 6 European countries · 2024 survey wave</div>
+      </div>
+      <div class="backbone-text-section">
+        <div class="backbone-text-label">Countries</div>
+        <div class="backbone-text-content">Italy, Spain, France, Germany, Hungary, UK</div>
+      </div>
+      <div class="backbone-text-section">
+        <div class="backbone-text-label">Survey domains</div>
+        <div class="backbone-text-content">Demographics, health, vaccine beliefs, information environment, social exposure, trust, barriers, moral orientation</div>
+      </div>
     </div>
   </div>
 
@@ -125,7 +130,13 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
         </tr>
         <tr>
           <td>NPI behaviours</td>
-          <td>masking when symptomatic<br>staying home when symptomatic<br>masking under high epidemic pressure</td>
+          <td>
+            <ul class="backbone-compact-list">
+              <li>masking when symptomatic</li>
+              <li>staying home when symptomatic</li>
+              <li>masking under high epidemic pressure</li>
+            </ul>
+          </td>
         </tr>
       </tbody>
     </table>

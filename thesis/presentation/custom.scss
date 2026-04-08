@@ -517,11 +517,10 @@ $selection-bg: $accent-blue;
 
 .reveal .backbone-panel {
   min-height: 460px;
-  padding: 1rem 0.2rem 0.4rem;
-  border-top: 1px solid rgba($secondary-blue, 0.16);
+  padding: 0.65rem 0.2rem 0.4rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .reveal .backbone-panel-title {
@@ -532,33 +531,29 @@ $selection-bg: $accent-blue;
   margin-bottom: 1.1rem;
 }
 
-.reveal .backbone-text-block {
-  margin-bottom: 1.05rem;
-}
-
-.reveal .backbone-text-item {
-  color: $primary-blue;
-  font-size: 0.78em;
-  font-weight: 650;
-  line-height: 1.22;
-  margin-bottom: 0.58rem;
-}
-
-.reveal .backbone-meta {
+.reveal .backbone-structured-text {
   display: grid;
-  gap: 0.72rem;
+  gap: 0.95rem;
   max-width: 95%;
 }
 
-.reveal .backbone-meta-line {
-  color: $medium-gray;
-  font-size: 0.5em;
-  line-height: 1.42;
+.reveal .backbone-text-section {
+  display: grid;
+  gap: 0.34rem;
 }
 
-.reveal .backbone-meta-label {
+.reveal .backbone-text-label {
   color: $secondary-blue;
-  font-weight: 600;
+  font-size: 0.55em;
+  font-weight: 750;
+  line-height: 1.2;
+}
+
+.reveal .backbone-text-content {
+  color: $primary-blue;
+  font-size: 0.62em;
+  font-weight: 430;
+  line-height: 1.5;
 }
 
 .reveal .backbone-outcomes-table {
@@ -579,9 +574,25 @@ $selection-bg: $accent-blue;
 
 .reveal .backbone-outcomes-table td {
   vertical-align: top;
-  line-height: 1.38;
-  padding-top: 0.72em;
-  padding-bottom: 0.72em;
+  line-height: 1.48;
+  padding-top: 0.8em;
+  padding-bottom: 0.8em;
+}
+
+.reveal .backbone-compact-list {
+  margin: 0;
+  margin-left: 0.85em;
+  padding-left: 0.2em;
+  list-style-type: disc;
+}
+
+.reveal .backbone-compact-list li {
+  margin-bottom: 0.14em;
+  line-height: 1.34;
+}
+
+.reveal .backbone-compact-list li:last-child {
+  margin-bottom: 0;
 }
 
 // Country flags row
