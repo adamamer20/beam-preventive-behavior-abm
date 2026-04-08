@@ -187,7 +187,7 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
       <div class="compact-block-item">Disposition</div>
       <div class="compact-block-item">Habit</div>
       <div class="compact-block-item">Moral orientation</div>
-      <div class="compact-block-item">Constraints</div>
+      <div class="compact-block-item">Controls</div>
       <div class="compact-block-item">Norms</div>
     </div>
     <div class="compact-backbone-goal"><span class="compact-backbone-goal-label">Goal:</span> a compact representation for <strong>LLM evaluation</strong> and <strong>ABM simulation</strong>.</div>
