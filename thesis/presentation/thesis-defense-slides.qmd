@@ -149,66 +149,51 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 <!-- SLIDE 5: EMPIRICAL BACKBONE - METHOD -->
 <!-- ============================================= -->
 
-## From high-dimensional survey to compact backbone
+## Empirical backbone: From survey to compact representation {.compact-backbone-slide}
 
-:::: {.columns}
+```{=html}
+<div class="compact-backbone-grid">
+  <div class="compact-backbone-panel">
+    <div class="compact-backbone-title">Reduction pipeline</div>
+    <div class="compact-pipeline">
+      <div class="compact-pipeline-step">
+        <div class="compact-pipeline-box">Raw survey items</div>
+      </div>
+      <div class="compact-pipeline-arrow">↓</div>
+      <div class="compact-pipeline-step">
+        <div class="compact-pipeline-box">Survey-derived variables</div>
+      </div>
+      <div class="compact-pipeline-arrow">↓</div>
+      <div class="compact-pipeline-step">
+        <div class="compact-pipeline-box">Theory-guided blocks</div>
+      </div>
+      <div class="compact-pipeline-arrow">↓</div>
+      <div class="compact-pipeline-step">
+        <div class="compact-pipeline-box">Reference equations</div>
+      </div>
+      <div class="compact-pipeline-arrow">↓</div>
+      <div class="compact-pipeline-step">
+        <div class="compact-pipeline-box compact-pipeline-box-accent">Retained empirical backbone</div>
+      </div>
+    </div>
+  </div>
 
-::: {.column width="50%"}
-
-**Reduction pipeline**
-
-```{mermaid}
-%%| fig-width: 6
-%%| fig-height: 4.5
-flowchart TD
-    A[Raw survey items<br/>~100+ questions] --> B[Derived variables<br/>& indices]
-    B --> C[Theory-guided<br/>blocks]
-    C --> D[Fitted equations<br/>per outcome]
-    D --> E[Retained backbone<br/>unique signal only]
-    
-    style A fill:#f8f9fa,stroke:#5d6d7e
-    style E fill:#e8f1f8,stroke:#1e3a5f
+  <div class="compact-backbone-panel">
+    <div class="compact-backbone-title">Theory-guided blocks</div>
+    <div class="compact-blocks-grid">
+      <div class="compact-block-item">Stakes</div>
+      <div class="compact-block-item">Trust</div>
+      <div class="compact-block-item">Legitimacy</div>
+      <div class="compact-block-item">Disposition</div>
+      <div class="compact-block-item">Habit</div>
+      <div class="compact-block-item">Moral orientation</div>
+      <div class="compact-block-item">Constraints</div>
+      <div class="compact-block-item">Norms</div>
+    </div>
+    <div class="compact-backbone-goal"><span class="compact-backbone-goal-label">Goal:</span> a compact representation for <strong>LLM evaluation</strong> and <strong>ABM simulation</strong>.</div>
+  </div>
+</div>
 ```
-
-:::
-
-::: {.column width="50%"}
-
-**Theory-guided blocks**
-
-:::: {.columns}
-
-::: {.column width="50%"}
-
-[Stakes]{.block-tag}
-[Trust]{.block-tag}
-[Legitimacy]{.block-tag}
-[Disposition]{.block-tag}
-
-:::
-
-::: {.column width="50%"}
-
-[Habit]{.block-tag}
-[Moral orientation]{.block-tag}
-[Constraints]{.block-tag}
-[Norms]{.block-tag}
-
-:::
-
-::::
-
-<br>
-
-**Goal:** A compact, interpretable representation that:
-
-- Carries into LLM evaluation
-- Anchors the ABM behavioural core
-- Identifies unique signal per block
-
-:::
-
-::::
 
 
 <!-- ============================================= -->

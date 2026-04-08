@@ -595,6 +595,107 @@ $selection-bg: $accent-blue;
   margin-bottom: 0;
 }
 
+.reveal .slides section.compact-backbone-slide {
+  padding-top: 40px;
+}
+
+.reveal .slides section.compact-backbone-slide > h2 {
+  margin-bottom: 0.5em;
+}
+
+.reveal .compact-backbone-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.04fr);
+  gap: 2.6rem;
+  align-items: start;
+  margin-top: 0.15rem;
+  width: min(1420px, calc(100% - 20px));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.reveal .compact-backbone-panel {
+  min-height: 520px;
+  display: flex;
+  flex-direction: column;
+}
+
+.reveal .compact-backbone-title {
+  color: $primary-blue;
+  font-size: 0.82em;
+  font-weight: 700;
+  line-height: 1.18;
+  margin-bottom: 1.05rem;
+}
+
+.reveal .compact-pipeline {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 0.38rem;
+  padding-top: 0.15rem;
+  width: 100%;
+}
+
+.reveal .compact-pipeline-step {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.reveal .compact-pipeline-box {
+  width: min(100%, 14.2em);
+  padding: 0.72em 1em;
+  border: 1px solid rgba($secondary-blue, 0.38);
+  background: rgba($background-white, 0.98);
+  color: $primary-blue;
+  font-size: 0.62em;
+  font-weight: 560;
+  line-height: 1.28;
+  text-align: center;
+}
+
+.reveal .compact-pipeline-box-accent {
+  background: rgba($light-blue, 0.7);
+  border-color: rgba($primary-blue, 0.52);
+}
+
+.reveal .compact-pipeline-arrow {
+  color: $secondary-blue;
+  font-size: 0.82em;
+  line-height: 1;
+}
+
+.reveal .compact-blocks-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.92rem 0.95rem;
+  margin-top: 0.15rem;
+  max-width: 96%;
+}
+
+.reveal .compact-block-item {
+  border-bottom: 1px solid rgba($secondary-blue, 0.14);
+  color: $primary-blue;
+  font-size: 0.64em;
+  font-weight: 560;
+  line-height: 1.28;
+  padding: 0.28em 0 0.5em;
+}
+
+.reveal .compact-backbone-goal {
+  margin-top: 1.35rem;
+  max-width: 92%;
+  color: $primary-blue;
+  font-size: 0.62em;
+  line-height: 1.42;
+}
+
+.reveal .compact-backbone-goal-label {
+  color: $secondary-blue;
+  font-weight: 700;
+}
+
 // Country flags row
 .reveal .country-row {
   display: flex;
