@@ -771,6 +771,72 @@ $selection-bg: $accent-blue;
   font-weight: 700;
 }
 
+.reveal .slides section.perturbation-slide {
+  position: absolute;
+  min-height: 100%;
+}
+
+.reveal .slides section.perturbation-slide > h2 {
+  margin-bottom: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.reveal .perturbation-slide-grid {
+  position: absolute;
+  top: 168px;
+  right: 60px;
+  bottom: 88px;
+  left: 60px;
+  width: min(1440px, calc(100% - 120px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 0.7rem;
+  align-content: center;
+}
+
+.reveal .perturbation-slide-explainer {
+  color: $primary-blue;
+  font-size: 0.54em;
+  line-height: 1.35;
+}
+
+.reveal .perturbation-slide-figure-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+}
+
+.reveal .perturbation-slide-figure {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  max-height: 500px;
+  object-fit: contain;
+}
+
+.reveal .perturbation-slide-takeaways {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.1rem;
+  align-items: start;
+}
+
+.reveal .perturbation-slide-takeaway {
+  color: $primary-blue;
+  font-size: 0.5em;
+  line-height: 1.38;
+  padding-top: 0.45rem;
+  border-top: 1px solid rgba($secondary-blue, 0.16);
+}
+
+.reveal .perturbation-slide-label {
+  color: $secondary-blue;
+  font-weight: 700;
+}
+
 // Country flags row
 .reveal .country-row {
   display: flex;

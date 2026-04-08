@@ -236,66 +236,36 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 <!-- SLIDE 7: EMPIRICAL RESULTS - PERTURBATION -->
 <!-- ============================================= -->
 
-## Which levers actually move behaviour?
+## Empirical results: Which levers actually move behaviour? {.perturbation-slide}
 
-:::: {.columns}
+```{=html}
+<div class="perturbation-slide-grid">
+  <div class="perturbation-slide-explainer">Reference perturbation effect: shift one variable from typical low to typical high, holding the rest fixed.</div>
 
-::: {.column width="50%"}
+  <div class="perturbation-slide-figure-wrap">
+    <img
+      class="perturbation-slide-figure"
+      src="assets/fig-mutable-ref-3x2.png"
+      alt="Reference perturbation effects for retained variables by outcome, shown in a 3 by 2 panel layout."
+    />
+  </div>
 
-**Reference perturbation effect**
-
-Move one variable from typical low → typical high, holding rest fixed
-
-<br>
-
-**Results align with block importance:**
-
-| Outcome | Strongest lever |
-|---------|-----------------|
-| COVID vaccination | Stakes, Disposition, Trust |
-| Flu vaccination | Limited short-run leverage (habit-driven) |
-| NPIs | Dispersed effects (headroom matters) |
-
-<br>
-
-::: {.concept-box}
-**Headroom effect:** Profiles already near ceiling/floor show limited response to shifts
-:::
-
-:::
-
-::: {.column width="50%"}
-
-```{mermaid}
-%%| fig-width: 6.5
-%%| fig-height: 5
-flowchart TB
-    subgraph Input["Perturbation Design"]
-        direction LR
-        LOW[Low profile<br/>value] -->|"Shift"| HIGH[High profile<br/>value]
-    end
-    
-    subgraph Model["Fitted Equation"]
-        EQ[Predict outcome<br/>change]
-    end
-    
-    subgraph Result["Reference Effect"]
-        direction TB
-        R1["Stakes → COVID vax: ↑↑↑"]
-        R2["Habit → Flu vax: ↑ (inertial)"]
-        R3["Moral → NPIs: ↑↑"]
-    end
-    
-    Input --> Model --> Result
-    
-    style Input fill:#e8f1f8,stroke:#1e3a5f
-    style Model fill:#f8f9fa,stroke:#5d6d7e
-    style Result fill:#eef5ed,stroke:#27ae60
+  <div class="perturbation-slide-takeaways">
+    <div class="perturbation-slide-takeaway">
+      <span class="perturbation-slide-label">COVID willingness:</span>
+      stakes are the strongest lever
+    </div>
+    <div class="perturbation-slide-takeaway">
+      <span class="perturbation-slide-label">Flu vaccination:</span>
+      short-run leverage is small because behaviour is habit-driven
+    </div>
+    <div class="perturbation-slide-takeaway">
+      <span class="perturbation-slide-label">NPIs:</span>
+      effects are more dispersed because headroom differs across profiles
+    </div>
+  </div>
+</div>
 ```
-
-:::
-
-::::
 
 
 <!-- ============================================= -->
