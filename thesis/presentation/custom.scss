@@ -839,6 +839,103 @@ $selection-bg: $accent-blue;
   font-weight: 700;
 }
 
+.reveal .slides section.evaluation-design-slide {
+  position: absolute;
+  min-height: 100%;
+}
+
+.reveal .slides section.evaluation-design-slide > h2 {
+  margin-bottom: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.reveal .evaluation-design-grid {
+  position: absolute;
+  top: 150px;
+  right: 60px;
+  bottom: 110px;
+  left: 60px;
+  width: min(1440px, calc(100% - 120px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  gap: 1rem;
+  align-content: center;
+}
+
+.reveal .evaluation-design-benchmark-strip {
+  color: $medium-gray;
+  font-size: 0.5em;
+  line-height: 1.35;
+  max-width: 70rem;
+}
+
+.reveal .evaluation-design-benchmark-label {
+  color: $secondary-blue;
+  font-weight: 600;
+}
+
+.reveal .evaluation-design-cards {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.18fr) minmax(0, 0.82fr);
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.reveal .evaluation-design-card {
+  display: grid;
+  align-content: start;
+  gap: 0.72rem;
+  padding: 0.95rem 1.05rem 1rem;
+  background: rgba($light-blue, 0.35);
+  border: 1px solid rgba($secondary-blue, 0.14);
+  border-top: 2px solid rgba($highlight-blue, 0.55);
+  min-height: 230px;
+}
+
+.reveal .evaluation-design-card-title {
+  color: $primary-blue;
+  font-size: 0.74em;
+  font-weight: 700;
+  line-height: 1.18;
+}
+
+.reveal .evaluation-design-item {
+  color: $primary-blue;
+  font-size: 0.6em;
+  line-height: 1.34;
+  padding-left: 0.95rem;
+  position: relative;
+}
+
+.reveal .evaluation-design-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.58em;
+  width: 0.34rem;
+  height: 0.34rem;
+  border-radius: 50%;
+  background: rgba($secondary-blue, 0.85);
+}
+
+.reveal .evaluation-design-subsection {
+  color: $secondary-blue;
+  font-size: 0.5em;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-top: 0.15rem;
+}
+
+.reveal .evaluation-design-note {
+  color: $medium-gray;
+  font-size: 0.45em;
+  line-height: 1.35;
+  margin-top: auto;
+}
+
 // Country flags row
 .reveal .country-row {
   display: flex;

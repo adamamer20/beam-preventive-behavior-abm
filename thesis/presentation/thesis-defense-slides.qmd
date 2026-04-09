@@ -272,72 +272,40 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 <!-- SLIDE 8: LLM EVALUATION - DESIGN -->
 <!-- ============================================= -->
 
-## LLM micro-validation: Testing against the empirical benchmark
+## LLM micro-validation: Can LLM agents reproduce the empirical benchmark? {.evaluation-design-slide}
 
-:::: {.columns}
+```{=html}
+<div class="evaluation-design-grid">
+  <div class="evaluation-design-benchmark-strip">
+    <span class="evaluation-design-benchmark-label">Benchmark:</span>
+    survey-grounded behavioural and profile patterns from the empirical backbone
+  </div>
 
-::: {.column width="55%"}
+  <div class="evaluation-design-cards">
+    <div class="evaluation-design-card">
+      <div class="evaluation-design-card-title">Why this matters</div>
+      <div class="evaluation-design-item">candidate behavioural components for the ABM</div>
+      <div class="evaluation-design-item">usable only if they reproduce survey-grounded patterns</div>
+    </div>
 
-**Evaluation design:**
+    <div class="evaluation-design-card">
+      <div class="evaluation-design-card-title">What is tested</div>
+      <div class="evaluation-design-subsection">Targets</div>
+      <div class="evaluation-design-item">behavioural outcomes</div>
+      <div class="evaluation-design-item">psychological profile variables</div>
+      <div class="evaluation-design-subsection">Settings</div>
+      <div class="evaluation-design-item">at baseline</div>
+      <div class="evaluation-design-item">under controlled shifts</div>
+    </div>
 
-| Setting | Question |
-|---------|----------|
-| **Unperturbed** | Can LLM reconstruct baseline survey patterns? |
-| **Perturbed** | Does LLM respond correctly to controlled shifts? |
-
-<br>
-
-**Two accuracy dimensions:**
-
-1. **Level accuracy** — Predict correct value
-2. **Rank agreement** — Order respondents correctly (low → high propensity)
-
-<br>
-
-**Applied to:**
-
-- Behavioural outcomes (vaccination, NPIs)
-- Psychological profile variables (state dimensions for simulation)
-
-:::
-
-::: {.column width="45%"}
-
-```{mermaid}
-%%| fig-width: 5.5
-%%| fig-height: 5
-flowchart TD
-    subgraph Benchmark["Empirical Benchmark"]
-        E1[Survey-grounded<br/>patterns]
-    end
-    
-    subgraph Tests["Evaluation Matrix"]
-        T1[Unperturbed<br/>baseline]
-        T2[Perturbed<br/>shifts]
-    end
-    
-    subgraph Metrics["Assessment"]
-        M1[Level<br/>accuracy]
-        M2[Rank<br/>agreement]
-    end
-    
-    subgraph Targets["Variables"]
-        V1[Behavioural<br/>outcomes]
-        V2[Profile<br/>states]
-    end
-    
-    Benchmark --> Tests
-    Tests --> Metrics
-    Metrics --> Targets
-    
-    style Benchmark fill:#e8f1f8,stroke:#1e3a5f
-    style Tests fill:#f8f9fa,stroke:#5d6d7e
-    style Targets fill:#eef5ed,stroke:#27ae60
+    <div class="evaluation-design-card">
+      <div class="evaluation-design-card-title">How performance is judged</div>
+      <div class="evaluation-design-item">level accuracy (MAE skill)</div>
+      <div class="evaluation-design-item">rank agreement (Gini)</div>
+    </div>
+  </div>
+</div>
 ```
-
-:::
-
-::::
 
 
 <!-- ============================================= -->
