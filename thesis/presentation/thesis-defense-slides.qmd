@@ -300,8 +300,13 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 
     <div class="evaluation-design-card">
       <div class="evaluation-design-card-title">How performance is judged</div>
+      <div class="evaluation-design-subsection">At baseline</div>
       <div class="evaluation-design-item">level accuracy (MAE skill)</div>
       <div class="evaluation-design-item">rank agreement (Gini)</div>
+      <div class="evaluation-design-subsection">Under controlled shifts</div>
+      <div class="evaluation-design-item">perturbation ordering (PE Gini)</div>
+      <div class="evaluation-design-item">perturbation magnitude accuracy (PE skill)</div>
+      <div class="evaluation-design-item">placebo containment</div>
     </div>
   </div>
 </div>
@@ -379,72 +384,81 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 <!-- SLIDE 10: LLM RESULTS - COUNTERFACTUAL BREAKDOWN -->
 <!-- ============================================= -->
 
-## Counterfactual coherence breaks down
+## LLM micro-validation: Counterfactual coherence breaks down {.perturbed-results-slide}
 
-:::: {.columns}
+```{=html}
+<div class="perturbed-results-top">
+  <div class="perturbed-results-subtitle">
+    Under controlled shifts, performance is evaluated on perturbation effects: paired contrast improves PE ordering, but PE skill and placebo containment remain weak.
+  </div>
+</div>
 
-::: {.column width="55%"}
+<div class="perturbed-results-grid">
+  <div class="perturbed-results-panel perturbed-results-panel-main">
+    <div class="perturbed-results-label">Performance vs containment</div>
+    <div class="perturbed-results-callout">Better ordering, worse containment</div>
+    <img
+      class="perturbed-results-figure"
+      src="assets/fig-perturbed-pareto-by-model-cropped.png"
+      alt="Median perturbation-effect ordering, effect-size accuracy, and placebo containment by model and prompt family."
+    />
+  </div>
 
-**Under controlled perturbations:**
-
-- Responses often too weak or too strong
-- Effects too diffuse across respondents
-- Paired comparisons help somewhat
-- **Effect sizes remain miscalibrated**
-
-<br>
-
-**Core problem:**
-
-LLMs spread effects too widely instead of preserving the selective structure from the empirical benchmark
-
-<br>
-
-::: {.takeaway}
-Off-the-shelf LLMs are not reliable as behavioural update mechanisms for counterfactual ABMs
-:::
-
-:::
-
-::: {.column width="45%"}
-
-```{mermaid}
-%%| fig-width: 5.5
-%%| fig-height: 5.5
-flowchart TD
-    subgraph Baseline["Baseline"]
-        B[Moderate<br/>ranking recovery]
-    end
-    
-    subgraph Perturbed["Under Perturbation"]
-        P1[Too weak<br/>or too strong]
-        P2[Too diffuse<br/>across profiles]
-        P3[Effect sizes<br/>miscalibrated]
-    end
-    
-    subgraph Boundary["Clear Boundary"]
-        X[❌ Not suitable for<br/>counterfactual ABM]
-    end
-    
-    Baseline --> Perturbed
-    Perturbed --> Boundary
-    
-    style Baseline fill:#eef5ed,stroke:#27ae60
-    style Perturbed fill:#fff5f5,stroke:#c0392b
-    style Boundary fill:#fff5f5,stroke:#c0392b
+  <div class="perturbed-results-panel perturbed-results-panel-support">
+    <div class="perturbed-results-label">Magnitude calibration</div>
+    <div class="perturbed-results-callout">PE skill mostly &lt; 0</div>
+    <img
+      class="perturbed-results-support-figure"
+      src="assets/fig-perturbed-skill-block-cropped.png"
+      alt="Median perturbation-effect magnitude skill by block and outcome on active cells."
+    />
+  </div>
+</div>
 ```
-
-:::
-
-::::
-
-::: {.notes}
-This is one of the key contribution slides. The boundary is clear: baseline plausibility is not enough for simulation.
-:::
 
 
 <!-- ============================================= -->
-<!-- SLIDE 11: ABM ARCHITECTURE -->
+<!-- SLIDE 11: LLM RESULTS - MISPLACED MECHANISM -->
+<!-- ============================================= -->
+
+## LLM micro-validation: The mechanism is misplaced {.mechanism-slide}
+
+```{=html}
+<div class="mechanism-slide-top">
+  <ul class="mechanism-slide-bullets">
+    <li>Behavioural side: lever sensitivities are reweighted away from disease stakes.</li>
+    <li>Profile side: updates spill across dimensions and become systematically too strong.</li>
+  </ul>
+</div>
+
+<div class="mechanism-slide-grid">
+  <div class="mechanism-slide-panel">
+    <div class="mechanism-slide-label">Behavioural outcomes</div>
+    <img
+      class="mechanism-slide-figure"
+      src="assets/fig-block-importance-alignment-cropped.png"
+      alt="Block-importance alignment with the reference LOBO ordering for behavioural outcomes."
+    />
+  </div>
+
+  <div class="mechanism-slide-panel">
+    <div class="mechanism-slide-label">Profile variables</div>
+    <img
+      class="mechanism-slide-figure"
+      src="assets/fig-belief-signal-block-sensitivity-alignment-cropped.png"
+      alt="Signal-block sensitivity alignment for perturbed psychological profile updates."
+    />
+  </div>
+</div>
+
+<div class="mechanism-slide-bottom">
+  The failure is not only miscalibration of size; it is misplacement of mechanism.
+</div>
+```
+
+
+<!-- ============================================= -->
+<!-- SLIDE 12: ABM ARCHITECTURE -->
 <!-- ============================================= -->
 
 ## ABM architecture: Survey-grounded behavioural core
