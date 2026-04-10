@@ -425,34 +425,31 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 
 ```{=html}
 <div class="mechanism-slide-top">
-  <ul class="mechanism-slide-bullets">
-    <li>Behavioural side: lever sensitivities are reweighted away from disease stakes.</li>
-    <li>Profile side: updates spill across dimensions and become systematically too strong.</li>
-  </ul>
+  <div class="mechanism-slide-subtitle">
+    Under perturbation, responses are not only mis-scaled; they are assigned to the wrong levers and spread too broadly.
+  </div>
 </div>
 
 <div class="mechanism-slide-grid">
   <div class="mechanism-slide-panel">
-    <div class="mechanism-slide-label">Behavioural outcomes</div>
+    <div class="mechanism-slide-label">Behavioural perturbations</div>
+    <div class="mechanism-slide-callout">Stakes underweighted; trust / legitimacy relatively overweighted</div>
     <img
       class="mechanism-slide-figure"
-      src="assets/fig-block-importance-alignment-cropped.png"
-      alt="Block-importance alignment with the reference LOBO ordering for behavioural outcomes."
+      src="assets/fig-perturbed-block-sensitivity-lobo.png"
+      alt="Perturbed block-sensitivity alignment with reference LOBO importance for behavioural outcomes."
     />
   </div>
 
   <div class="mechanism-slide-panel">
-    <div class="mechanism-slide-label">Profile variables</div>
+    <div class="mechanism-slide-label">Profile perturbations</div>
+    <div class="mechanism-slide-callout">All blocks above the diagonal → systematic oversensitivity</div>
     <img
       class="mechanism-slide-figure"
       src="assets/fig-belief-signal-block-sensitivity-alignment-cropped.png"
       alt="Signal-block sensitivity alignment for perturbed psychological profile updates."
     />
   </div>
-</div>
-
-<div class="mechanism-slide-bottom">
-  The failure is not only miscalibration of size; it is misplacement of mechanism.
 </div>
 ```
 
