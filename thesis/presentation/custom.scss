@@ -936,6 +936,180 @@ $selection-bg: $accent-blue;
   margin-top: auto;
 }
 
+.reveal .slides section.baseline-recovery-slide {
+  position: absolute;
+  min-height: 100%;
+}
+
+.reveal .slides section.baseline-recovery-slide > h2 {
+  margin-bottom: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.reveal .baseline-recovery-grid {
+  position: absolute;
+  top: 180px;
+  right: 60px;
+  bottom: 150px;
+  left: 60px;
+  width: min(1440px, calc(100% - 120px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.6rem;
+  align-items: center;
+}
+
+.reveal .baseline-recovery-panel {
+  display: grid;
+  gap: 0.6rem;
+  align-content: start;
+}
+
+.reveal .baseline-recovery-label {
+  color: $secondary-blue;
+  font-size: 0.6em;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.reveal .baseline-recovery-figure {
+  width: 100%;
+  max-width: 100%;
+  max-height: 430px;
+  object-fit: contain;
+  display: block;
+}
+
+.reveal .baseline-recovery-strip {
+  position: absolute;
+  right: 60px;
+  bottom: 90px;
+  left: 60px;
+  width: min(1440px, calc(100% - 120px));
+  margin: 0 auto;
+  color: $primary-blue;
+  font-size: 0.56em;
+  line-height: 1.4;
+  border-top: 1px solid rgba($secondary-blue, 0.18);
+  padding-top: 0.6rem;
+}
+
+.reveal .slides section.baseline-synthesis-slide {
+  position: absolute;
+  min-height: 100%;
+}
+
+.reveal .slides section.baseline-synthesis-slide > h2 {
+  margin-bottom: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.reveal .baseline-synthesis-subheadline {
+  position: absolute;
+  top: 150px;
+  right: 60px;
+  left: 60px;
+  width: min(1440px, calc(100% - 120px));
+  margin: 0 auto;
+  color: $primary-blue;
+  font-size: 0.72em;
+  line-height: 1.32;
+  max-width: 1220px;
+}
+
+.reveal .baseline-synthesis-bullets {
+  margin: 0 0 0 1.2rem;
+  font-size: 0.86em;
+  line-height: 1.32;
+}
+
+.reveal .baseline-synthesis-bullets li {
+  margin-bottom: 0.18rem;
+}
+
+.reveal .baseline-synthesis-inline-note {
+  font-size: 0.94em;
+}
+
+.reveal .baseline-synthesis-grid {
+  position: absolute;
+  top: 315px;
+  right: 60px;
+  bottom: 115px;
+  left: 60px;
+  width: min(1440px, calc(100% - 120px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 1.6rem;
+  align-items: stretch;
+}
+
+.reveal .baseline-synthesis-table {
+  display: grid;
+  gap: 0.6rem;
+  align-content: start;
+}
+
+.reveal .baseline-synthesis-label {
+  color: $secondary-blue;
+  font-size: 0.56em;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.reveal .baseline-synthesis-metrics {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 0.58em;
+}
+
+.reveal .baseline-synthesis-metrics thead th {
+  background: rgba($light-blue, 0.72);
+  color: $primary-blue;
+  font-weight: 700;
+  border-bottom: 1px solid rgba($highlight-blue, 0.85);
+  padding: 0.7em 0.8em;
+  text-align: left;
+}
+
+.reveal .baseline-synthesis-metrics tbody td {
+  padding: 0.7em 0.8em;
+  border-bottom: 1px solid rgba($secondary-blue, 0.12);
+  color: $dark-gray;
+  line-height: 1.3;
+}
+
+.reveal .baseline-synthesis-metrics tbody td:first-child {
+  color: $primary-blue;
+  font-weight: 600;
+}
+
+.reveal .metric-symbol {
+  font-style: italic;
+}
+
+.reveal .baseline-synthesis-side {
+  display: grid;
+  gap: 0.75rem;
+  align-content: start;
+  min-height: 100%;
+  padding-top: 1.5rem;
+}
+
+.reveal .baseline-side-figure {
+  width: 100%;
+  max-width: 100%;
+  max-height: 430px;
+  object-fit: contain;
+  display: block;
+  align-self: center;
+}
+
 // Country flags row
 .reveal .country-row {
   display: flex;

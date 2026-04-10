@@ -312,66 +312,67 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 <!-- SLIDE 9: LLM RESULTS - BASELINE -->
 <!-- ============================================= -->
 
-## Baseline structure is partly recovered
+## LLM micro-validation: Baseline structure is partly recovered {.baseline-synthesis-slide}
 
-:::: {.columns}
-
-::: {.column width="50%"}
-
-**Mixed but non-trivial results:**
-
-<br>
-
-::: {.result-box}
-**✓ Ranking** — LLMs can order respondents from lower to higher propensity
-:::
-
-<br>
-
-::: {.result-box}
-**✗ Level accuracy** — Predictions compress toward the middle
-:::
-
-<br>
-
-**Central-tendency compression:**
-
-- Low values overpredicted
-- High values underpredicted
-- Heterogeneity reduced
-
-<br>
-
-::: {.muted}
-Same pattern appears for psychological profile variables — would make simulated agents too similar
-:::
-
-:::
-
-::: {.column width="50%"}
-
-**Baseline performance pattern**
-
-<div style="display: flex; align-items: flex-end; height: 200px; gap: 60px; justify-content: center; margin-top: 40px;">
-<div style="text-align: center;">
-<div style="background: linear-gradient(to top, #1e3a5f 0%, #4a90c2 100%); width: 80px; height: 130px; border-radius: 4px 4px 0 0;"></div>
-<div style="margin-top: 10px; font-size: 0.8em; color: #5d6d7e;">Ranking<br/>✓ Moderate</div>
-</div>
-<div style="text-align: center;">
-<div style="background: linear-gradient(to top, #95a5a6 0%, #bdc3c7 100%); width: 80px; height: 80px; border-radius: 4px 4px 0 0;"></div>
-<div style="margin-top: 10px; font-size: 0.8em; color: #5d6d7e;">Level<br/>✗ Weak</div>
-</div>
+```{=html}
+<div class="baseline-synthesis-subheadline">
+  <ul class="baseline-synthesis-bullets">
+    <li>Ranking is stronger than level recovery, but remains below the survey-grounded benchmark.</li>
+    <li>Psychological profiles remain compressed <span class="baseline-synthesis-inline-note">(median compression ratio: 0.41 vs 0.46 for behavioural outcomes).</span></li>
+  </ul>
 </div>
 
-<br>
+<div class="baseline-synthesis-grid">
+  <div class="baseline-synthesis-table">
+    <div class="baseline-synthesis-label">Behavioural outcomes</div>
+    <table class="baseline-synthesis-metrics">
+      <thead>
+        <tr>
+          <th>Outcome</th>
+          <th>Gini <span class="metric-symbol">G</span></th>
+          <th>MAE skill</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>CoVax willingness</td>
+          <td>0.45</td>
+          <td>0.27</td>
+        </tr>
+        <tr>
+          <td>Flu vaccinated (no habit)</td>
+          <td>0.31</td>
+          <td>0.36</td>
+        </tr>
+        <tr>
+          <td>Masking (high pressure)</td>
+          <td>0.27</td>
+          <td>0.07</td>
+        </tr>
+        <tr>
+          <td>Masking (symptomatic, crowded)</td>
+          <td>0.21</td>
+          <td>0.05</td>
+        </tr>
+        <tr>
+          <td>Stay home (symptomatic)</td>
+          <td>0.15</td>
+          <td>-0.02</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-::: {.concept-box}
-**Implication:** LLMs are better at *relative* ordering than *absolute* positioning
-:::
-
-:::
-
-::::
+  <div class="baseline-synthesis-side">
+    <div class="baseline-synthesis-label">Profile variables</div>
+    <img
+      class="baseline-side-figure"
+      src="assets/fig-belief-unperturbed-cosine-cropped.png"
+      alt="Unperturbed state cosine similarity for psychological profile variables."
+    />
+  </div>
+</div>
+```
 
 
 <!-- ============================================= -->
