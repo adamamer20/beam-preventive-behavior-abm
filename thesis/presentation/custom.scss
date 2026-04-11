@@ -1283,58 +1283,58 @@ $selection-bg: $accent-blue;
 
 .reveal .abm-bridge-challenge {
   position: absolute;
-  top: 155px;
+  top: 124px;
   right: 60px;
   left: 60px;
-  width: min(1440px, calc(100% - 120px));
+  width: min(1520px, calc(100% - 80px));
   margin: 0 auto;
   padding: 0;
   color: $primary-blue;
-  font-size: 0.54em;
-  line-height: 1.32;
+  font-size: 0.68em;
+  line-height: 1.24;
   background: none;
   border: 0;
 }
 
 .reveal .abm-structure {
   position: absolute;
-  top: 235px;
-  right: 60px;
-  bottom: 110px;
-  left: 60px;
-  width: min(1440px, calc(100% - 120px));
+  top: 194px;
+  right: 20px;
+  bottom: 20px;
+  left: 20px;
+  width: min(1560px, calc(100% - 40px));
   margin: 0 auto;
 }
 
 .reveal .abm-bridge-layout {
-  margin: 32px 70px 0;
+  margin: 8px 0 0;
   display: grid;
   grid-template-columns:
-    minmax(0, 0.95fr) auto
-    minmax(0, 1.95fr) auto
-    minmax(0, 0.95fr);
-  gap: 0.5rem;
+    minmax(0, 1.16fr) auto
+    minmax(0, 2.12fr) auto
+    minmax(0, 1.16fr);
+  gap: 0.8rem;
   align-items: center;
 }
 
 .reveal .abm-node {
-  min-height: 112px;
+  min-height: 170px;
   display: grid;
   place-items: center;
   text-align: center;
-  padding: 0.65rem 0.7rem;
+  padding: 0.88rem 0.96rem;
   background: rgba($light-blue, 0.24);
   border: 1px solid rgba($secondary-blue, 0.12);
   border-top: 2px solid rgba($highlight-blue, 0.5);
-  font-size: 0.5em;
-  line-height: 1.24;
+  font-size: 0.67em;
+  line-height: 1.2;
   font-weight: 600;
   color: $primary-blue;
 }
 
 .reveal .abm-dynamic-bridge-box {
-  min-height: 290px;
-  padding: 0.8rem 0.9rem 0.9rem;
+  min-height: 418px;
+  padding: 0.88rem 0.94rem 0.94rem;
   background: rgba($light-blue, 0.16);
   border: 1px solid rgba($secondary-blue, 0.14);
   border-top: 2px solid rgba($highlight-blue, 0.5);
@@ -1342,51 +1342,59 @@ $selection-bg: $accent-blue;
 
 .reveal .abm-dynamic-bridge-title {
   color: $secondary-blue;
-  font-size: 0.52em;
+  font-size: 0.66em;
   font-weight: 700;
   line-height: 1.2;
-  margin-bottom: 0.45rem;
+  margin-bottom: 0.5rem;
 }
 
 .reveal .abm-dynamic-bridge-inner {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-rows: auto auto;
-  gap: 0.75rem 0.8rem;
+  gap: 0.85rem 0.85rem;
   align-items: start;
   position: relative;
 }
 
 .reveal .abm-node-large {
-  min-height: 198px;
-  gap: 0.3rem;
+  min-height: 216px;
+  gap: 0.34rem;
   align-content: center;
   grid-column: 1 / -1;
 }
 
 .reveal .abm-node-large > p:first-child {
   margin: 0;
-  font-size: 1.04em;
+  font-size: 1.12em;
   line-height: 1.2;
 }
 
+.reveal .abm-target-update-note {
+  margin-top: 0.08rem;
+  font-size: 0.56em;
+  line-height: 1.18;
+  font-weight: 600;
+  color: rgba($secondary-blue, 0.95);
+}
+
 .reveal .abm-node-large .math.display {
-  margin: 0.15rem 0 0;
-  font-size: 1em;
+  margin: 0.12rem 0 0;
+  font-size: 1.42em;
   line-height: 1.15;
 }
 
 .reveal .abm-adjust-speed-note {
-  margin-top: 0.34rem;
-  font-size: 0.42em;
+  margin-top: 0.56rem;
+  font-size: 0.76em;
   line-height: 1.24;
   font-weight: 600;
 }
 
 .reveal .abm-adjust-kappa-note {
-  margin-top: 0.16rem;
-  font-size: 0.48em;
-  line-height: 1.22;
+  margin-top: 0.08rem;
+  font-size: 0.78em;
+  line-height: 1.16;
   font-weight: 600;
 }
 
@@ -1394,37 +1402,49 @@ $selection-bg: $accent-blue;
   margin: 0;
 }
 
+.reveal .abm-adjust-kappa-set {
+  font-size: 1.16em;
+  line-height: 1.08;
+}
+
+.reveal .abm-adjust-kappa-map {
+  margin-top: 0.08rem;
+  font-size: 1.02em;
+  line-height: 1.08;
+}
+
 .reveal .abm-adjust-kappa-note .math.inline {
   font-size: 1em;
 }
 
 .reveal .abm-arrow {
-  font-size: 0.9em;
+  font-size: 1.42em;
   color: rgba($secondary-blue, 0.8);
   line-height: 1;
 }
 
 .reveal .abm-side-box {
   display: grid;
-  gap: 0.26rem;
-  padding: 0.72rem 0.8rem 0.75rem;
+  gap: 0.34rem;
+  padding: 0.84rem 0.92rem 0.9rem;
   background: rgba($light-blue, 0.16);
   border: 1px solid rgba($secondary-blue, 0.1);
   border-top: 2px solid rgba($highlight-blue, 0.4);
   color: $primary-blue;
   position: relative;
+  min-height: 170px;
 }
 
 .reveal .abm-side-box > p:first-child {
   margin: 0;
-  font-size: 0.5em;
+  font-size: 0.62em;
   font-weight: 700;
   line-height: 1.2;
 }
 
 .reveal .abm-side-box ul {
   margin: 0.05rem 0 0 0.9rem;
-  font-size: 0.43em;
+  font-size: 0.54em;
   line-height: 1.28;
 }
 
@@ -1434,7 +1454,7 @@ $selection-bg: $accent-blue;
 
 .reveal .abm-side-box > p:last-child {
   margin-top: 0.28rem;
-  font-size: 0.38em;
+  font-size: 0.5em;
   line-height: 1.2;
   color: rgba($secondary-blue, 0.95);
   font-weight: 600;
@@ -1448,23 +1468,43 @@ $selection-bg: $accent-blue;
 }
 
 .reveal .abm-side-social::before {
-  content: "↑";
+  content: "";
   position: absolute;
-  top: -1.05rem;
+  top: -1rem;
   left: 50%;
-  transform: translateX(-50%);
-  font-size: 0.55em;
-  color: rgba($secondary-blue, 0.8);
+  width: 0;
+  height: 1rem;
+  border-left: 2px solid rgba($secondary-blue, 0.8);
+}
+
+.reveal .abm-side-social::after {
+  content: "";
+  position: absolute;
+  top: -1.23rem;
+  left: calc(50% - 0.24rem);
+  border-left: 0.24rem solid transparent;
+  border-right: 0.24rem solid transparent;
+  border-bottom: 0.28rem solid rgba($secondary-blue, 0.8);
 }
 
 .reveal .abm-side-incidence::before {
-  content: "↑";
+  content: "";
   position: absolute;
-  top: -1.05rem;
-  left: 32%;
-  transform: translateX(-50%);
-  font-size: 0.55em;
-  color: rgba($secondary-blue, 0.8);
+  top: -1rem;
+  left: 50%;
+  width: 0;
+  height: 1rem;
+  border-left: 2px solid rgba($secondary-blue, 0.8);
+}
+
+.reveal .abm-side-incidence::after {
+  content: "";
+  position: absolute;
+  top: -1.23rem;
+  left: calc(50% - 0.24rem);
+  border-left: 0.24rem solid transparent;
+  border-right: 0.24rem solid transparent;
+  border-bottom: 0.28rem solid rgba($secondary-blue, 0.8);
 }
 
 // Country flags row

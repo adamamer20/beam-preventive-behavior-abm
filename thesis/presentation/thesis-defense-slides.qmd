@@ -488,13 +488,14 @@ $$
 s_{i,u}(t+1)=s_{i,u}(t)+\kappa_u\big(\tilde{s}_{i,u}(t)-s_{i,u}(t)\big)
 $$
 
-::: {.abm-adjust-speed-note}
-slow trust / norms, faster situational risk
+::: {.abm-adjust-kappa-note}
+::: {.abm-adjust-kappa-set}
+$\kappa_u \in \{k_{\text{slow}}, k_{\text{fast}}\}$
 :::
 
-::: {.abm-adjust-kappa-note}
-$\kappa_u \in \{k_{\text{slow}}, k_{\text{fast}}\}$  
-trust / norms: $k_{\text{slow}}$ · situational risk: $k_{\text{fast}}$
+::: {.abm-adjust-kappa-map}
+$k_{\text{slow}}$: trust, norms · $k_{\text{fast}}$: situational risk
+:::
 :::
 :::
 
