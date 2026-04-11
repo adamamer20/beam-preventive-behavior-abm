@@ -458,66 +458,74 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 <!-- SLIDE 12: ABM ARCHITECTURE -->
 <!-- ============================================= -->
 
-## ABM architecture: Survey-grounded behavioural core
+## ABM architecture: From survey gradients to dynamics {.abm-bridge-slide}
 
-```{mermaid}
-%%| fig-width: 14
-%%| fig-height: 6
-flowchart LR
-    subgraph Core["Behavioural Core"]
-        direction TB
-        SURVEY[Survey-grounded<br/>equations] --> TARGETS[Time-varying<br/>targets]
-        TARGETS --> PARTIAL[Partial<br/>adjustment]
-    end
-    
-    subgraph Dynamics["Dynamic Mechanisms"]
-        direction TB
-        PEER[Peer exposure<br/>homophily-weighted]
-        NORM[Norm updating<br/>threshold contagion]
-        SOCIAL[Social<br/>interaction]
-        PEER --> SOCIAL
-        NORM --> SOCIAL
-    end
-    
-    subgraph Feedback["Epidemic Feedback"]
-        direction TB
-        INC[Local incidence<br/>signal]
-        PROTECT[Protection<br/>dampens spread]
-        RISK[Feeds back to<br/>perceived risk]
-        INC --> PROTECT
-        PROTECT --> RISK
-    end
-    
-    Core --> Dynamics
-    Dynamics --> Feedback
-    Feedback --> Core
-    
-    style Core fill:#e8f1f8,stroke:#1e3a5f
-    style Dynamics fill:#eef5ed,stroke:#27ae60
-    style Feedback fill:#fef5e7,stroke:#d68910
-```
-
-<br>
-
-:::: {.columns}
-
-::: {.column width="33%"}
-**Partial adjustment**
-
-States move gradually toward targets; trust/norms adjust slowly, risk appraisals faster
+::: {.abm-bridge-challenge}
+**Challenge:** the survey anchors behavioural gradients, but the ABM must supply the update rule.
 :::
 
-::: {.column width="33%"}
+:::: {.abm-structure}
+
+:::: {.abm-bridge-layout}
+
+::: {.abm-node .abm-equations-node}
+Survey-grounded equations
+:::
+
+::: {.abm-arrow .abm-arrow-bridge-left}
+→
+:::
+
+::: {.abm-dynamic-bridge-box}
+<div class="abm-dynamic-bridge-title">Dynamic bridge</div>
+
+:::: {.abm-dynamic-bridge-inner}
+
+::: {.abm-node .abm-node-large .abm-adjust-node}
+**Partial adjustment toward time-varying targets**
+
+$$
+s_{i,u}(t+1)=s_{i,u}(t)+\kappa_u\big(\tilde{s}_{i,u}(t)-s_{i,u}(t)\big)
+$$
+
+::: {.abm-adjust-speed-note}
+slow trust / norms, faster situational risk
+:::
+
+::: {.abm-adjust-kappa-note}
+$\kappa_u \in \{k_{\text{slow}}, k_{\text{fast}}\}$  
+trust / norms: $k_{\text{slow}}$ · situational risk: $k_{\text{fast}}$
+:::
+:::
+
+::: {.abm-side-box .abm-side-social}
 **Social influence**
 
-Peer-pulling on trust/risk; norm updating via threshold visibility
+- peer pull
+- norm updating
 :::
 
-::: {.column width="33%"}
-**Incidence loop**
+::: {.abm-side-box .abm-side-incidence}
+**Incidence feedback**
 
-Higher protection → lower incidence → lower perceived risk
+- protection lowers incidence
+- incidence raises perceived risk
+
+Behaviour → incidence → risk-related targets
 :::
+
+::::
+:::
+
+::: {.abm-arrow .abm-arrow-bridge-right}
+→
+:::
+
+::: {.abm-node .abm-outcomes-node}
+Behavioural outcomes
+:::
+
+::::
 
 ::::
 

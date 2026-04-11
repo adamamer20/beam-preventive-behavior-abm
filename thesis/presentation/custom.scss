@@ -1270,6 +1270,203 @@ $selection-bg: $accent-blue;
   display: block;
 }
 
+.reveal .slides section.abm-bridge-slide {
+  position: absolute;
+  min-height: 100%;
+}
+
+.reveal .slides section.abm-bridge-slide > h2 {
+  margin-bottom: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.reveal .abm-bridge-challenge {
+  position: absolute;
+  top: 155px;
+  right: 60px;
+  left: 60px;
+  width: min(1440px, calc(100% - 120px));
+  margin: 0 auto;
+  padding: 0;
+  color: $primary-blue;
+  font-size: 0.54em;
+  line-height: 1.32;
+  background: none;
+  border: 0;
+}
+
+.reveal .abm-structure {
+  position: absolute;
+  top: 235px;
+  right: 60px;
+  bottom: 110px;
+  left: 60px;
+  width: min(1440px, calc(100% - 120px));
+  margin: 0 auto;
+}
+
+.reveal .abm-bridge-layout {
+  margin: 32px 70px 0;
+  display: grid;
+  grid-template-columns:
+    minmax(0, 0.95fr) auto
+    minmax(0, 1.95fr) auto
+    minmax(0, 0.95fr);
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.reveal .abm-node {
+  min-height: 112px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 0.65rem 0.7rem;
+  background: rgba($light-blue, 0.24);
+  border: 1px solid rgba($secondary-blue, 0.12);
+  border-top: 2px solid rgba($highlight-blue, 0.5);
+  font-size: 0.5em;
+  line-height: 1.24;
+  font-weight: 600;
+  color: $primary-blue;
+}
+
+.reveal .abm-dynamic-bridge-box {
+  min-height: 290px;
+  padding: 0.8rem 0.9rem 0.9rem;
+  background: rgba($light-blue, 0.16);
+  border: 1px solid rgba($secondary-blue, 0.14);
+  border-top: 2px solid rgba($highlight-blue, 0.5);
+}
+
+.reveal .abm-dynamic-bridge-title {
+  color: $secondary-blue;
+  font-size: 0.52em;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.45rem;
+}
+
+.reveal .abm-dynamic-bridge-inner {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: auto auto;
+  gap: 0.75rem 0.8rem;
+  align-items: start;
+  position: relative;
+}
+
+.reveal .abm-node-large {
+  min-height: 198px;
+  gap: 0.3rem;
+  align-content: center;
+  grid-column: 1 / -1;
+}
+
+.reveal .abm-node-large > p:first-child {
+  margin: 0;
+  font-size: 1.04em;
+  line-height: 1.2;
+}
+
+.reveal .abm-node-large .math.display {
+  margin: 0.15rem 0 0;
+  font-size: 1em;
+  line-height: 1.15;
+}
+
+.reveal .abm-adjust-speed-note {
+  margin-top: 0.34rem;
+  font-size: 0.42em;
+  line-height: 1.24;
+  font-weight: 600;
+}
+
+.reveal .abm-adjust-kappa-note {
+  margin-top: 0.16rem;
+  font-size: 0.48em;
+  line-height: 1.22;
+  font-weight: 600;
+}
+
+.reveal .abm-adjust-kappa-note p {
+  margin: 0;
+}
+
+.reveal .abm-adjust-kappa-note .math.inline {
+  font-size: 1em;
+}
+
+.reveal .abm-arrow {
+  font-size: 0.9em;
+  color: rgba($secondary-blue, 0.8);
+  line-height: 1;
+}
+
+.reveal .abm-side-box {
+  display: grid;
+  gap: 0.26rem;
+  padding: 0.72rem 0.8rem 0.75rem;
+  background: rgba($light-blue, 0.16);
+  border: 1px solid rgba($secondary-blue, 0.1);
+  border-top: 2px solid rgba($highlight-blue, 0.4);
+  color: $primary-blue;
+  position: relative;
+}
+
+.reveal .abm-side-box > p:first-child {
+  margin: 0;
+  font-size: 0.5em;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.reveal .abm-side-box ul {
+  margin: 0.05rem 0 0 0.9rem;
+  font-size: 0.43em;
+  line-height: 1.28;
+}
+
+.reveal .abm-side-box li {
+  margin-bottom: 0.14rem;
+}
+
+.reveal .abm-side-box > p:last-child {
+  margin-top: 0.28rem;
+  font-size: 0.38em;
+  line-height: 1.2;
+  color: rgba($secondary-blue, 0.95);
+  font-weight: 600;
+}
+
+.reveal .abm-adjust-node,
+.reveal .abm-outcomes-node,
+.reveal .abm-side-social,
+.reveal .abm-side-incidence {
+  position: relative;
+}
+
+.reveal .abm-side-social::before {
+  content: "↑";
+  position: absolute;
+  top: -1.05rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.55em;
+  color: rgba($secondary-blue, 0.8);
+}
+
+.reveal .abm-side-incidence::before {
+  content: "↑";
+  position: absolute;
+  top: -1.05rem;
+  left: 32%;
+  transform: translateX(-50%);
+  font-size: 0.55em;
+  color: rgba($secondary-blue, 0.8);
+}
+
 // Country flags row
 .reveal .country-row {
   display: flex;
