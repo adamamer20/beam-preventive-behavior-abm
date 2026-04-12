@@ -1550,6 +1550,113 @@ $selection-bg: $accent-blue;
   font-weight: 650;
 }
 
+.reveal .slides section.abm-sensitivity-slide {
+  position: absolute;
+  min-height: 100%;
+}
+
+.reveal .slides section.abm-sensitivity-slide > h2 {
+  margin-bottom: 0;
+  position: relative;
+  z-index: 1;
+  font-size: 1.18em;
+  line-height: 1.12;
+  max-width: 98%;
+}
+
+.reveal .abm-sensitivity-grid {
+  position: absolute;
+  top: 118px;
+  right: 60px;
+  bottom: 68px;
+  left: 60px;
+  width: min(1440px, calc(100% - 120px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  row-gap: 0.34rem;
+  align-content: start;
+}
+
+.reveal .abm-sensitivity-grid > .abm-slide-subtitle {
+  grid-column: 1 / -1;
+  max-width: 86%;
+}
+
+.reveal .abm-sensitivity-main {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.28fr) minmax(390px, 0.8fr);
+  column-gap: 1.08rem;
+  min-height: 0;
+  align-items: center;
+}
+
+.reveal .abm-sensitivity-figure-wrap {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 0;
+}
+
+.reveal .abm-sensitivity-figure {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  max-height: 640px;
+  object-fit: contain;
+  margin: 0 auto;
+}
+
+.reveal .abm-sensitivity-side {
+  display: grid;
+  grid-template-rows: repeat(3, minmax(0, auto));
+  gap: 0.58rem;
+  align-content: center;
+  min-height: 0;
+  padding-top: 0;
+}
+
+.reveal .abm-sensitivity-side-item {
+  padding: 0.42rem 0.58rem 0.44rem;
+  background: rgba($light-blue, 0.26);
+  border: 1px solid rgba($secondary-blue, 0.12);
+  border-left: 4px solid rgba($highlight-blue, 0.5);
+  border-radius: 7px;
+}
+
+.reveal .abm-sensitivity-side-title {
+  color: $secondary-blue;
+  font-size: 0.6em;
+  font-weight: 700;
+  line-height: 1.16;
+  margin-bottom: 0.12rem;
+}
+
+.reveal .abm-sensitivity-side-text {
+  color: $primary-blue;
+  font-size: 0.49em;
+  line-height: 1.28;
+  font-weight: 500;
+}
+
+.reveal .abm-sensitivity-side-text strong {
+  font-weight: 700;
+}
+
+.reveal .abm-sensitivity-side-item-persistence {
+  border-left-color: rgba($highlight-blue, 0.5);
+}
+
+.reveal .abm-sensitivity-side-item-diffusion {
+  border-left-color: rgba($highlight-blue, 0.5);
+}
+
+.reveal .abm-sensitivity-side-item-incidence {
+  border-left-color: rgba($highlight-blue, 0.5);
+}
+
 .reveal .abm-leaderboard-slide {
   .abm-slide-subtitle + p,
   .abm-leaderboard-figure + p {
@@ -1626,7 +1733,7 @@ $selection-bg: $accent-blue;
   position: absolute;
   left: 0;
   right: 0;
-  padding: 0.22rem 0.34rem 0.24rem;
+  padding: 0.3rem 0.42rem 0.32rem;
   background: rgba($light-blue, 0.28);
   border: 1px solid rgba($secondary-blue, 0.12);
   border-left: 3px solid rgba($highlight-blue, 0.5);
@@ -1653,16 +1760,16 @@ $selection-bg: $accent-blue;
 
 .reveal .abm-dynamics-side-title {
   color: $secondary-blue;
-  font-size: 0.5em;
+  font-size: 0.57em;
   font-weight: 700;
   line-height: 1.2;
-  margin-bottom: 0.06rem;
+  margin-bottom: 0.08rem;
 }
 
 .reveal .abm-dynamics-side-text {
   color: $primary-blue;
-  font-size: 0.42em;
-  line-height: 1.2;
+  font-size: 0.46em;
+  line-height: 1.22;
   font-weight: 500;
 }
 

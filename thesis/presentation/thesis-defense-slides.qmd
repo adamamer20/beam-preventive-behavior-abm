@@ -607,58 +607,45 @@ Each row is a different lever; each column shows how its effects propagate over 
 <!-- SLIDE 14: ABM SENSITIVITY -->
 <!-- ============================================= -->
 
-## Sensitivity analysis: Where do effects come from?
+## Sensitivity analysis: Robustness depends on different mechanisms {.abm-sensitivity-slide}
 
-:::: {.columns}
+```{=html}
+<div class="abm-sensitivity-grid">
+```
 
-::: {.column width="50%"}
-
-**Morris screening by mechanism family:**
-
-| Family | Description |
-|--------|-------------|
-| **Persistence** | How slowly states relax |
-| **Social diffusion** | Network propagation strength |
-| **Incidence feedback** | Behaviour ↔ epidemic loop |
-| **Stochasticity** | Random variation |
-
-<br>
-
-**Interpretable pattern:**
-
-- **Credibility** → most sensitive to *persistence*
-- **Norms** → most sensitive to *social diffusion*
-- **Access** → sensitive to *stochasticity* + *incidence feedback*
-
+::: {.abm-slide-subtitle}
+Read across rows: brighter cells mark where sensitivity is concentrated within each scenario–outcome pair.
 :::
 
-::: {.column width="50%"}
-
-**Sensitivity by mechanism family**
-
-<div style="font-size: 0.75em;">
-
-| Intervention | Persistence | Diffusion | Incidence | Stochastic |
-|:-------------|:-----------:|:---------:|:---------:|:----------:|
-| **Credibility** | ███ | █ | █ | █ |
-| **Norms** | █ | ███ | █ | █ |
-| **Access** | █ | █ | ██ | ██ |
-
+```{=html}
+<div class="abm-sensitivity-main">
+  <div class="abm-sensitivity-figure-wrap">
+    <img
+      class="abm-sensitivity-figure"
+      src="assets/fig-05-sensitivity-heatmap.png"
+      alt="Row-normalised sensitivity heatmap showing which mechanism families dominate uncertainty within each intervention-outcome pair."
+    />
+  </div>
+  <div class="abm-sensitivity-side">
+    <div class="abm-sensitivity-side-item abm-sensitivity-side-item-persistence">
+      <div class="abm-sensitivity-side-title">Credibility repair</div>
+      <div class="abm-sensitivity-side-text">Both repair scenarios load mainly on <strong>persistence</strong> (0.38, 0.44), so robustness depends on slow trust and legitimacy relaxation.</div>
+    </div>
+    <div class="abm-sensitivity-side-item abm-sensitivity-side-item-diffusion">
+      <div class="abm-sensitivity-side-title">Norm shift</div>
+      <div class="abm-sensitivity-side-text">Sensitivity concentrates in <strong>social diffusion</strong> (0.41), with <strong>stochasticity</strong> also relevant (0.33).</div>
+    </div>
+    <div class="abm-sensitivity-side-item abm-sensitivity-side-item-incidence">
+      <div class="abm-sensitivity-side-title">Outbreak wave</div>
+      <div class="abm-sensitivity-side-text">Sensitivity is almost entirely <strong>incidence-loop</strong> driven (0.94), consistent with a risk-salience shock.</div>
+    </div>
+  </div>
 </div>
+```
 
-::: {.small}
-███ = primary driver · ██ = important · █ = minor
-:::
-
-<br>
-
-::: {.concept-box}
-**Robustness:** Cumulative rankings often more robust than month-12 rankings (mean-reverting dynamics)
-:::
-
-:::
-
-::::
+```{=html}
+</div>
+```
 
 
 <!-- ============================================= -->
