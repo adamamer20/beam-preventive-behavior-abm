@@ -549,11 +549,11 @@ The strongest one-step lever is not always the strongest cumulative lever.
 :::
 
 ::: {.abm-takeaway}
-**Credibility:** legitimacy vaccine-specific, trust broader.
+**Credibility:** legitimacy is vaccine-specific; trust is broader.
 :::
 
 ::: {.abm-takeaway}
-**Access facilitation:** can reverse via incidence feedback.
+**Access facilitation:** can reverse through incidence feedback.
 :::
 :::
 

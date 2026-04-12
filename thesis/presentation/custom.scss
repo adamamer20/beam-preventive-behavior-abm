@@ -1518,7 +1518,7 @@ $selection-bg: $accent-blue;
 
 .reveal .abm-leaderboard-figure {
   display: block;
-  width: 68%;
+  width: 64%;
   max-width: none;
   margin: 0.24rem auto 1.5rem;
 }
@@ -1535,10 +1535,10 @@ $selection-bg: $accent-blue;
   padding: 0.26rem 0 0;
   background: transparent;
   border: none;
-  border-top: 2px solid rgba($highlight-blue, 0.34);
+  border-top: 1px solid rgba($secondary-blue, 0.16);
   color: $primary-blue;
-  font-size: 0.54em;
-  line-height: 1.26;
+  font-size: 0.5em;
+  line-height: 1.38;
   min-height: 0;
 }
 
