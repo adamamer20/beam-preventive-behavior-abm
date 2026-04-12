@@ -1508,8 +1508,8 @@ $selection-bg: $accent-blue;
 }
 
 .reveal .abm-slide-subtitle {
-  margin: 0.1rem 0 0.6rem;
-  font-size: 0.6em;
+  margin: -0.08rem 0 0.08rem;
+  font-size: 0.56em;
   line-height: 1.22;
   color: rgba($secondary-blue, 0.95);
   font-weight: 600;
@@ -1553,6 +1553,63 @@ $selection-bg: $accent-blue;
 .reveal .abm-leaderboard-slide {
   .abm-slide-subtitle + p,
   .abm-leaderboard-figure + p {
+    margin-bottom: 0;
+  }
+}
+
+.reveal .slides section.abm-dynamics-slide {
+  position: absolute;
+  min-height: 100%;
+}
+
+.reveal .slides section.abm-dynamics-slide > h2 {
+  margin-bottom: 0;
+  position: relative;
+  z-index: 1;
+  font-size: 1.22em;
+  line-height: 1.12;
+  max-width: 96%;
+}
+
+.reveal .abm-dynamics-grid {
+  position: absolute;
+  top: 108px;
+  right: 60px;
+  bottom: 74px;
+  left: 60px;
+  width: min(1440px, calc(100% - 120px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-rows: auto auto auto;
+  gap: 0;
+  align-content: start;
+}
+
+.reveal .abm-dynamics-figure-wrap {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: auto;
+  padding-top: 0;
+}
+
+.reveal .abm-dynamics-figure {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  max-height: 615px;
+  object-fit: contain;
+  margin: -0.18rem auto 0;
+}
+
+.reveal .abm-dynamics-takeaways {
+  margin-top: 1rem;
+  align-self: start;
+}
+
+.reveal .abm-dynamics-slide {
+  .abm-slide-subtitle + p,
+  .abm-dynamics-figure + p {
     margin-bottom: 0;
   }
 }

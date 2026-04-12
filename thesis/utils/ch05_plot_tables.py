@@ -3077,7 +3077,7 @@ def plot_dynamic_fingerprints_panel(
         return fig
 
     n_rows = len(active_rows)
-    fig, axes = plt.subplots(n_rows, 3, figsize=(11.8, 2.7 * n_rows), sharex=False)
+    fig, axes = plt.subplots(n_rows, 3, figsize=(13.2, 3.0 * n_rows), sharex=False)
     if n_rows == 1:
         axes = np.asarray([axes])
 
@@ -3166,8 +3166,7 @@ def plot_dynamic_fingerprints_panel(
             if col_idx == 2 and npi_lims is not None:
                 ax.set_ylim(npi_lims)
 
-    fig.suptitle("Dynamic response signatures of key levers", y=1.01, fontsize=12.0)
-    fig.tight_layout()
+    fig.tight_layout(pad=0.6, w_pad=0.8, h_pad=1.0)
     return fig
 
 

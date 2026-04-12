@@ -559,7 +559,50 @@ The strongest one-step lever is not always the strongest cumulative lever.
 
 
 <!-- ============================================= -->
-<!-- SLIDE 13: ABM SENSITIVITY -->
+<!-- SLIDE 13: ABM DYNAMICS -->
+<!-- ============================================= -->
+
+## ABM results: Similar cumulative effects can hide different dynamics {.abm-dynamics-slide}
+
+```{=html}
+<div class="abm-dynamics-grid">
+```
+
+::: {.abm-slide-subtitle}
+The same cumulative result can come from very different time paths.
+:::
+
+```{=html}
+<div class="abm-dynamics-figure-wrap">
+  <img
+    class="abm-dynamics-figure"
+    src="assets/fig-05-dynamic-fingerprints.png"
+    alt="Dynamic response signatures for norm shift, outbreak wave, and trust erosion across mediator, vaccination willingness, and NPI index."
+  />
+</div>
+```
+
+::: {.abm-side-takeaways .abm-dynamics-takeaways}
+::: {.abm-takeaway}
+**Norm campaign:** gradual build-up, long tail.
+:::
+
+::: {.abm-takeaway}
+**Outbreak wave:** sharp rise, then relaxation.
+:::
+
+::: {.abm-takeaway}
+**Trust erosion:** persistence mainly in vaccination.
+:::
+:::
+
+```{=html}
+</div>
+```
+
+
+<!-- ============================================= -->
+<!-- SLIDE 14: ABM SENSITIVITY -->
 <!-- ============================================= -->
 
 ## Sensitivity analysis: Where do effects come from?
@@ -617,7 +660,7 @@ The strongest one-step lever is not always the strongest cumulative lever.
 
 
 <!-- ============================================= -->
-<!-- SLIDE 14: TAKEAWAYS -->
+<!-- SLIDE 15: TAKEAWAYS -->
 <!-- ============================================= -->
 
 ## Takeaways
