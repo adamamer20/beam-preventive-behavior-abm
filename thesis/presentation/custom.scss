@@ -1780,6 +1780,21 @@ $selection-bg: $accent-blue;
   }
 }
 
+.reveal .slides section.thank-you-slide {
+  position: relative;
+  padding: 0;
+}
+
+.reveal .slides section.thank-you-slide .thank-you-slide-inner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
 // Country flags row
 .reveal .country-row {
   display: flex;

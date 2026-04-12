@@ -678,11 +678,19 @@ An empirical backbone plus bounded dynamics gives more interpretable policy comp
 <!-- BACKUP SLIDES -->
 <!-- ============================================= -->
 
-## {.center background-color="#fafbfc"}
+## {.thank-you-slide background-color="#fafbfc"}
 
-::: {style="color: #1e4f86; font-size: 1.45em; text-align: center; margin-top: 3.2em;"}
-**Thank you**
+```{=html}
+<div class="thank-you-slide-inner">
+```
+
+::: {style="color: #1e4f86; font-size: 1.45em; text-align: center; width: 100%; margin: 0;"}
+Thank you
 :::
+
+```{=html}
+</div>
+```
 
 ## {.center background-color="#1e3a5f"}
 
