@@ -109,18 +109,36 @@ Once the ABM is specified, I compare a set of counterfactual interventions with 
 
 The intervention results reveal four distinct dynamic profiles. Norm-based interventions generate the largest cumulative effects, not because they have the strongest one-step leverage, but because their influence persists and accumulates through social reinforcement and slow adjustment. Outbreak waves, by contrast, produce sharper responses through perceived risk, but these are more short-lived and relax more quickly once epidemic pressure declines. Credibility-related interventions are asymmetric: legitimacy repair mainly increases vaccination willingness, whereas institutional-trust repair has broader spillovers across both vaccination and non-pharmaceutical prevention. If effects are normalized by intervention duration, some credibility shocks, especially legitimacy-related ones, also stand out for their strong short-run impact on vaccination willingness. Access facilitation behaves differently again, because it creates a substitution effect. It can initially raise vaccination, but once protection increases, incidence pressure falls, perceived risk declines, and other precautions may weaken through feedback. So improving one preventive margin does not necessarily raise prevention everywhere else; in the model, this compensatory mechanism is strong enough that the overall net effect turns negative.
 
+<!---- Robutsness screening ------->
+
 Finally, I run a robustness screening using Morris sensitivity analysis.
 
-The idea here is not to ask whether every parameter matters equally, but to ask where each intervention’s effect is most sensitive. I group the uncertainty into four broad mechanism families: persistence, social diffusion, incidence feedback, and stochasticity.
+The idea here is not to ask whether every parameter matters equally, but to ask where uncertainty is concentrated for each intervention–outcome pair.
 
 The resulting pattern is quite interpretable.
 
-Credibility-focused interventions depend mostly on persistence, which makes sense because their effects are carried by how slowly trust- and legitimacy-related states relax.
+Credibility-repair interventions load mainly on persistence. This makes sense, because their effects depend on how slowly trust- and legitimacy-related states relax back toward baseline.
 
-Norm campaigns depend most strongly on social diffusion, which is exactly what we would expect if their persistence is sustained by reinforcement and network propagation.
+Norm-based interventions depend more on social diffusion. In other words, their yield is strongest when exposure to prevention translates effectively into a shared perception of what is normal.
 
-Access facilitation is more sensitive to stochasticity and incidence feedback, because it acts more directly on vaccination and less through the socially reinforcing parts of the model.
+Outbreak-wave responses are instead concentrated on the incidence loop, which is exactly what we would expect from an intervention that works mainly through changing epidemic pressure and risk salience.
 
-A final useful result is that cumulative rankings are often more robust than late-horizon rankings. This is consistent with the mean-reverting structure of the ABM: interventions can differ strongly in total cumulative effect, even if their month-12 levels are much closer together or even reversed.
+So uncertainty is not spread randomly across the model. It concentrates in a small set of identifiable dynamic assumptions, especially slow-state relaxation, social propagation, and incidence feedback. That makes the ABM easier to interpret, because we can see which mechanisms each policy comparison actually relies on.  
 
-So the ABM does not just simulate alternative policies. It also helps distinguish between interventions that are sharp but transient, interventions that are gradual but persistent, and interventions whose effects spill across behavioural domains through feedback.
+A final useful result is that cumulative comparisons are often more robust than late-horizon comparisons.
+
+This is consistent with the mean-reverting structure of the model. Interventions can separate strongly in total cumulative yield, while ending at much more similar, or even reversed, month-12 levels. So if we care about overall behavioural impact, cumulative measures are often more informative than a single late snapshot. 
+
+<!---- Conclusions ------->
+
+So, stepping back, the main conclusion of the thesis is that preventive behaviour can be represented by a compact but outcome-specific architecture.
+
+The same broad engines recur across outcomes, but their weights change: COVID vaccination willingness depends mainly on stakes within a wider trust and legitimacy context, flu vaccination is much more inertial, and NPIs depend more strongly on moral orientation and stakes.
+
+The LLM results then show that baseline plausibility is not enough for behavioural simulation. Off-the-shelf models can recover part of the static structure, but they are much less reliable once relevant drivers are deliberately perturbed. So the key issue is not only fit at baseline, but counterfactual discipline.
+
+This is why the ABM keeps the behavioural core tied to the survey-grounded relationships and adds a minimal dynamic layer for persistence, social influence, and incidence feedback.
+
+So the broader contribution of the thesis is to propose a disciplined bridge from survey evidence to counterfactual simulation, and to clarify a useful boundary for current LLM agents: they are promising for richer behavioural representation, but not yet reliable enough as unconstrained update engines in this setting.
+
+The main next step would be to strengthen the dynamic side with longitudinal data and a richer transmission layer.
