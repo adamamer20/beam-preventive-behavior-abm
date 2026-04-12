@@ -535,75 +535,27 @@ Behavioural outcomes
 <!-- SLIDE 12: ABM INTERVENTIONS -->
 <!-- ============================================= -->
 
-## Interventions reveal distinct dynamic profiles
+## ABM results: Dynamics re-rank the policy levers {.abm-leaderboard-slide}
 
-:::: {.columns}
-
-::: {.column width="50%"}
-
-**Four intervention types compared:**
-
-| Type | Duration | Mechanism |
-|------|----------|-----------|
-| **Norm campaigns** | 9 months | Social reinforcement |
-| **Credibility repair** | 9 months | Trust/legitimacy |
-| **Outbreak wave** | Pulse | Risk salience |
-| **Access facilitation** | 9 months | Barrier removal |
-
-<br>
-
-**Key findings:**
-
-::: {.result-box}
-**Norms** → Largest cumulative effects (persist through social reinforcement)
+::: {.abm-slide-subtitle}
+The strongest one-step lever is not always the strongest cumulative lever.
 :::
 
-::: {.result-box}
-**Outbreak** → Sharp but short-lived (relaxes when pressure declines)
+![](assets/fig-05-auc-leaderboard-trimmed.png){.abm-leaderboard-figure}
+
+::: {.abm-side-takeaways}
+::: {.abm-takeaway}
+**Norm shift:** strongest cumulative lever.
 :::
 
-::: {.result-box}
-**Credibility** → Asymmetric spillovers (legitimacy ≠ trust)
+::: {.abm-takeaway}
+**Credibility:** legitimacy vaccine-specific, trust broader.
 :::
 
-::: {.result-box}
-**Access** → Substitution effect (↑ vaccination → ↓ incidence → ↓ other precautions)
+::: {.abm-takeaway}
+**Access facilitation:** can reverse via incidence feedback.
 :::
-
 :::
-
-::: {.column width="50%"}
-
-**Cumulative effect profiles**
-
-<div style="display: flex; align-items: flex-end; height: 220px; gap: 30px; justify-content: center; margin-top: 20px;">
-<div style="text-align: center;">
-<div style="background: linear-gradient(to top, #1e3a5f 0%, #2d5a87 100%); width: 65px; height: 180px; border-radius: 4px 4px 0 0;"></div>
-<div style="margin-top: 8px; font-size: 0.7em; color: #5d6d7e;">Norms</div>
-</div>
-<div style="text-align: center;">
-<div style="background: linear-gradient(to top, #2d5a87 0%, #4a90c2 100%); width: 65px; height: 120px; border-radius: 4px 4px 0 0;"></div>
-<div style="margin-top: 8px; font-size: 0.7em; color: #5d6d7e;">Credibility</div>
-</div>
-<div style="text-align: center;">
-<div style="background: linear-gradient(to top, #4a90c2 0%, #6ba3d6 100%); width: 65px; height: 75px; border-radius: 4px 4px 0 0;"></div>
-<div style="margin-top: 8px; font-size: 0.7em; color: #5d6d7e;">Outbreak</div>
-</div>
-<div style="text-align: center;">
-<div style="background: linear-gradient(to top, #95a5a6 0%, #bdc3c7 100%); width: 65px; height: 35px; border-radius: 4px 4px 0 0;"></div>
-<div style="margin-top: 8px; font-size: 0.7em; color: #5d6d7e;">Access</div>
-</div>
-</div>
-
-<br>
-
-::: {.concept-box}
-**Substitution insight:** Improving one prevention margin does not necessarily raise prevention everywhere
-:::
-
-:::
-
-::::
 
 
 <!-- ============================================= -->
