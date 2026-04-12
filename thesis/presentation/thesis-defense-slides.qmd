@@ -656,31 +656,33 @@ Read across rows: brighter cells mark where sensitivity is concentrated within e
 
 <br>
 
-::: {.takeaway style="font-size: 1.2em; margin-bottom: 1.5em;"}
-**1.** Prevention behaviour has a **compact but outcome-specific** empirical structure — same blocks, different weights
+::: {.takeaway style="font-size: 1.02em; margin-bottom: 1.05em;"}
+**1. Prevention is compact, but outcome-specific**
+
+The same broad engines recur across outcomes, but their behavioural weights change.
 :::
 
-::: {.takeaway style="font-size: 1.2em; margin-bottom: 1.5em;"}
-**2.** Off-the-shelf LLMs recover some baseline patterns but are **not counterfactually disciplined** for behavioural updating in simulation
+::: {.takeaway style="font-size: 1.02em; margin-bottom: 1.05em;"}
+**2. LLMs recover baselines better than counterfactuals**
+
+Static plausibility is not enough when behavioural responses must remain coherent under perturbation.
 :::
 
-::: {.takeaway style="font-size: 1.2em; margin-bottom: 1.5em;"}
-**3.** A **survey-grounded hybrid pipeline** — empirical backbone + dynamic mechanisms — offers a more credible route to policy simulation
+::: {.takeaway style="font-size: 1.02em; margin-bottom: 1.05em;"}
+**3. A survey-grounded hybrid ABM is the more credible route**
+
+An empirical backbone plus bounded dynamics gives more interpretable policy comparisons.
 :::
-
-<br>
-<br>
-
-::: {style="text-align: center; color: #5d6d7e; font-size: 0.9em;"}
-**Thank you**
-
-Questions?
-:::
-
 
 <!-- ============================================= -->
 <!-- BACKUP SLIDES -->
 <!-- ============================================= -->
+
+## {.center background-color="#fafbfc"}
+
+::: {style="color: #1e4f86; font-size: 1.45em; text-align: center; margin-top: 3.2em;"}
+**Thank you**
+:::
 
 ## {.center background-color="#1e3a5f"}
 
