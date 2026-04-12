@@ -569,32 +569,34 @@ The strongest one-step lever is not always the strongest cumulative lever.
 ```
 
 ::: {.abm-slide-subtitle}
-The same cumulative result can come from very different time paths.
+Each row is a different lever; each column shows how its effects propagate over time.
 :::
 
 ```{=html}
-<div class="abm-dynamics-figure-wrap">
-  <img
-    class="abm-dynamics-figure"
-    src="assets/fig-05-dynamic-fingerprints.png"
-    alt="Dynamic response signatures for norm shift, outbreak wave, and trust erosion across mediator, vaccination willingness, and NPI index."
-  />
+<div class="abm-dynamics-main">
+  <div class="abm-dynamics-figure-wrap">
+    <img
+      class="abm-dynamics-figure"
+      src="assets/fig-05-dynamic-fingerprints.png"
+      alt="Dynamic response signatures for norm shift, outbreak wave, and trust erosion across mediator, vaccination willingness, and NPI index."
+    />
+  </div>
+  <div class="abm-dynamics-side">
+    <div class="abm-dynamics-side-item">
+      <div class="abm-dynamics-side-title">Norm campaign</div>
+      <div class="abm-dynamics-side-text">Gradual build-up, then a long tail sustained by social reinforcement.</div>
+    </div>
+    <div class="abm-dynamics-side-item">
+      <div class="abm-dynamics-side-title">Outbreak wave</div>
+      <div class="abm-dynamics-side-text">Sharp rise under pressure, then relaxation as perceived risk fades.</div>
+    </div>
+    <div class="abm-dynamics-side-item">
+      <div class="abm-dynamics-side-title">Trust erosion</div>
+      <div class="abm-dynamics-side-text">The most persistent tail appears mainly in vaccination willingness.</div>
+    </div>
+  </div>
 </div>
 ```
-
-::: {.abm-side-takeaways .abm-dynamics-takeaways}
-::: {.abm-takeaway}
-**Norm campaign:** gradual build-up, long tail.
-:::
-
-::: {.abm-takeaway}
-**Outbreak wave:** sharp rise, then relaxation.
-:::
-
-::: {.abm-takeaway}
-**Trust erosion:** persistence mainly in vaccination.
-:::
-:::
 
 ```{=html}
 </div>

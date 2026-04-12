@@ -1573,23 +1573,37 @@ $selection-bg: $accent-blue;
 
 .reveal .abm-dynamics-grid {
   position: absolute;
-  top: 108px;
+  top: 116px;
   right: 60px;
   bottom: 74px;
   left: 60px;
   width: min(1440px, calc(100% - 120px));
   margin: 0 auto;
   display: grid;
-  grid-template-rows: auto auto auto;
-  gap: 0;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  row-gap: 0.35rem;
   align-content: start;
+}
+
+.reveal .abm-dynamics-grid > .abm-slide-subtitle {
+  grid-column: 1 / -1;
+}
+
+.reveal .abm-dynamics-main {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.82fr) minmax(250px, 0.54fr);
+  column-gap: 0.9rem;
+  min-height: 0;
+  align-items: start;
 }
 
 .reveal .abm-dynamics-figure-wrap {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  min-height: auto;
+  min-height: 0;
   padding-top: 0;
 }
 
@@ -1597,14 +1611,59 @@ $selection-bg: $accent-blue;
   display: block;
   width: 100%;
   max-width: 100%;
-  max-height: 615px;
+  max-height: 655px;
   object-fit: contain;
-  margin: -0.18rem auto 0;
+  margin: 0 auto;
 }
 
-.reveal .abm-dynamics-takeaways {
-  margin-top: 1rem;
-  align-self: start;
+.reveal .abm-dynamics-side {
+  position: relative;
+  height: 655px;
+  min-height: 655px;
+}
+
+.reveal .abm-dynamics-side-item {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: 0.22rem 0.34rem 0.24rem;
+  background: rgba($light-blue, 0.28);
+  border: 1px solid rgba($secondary-blue, 0.12);
+  border-left: 3px solid rgba($highlight-blue, 0.5);
+  border-radius: 6px;
+  display: grid;
+  align-content: center;
+  min-height: 0;
+}
+
+.reveal .abm-dynamics-side-item:nth-child(1) {
+  top: 108px;
+  transform: translateY(-50%);
+}
+
+.reveal .abm-dynamics-side-item:nth-child(2) {
+  top: 329px;
+  transform: translateY(-50%);
+}
+
+.reveal .abm-dynamics-side-item:nth-child(3) {
+  top: 548px;
+  transform: translateY(-50%);
+}
+
+.reveal .abm-dynamics-side-title {
+  color: $secondary-blue;
+  font-size: 0.5em;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.06rem;
+}
+
+.reveal .abm-dynamics-side-text {
+  color: $primary-blue;
+  font-size: 0.42em;
+  line-height: 1.2;
+  font-weight: 500;
 }
 
 .reveal .abm-dynamics-slide {
