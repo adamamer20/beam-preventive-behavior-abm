@@ -90,7 +90,7 @@ paper = [
     "plotly>=5.0.0",
 ]
 
-cuda = ["flashinfer-python>=0.2.7.post1", "flash-attn>=2.8.1"]
+cuda = ["flashinfer-python>=0.6.7.post3", "flash-attn>=2.8.1"]
 
 
 [project.urls]
