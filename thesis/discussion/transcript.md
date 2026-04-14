@@ -6,15 +6,12 @@ But this immediately raises a second question: how should behaviour be modelled 
 
 <!----Proposal---->
 
-So the goal of my thesis is to build a disciplined pipeline from survey micro-data to agent-based simulation.
+The goal of my thesis is to build a disciplined link from survey micro-data to both validation and simulation.
 
-I do this in three steps.
+I begin by building a common empirical backbone of preventive behaviour from survey data.
 
-First, I build a common empirical backbone of preventive behaviour from survey data.
+From there, the thesis branches in two directions. First, I use that backbone as a benchmark to test whether LLMs can reproduce the same behavioural patterns, both at baseline and under controlled changes in individual profiles. Second, I use those empirically estimated behavioural relationships as the core of a survey-grounded ABM to study counterfactual scenarios of preventive behaviour.
 
-Second, I test whether LLMs can reproduce these empirical patterns, both at baseline and under controlled shifts in individual profiles.
-
-Third, given the limits revealed by this validation step, I use the empirically estimated behavioural relationships as the core of an ABM and study counterfactual scenarios of preventive behaviour.
 
 <!-----Empirical Backbone---------->
 
