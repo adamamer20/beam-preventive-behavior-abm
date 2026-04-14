@@ -54,7 +54,7 @@ The next step is LLM micro-validation. The question here is whether LLM-based ag
 
 The benchmark comes from the empirical backbone I built in the previous step. It includes both survey-grounded behavioural outcomes and psychological profile patterns.
 
-I test the models on two targets: behavioural outcomes and a small set of psychological profile variables. And I test them in two settings: first at baseline, where I ask whether the LLM can reconstruct the survey-grounded pattern; and second under controlled shifts, where I change one relevant driver and ask whether the model responds in the expected way.
+I test the models on two targets: behavioural outcomes and a small set of psychological profile variables. And I test them in two settings: first I ask whether the LLM can reconstruct the baseline values from the survey; and second under controlled shifts, where I change one relevant driver and ask whether the model responds in the expected way.
 
 Performance is judged differently in the two settings. At baseline, I look at level accuracy, meaning whether the model predicts the right value, and rank agreement, meaning whether it at least orders respondents correctly from lower to higher propensity. Under controlled shifts, I look at whether the model gets the ordering of perturbation effects right, whether it gets their magnitude roughly right, and whether it avoids reacting when it should not, which is the placebo containment test.
 
