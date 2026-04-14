@@ -50,13 +50,13 @@ For the NPI outcomes, the perturbation effects are much more dispersed. This mai
 
 <!---- LLM Validation ------>
 
-The next step is the LLM validation. The question here is whether LLM-based agents can reproduce the survey-grounded empirical benchmark in a way that is actually useful for simulation.
+The next step is LLM micro-validation. The question here is whether LLM-based agents can reproduce the empirical benchmark well enough to be credible candidate behavioural components for the ABM.
 
-I evaluate the models in two settings. In the unperturbed setting, I ask whether the LLM can reconstruct the baseline pattern in the survey. In the perturbed setting, I shift one relevant driver and ask whether the model reacts in the right way.
+The benchmark comes from the empirical backbone I built in the previous step. It includes both survey-grounded behavioural outcomes and psychological profile patterns.
 
-I evaluate both level accuracy and rank agreement. In other words, I ask not only whether the LLM predicts the right value, but also whether it at least orders respondents correctly from lower to higher propensity.
+I test the models on two targets: behavioural outcomes and a small set of psychological profile variables. And I test them in two settings: first at baseline, where I ask whether the LLM can reconstruct the survey-grounded pattern; and second under controlled shifts, where I change one relevant driver and ask whether the model responds in the expected way.
 
-I run the same logic on behavioural outcomes and also on a small set of psychological profile variables, because these are the state dimensions that would later carry heterogeneity into the simulator.
+Performance is judged differently in the two settings. At baseline, I look at level accuracy, meaning whether the model predicts the right value, and rank agreement, meaning whether it at least orders respondents correctly from lower to higher propensity. Under controlled shifts, I look at whether the model gets the ordering of perturbation effects right, whether it gets their magnitude roughly right, and whether it avoids reacting when it should not, which is the placebo containment test.
 
 <!---- Baseline result ---->
 
