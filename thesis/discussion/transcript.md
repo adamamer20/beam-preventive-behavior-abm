@@ -1,33 +1,36 @@
-<!----Introducion & Motivation---->
+<!----Introducion & Motivation - 2:20 ---->
 
-The main motivation behind my thesis is the challenge of policymaking. A central problem for policymakers is understanding what would happen if a policy were introduced or changed. In other words, they need to reason about counterfactuals. In the natural sciences, questions of this kind can often be studied through controlled experiments. In the social sciences, however, this is much harder, because policies cannot easily be randomized, populations are heterogeneous, and the underlying dynamics are complex and often poorly understood. One possible response is to move this counterfactual reasoning into a computational setting, using agent-based models. Agent-based models are computational models that describe a system from the bottom up. They represent individual actors, the rules that guide their behaviour, and the interactions between them, and then observe the aggregate patterns that result.
+The main motivation behind my thesis is the challenge of policymaking. A central problem for policymakers is understanding what would happen if a policy were introduced or changed. In other words, they need to reason about counterfactuals. In the natural sciences, questions of this kind can often be studied through controlled experiments. In the social sciences, however, this is much harder, because policies cannot easily be randomized, populations are heterogeneous, and the underlying dynamics are complex and often poorly understood. One possible response is to move from the experimental domain to th counterfactual reasoning into a computational setting, using agent-based models. Agent-based models are computational models that describe a system from the bottom up. They represent individual actors, the rules that guide their behaviour, and the interactions between them, and then observe the aggregate patterns that result.
 
 But this immediately raises a second question: how should behaviour be modelled realistically inside the ABM? Different ways of modelling individual behaviour can still produce similar system-level outcomes. So even if the model seems to capture the broader pattern, that does not mean the behavioural assumptions inside it are correct. This is also where large language models become interesting. If the challenge is to specify behavioural rules at the micro level, LLMs seem to offer a richer, flexible and realistic way to do that. But that promise needs to be tested.
 
-<!----Proposal---->
+<!----Proposal 1 min ---->
 
-The goal of my thesis is to build a disciplined link from survey micro-data to both validation and simulation.
+The goal of my thesis is to build a disciplined link from survey micro-data to both validation of LLMs as behavioural components and simulation.
 
 I begin by building a common empirical backbone of preventive behaviour from survey data.
 
-From there, the thesis branches in two directions. First, I use that backbone as a benchmark to test whether LLMs can reproduce the same behavioural patterns, both at baseline and under controlled changes in individual profiles. Second, I use those empirically estimated behavioural relationships as the core of a survey-grounded ABM to study counterfactual scenarios of preventive behaviour.
+From there, theI use that backbone as a benchmark to test whether LLMs can reproduce the same behavioural patterns, both at baseline and under controlled changes in individual profiles. Second, I use those empirically estimated behavioural relationships as the core of a survey-grounded ABM to study counterfactual scenarios of preventive behaviour.
 
 
-<!-----Empirical Backbone---------->
+<!-----Empirical Backbone Survey data - 1 min ---------->
 
-Let me now move to the first step of the pipeline, which is building the empirical backbone.
+Let me now move to the first step of the thesis, which is building the empirical backbone.
 
 I start from a large cross-country survey with about 22,000 respondents across six European countries. The survey is very rich: it covers demographics and health, COVID and flu experience, vaccine beliefs, information environment, social exposure, trust, barriers, and moral orientations.
 
 From this survey, I focus on a small set of core prevention outcomes: COVID vaccination willingness, flu vaccination, and non-pharmaceutical preventive behaviours such as masking and staying home when symptomatic.
 
-The challenge is that the questionnaire is too high-dimensional to use directly. So I reduce it to a compact empirical backbone. I construct derived variables and indices, group them into theory-guided blocks from the prevention literature, estimate survey-grounded equations, and retain only the components that provide unique signal once the others are taken into account.
+<!-----Empirical Backbone Reduction pipeline 1:30 min ---------->
 
-The point of this reduction is to obtain a compact and interpretable representation that can later be carried into both the LLM evaluation and the ABM.
+The next step is to identify a compact behavioural structure that can explain these outcomes. The raw survey is too high-dimensional and contains too many overlapping items to be used directly for either evaluation or simulation. I therefore reduce it in stages. First, I combine related items into derived variables and indices when they capture the same underlying construct. I then group these into theory-guided behavioural blocks from the prevention literature, such as stakes, trust, legitimacy, disposition, habit, norms, and moral orientation. From these blocks, I estimate reference equations and retain only the components that provide unique empirical signal. The final result is a compact and interpretable empirical backbone, represented as a set of estimated equations that can be carried into both the LLM evaluation and the ABM.
+
+
+<!-----Empirical Backbone: Prevention compact but outcome specific - 1 min e 45 con la parte del detail sul trust-related blocks ---------->
 
 The first main result is that the same broad blocks recur across outcomes, but their relative importance changes substantially depending on the behaviour.
 
-For COVID vaccination willingness, the dominant block is perceived stakes, with additional roles for institutional trust, legitimacy, and vaccine disposition. An interesting detail is that these trust-related blocks are not interchangeable: disposition mostly captures confidence in the vaccine itself, institutional trust captures confidence in the broader public-health institutions, and legitimacy captures acceptance of the vaccine rollout and governance process.
+For COVID vaccination willingness, the dominant block is perceived stakes, with additional roles for institutional trust, legitimacy, and vaccine disposition. <--An interesting detail is that these trust-related blocks are not interchangeable: disposition mostly captures confidence in the vaccine itself, institutional trust captures confidence in the broader public-health institutions, and legitimacy captures acceptance of the vaccine rollout and governance process.-->
 
 For flu vaccination, the dominant driver is habit, which makes this behaviour much more inertial. And when habit is removed, age and health become much more important, so flu vaccination looks less like a routine behaviour and more like a response to perceived medical need.
 
@@ -35,12 +38,9 @@ For the non-pharmaceutical behaviours, the strongest block is moral orientation,
 
 <!--- Second result: which levers matter?------>
 
-For policy and simulation, it is not enough to know which drivers are important in the fitted equations. We also want to know which variables actually move behaviour when they are shifted in a realistic way.
+Beyond identifying which blocks carry unique signal, I also study which drivers actually move behaviour when they are shifted in a realistic way.
 
-
-So I compute what I call a reference perturbation effect. I move one retained variable from a typical low value to a typical high value, while keeping the rest of the profile fixed, and I measure the implied change in the fitted outcome.
-
-The results are broadly consistent with the previous picture.
+To do this, I compute reference perturbation effects: the fitted change in the outcome when one variable is moved from a low value to a high value, holding the rest of the profile fixed.
 
 For COVID vaccination willingness, the strongest lever is again stakes, followed by disposition, institutional trust, and legitimacy.
 
