@@ -36,7 +36,7 @@ For flu vaccination, the dominant driver is habit, which makes this behaviour mu
 
 For the non-pharmaceutical behaviours, the strongest block is moral orientation, especially a more individualizing and prosocial orientation, with stakes again playing a secondary role.
 
-<!--- Second result: which levers matter?------>
+<!--- Second result: which levers matter? 1 min e 45------>
 
 Beyond identifying which blocks carry unique signal, I also study which drivers actually move behaviour when they are shifted in a realistic way.
 
