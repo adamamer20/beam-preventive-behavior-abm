@@ -58,27 +58,32 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 <!-- SLIDE 3: THESIS PROPOSAL - PIPELINE -->
 <!-- ============================================= -->
 
-## Thesis Proposal: From empirics to simulation {.pipeline-slide}
+## Thesis proposal: from empirical backbone to validation and simulation {.pipeline-slide}
 
 ```{=html}
-<div class="pipeline-grid">
-  <div class="pipeline-card pipeline-card-blue">
+<div class="pipeline-fork">
+  <div class="pipeline-card pipeline-card-blue pipeline-card-source">
     <div class="pipeline-title">1. Empirical backbone</div>
-    <div class="pipeline-body">survey micro-data<br>→ theory-guided blocks<br>→ reference equations</div>
+    <div class="pipeline-body">survey micro-data<br>→ theory-guided blocks<br>→ behavioural relationships</div>
   </div>
 
-  <div class="pipeline-arrow">→</div>
-
-  <div class="pipeline-card pipeline-card-mid">
-    <div class="pipeline-title">2. LLM micro-validation</div>
-    <div class="pipeline-body">• baseline reconstruction<br>• perturbed response tests</div>
+  <div class="pipeline-fork-svg" aria-hidden="true">
+    <svg viewBox="0 0 180 240" preserveAspectRatio="none">
+      <path d="M 0 120 L 72 120 L 72 40 L 180 40" />
+      <path d="M 72 120 L 72 200 L 180 200" />
+    </svg>
   </div>
 
-  <div class="pipeline-arrow">→</div>
+  <div class="pipeline-branches">
+    <div class="pipeline-card pipeline-card-mid">
+      <div class="pipeline-title">2a. LLM micro-validation</div>
+      <div class="pipeline-body">empirical benchmark for candidate behavioural components<br>→ baseline reconstruction<br>→ controlled perturbation tests</div>
+    </div>
 
-  <div class="pipeline-card pipeline-card-light">
-    <div class="pipeline-title">3. Survey-grounded ABM</div>
-    <div class="pipeline-body">• social interaction<br>• epidemic feedback<br>→ policy comparison</div>
+    <div class="pipeline-card pipeline-card-light">
+      <div class="pipeline-title">2b. Survey-grounded ABM</div>
+      <div class="pipeline-body">empirical relationships as behavioural core<br>→ social interaction<br>→ epidemic feedback<br>→ policy comparison</div>
+    </div>
   </div>
 </div>
 ```
@@ -703,22 +708,30 @@ Thank you
 <!-- BACKUP: BLOCK DICTIONARY -->
 <!-- ============================================= -->
 
-## Construct / block dictionary {.smaller}
+## Construct dictionary {.smaller}
 
 ::: {.backup-marker}
 BACKUP
 :::
 
-| Block | Components | Description |
-|-------|------------|-------------|
-| **Stakes** | Perceived danger, fear, infection likelihood, vulnerability | How threatened does the person feel? |
-| **Institutional Trust** | Trust in government, health authorities, science | Confidence in public institutions |
-| **Legitimacy** | Acceptance of vaccine rollout, governance process | Was the policy process fair? |
-| **Disposition** | Vaccine confidence, general attitudes | Pre-existing stance toward vaccines |
-| **Habit** | Past vaccination behaviour | Routine vs. deliberative decision |
-| **Moral Orientation** | Individualising vs. binding foundations | Prosocial vs. authority-based framing |
-| **Norms** | Perceived prevalence, social expectations | What do others do and expect? |
-| **Constraints** | Access barriers, time, information | Practical obstacles |
+| Construct | What it captures | Example components |
+|---|---|---|
+| **Stakes** | Perceived disease threat and exposure | perceived danger, vulnerability, infection likelihood, fear |
+| **Institutional trust** | Confidence in public-health and scientific institutions | trust in government, health authorities, science |
+| **Legitimacy** | Acceptance of the policy process and rollout | fairness of decisions, acceptance of governance and mandates |
+| **Disposition** | General vaccine orientation | vaccine confidence, perceived vaccine risk/cost, general attitudes |
+| **Habit** | Inertia from past preventive behaviour | prior flu vaccination, routine uptake |
+| **Moral orientation** | Prosocial vs authority/binding framing | individualising and binding moral foundations |
+| **Norms** | Perceived prevalence and social expectations | what others do, what others approve of |
+| **Controls / constraints** | Background and practical conditions shaping feasible action | age, health, access barriers, household and socioeconomic conditions |
+
+::: {style="margin-top: 0.7rem; padding: 0.45rem 0.6rem; border-left: 3px solid #5b92c8; background: rgba(232, 240, 247, 0.45); font-size: 0.72em; line-height: 1.3;"}
+**Key distinction**
+
+**Trust** = confidence in institutions  
+**Legitimacy** = acceptance of the policy process  
+**Disposition** = orientation toward the vaccine itself
+:::
 
 
 <!-- ============================================= -->

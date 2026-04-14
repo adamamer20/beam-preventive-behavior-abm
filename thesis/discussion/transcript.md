@@ -1,12 +1,8 @@
 <!----Introducion & Motivation---->
 
-Policy design is fundamentally a problem of making decisions under uncertainty. What policymakers would ideally like to know is what would happen under alternative interventions before implementing them. In other words, they need counterfactuals.
+The main motivation behind my thesis is the challenge of policymaking. A central problem for policymakers is understanding what would happen if a policy were introduced or changed. In other words, they need to reason about counterfactuals. In the natural sciences, questions of this kind can often be studied through controlled experiments. In the social sciences, however, this is much harder, because policies cannot easily be randomized, populations are heterogeneous, and the underlying dynamics are complex and often poorly understood. One possible response is to move this counterfactual reasoning into a computational setting, using agent-based models. Agent-based models are computational models that describe a system from the bottom up. They represent individual actors, the rules that guide their behaviour, and the interactions between them, and then observe the aggregate patterns that result.
 
-In the natural sciences, counterfactuals are often studied through controlled experiments. In the social sciences, this is much harder: many policies cannot be easily randomized, and outcomes are shaped by heterogeneous individuals, mutual influence, and feedback over time.
-
-For this reason, one way to study counterfactuals is to move this experimental logic into computation, and agent-based models are a natural tool for doing so. In an agent-based model, we simulate a system from the bottom up, starting from individual agents, their behaviour, and their interactions. But ABMs also face a major problem: different micro-level mechanisms can generate similar macro-level outcomes, so aggregate fit alone is not enough.
-
-This is also where large language models become interesting. If the challenge is to specify behavioural rules at the micro level, LLMs seem to offer a richer and more flexible way to do that. But that promise needs to be tested.
+But this immediately raises a second question: how should behaviour be modelled realistically inside the ABM? Different ways of modelling individual behaviour can still produce similar system-level outcomes. So even if the model seems to capture the broader pattern, that does not mean the behavioural assumptions inside it are correct. This is also where large language models become interesting. If the challenge is to specify behavioural rules at the micro level, LLMs seem to offer a richer, flexible and realistic way to do that. But that promise needs to be tested.
 
 <!----Proposal---->
 
@@ -16,9 +12,9 @@ I do this in three steps.
 
 First, I build a common empirical backbone of preventive behaviour from survey data.
 
-Second, I test whether LLMs can reproduce these empirical patterns, both at baseline and under controlled shifts in profile or context.
+Second, I test whether LLMs can reproduce these empirical patterns, both at baseline and under controlled shifts in individual profiles.
 
-Third, I use these behavioural relationships as the core of an ABM and study counterfactual scenarios of preventive behaviour.
+Third, given the limits revealed by this validation step, I use the empirically estimated behavioural relationships as the core of an ABM and study counterfactual scenarios of preventive behaviour.
 
 <!-----Empirical Backbone---------->
 
