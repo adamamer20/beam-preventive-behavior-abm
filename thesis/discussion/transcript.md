@@ -77,7 +77,7 @@ The more important test is the perturbed setting, because this is what counterfa
 The results are clearly weaker than at baseline. The left panel shows a trade-off. In the paired-contrast format, where the model sees the low and high versions of the same profile side by side, perturbation ordering improves: the model becomes better at identifying which profiles should react more. But containment remains weak, so this greater sensitivity also comes with more movement on placebo cells. The right panel shows the second problem: effect sizes are badly calibrated, especially for the NPI outcomes. So the validation step draws a fairly clear boundary. Off-the-shelf LLMs are not yet reliable enough to be used as behavioural components in this setting. So in the final step, when I move to simulation, I build the ABM on the empirical backbone instead.
 
 
-<!--- ABM Specification----->
+<!--- ABM Specification 1.50 min ----->
 
 There is however a significant modelling challenge. The survey only gives cross-sectional behavioural relationships, and doesn't give a law of motion, it does not directly tell us how the same individual updates over time. So the ABM has to bridge that gap in a disciplined way.
 
@@ -89,7 +89,13 @@ These targets change over time because the ABM adds two dynamic ingredients. One
 
 <!--- ABM Results ----->
 
-Once the ABM is specified, I compare a set of counterfactual interventions with different temporal forms, because policy interventions and epidemic shocks do not operate on the same timescale. Some are sustained campaigns, lasting 9 months, because they represent longer-running efforts such as norm or credibility campaigns. Some are one-tick pulses, because they represent short-lived shocks. The outbreak-wave scenario instead represents a temporary but much stronger worsening of epidemic conditions, with a peak around three times the baseline level. Their intensity is standardized using one-sided 1-IQR shifts in the relevant variable, following the same low-to-high convention used earlier in the reference perturbation analysis.
+Once the ABM is specified, I compare counterfactual interventions in cumulative terms, using ( \Delta AUC ) because the model is mean-reverting.
+
+The main result is that dynamics re-rank the policy levers. Norm-based interventions become the strongest cumulative lever, not because they have the biggest one-step effect, but because they persist and reinforce through social exposure.
+
+Credibility interventions are more asymmetric. Legitimacy mainly shifts vaccination willingness, while institutional trust has broader spillovers across both vaccination and NPIs
+
+<!---- Dynamic fingerprints ------->
 
 The intervention results reveal four distinct dynamic profiles. Norm-based interventions generate the largest cumulative effects, not because they have the strongest one-step leverage, but because their influence persists and accumulates through social reinforcement and slow adjustment. Outbreak waves, by contrast, produce sharper responses through perceived risk, but these are more short-lived and relax more quickly once epidemic pressure declines. Credibility-related interventions are asymmetric: legitimacy repair mainly increases vaccination willingness, whereas institutional-trust repair has broader spillovers across both vaccination and non-pharmaceutical prevention. If effects are normalized by intervention duration, some credibility shocks, especially legitimacy-related ones, also stand out for their strong short-run impact on vaccination willingness. Access facilitation behaves differently again, because it creates a substitution effect. It can initially raise vaccination, but once protection increases, incidence pressure falls, perceived risk declines, and other precautions may weaken through feedback. So improving one preventive margin does not necessarily raise prevention everywhere else; in the model, this compensatory mechanism is strong enough that the overall net effect turns negative.
 
