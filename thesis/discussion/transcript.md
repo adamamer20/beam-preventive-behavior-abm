@@ -52,21 +52,25 @@ For the NPI outcomes, the perturbation effects are much more dispersed. This mai
 
 The next step is LLM micro-validation. The question here is whether LLM-based agents can reproduce the empirical benchmark well enough to be credible candidate behavioural components for the ABM.
 
-The benchmark comes from the empirical backbone I built in the previous step. It includes both survey-grounded behavioural outcomes and psychological profile patterns.
+That benchmark comes from the empirical backbone built in the previous step. It includes both survey-grounded behavioural outcomes and survey-grounded psychological profile patterns.
 
-I test the models on two targets: behavioural outcomes and a small set of psychological profile variables. And I test them in two settings: first I ask whether the LLM can reconstruct the baseline values from the survey; and second under controlled shifts, where I change one relevant driver and ask whether the model responds in the expected way.
+I test the models on two targets: behavioural outcomes, and a small set of psychological profile variables such as trust, legitimacy, perceived stakes, and norms. And I test them in two settings: first at baseline, where I ask whether the model can recover the observed values implied by survey profiles; and second under controlled shifts, where I change one relevant driver and ask whether the model responds in the expected way.
 
-Performance is judged differently in the two settings. At baseline, I look at level accuracy, meaning whether the model predicts the right value, and rank agreement, meaning whether it at least orders respondents correctly from lower to higher propensity. Under controlled shifts, I look at whether the model gets the ordering of perturbation effects right, whether it gets their magnitude roughly right, and whether it avoids reacting when it should not, which is the placebo containment test.
+Performance is judged in slightly different ways depending on the task. At baseline, I ask whether the model recovers the right level, the right ordering, and, for profile variables, the overall profile shape. Under controlled shifts, I ask whether it reacts to the right levers, by roughly the right amount, and without producing spurious movement.
 
 <!---- Baseline result ---->
+At baseline, the results are mixed.
 
-At baseline, the results are mixed but not trivial.
+For behavioural outcomes, I report three numbers.
+LLM rank tells us whether the model orders respondents correctly from lower to higher propensity.
+LLM level tells us whether it predicts the right value on the response scale.
+And the reference rank gives the corresponding benchmark from the survey-grounded equations.
 
-LLMs can recover part of the cross-sectional structure, especially in ranking respondents from lower to higher propensity. So they are often better at telling who is relatively more or less likely to adopt a behaviour than at predicting the exact point on the response scale.
+The main pattern is very clear: ranking is consistently better than level recovery, but it still remains below the empirical benchmark. For example, COVID vaccination willingness reaches a Gini of about 0.45, compared with about 0.67 for the reference equations. The same gap appears across the other outcomes as well. 
 
-But level accuracy is weaker, because predictions are compressed toward the middle of the scale. So low values are overpredicted, high values are underpredicted, and heterogeneity is reduced.
+This happens because predictions are compressed toward the centre of the scale. Low values are overpredicted, high values are underpredicted, so the model preserves part of the ordering but not the full heterogeneity. The thesis describes this explicitly as central-tendency compression. 
 
-This same pattern appears for the psychological-profile side as well. The LLM can recover part of the relative profile structure, but it compresses variation there too. And this matters even more, because compression at the level of the state variables would make simulated agents too similar to one another.
+On the psychological-profile side, the heatmap reports cosine similarity, which tells us whether the relative balance across profile dimensions is recovered. These values are positive in most cells, so the LLM often recovers part of the overall profile shape. But again the deeper problem is compression. And this matters more here, because these profile variables are not just another prediction target: they are the dimensions that define agent heterogeneity and later feed into the behavioural equations of the simulator. If they are compressed, agents start too similar to one another and tail profiles are under-represented. 
 
 <!---- Perturbed LLM ---->
 

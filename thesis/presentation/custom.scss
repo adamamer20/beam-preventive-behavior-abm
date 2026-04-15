@@ -1076,7 +1076,19 @@ $selection-bg: $accent-blue;
 }
 
 .reveal .baseline-synthesis-inline-note {
-  font-size: 0.94em;
+  font-size: 0.76em;
+  color: rgba($dark-gray, 0.72);
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.reveal .baseline-synthesis-footnote {
+  font-size: 0.60em;
+  color: rgba($dark-gray, 0.58);
+  font-weight: 400;
+  line-height: 1.2;
+  margin-top: -0.1rem;
+  max-width: 92%;
 }
 
 .reveal .baseline-synthesis-grid {

@@ -306,12 +306,11 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
     <div class="evaluation-design-card">
       <div class="evaluation-design-card-title">How performance is judged</div>
       <div class="evaluation-design-subsection">At baseline</div>
-      <div class="evaluation-design-item">level accuracy (MAE skill)</div>
-      <div class="evaluation-design-item">rank agreement (Gini)</div>
+      <div class="evaluation-design-item">outcomes: level and rank recovery</div>
+      <div class="evaluation-design-item">profiles: profile shape and variable-wise recovery</div>
       <div class="evaluation-design-subsection">Under controlled shifts</div>
-      <div class="evaluation-design-item">perturbation ordering (PE Gini)</div>
-      <div class="evaluation-design-item">perturbation magnitude accuracy (PE skill)</div>
-      <div class="evaluation-design-item">placebo containment</div>
+      <div class="evaluation-design-item">outcomes: who moves, how much, and placebo containment</div>
+      <div class="evaluation-design-item">profiles: which dimensions move, and spillover containment</div>
     </div>
   </div>
 </div>
@@ -327,8 +326,8 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 ```{=html}
 <div class="baseline-synthesis-subheadline">
   <ul class="baseline-synthesis-bullets">
-    <li>Ranking is stronger than level recovery, but remains below the survey-grounded benchmark.</li>
-    <li>Psychological profiles remain compressed <span class="baseline-synthesis-inline-note">(median compression ratio: 0.41 vs 0.46 for behavioural outcomes).</span></li>
+    <li>Ranking is recovered more reliably than levels, but remains below the empirical reference.</li>
+    <li>Profile shape is partly recovered, but profile variation remains compressed <span class="baseline-synthesis-inline-note">(median compression ratio: 0.41 vs 0.46 for behavioural outcomes).</span></li>
   </ul>
 </div>
 
@@ -339,8 +338,9 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
       <thead>
         <tr>
           <th>Outcome</th>
-          <th>Gini <span class="metric-symbol">G</span></th>
-          <th>MAE skill</th>
+          <th>LLM rank (Gini)</th>
+          <th>LLM level (Skill)</th>
+          <th>Reference rank (Gini)</th>
         </tr>
       </thead>
       <tbody>
@@ -348,38 +348,45 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
           <td>CoVax willingness</td>
           <td>0.45</td>
           <td>0.27</td>
+          <td>0.67</td>
         </tr>
         <tr>
           <td>Flu vaccinated (no habit)</td>
           <td>0.31</td>
           <td>0.36</td>
+          <td>0.64</td>
         </tr>
         <tr>
           <td>Masking (high pressure)</td>
           <td>0.27</td>
           <td>0.07</td>
+          <td>0.44</td>
         </tr>
         <tr>
           <td>Masking (symptomatic, crowded)</td>
           <td>0.21</td>
           <td>0.05</td>
+          <td>0.38</td>
         </tr>
         <tr>
           <td>Stay home (symptomatic)</td>
           <td>0.15</td>
           <td>-0.02</td>
+          <td>0.32</td>
         </tr>
       </tbody>
     </table>
+    <div class="baseline-synthesis-footnote">Higher is better. Gini = rank recovery; Skill = level accuracy vs simple baseline.</div>
   </div>
 
   <div class="baseline-synthesis-side">
-    <div class="baseline-synthesis-label">Profile variables</div>
+    <div class="baseline-synthesis-label">Psychological profiles</div>
     <img
       class="baseline-side-figure"
       src="assets/fig-belief-unperturbed-cosine-cropped.png"
       alt="Unperturbed state cosine similarity for psychological profile variables."
     />
+    <div class="baseline-synthesis-footnote">Cosine similarity: higher = better profile-shape recovery.</div>
   </div>
 </div>
 ```
