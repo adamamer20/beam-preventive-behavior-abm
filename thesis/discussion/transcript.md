@@ -48,7 +48,7 @@ For flu vaccination, short-run leverage is much smaller, which is consistent wit
 
 For the NPI outcomes, the perturbation effects are much more dispersed. This mainly reflects differences in headroom: many respondent profiles are already close to the top or bottom of the predicted range, so the same shift has limited room to change behaviour. The larger effects appear mainly for profiles that start in the middle, where the response can still move.
 
-<!---- LLM Validation ------>
+<!---- LLM Validation 2 min ------>
 
 The next step is LLM micro-validation. The question here is whether LLM-based agents can reproduce the empirical benchmark well enough to be credible candidate behavioural components for the ABM.
 
@@ -56,10 +56,9 @@ That benchmark comes from the empirical backbone built in the previous step. It 
 
 I test the models on two targets: behavioural outcomes, and a small set of psychological profile variables such as trust, legitimacy, perceived stakes, and norms. And I test them in two settings: first at baseline, where I ask whether the model can recover the observed values implied by survey profiles; and second under controlled shifts, where I change one relevant driver and ask whether the model responds in the expected way.
 
-Performance is judged in slightly different ways depending on the task. At baseline, I ask whether the model recovers the right level, the right ordering, and, for profile variables, the overall profile shape. Under controlled shifts, I ask whether it reacts to the right levers, by roughly the right amount, and without producing spurious movement.
+Performance is judged slightly differently depending on the task. At baseline, I ask whether the model gets the level right, whether it ranks respondents correctly from lower to higher propensity, and, for profile variables, whether it recovers the overall profile shape. Under controlled shifts, I ask whether it responds to the right levers, by roughly the right amount, and without generating spurious movement.
 
-<!---- Baseline result ---->
-
+<!---- Baseline result 1:20 min ---->
 
 At baseline, the models do recover some structure, but only in a limited sense.
 
@@ -71,24 +70,14 @@ A similar pattern appears for the psychological profiles. The model often preser
 
 And that is more consequential on the profile side, because these variables are later used to define the agents themselves. If that profile space is compressed, the simulated population starts too homogeneous, tail profiles become too rare, and the model loses part of the heterogeneity that should generate differentiated behavioural responses. 
 
+<!---- Perturbed LLM 1:45 min ---->
 
-<!---- Perturbed LLM ---->
+The more important test is the perturbed setting, because this is what counterfactual simulation is really about. Policies act by shifting specific behavioural levers, so the key question is whether the model reacts coherently when one of those levers is changed. I test this with controlled perturbations: I shift one driver over a realistic range, keep the rest of the profile fixed, and compare the response with the empirical benchmark.
 
-The more important result comes from the perturbed setting, because this is what matters for counterfactual simulation.
+The results are clearly weaker than at baseline. The left panel shows a trade-off. In the paired-contrast format, where the model sees the low and high versions of the same profile side by side, perturbation ordering improves: the model becomes better at identifying which profiles should react more. But containment remains weak, so this greater sensitivity also comes with more movement on placebo cells. The right panel shows the second problem: effect sizes are badly calibrated, especially for the NPI outcomes. So the validation step draws a fairly clear boundary. Off-the-shelf LLMs are not yet reliable enough to be used as behavioural components in this setting. So in the final step, when I move to simulation, I build the ABM on the empirical backbone instead.
 
-Here performance drops substantially. When I apply controlled shifts in the main behavioural drivers, the models often react too weakly or too strongly, and their responses are too diffuse.
-
-Paired comparisons help somewhat, because they make the contrast between the low and high profile explicit. But the main problem remains: the effect sizes are not well calibrated.
-
-More broadly, the models tend to be too sensitive and too noisy. They often spread the effect too widely across respondents, or across profile dimensions, instead of preserving the more selective structure implied by the empirical benchmark.
-
-So the boundary is quite clear. Off-the-shelf LLMs can recover some baseline structure, but they are not reliable enough as behavioural update mechanisms for a counterfactual ABM.
-
-That is why, in the next step, I return to the survey-grounded relationships and use them as the core of the simulator.
 
 <!--- ABM Specification----->
-
-So, in the final step, I build the agent-based model.
 
 There is however a significant modelling challenge. The survey only gives cross-sectional behavioural relationships, and doesn't give a law of motion it does not directly tell how the same individual updates over time. So the ABM has to bridge that gap in a disciplined way.
 

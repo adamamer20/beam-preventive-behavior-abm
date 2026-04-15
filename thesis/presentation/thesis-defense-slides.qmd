@@ -401,7 +401,7 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 ```{=html}
 <div class="perturbed-results-top">
   <div class="perturbed-results-subtitle">
-    Under controlled shifts, performance is evaluated on perturbation effects: paired contrast improves PE ordering, but PE skill and placebo containment remain weak.
+    Under controlled shifts, paired contrast improves perturbation ordering, but effect-size calibration and placebo containment remain weak.
   </div>
 </div>
 
@@ -423,43 +423,6 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
       class="perturbed-results-support-figure"
       src="assets/fig-perturbed-skill-block-cropped.png"
       alt="Median perturbation-effect magnitude skill by block and outcome on active cells."
-    />
-  </div>
-</div>
-```
-
-
-<!-- ============================================= -->
-<!-- SLIDE 11: LLM RESULTS - MISPLACED MECHANISM -->
-<!-- ============================================= -->
-
-## LLM micro-validation: The mechanism is misplaced {.mechanism-slide}
-
-```{=html}
-<div class="mechanism-slide-top">
-  <div class="mechanism-slide-subtitle">
-    Under perturbation, responses are not only mis-scaled; they are assigned to the wrong levers and spread too broadly.
-  </div>
-</div>
-
-<div class="mechanism-slide-grid">
-  <div class="mechanism-slide-panel">
-    <div class="mechanism-slide-label">Behavioural perturbations</div>
-    <div class="mechanism-slide-callout">Stakes underweighted; trust / legitimacy relatively overweighted</div>
-    <img
-      class="mechanism-slide-figure"
-      src="assets/fig-perturbed-block-sensitivity-lobo.png"
-      alt="Perturbed block-sensitivity alignment with reference LOBO importance for behavioural outcomes."
-    />
-  </div>
-
-  <div class="mechanism-slide-panel">
-    <div class="mechanism-slide-label">Profile perturbations</div>
-    <div class="mechanism-slide-callout">All blocks above the diagonal → systematic oversensitivity</div>
-    <img
-      class="mechanism-slide-figure"
-      src="assets/fig-belief-signal-block-sensitivity-alignment-cropped.png"
-      alt="Signal-block sensitivity alignment for perturbed psychological profile updates."
     />
   </div>
 </div>
@@ -758,6 +721,8 @@ BACKUP
 **Prompting variants tested:**
 
 - Zero-shot description
+
+
 - Profile-with-demographics
 - Chain-of-thought reasoning
 - Paired comparison (explicit contrast)
@@ -792,6 +757,47 @@ Full results in appendix
 :::
 
 ::::
+
+
+<!-- ============================================= -->
+<!-- BACKUP: LLM RESULTS - MISPLACED MECHANISM -->
+<!-- ============================================= -->
+
+## LLM micro-validation: The mechanism is misplaced {.mechanism-slide}
+
+::: {.backup-marker}
+BACKUP
+:::
+
+```{=html}
+<div class="mechanism-slide-top">
+  <div class="mechanism-slide-subtitle">
+    Under perturbation, responses are not only mis-scaled; they are assigned to the wrong levers and spread too broadly.
+  </div>
+</div>
+
+<div class="mechanism-slide-grid">
+  <div class="mechanism-slide-panel">
+    <div class="mechanism-slide-label">Behavioural perturbations</div>
+    <div class="mechanism-slide-callout">Stakes underweighted; trust / legitimacy relatively overweighted</div>
+    <img
+      class="mechanism-slide-figure"
+      src="assets/fig-perturbed-block-sensitivity-lobo.png"
+      alt="Perturbed block-sensitivity alignment with reference LOBO importance for behavioural outcomes."
+    />
+  </div>
+
+  <div class="mechanism-slide-panel">
+    <div class="mechanism-slide-label">Profile perturbations</div>
+    <div class="mechanism-slide-callout">All blocks above the diagonal → systematic oversensitivity</div>
+    <img
+      class="mechanism-slide-figure"
+      src="assets/fig-belief-signal-block-sensitivity-alignment-cropped.png"
+      alt="Signal-block sensitivity alignment for perturbed psychological profile updates."
+    />
+  </div>
+</div>
+```
 
 
 <!-- ============================================= -->
