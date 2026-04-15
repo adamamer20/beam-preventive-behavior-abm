@@ -79,15 +79,13 @@ The results are clearly weaker than at baseline. The left panel shows a trade-of
 
 <!--- ABM Specification----->
 
-There is however a significant modelling challenge. The survey only gives cross-sectional behavioural relationships, and doesn't give a law of motion it does not directly tell how the same individual updates over time. So the ABM has to bridge that gap in a disciplined way.
+There is however a significant modelling challenge. The survey only gives cross-sectional behavioural relationships, and doesn't give a law of motion, it does not directly tell us how the same individual updates over time. So the ABM has to bridge that gap in a disciplined way.
 
-The solution I use is a partial-adjustment dynamic. Each agent has a set of mutable behavioural states, and these states move gradually toward time-varying targets. These targets are anchored in the survey-grounded equations, but adjustment is only partial. The key modelling assumption is a local one: near the current state, the between-person gradients estimated from the survey are treated as informative about the direction and relative strength of within-person change. 
+The solution I use is a partial-adjustment dynamic. Each agent has a set of mutable behavioural states, and these states move gradually toward time-varying targets. These targets are derived from the survey-grounded equations. The key modelling assumption is a local one: near the current state, the between-person gradients estimated from the survey are treated as informative about the direction and relative strength of within-person change. 
 
-Adjustment is allowed to differ across constructs. Trust- and norm-related variables move more slowly, while more situational appraisals, such as perceived danger or infection risk, move faster.
+Adjustment is also allowed to differ across constructs. Trust- and norm-related variables move more slowly, while more situational appraisals, such as perceived danger or infection risk, move faster.
 
-Beyond the dynamic update, the model introduces social interaction explicitly. The contact structure is built from recurring local ties (household-like links), and more occasional contacts. Social influence then works through two main mechanisms. First, peer-pulling. Trust- and risk-related states are pulled toward those of the contacts, with homophily making similar contacts more likely. Second, agents update their descriptive norms for vaccination and NPI behaviour by observing preventive behaviour in their contacts. The rule uses a threshold mechanism: low visible adoption has little effect, but once prevention becomes sufficiently visible, perceived prevalence rises more quickly and then saturates. 
-
-Finally, in addition to social dynamics, The model then closes the loop with a local incidence signal. Each locality carries an incidence signal that can rise, but only within bounds, and that gradually decays unless it is sustained by continued transmission pressure. Higher local protection dampens later incidence, while higher local incidence feeds back into perceived danger and related risk states.
+These targets change over time because the ABM adds two dynamic ingredients. One is social influence. This works in two ways: agents are pulled somewhat toward the people they interact with, and they also update their perceived norms by observing what others do. The second ingredient is incidence feedback: behaviour affects later local incidence, and local incidence in turn feeds back into risk-related targets.
 
 <!--- ABM Results ----->
 
