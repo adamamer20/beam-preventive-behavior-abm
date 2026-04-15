@@ -59,18 +59,18 @@ I test the models on two targets: behavioural outcomes, and a small set of psych
 Performance is judged in slightly different ways depending on the task. At baseline, I ask whether the model recovers the right level, the right ordering, and, for profile variables, the overall profile shape. Under controlled shifts, I ask whether it reacts to the right levers, by roughly the right amount, and without producing spurious movement.
 
 <!---- Baseline result ---->
-At baseline, the results are mixed.
 
-For behavioural outcomes, I report three numbers.
-LLM rank tells us whether the model orders respondents correctly from lower to higher propensity.
-LLM level tells us whether it predicts the right value on the response scale.
-And the reference rank gives the corresponding benchmark from the survey-grounded equations.
 
-The main pattern is very clear: ranking is consistently better than level recovery, but it still remains below the empirical benchmark. For example, COVID vaccination willingness reaches a Gini of about 0.45, compared with about 0.67 for the reference equations. The same gap appears across the other outcomes as well. 
+At baseline, the models do recover some structure, but only in a limited sense.
 
-This happens because predictions are compressed toward the centre of the scale. Low values are overpredicted, high values are underpredicted, so the model preserves part of the ordering but not the full heterogeneity. The thesis describes this explicitly as central-tendency compression. 
+For the behavioural outcomes, they are better at sorting respondents relatively than at placing them at the correct point on the response scale. 
 
-On the psychological-profile side, the heatmap reports cosine similarity, which tells us whether the relative balance across profile dimensions is recovered. These values are positive in most cells, so the LLM often recovers part of the overall profile shape. But again the deeper problem is compression. And this matters more here, because these profile variables are not just another prediction target: they are the dimensions that define agent heterogeneity and later feed into the behavioural equations of the simulator. If they are compressed, agents start too similar to one another and tail profiles are under-represented. 
+The reason is that predictions are systematically pulled toward the centre. Extremes are flattened, and part of the empirical heterogeneity disappear.
+
+A similar pattern appears for the psychological profiles. The model often preserves the broad configuration of the profile, but it shrinks differences across respondents. 
+
+And that is more consequential on the profile side, because these variables are later used to define the agents themselves. If that profile space is compressed, the simulated population starts too homogeneous, tail profiles become too rare, and the model loses part of the heterogeneity that should generate differentiated behavioural responses. 
+
 
 <!---- Perturbed LLM ---->
 
