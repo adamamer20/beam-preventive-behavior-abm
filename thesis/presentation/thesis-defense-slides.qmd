@@ -297,7 +297,7 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
       <div class="evaluation-design-card-title">What is tested</div>
       <div class="evaluation-design-subsection">Targets</div>
       <div class="evaluation-design-item">behavioural outcomes</div>
-      <div class="evaluation-design-item">psychological profile variables</div>
+      <div class="evaluation-design-item">psychological profile variables (e.g. trust, legitimacy, perceived stakes)</div>
       <div class="evaluation-design-subsection">Settings</div>
       <div class="evaluation-design-item">at baseline</div>
       <div class="evaluation-design-item">under controlled shifts</div>
