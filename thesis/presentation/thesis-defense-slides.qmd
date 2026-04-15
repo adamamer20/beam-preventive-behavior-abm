@@ -516,6 +516,10 @@ Behavioural outcomes
 The strongest one-step lever is not always the strongest cumulative lever.
 :::
 
+::: {.abm-technical-note}
+C = 9-month campaign · S = 6-month outbreak wave · P = 1-tick pulse
+:::
+
 ![](assets/fig-05-auc-leaderboard-trimmed.png){.abm-leaderboard-figure}
 
 ::: {.abm-side-takeaways}
@@ -723,42 +727,6 @@ BACKUP
 - Zero-shot description
 
 
-- Profile-with-demographics
-- Chain-of-thought reasoning
-- Paired comparison (explicit contrast)
-
-<br>
-
-**Models evaluated:**
-
-- GPT-4 / GPT-3.5
-- Claude variants
-- Open-source alternatives
-
-:::
-
-::: {.column width="50%"}
-
-**Metrics:**
-
-| Metric | Measures |
-|--------|----------|
-| MAE | Level accuracy |
-| Spearman ρ | Rank agreement |
-| Calibration slope | Compression degree |
-| Paired accuracy | Contrast discrimination |
-
-<br>
-
-::: {.muted}
-Full results in appendix
-:::
-
-:::
-
-::::
-
-
 <!-- ============================================= -->
 <!-- BACKUP: LLM RESULTS - MISPLACED MECHANISM -->
 <!-- ============================================= -->
@@ -798,6 +766,40 @@ BACKUP
   </div>
 </div>
 ```
+- Profile-with-demographics
+- Chain-of-thought reasoning
+- Paired comparison (explicit contrast)
+
+<br>
+
+**Models evaluated:**
+
+- GPT-4 / GPT-3.5
+- Claude variants
+- Open-source alternatives
+
+:::
+
+::: {.column width="50%"}
+
+**Metrics:**
+
+| Metric | Measures |
+|--------|----------|
+| MAE | Level accuracy |
+| Spearman ρ | Rank agreement |
+| Calibration slope | Compression degree |
+| Paired accuracy | Contrast discrimination |
+
+<br>
+
+::: {.muted}
+Full results in appendix
+:::
+
+:::
+
+::::
 
 
 <!-- ============================================= -->

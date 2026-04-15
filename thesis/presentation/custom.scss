@@ -1573,11 +1573,20 @@ $selection-bg: $accent-blue;
   max-width: 78%;
 }
 
+.reveal .abm-technical-note {
+  margin: 0 0 0.18rem;
+  font-size: 0.4em;
+  line-height: 1.18;
+  color: rgba($dark-gray, 0.64);
+  font-weight: 400;
+  max-width: 78%;
+}
+
 .reveal .abm-leaderboard-figure {
   display: block;
   width: 64%;
   max-width: none;
-  margin: 0.24rem auto 1.5rem;
+  margin: 0.16rem auto 1.5rem;
 }
 
 .reveal .abm-side-takeaways {
