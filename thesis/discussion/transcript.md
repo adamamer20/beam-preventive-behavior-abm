@@ -87,48 +87,38 @@ Adjustment is also allowed to differ across constructs. Trust- and norm-related 
 
 These targets change over time because the ABM adds two dynamic ingredients. One is social influence. This works in two ways: agents are pulled somewhat toward the people they interact with, and they also update their perceived norms by observing what others do. The second ingredient is incidence feedback: behaviour affects later local incidence, and local incidence in turn feeds back into risk-related targets.
 
-<!--- ABM Results ----->
+<!--- ABM Results 1:30 min ----->
 
-Once the ABM is specified, I compare counterfactual interventions in cumulative terms, using ( \Delta AUC ) because the model is mean-reverting.
+Once the ABM is specified, I compare a set of counterfactual scenarios and rank them by cumulative impact, because in a mean-reverting model total displacement over time is more informative than a single end-point. 
 
-The main result is that dynamics re-rank the policy levers. Norm-based interventions become the strongest cumulative lever, not because they have the biggest one-step effect, but because they persist and reinforce through social exposure.
+The main result is that dynamics re-rank the policy levers identified in the empirical backbone. Norm-based interventions, which were not among the strongest one-step levers in the empirical benchmark, become the strongest cumulative lever because they persist and reinforce through social exposure. 
 
-Credibility interventions are more asymmetric. Legitimacy mainly shifts vaccination willingness, while institutional trust has broader spillovers across both vaccination and NPIs
+Credibility interventions are more asymmetric. Legitimacy mainly shifts vaccination willingness, whereas institutional trust has broader spillovers across both vaccination and NPIs. 
 
-<!---- Dynamic fingerprints ------->
+Access facilitation behaves differently again. Counterintuitively, it can turn negative in cumulative terms: it may initially increase vaccination willingness, but once protection rises, incidence pressure falls, perceived risk declines, and other precautions can weaken through feedback. 
 
-The intervention results reveal four distinct dynamic profiles. Norm-based interventions generate the largest cumulative effects, not because they have the strongest one-step leverage, but because their influence persists and accumulates through social reinforcement and slow adjustment. Outbreak waves, by contrast, produce sharper responses through perceived risk, but these are more short-lived and relax more quickly once epidemic pressure declines. Credibility-related interventions are asymmetric: legitimacy repair mainly increases vaccination willingness, whereas institutional-trust repair has broader spillovers across both vaccination and non-pharmaceutical prevention. If effects are normalized by intervention duration, some credibility shocks, especially legitimacy-related ones, also stand out for their strong short-run impact on vaccination willingness. Access facilitation behaves differently again, because it creates a substitution effect. It can initially raise vaccination, but once protection increases, incidence pressure falls, perceived risk declines, and other precautions may weaken through feedback. So improving one preventive margin does not necessarily raise prevention everywhere else; in the model, this compensatory mechanism is strong enough that the overall net effect turns negative.
+A final robustness check suggests that the clearest cumulative asymmetries on this slide remain stable: norm shift stays above institutional-trust repair on both outcomes, while legitimacy dominates trust repair for vaccination and trust dominates legitimacy for NPIs.
 
-<!---- Robutsness screening ------->
+<!---- Dynamic fingerprint 40 secs ------->
 
-Finally, I run a robustness screening using Morris sensitivity analysis.
+We can also see that these effects unfold differently over time.
 
-The idea here is not to ask whether every parameter matters equally, but to ask where uncertainty is concentrated for each intervention–outcome pair.
+The norm campaign produces the longest behavioural tail. Its effects remain displaced for longer, consistent with slow adjustment and social reinforcement.
 
-The resulting pattern is quite interpretable.
+The outbreak wave follows a more classic wave pattern: behaviour rises under higher perceived danger, then relaxes more quickly as pressure fades.
 
-Credibility-repair interventions load mainly on persistence. This makes sense, because their effects depend on how slowly trust- and legitimacy-related states relax back toward baseline.
-
-Norm-based interventions depend more on social diffusion. In other words, their yield is strongest when exposure to prevention translates effectively into a shared perception of what is normal.
-
-Outbreak-wave responses are instead concentrated on the incidence loop, which is exactly what we would expect from an intervention that works mainly through changing epidemic pressure and risk salience.
-
-So uncertainty is not spread randomly across the model. It concentrates in a small set of identifiable dynamic assumptions, especially slow-state relaxation, social propagation, and incidence feedback. That makes the ABM easier to interpret, because we can see which mechanisms each policy comparison actually relies on.  
-
-A final useful result is that cumulative comparisons are often more robust than late-horizon comparisons.
-
-This is consistent with the mean-reverting structure of the model. Interventions can separate strongly in total cumulative yield, while ending at much more similar, or even reversed, month-12 levels. So if we care about overall behavioural impact, cumulative measures are often more informative than a single late snapshot. 
+Trust erosion is different again. The initial shock is on credibility, but the more persistent behavioural tail appears mainly in vaccination willingness, while NPIs remain much closer to baseline.
 
 <!---- Conclusions ------->
 
-So, stepping back, the main conclusion of the thesis is that preventive behaviour can be represented by a compact but outcome-specific architecture.
+So, stepping back, I think the thesis leads to three main conclusions.
 
-The same broad engines recur across outcomes, but their weights change: COVID vaccination willingness depends mainly on stakes within a wider trust and legitimacy context, flu vaccination is much more inertial, and NPIs depend more strongly on moral orientation and stakes.
+First, the empirical backbone shows that preventive behaviour is compact, but outcome-specific. The same broad blocks recur across outcomes, but their importance changes depending on the behaviour. COVID vaccination willingness depends mainly on perceived stakes, within a wider trust and legitimacy context. Flu vaccination is much more inertial, and depends more strongly on habit, age, and health. NPIs depend more strongly on moral orientation and stakes.
 
-The LLM results then show that baseline plausibility is not enough for behavioural simulation. Off-the-shelf models can recover part of the static structure, but they are much less reliable once relevant drivers are deliberately perturbed. So the key issue is not only fit at baseline, but counterfactual discipline.
+Second, if we want to use LLMs inside agent-based models, it is not enough to test whether they can recover the baseline reasonably well. They also need to respond coherently under counterfactual changes. And in my tests, that is where current off-the-shelf models still break down.
 
-This is why the ABM keeps the behavioural core tied to the survey-grounded relationships and adds a minimal dynamic layer for persistence, social influence, and incidence feedback.
+Third, once these empirical relationships are embedded in an ABM, the policy picture changes. The strongest one-step lever is not always the strongest cumulative lever. Norm-based interventions become especially powerful because their effects persist and reinforce socially. And improving vaccination access alone can also weaken other precautions through feedback, so preventive margins do not always move together.
 
-So the broader contribution of the thesis is to propose a disciplined bridge from survey evidence to counterfactual simulation, and to clarify a useful boundary for current LLM agents: they are promising for richer behavioural representation, but not yet reliable enough as unconstrained update engines in this setting.
+So the broader contribution of the thesis is to show that it is possible to build a disciplined pipeline from survey micro-data to counterfactual simulation, while also identifying a useful boundary for current LLM agents: they are promising as richer behavioural components, but not yet reliable enough as unconstrained update engines in this setting.
 
-The main next step would be to strengthen the dynamic side with longitudinal data and a richer transmission layer.
+The natural next step is to strengthen the dynamic side with longitudinal evidence on individuals, and to couple the behavioural layer to a richer transmission model.

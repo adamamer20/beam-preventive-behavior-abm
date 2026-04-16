@@ -583,75 +583,42 @@ Each row is a different lever; each column shows how its effects propagate over 
 
 
 <!-- ============================================= -->
-<!-- SLIDE 14: ABM SENSITIVITY -->
-<!-- ============================================= -->
-
-## Sensitivity analysis: Robustness depends on different mechanisms {.abm-sensitivity-slide}
-
-```{=html}
-<div class="abm-sensitivity-grid">
-```
-
-::: {.abm-slide-subtitle}
-Read across rows: brighter cells mark where sensitivity is concentrated within each scenario–outcome pair.
-:::
-
-```{=html}
-<div class="abm-sensitivity-main">
-  <div class="abm-sensitivity-figure-wrap">
-    <img
-      class="abm-sensitivity-figure"
-      src="assets/fig-05-sensitivity-heatmap.png"
-      alt="Row-normalised sensitivity heatmap showing which mechanism families dominate uncertainty within each intervention-outcome pair."
-    />
-  </div>
-  <div class="abm-sensitivity-side">
-    <div class="abm-sensitivity-side-item abm-sensitivity-side-item-persistence">
-      <div class="abm-sensitivity-side-title">Credibility repair</div>
-      <div class="abm-sensitivity-side-text">Both repair scenarios load mainly on <strong>persistence</strong> (0.38, 0.44), so robustness depends on slow trust and legitimacy relaxation.</div>
-    </div>
-    <div class="abm-sensitivity-side-item abm-sensitivity-side-item-diffusion">
-      <div class="abm-sensitivity-side-title">Norm shift</div>
-      <div class="abm-sensitivity-side-text">Sensitivity concentrates in <strong>social diffusion</strong> (0.41), with <strong>stochasticity</strong> also relevant (0.33).</div>
-    </div>
-    <div class="abm-sensitivity-side-item abm-sensitivity-side-item-incidence">
-      <div class="abm-sensitivity-side-title">Outbreak wave</div>
-      <div class="abm-sensitivity-side-text">Sensitivity is almost entirely <strong>incidence-loop</strong> driven (0.94), consistent with a risk-salience shock.</div>
-    </div>
-  </div>
-</div>
-```
-
-```{=html}
-</div>
-```
-
-
-<!-- ============================================= -->
 <!-- SLIDE 15: TAKEAWAYS -->
 <!-- ============================================= -->
 
-## Takeaways
+## Takeaways {.takeaways-slide}
 
-<br>
+```{=html}
+<div class="takeaways-layout">
+  <div class="takeaways-main">
+```
 
-::: {.takeaway style="font-size: 1.02em; margin-bottom: 1.05em;"}
+::: {.takeaway .takeaway-final}
 **1. Prevention is compact, but outcome-specific**
 
 The same broad engines recur across outcomes, but their behavioural weights change.
 :::
 
-::: {.takeaway style="font-size: 1.02em; margin-bottom: 1.05em;"}
+::: {.takeaway .takeaway-final}
 **2. LLMs recover baselines better than counterfactuals**
 
 Static plausibility is not enough when behavioural responses must remain coherent under perturbation.
 :::
 
-::: {.takeaway style="font-size: 1.02em; margin-bottom: 1.05em;"}
-**3. A survey-grounded hybrid ABM is the more credible route**
+::: {.takeaway .takeaway-final}
+**3. Dynamics re-rank the policy levers**
 
-An empirical backbone plus bounded dynamics gives more interpretable policy comparisons.
+The strongest one-step lever is not always the strongest cumulative lever.
 :::
+
+```{=html}
+  </div>
+  <div class="takeaways-next-step">
+    <div class="takeaways-next-step-label">Next step</div>
+    <div class="takeaways-next-step-text">Longitudinal evidence on within-person dynamics, plus a richer transmission layer.</div>
+  </div>
+</div>
+```
 
 <!-- ============================================= -->
 <!-- BACKUP SLIDES -->
@@ -840,6 +807,50 @@ $$
 <!-- ============================================= -->
 <!-- BACKUP: MORRIS SENSITIVITY -->
 <!-- ============================================= -->
+
+## Sensitivity analysis: Robustness depends on different mechanisms {.abm-sensitivity-slide}
+
+::: {.backup-marker}
+BACKUP
+:::
+
+```{=html}
+<div class="abm-sensitivity-grid">
+```
+
+::: {.abm-slide-subtitle}
+Read across rows: brighter cells mark where sensitivity is concentrated within each scenario–outcome pair.
+:::
+
+```{=html}
+<div class="abm-sensitivity-main">
+  <div class="abm-sensitivity-figure-wrap">
+    <img
+      class="abm-sensitivity-figure"
+      src="assets/fig-05-sensitivity-heatmap.png"
+      alt="Row-normalised sensitivity heatmap showing which mechanism families dominate uncertainty within each intervention-outcome pair."
+    />
+  </div>
+  <div class="abm-sensitivity-side">
+    <div class="abm-sensitivity-side-item abm-sensitivity-side-item-persistence">
+      <div class="abm-sensitivity-side-title">Credibility repair</div>
+      <div class="abm-sensitivity-side-text">Both repair scenarios load mainly on <strong>persistence</strong> (0.38, 0.44), so robustness depends on slow trust and legitimacy relaxation.</div>
+    </div>
+    <div class="abm-sensitivity-side-item abm-sensitivity-side-item-diffusion">
+      <div class="abm-sensitivity-side-title">Norm shift</div>
+      <div class="abm-sensitivity-side-text">Sensitivity concentrates in <strong>social diffusion</strong> (0.41), with <strong>stochasticity</strong> also relevant (0.33).</div>
+    </div>
+    <div class="abm-sensitivity-side-item abm-sensitivity-side-item-incidence">
+      <div class="abm-sensitivity-side-title">Outbreak wave</div>
+      <div class="abm-sensitivity-side-text">Sensitivity is almost entirely <strong>incidence-loop</strong> driven (0.94), consistent with a risk-salience shock.</div>
+    </div>
+  </div>
+</div>
+```
+
+```{=html}
+</div>
+```
 
 ## Morris sensitivity: Full results {.smaller}
 
