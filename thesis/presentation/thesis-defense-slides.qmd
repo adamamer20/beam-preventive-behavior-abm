@@ -563,11 +563,11 @@ Each row is a different lever; each column shows how its effects propagate over 
   <div class="abm-dynamics-side">
     <div class="abm-dynamics-side-item">
       <div class="abm-dynamics-side-title">Norm campaign</div>
-      <div class="abm-dynamics-side-text">Gradual build-up, then a long tail sustained by social reinforcement.</div>
+      <div class="abm-dynamics-side-text">Longest behavioural tail, sustained by social reinforcement.</div>
     </div>
     <div class="abm-dynamics-side-item">
       <div class="abm-dynamics-side-title">Outbreak wave</div>
-      <div class="abm-dynamics-side-text">Sharp rise under pressure, then relaxation as perceived risk fades.</div>
+      <div class="abm-dynamics-side-text">Wave-like rise, then faster relaxation as perceived risk fades.</div>
     </div>
     <div class="abm-dynamics-side-item">
       <div class="abm-dynamics-side-title">Trust erosion</div>
@@ -679,7 +679,7 @@ BACKUP
 <!-- BACKUP: LLM EVALUATION DETAILS -->
 <!-- ============================================= -->
 
-## LLM evaluation: Prompt strategies {.smaller}
+## LLM evaluation: Prompt strategies {.smaller visibility="hidden"}
 
 ::: {.backup-marker}
 BACKUP
@@ -692,6 +692,40 @@ BACKUP
 **Prompting variants tested:**
 
 - Zero-shot description
+- Profile-with-demographics
+- Chain-of-thought reasoning
+- Paired comparison (explicit contrast)
+
+<br>
+
+**Models evaluated:**
+
+- GPT-4 / GPT-3.5
+- Claude variants
+- Open-source alternatives
+
+:::
+
+::: {.column width="50%"}
+
+**Metrics:**
+
+| Metric | Measures |
+|--------|----------|
+| MAE | Level accuracy |
+| Spearman ρ | Rank agreement |
+| Calibration slope | Compression degree |
+| Paired accuracy | Contrast discrimination |
+
+<br>
+
+::: {.muted}
+Full results in appendix
+:::
+
+:::
+
+::::
 
 
 <!-- ============================================= -->
@@ -733,47 +767,13 @@ BACKUP
   </div>
 </div>
 ```
-- Profile-with-demographics
-- Chain-of-thought reasoning
-- Paired comparison (explicit contrast)
-
-<br>
-
-**Models evaluated:**
-
-- GPT-4 / GPT-3.5
-- Claude variants
-- Open-source alternatives
-
-:::
-
-::: {.column width="50%"}
-
-**Metrics:**
-
-| Metric | Measures |
-|--------|----------|
-| MAE | Level accuracy |
-| Spearman ρ | Rank agreement |
-| Calibration slope | Compression degree |
-| Paired accuracy | Contrast discrimination |
-
-<br>
-
-::: {.muted}
-Full results in appendix
-:::
-
-:::
-
-::::
 
 
 <!-- ============================================= -->
 <!-- BACKUP: ABM EQUATIONS -->
 <!-- ============================================= -->
 
-## ABM equations: Partial adjustment {.smaller}
+## ABM equations: Partial adjustment {.smaller visibility="hidden"}
 
 ::: {.backup-marker}
 BACKUP
@@ -852,7 +852,7 @@ Read across rows: brighter cells mark where sensitivity is concentrated within e
 </div>
 ```
 
-## Morris sensitivity: Full results {.smaller}
+## Morris sensitivity: Full results {.smaller visibility="hidden"}
 
 ::: {.backup-marker}
 BACKUP
