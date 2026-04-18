@@ -520,7 +520,7 @@ The strongest one-step lever is not always the strongest cumulative lever.
 C = 9-month campaign · S = 6-month outbreak wave · P = 1-tick pulse
 :::
 
-![](assets/fig-05-auc-leaderboard-trimmed.png){.abm-leaderboard-figure}
+![](assets/fig-05-auc-leaderboard-upstream@2x.png){.abm-leaderboard-figure}
 
 ::: {.abm-side-takeaways}
 ::: {.abm-takeaway}

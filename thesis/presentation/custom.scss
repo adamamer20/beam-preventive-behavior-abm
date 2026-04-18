@@ -1640,6 +1640,111 @@ $selection-bg: $accent-blue;
   border-bottom: 0.28rem solid rgba($secondary-blue, 0.8);
 }
 
+.print-pdf .reveal .controls,
+.print-pdf .reveal .progress,
+.print-pdf .reveal .playback,
+.print-pdf .reveal .slide-number-delimiter {
+  display: none !important;
+}
+
+.print-pdf .reveal .slides section.abm-bridge-slide > h2 {
+  font-size: 1.18em;
+}
+
+.print-pdf .reveal .abm-bridge-challenge {
+  top: 110px;
+  font-size: 0.62em;
+  line-height: 1.18;
+}
+
+.print-pdf .reveal .abm-structure {
+  top: 170px;
+  right: 36px;
+  bottom: 34px;
+  left: 36px;
+  width: auto;
+}
+
+.print-pdf .reveal .abm-bridge-layout {
+  gap: 0.55rem;
+  grid-template-columns:
+    minmax(0, 1.1fr) auto
+    minmax(0, 1.95fr) auto
+    minmax(0, 1.1fr);
+}
+
+.print-pdf .reveal .abm-node {
+  min-height: 150px;
+  padding: 0.72rem 0.78rem;
+  font-size: 0.61em;
+}
+
+.print-pdf .reveal .abm-arrow {
+  font-size: 1.18em;
+}
+
+.print-pdf .reveal .abm-dynamic-bridge-box {
+  min-height: 372px;
+  padding: 0.74rem 0.8rem 0.8rem;
+}
+
+.print-pdf .reveal .abm-dynamic-bridge-title {
+  font-size: 0.6em;
+  margin-bottom: 0.34rem;
+}
+
+.print-pdf .reveal .abm-dynamic-bridge-inner {
+  gap: 0.62rem;
+}
+
+.print-pdf .reveal .abm-node-large {
+  min-height: 188px;
+  gap: 0.24rem;
+}
+
+.print-pdf .reveal .abm-node-large > p:first-child {
+  font-size: 0.98em;
+}
+
+.print-pdf .reveal .abm-node-large .math.display {
+  font-size: 1.2em;
+}
+
+.print-pdf .reveal .abm-adjust-kappa-note {
+  font-size: 0.68em;
+}
+
+.print-pdf .reveal .abm-side-box {
+  min-height: 146px;
+  gap: 0.24rem;
+  padding: 0.68rem 0.76rem 0.74rem;
+}
+
+.print-pdf .reveal .abm-side-box > p:first-child {
+  font-size: 0.56em;
+}
+
+.print-pdf .reveal .abm-side-box ul {
+  font-size: 0.49em;
+  line-height: 1.22;
+}
+
+.print-pdf .reveal .abm-side-box > p:last-child {
+  font-size: 0.46em;
+  line-height: 1.14;
+}
+
+.print-pdf .reveal .abm-side-social::before,
+.print-pdf .reveal .abm-side-incidence::before {
+  top: -0.82rem;
+  height: 0.82rem;
+}
+
+.print-pdf .reveal .abm-side-social::after,
+.print-pdf .reveal .abm-side-incidence::after {
+  top: -1.02rem;
+}
+
 .reveal .abm-slide-subtitle {
   margin: -0.08rem 0 0.08rem;
   font-size: 0.56em;

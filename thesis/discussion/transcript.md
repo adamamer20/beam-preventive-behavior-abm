@@ -1,16 +1,16 @@
 <!----Introducion & Motivation - 2:20 ---->
 
-The main motivation behind my thesis is the challenge of policymaking. A central problem for policymakers is understanding what would happen if a policy were introduced or changed. In other words, they need to reason about counterfactuals. In the natural sciences, questions of this kind can often be studied through controlled experiments. In the social sciences, however, this is much harder, because policies cannot easily be randomized, populations are heterogeneous, and the underlying dynamics are complex and often poorly understood. One possible response is to move from the experimental domain to th counterfactual reasoning into a computational setting, using agent-based models. Agent-based models are computational models that describe a system from the bottom up. They represent individual actors, the rules that guide their behaviour, and the interactions between them, and then observe the aggregate patterns that result.
+The main motivation behind my thesis is the challenge of policymaking. A central problem for policymakers is understanding what would happen if a policy were introduced or changed. In other words, they need to reason about counterfactuals. In the natural sciences, questions of this kind can often be studied through controlled experiments. In the social sciences, however, this is much harder, because policies cannot easily be randomized, populations are heterogeneous, and the underlying dynamics are complex and often poorly understood. One possible response is to move from the experimental domain to the counterfactual reasoning into a computational setting, using agent-based models. Agent-based models are computational models that describe a system from the bottom up. They represent individual actors, the rules that guide their behaviour, and the interactions between them, and then observe the aggregate patterns that result.
 
-But this immediately raises a second question: how should behaviour be modelled realistically inside the ABM? Different ways of modelling individual behaviour can still produce similar system-level outcomes. So even if the model seems to capture the broader pattern, that does not mean the behavioural assumptions inside it are correct. This is also where large language models become interesting. If the challenge is to specify behavioural rules at the micro level, LLMs seem to offer a richer, flexible and realistic way to do that. But that promise needs to be tested.
+But this immediately raises a second question: how should behaviour be modelled realistically inside the ABM? Different ways of modelling individual behaviour can still produce similar system-level outcomes. So even if the model seems to reproduce the broader pattern, that does not mean the underlying behavioural mechanism is correct. This is why validating behavioural components becomes central. In recent years, LLMs have attracted attention as candidate behavioural components because they seem to offer a richer, more flexible, and potentially more realistic way to specify behaviour at the micro level. But that promise needs to be tested.
 
 <!----Proposal 1 min ---->
 
-The goal of my thesis is to build a disciplined link from survey micro-data to both validation of LLMs as behavioural components and simulation.
+The goal of my thesis is to address these questions by building a disciplined link from survey micro-data to both the validation of LLMs as behavioural components and simulation.
 
 I begin by building a common empirical backbone of preventive behaviour from survey data.
 
-From there, theI use that backbone as a benchmark to test whether LLMs can reproduce the same behavioural patterns, both at baseline and under controlled changes in individual profiles. Second, I use those empirically estimated behavioural relationships as the core of a survey-grounded ABM to study counterfactual scenarios of preventive behaviour.
+From there, I use that backbone as a benchmark to test whether LLMs can reproduce the same behavioural patterns, both at baseline and under controlled changes in individual profiles. Second, I use those empirically estimated behavioural relationships as the core of a survey-grounded ABM to study counterfactual scenarios of preventive behaviour.
 
 
 <!-----Empirical Backbone Survey data - 1 min ---------->
@@ -51,8 +51,6 @@ For the NPI outcomes, the perturbation effects are much more dispersed. This mai
 <!---- LLM Validation 2 min ------>
 
 The next step is LLM micro-validation. The question here is whether LLM-based agents can reproduce the empirical benchmark well enough to be credible candidate behavioural components for the ABM.
-
-That benchmark comes from the empirical backbone built in the previous step. It includes both survey-grounded behavioural outcomes and survey-grounded psychological profile patterns.
 
 I test the models on two targets: behavioural outcomes, and a small set of psychological profile variables such as trust, legitimacy, perceived stakes, and norms. And I test them in two settings: first at baseline, where I ask whether the model can recover the observed values implied by survey profiles; and second under controlled shifts, where I change one relevant driver and ask whether the model responds in the expected way.
 
