@@ -15,9 +15,8 @@ From there, I use that backbone as a benchmark to test whether LLMs can reproduc
 
 <!-----Empirical Backbone Survey data - 1 min ---------->
 
-Let me now move to the first step of the thesis, which is building the empirical backbone.
-
-I start from a large cross-country survey with about 22,000 respondents across six European countries. The survey is very rich: it covers demographics and health, COVID and flu experience, vaccine beliefs, information environment, social exposure, trust, barriers, and moral orientations.
+So the phenomenon I study is preventive behaviour in epidemics.
+To build the empirical backbone, I start from a large cross-country survey with about 22,000 respondents across six European countries. The survey is very rich: it covers demographics and health, COVID and flu experience, vaccine beliefs, information environment, social exposure, trust, barriers, and moral orientations.
 
 From this survey, I focus on a small set of core prevention outcomes: COVID vaccination willingness, flu vaccination, and non-pharmaceutical preventive behaviours such as masking and staying home when symptomatic.
 
