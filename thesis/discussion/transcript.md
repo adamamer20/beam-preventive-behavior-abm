@@ -29,7 +29,9 @@ The next step is to identify a compact behavioural structure that can explain th
 
 The first main result is that the same broad blocks recur across outcomes, but their relative importance changes substantially depending on the behaviour.
 
-For COVID vaccination willingness, the dominant block is perceived stakes, with additional roles for institutional trust, legitimacy, and vaccine disposition. <--An interesting detail is that these trust-related blocks are not interchangeable: disposition mostly captures confidence in the vaccine itself, institutional trust captures confidence in the broader public-health institutions, and legitimacy captures acceptance of the vaccine rollout and governance process.-->
+For COVID vaccination willingness, the dominant block is perceived stakes, with additional roles for institutional trust, legitimacy, and vaccine disposition. 
+
+<!--- An interesting detail is that these trust-related blocks are not interchangeable: disposition mostly captures confidence in the vaccine itself, institutional trust captures confidence in the broader public-health institutions, and legitimacy captures acceptance of the vaccine rollout and governance process. -->
 
 For flu vaccination, the dominant driver is habit, which makes this behaviour much more inertial. And when habit is removed, age and health become much more important, so flu vaccination looks less like a routine behaviour and more like a response to perceived medical need.
 
@@ -39,7 +41,7 @@ For the non-pharmaceutical behaviours, the strongest block is moral orientation,
 
 Beyond identifying which blocks carry unique signal, I also study which drivers actually move behaviour when they are shifted in a realistic way.
 
-To do this, I compute reference perturbation effects: the fitted change in the outcome when one variable is moved from a low value to a high value, holding the rest of the profile fixed.
+To do this, I compute reference perturbation effects: the change in the fitted outcome when one variable is moved from a low value to a high value, holding the rest of the profile fixed.
 
 For COVID vaccination willingness, the strongest lever is again stakes, followed by disposition, institutional trust, and legitimacy.
 
