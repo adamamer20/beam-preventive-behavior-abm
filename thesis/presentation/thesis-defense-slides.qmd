@@ -624,19 +624,11 @@ The strongest one-step lever is not always the strongest cumulative lever.
 <!-- BACKUP SLIDES -->
 <!-- ============================================= -->
 
-## {.thank-you-slide background-color="#fafbfc"}
+## Thank you {#thank-you .thank-you-slide background-color="#fafbfc"}
 
-```{=html}
-<div class="thank-you-slide-inner">
-```
-
-::: {style="color: #1e4f86; font-size: 1.45em; text-align: center; width: 100%; margin: 0;"}
+::: {.thank-you-slide-inner}
 Thank you
 :::
-
-```{=html}
-</div>
-```
 
 ## {.center background-color="#1e3a5f"}
 
