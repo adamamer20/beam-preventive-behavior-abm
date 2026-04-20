@@ -166,7 +166,7 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
       </div>
       <div class="compact-pipeline-step fragment fade-up" data-fragment-index="1">
         <div class="compact-pipeline-arrow compact-pipeline-arrow-above">↓</div>
-        <div class="compact-pipeline-box">Survey-derived variables</div>
+        <div class="compact-pipeline-box">Derived variables and indices</div>
       </div>
       <div class="compact-pipeline-step fragment fade-up" data-fragment-index="2">
         <div class="compact-pipeline-arrow compact-pipeline-arrow-above">↓</div>
