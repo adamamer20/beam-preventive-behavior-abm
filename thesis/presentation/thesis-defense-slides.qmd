@@ -2,7 +2,7 @@
 title: "From Survey Data to Behavioural ABMs"
 subtitle: "Evaluating the Limits of LLM Agents in Preventive Behaviour Modelling"
 author: "Adam Amer"
-institute: "<span class='title-slide-degree'>MSc in Artificial Intelligence · Bocconi University</span><span class='title-slide-advisors'><span class='title-slide-meta-line'><strong>Supervisor:</strong> Prof. Alessia Melegaro</span><span class='title-slide-meta-line'><strong>Advisor:</strong> Lorenzo Lucchini</span></span>"
+institute: "<span class='title-slide-degree'>MSc in Artificial Intelligence · Bocconi University</span><span class='title-slide-advisors'><span class='title-slide-meta-line'><strong>Advisor:</strong> Prof. Alessia Melegaro</span></span>"
 format:
   revealjs:
     theme: [simple, custom.scss]
@@ -76,13 +76,13 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 
   <div class="pipeline-branches">
     <div class="pipeline-card pipeline-card-mid">
-      <div class="pipeline-title">2a. LLM micro-validation</div>
-      <div class="pipeline-body">empirical benchmark for candidate behavioural components<br>→ baseline reconstruction<br>→ controlled perturbation tests</div>
+      <div class="pipeline-title">2a. Survey-grounded ABM</div>
+      <div class="pipeline-body">empirical relationships as behavioural core<br>→ social interaction<br>→ epidemic feedback<br>→ policy comparison</div>
     </div>
 
     <div class="pipeline-card pipeline-card-light">
-      <div class="pipeline-title">2b. Survey-grounded ABM</div>
-      <div class="pipeline-body">empirical relationships as behavioural core<br>→ social interaction<br>→ epidemic feedback<br>→ policy comparison</div>
+      <div class="pipeline-title">2b. LLM micro-validation</div>
+      <div class="pipeline-body">empirical benchmark for candidate behavioural components<br>→ baseline reconstruction<br>→ controlled perturbation tests</div>
     </div>
   </div>
 </div>
@@ -274,162 +274,6 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 
 
 <!-- ============================================= -->
-<!-- SLIDE 8: LLM EVALUATION - DESIGN -->
-<!-- ============================================= -->
-
-## LLM micro-validation: Can LLM agents reproduce the empirical benchmark? {.evaluation-design-slide}
-
-```{=html}
-<div class="evaluation-design-grid">
-  <div class="evaluation-design-benchmark-strip">
-    <span class="evaluation-design-benchmark-label">Benchmark:</span>
-    survey-grounded behavioural and profile patterns from the empirical backbone
-  </div>
-
-  <div class="evaluation-design-cards">
-    <div class="evaluation-design-card">
-      <div class="evaluation-design-card-title">Why this matters</div>
-      <div class="evaluation-design-item">candidate behavioural components for the ABM</div>
-      <div class="evaluation-design-item">usable only if they reproduce survey-grounded patterns</div>
-    </div>
-
-    <div class="evaluation-design-card">
-      <div class="evaluation-design-card-title">What is tested</div>
-      <div class="evaluation-design-subsection">Targets</div>
-      <div class="evaluation-design-item">behavioural outcomes</div>
-      <div class="evaluation-design-item">psychological profile variables (e.g. trust, legitimacy, perceived stakes)</div>
-      <div class="evaluation-design-subsection">Settings</div>
-      <div class="evaluation-design-item">at baseline</div>
-      <div class="evaluation-design-item">under controlled shifts</div>
-    </div>
-
-    <div class="evaluation-design-card">
-      <div class="evaluation-design-card-title">How performance is judged</div>
-      <div class="evaluation-design-subsection">At baseline</div>
-      <div class="evaluation-design-item">outcomes: level and rank recovery</div>
-      <div class="evaluation-design-item">profiles: profile shape and variable-wise recovery</div>
-      <div class="evaluation-design-subsection">Under controlled shifts</div>
-      <div class="evaluation-design-item">outcomes: who moves, how much, and placebo containment</div>
-      <div class="evaluation-design-item">profiles: which dimensions move, and spillover containment</div>
-    </div>
-  </div>
-</div>
-```
-
-
-<!-- ============================================= -->
-<!-- SLIDE 9: LLM RESULTS - BASELINE -->
-<!-- ============================================= -->
-
-## LLM micro-validation: Baseline structure is partly recovered {.baseline-synthesis-slide}
-
-```{=html}
-<div class="baseline-synthesis-subheadline">
-  <ul class="baseline-synthesis-bullets">
-    <li>Ranking is recovered more reliably than levels, but remains below the empirical reference.</li>
-    <li>Profile shape is partly recovered, but profile variation remains compressed <span class="baseline-synthesis-inline-note">(median compression ratio: 0.41 vs 0.46 for behavioural outcomes).</span></li>
-  </ul>
-</div>
-
-<div class="baseline-synthesis-grid">
-  <div class="baseline-synthesis-table">
-    <div class="baseline-synthesis-label">Behavioural outcomes</div>
-    <table class="baseline-synthesis-metrics">
-      <thead>
-        <tr>
-          <th>Outcome</th>
-          <th>LLM rank (Gini)</th>
-          <th>LLM level (Skill)</th>
-          <th>Reference rank (Gini)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>CoVax willingness</td>
-          <td>0.45</td>
-          <td>0.27</td>
-          <td>0.67</td>
-        </tr>
-        <tr>
-          <td>Flu vaccinated (no habit)</td>
-          <td>0.31</td>
-          <td>0.36</td>
-          <td>0.64</td>
-        </tr>
-        <tr>
-          <td>Masking (high pressure)</td>
-          <td>0.27</td>
-          <td>0.07</td>
-          <td>0.44</td>
-        </tr>
-        <tr>
-          <td>Masking (symptomatic, crowded)</td>
-          <td>0.21</td>
-          <td>0.05</td>
-          <td>0.38</td>
-        </tr>
-        <tr>
-          <td>Stay home (symptomatic)</td>
-          <td>0.15</td>
-          <td>-0.02</td>
-          <td>0.32</td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="baseline-synthesis-footnote">Higher is better. Gini = rank recovery; Skill = level accuracy vs simple baseline.</div>
-  </div>
-
-  <div class="baseline-synthesis-side">
-    <div class="baseline-synthesis-label">Psychological profiles</div>
-    <img
-      class="baseline-side-figure"
-      src="assets/fig-belief-unperturbed-cosine-cropped.png"
-      alt="Unperturbed state cosine similarity for psychological profile variables."
-    />
-    <div class="baseline-synthesis-footnote">Cosine similarity: higher = better profile-shape recovery.</div>
-  </div>
-</div>
-```
-
-
-<!-- ============================================= -->
-<!-- SLIDE 10: LLM RESULTS - COUNTERFACTUAL BREAKDOWN -->
-<!-- ============================================= -->
-
-## LLM micro-validation: Counterfactual coherence breaks down {.perturbed-results-slide}
-
-```{=html}
-<div class="perturbed-results-top">
-  <div class="perturbed-results-subtitle">
-    Under controlled shifts, paired contrast improves perturbation ordering, but effect-size calibration and placebo containment remain weak.
-  </div>
-</div>
-
-<div class="perturbed-results-grid">
-  <div class="perturbed-results-panel perturbed-results-panel-main">
-    <div class="perturbed-results-label">Performance vs containment</div>
-    <div class="perturbed-results-callout">Better ordering, worse containment</div>
-    <img
-      class="perturbed-results-figure"
-      src="assets/fig-perturbed-pareto-by-model-cropped.png"
-      alt="Median perturbation-effect ordering, effect-size accuracy, and placebo containment by model and prompt family."
-    />
-  </div>
-
-  <div class="perturbed-results-panel perturbed-results-panel-support">
-    <div class="perturbed-results-label">Magnitude calibration</div>
-    <div class="perturbed-results-callout">PE skill mostly &lt; 0</div>
-    <img
-      class="perturbed-results-support-figure"
-      src="assets/fig-perturbed-skill-block-cropped.png"
-      alt="Median perturbation-effect magnitude skill by block and outcome on active cells."
-    />
-  </div>
-</div>
-```
-
-
-<!-- ============================================= -->
 <!-- SLIDE 12: ABM ARCHITECTURE -->
 <!-- ============================================= -->
 
@@ -578,6 +422,162 @@ Each row is a different lever; each column shows how its effects propagate over 
 ```
 
 ```{=html}
+</div>
+```
+
+
+<!-- ============================================= -->
+<!-- SLIDE 11: LLM EVALUATION - DESIGN -->
+<!-- ============================================= -->
+
+## LLM micro-validation: Can LLM agents reproduce the empirical benchmark? {.evaluation-design-slide}
+
+```{=html}
+<div class="evaluation-design-grid">
+  <div class="evaluation-design-benchmark-strip">
+    <span class="evaluation-design-benchmark-label">Benchmark:</span>
+    survey-grounded behavioural and profile patterns from the empirical backbone
+  </div>
+
+  <div class="evaluation-design-cards">
+    <div class="evaluation-design-card">
+      <div class="evaluation-design-card-title">Why this matters</div>
+      <div class="evaluation-design-item">candidate behavioural components for the ABM</div>
+      <div class="evaluation-design-item">usable only if they reproduce survey-grounded patterns</div>
+    </div>
+
+    <div class="evaluation-design-card">
+      <div class="evaluation-design-card-title">What is tested</div>
+      <div class="evaluation-design-subsection">Targets</div>
+      <div class="evaluation-design-item">behavioural outcomes</div>
+      <div class="evaluation-design-item">psychological profile variables (e.g. trust, legitimacy, perceived stakes)</div>
+      <div class="evaluation-design-subsection">Settings</div>
+      <div class="evaluation-design-item">at baseline</div>
+      <div class="evaluation-design-item">under controlled shifts</div>
+    </div>
+
+    <div class="evaluation-design-card">
+      <div class="evaluation-design-card-title">How performance is judged</div>
+      <div class="evaluation-design-subsection">At baseline</div>
+      <div class="evaluation-design-item">outcomes: level and rank recovery</div>
+      <div class="evaluation-design-item">profiles: profile shape and variable-wise recovery</div>
+      <div class="evaluation-design-subsection">Under controlled shifts</div>
+      <div class="evaluation-design-item">outcomes: who moves, how much, and placebo containment</div>
+      <div class="evaluation-design-item">profiles: which dimensions move, and spillover containment</div>
+    </div>
+  </div>
+</div>
+```
+
+
+<!-- ============================================= -->
+<!-- SLIDE 12: LLM RESULTS - BASELINE -->
+<!-- ============================================= -->
+
+## LLM micro-validation: Baseline structure is partly recovered {.baseline-synthesis-slide}
+
+```{=html}
+<div class="baseline-synthesis-subheadline">
+  <ul class="baseline-synthesis-bullets">
+    <li>Ranking is recovered more reliably than levels, but remains below the empirical reference.</li>
+    <li>Profile shape is partly recovered, but profile variation remains compressed <span class="baseline-synthesis-inline-note">(median compression ratio: 0.41 vs 0.46 for behavioural outcomes).</span></li>
+  </ul>
+</div>
+
+<div class="baseline-synthesis-grid">
+  <div class="baseline-synthesis-table">
+    <div class="baseline-synthesis-label">Behavioural outcomes</div>
+    <table class="baseline-synthesis-metrics">
+      <thead>
+        <tr>
+          <th>Outcome</th>
+          <th>LLM rank (Gini)</th>
+          <th>LLM level (Skill)</th>
+          <th>Reference rank (Gini)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>CoVax willingness</td>
+          <td>0.45</td>
+          <td>0.27</td>
+          <td>0.67</td>
+        </tr>
+        <tr>
+          <td>Flu vaccinated (no habit)</td>
+          <td>0.31</td>
+          <td>0.36</td>
+          <td>0.64</td>
+        </tr>
+        <tr>
+          <td>Masking (high pressure)</td>
+          <td>0.27</td>
+          <td>0.07</td>
+          <td>0.44</td>
+        </tr>
+        <tr>
+          <td>Masking (symptomatic, crowded)</td>
+          <td>0.21</td>
+          <td>0.05</td>
+          <td>0.38</td>
+        </tr>
+        <tr>
+          <td>Stay home (symptomatic)</td>
+          <td>0.15</td>
+          <td>-0.02</td>
+          <td>0.32</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="baseline-synthesis-footnote">Higher is better. Gini = rank recovery; Skill = level accuracy vs simple baseline.</div>
+  </div>
+
+  <div class="baseline-synthesis-side">
+    <div class="baseline-synthesis-label">Psychological profiles</div>
+    <img
+      class="baseline-side-figure"
+      src="assets/fig-belief-unperturbed-cosine-cropped.png"
+      alt="Unperturbed state cosine similarity for psychological profile variables."
+    />
+    <div class="baseline-synthesis-footnote">Cosine similarity: higher = better profile-shape recovery.</div>
+  </div>
+</div>
+```
+
+
+<!-- ============================================= -->
+<!-- SLIDE 13: LLM RESULTS - COUNTERFACTUAL BREAKDOWN -->
+<!-- ============================================= -->
+
+## LLM micro-validation: Counterfactual coherence breaks down {.perturbed-results-slide}
+
+```{=html}
+<div class="perturbed-results-top">
+  <div class="perturbed-results-subtitle">
+    Under controlled shifts, paired contrast improves perturbation ordering, but effect-size calibration and placebo containment remain weak.
+  </div>
+</div>
+
+<div class="perturbed-results-grid">
+  <div class="perturbed-results-panel perturbed-results-panel-main">
+    <div class="perturbed-results-label">Performance vs containment</div>
+    <div class="perturbed-results-callout">Better ordering, worse containment</div>
+    <img
+      class="perturbed-results-figure"
+      src="assets/fig-perturbed-pareto-by-model-cropped.png"
+      alt="Median perturbation-effect ordering, effect-size accuracy, and placebo containment by model and prompt family."
+    />
+  </div>
+
+  <div class="perturbed-results-panel perturbed-results-panel-support">
+    <div class="perturbed-results-label">Magnitude calibration</div>
+    <div class="perturbed-results-callout">PE skill mostly &lt; 0</div>
+    <img
+      class="perturbed-results-support-figure"
+      src="assets/fig-perturbed-skill-block-cropped.png"
+      alt="Median perturbation-effect magnitude skill by block and outcome on active cells."
+    />
+  </div>
 </div>
 ```
 
