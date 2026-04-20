@@ -195,7 +195,6 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
       <div class="compact-block-item">Controls</div>
       <div class="compact-block-item">Norms</div>
     </div>
-    <div class="compact-backbone-goal"><span class="compact-backbone-goal-label">Goal:</span> a compact representation for <strong>LLM evaluation</strong> and <strong>ABM simulation</strong>.</div>
   </div>
 </div>
 ```
@@ -382,51 +381,6 @@ C = 9-month campaign · S = 6-month outbreak wave · P = 1-tick pulse
 
 
 <!-- ============================================= -->
-<!-- SLIDE 13: ABM DYNAMICS -->
-<!-- ============================================= -->
-
-## ABM results: Similar cumulative effects can hide different dynamics {.abm-dynamics-slide}
-
-```{=html}
-<div class="abm-dynamics-grid">
-```
-
-::: {.abm-slide-subtitle}
-Each row is a different lever; each column shows how its effects propagate over time.
-:::
-
-```{=html}
-<div class="abm-dynamics-main">
-  <div class="abm-dynamics-figure-wrap">
-    <img
-      class="abm-dynamics-figure"
-      src="assets/fig-05-dynamic-fingerprints.png"
-      alt="Dynamic response signatures for norm shift, outbreak wave, and trust erosion across mediator, vaccination willingness, and NPI index."
-    />
-  </div>
-  <div class="abm-dynamics-side">
-    <div class="abm-dynamics-side-item">
-      <div class="abm-dynamics-side-title">Norm campaign</div>
-      <div class="abm-dynamics-side-text">Longest behavioural tail, sustained by social reinforcement.</div>
-    </div>
-    <div class="abm-dynamics-side-item">
-      <div class="abm-dynamics-side-title">Outbreak wave</div>
-      <div class="abm-dynamics-side-text">Wave-like rise, then faster relaxation as perceived risk fades.</div>
-    </div>
-    <div class="abm-dynamics-side-item">
-      <div class="abm-dynamics-side-title">Trust erosion</div>
-      <div class="abm-dynamics-side-text">The most persistent tail appears mainly in vaccination willingness.</div>
-    </div>
-  </div>
-</div>
-```
-
-```{=html}
-</div>
-```
-
-
-<!-- ============================================= -->
 <!-- SLIDE 11: LLM EVALUATION - DESIGN -->
 <!-- ============================================= -->
 
@@ -450,7 +404,6 @@ Each row is a different lever; each column shows how its effects propagate over 
       <div class="evaluation-design-card-title">What is tested</div>
       <div class="evaluation-design-subsection">Targets</div>
       <div class="evaluation-design-item">behavioural outcomes</div>
-      <div class="evaluation-design-item">psychological profile variables (e.g. trust, legitimacy, perceived stakes)</div>
       <div class="evaluation-design-subsection">Settings</div>
       <div class="evaluation-design-item">at baseline</div>
       <div class="evaluation-design-item">under controlled shifts</div>
@@ -460,10 +413,8 @@ Each row is a different lever; each column shows how its effects propagate over 
       <div class="evaluation-design-card-title">How performance is judged</div>
       <div class="evaluation-design-subsection">At baseline</div>
       <div class="evaluation-design-item">outcomes: level and rank recovery</div>
-      <div class="evaluation-design-item">profiles: profile shape and variable-wise recovery</div>
       <div class="evaluation-design-subsection">Under controlled shifts</div>
       <div class="evaluation-design-item">outcomes: who moves, how much, and placebo containment</div>
-      <div class="evaluation-design-item">profiles: which dimensions move, and spillover containment</div>
     </div>
   </div>
 </div>
@@ -478,69 +429,63 @@ Each row is a different lever; each column shows how its effects propagate over 
 
 ```{=html}
 <div class="baseline-synthesis-subheadline">
-  <ul class="baseline-synthesis-bullets">
-    <li>Ranking is recovered more reliably than levels, but remains below the empirical reference.</li>
-    <li>Profile shape is partly recovered, but profile variation remains compressed <span class="baseline-synthesis-inline-note">(median compression ratio: 0.41 vs 0.46 for behavioural outcomes).</span></li>
-  </ul>
+  Behavioural outcomes. Ranking is recovered more reliably than levels, but both remain below the empirical benchmark.
 </div>
 
-<div class="baseline-synthesis-grid">
-  <div class="baseline-synthesis-table">
-    <div class="baseline-synthesis-label">Behavioural outcomes</div>
-    <table class="baseline-synthesis-metrics">
-      <thead>
-        <tr>
-          <th>Outcome</th>
-          <th>LLM rank (Gini)</th>
-          <th>LLM level (Skill)</th>
-          <th>Reference rank (Gini)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>CoVax willingness</td>
-          <td>0.45</td>
-          <td>0.27</td>
-          <td>0.67</td>
-        </tr>
-        <tr>
-          <td>Flu vaccinated (no habit)</td>
-          <td>0.31</td>
-          <td>0.36</td>
-          <td>0.64</td>
-        </tr>
-        <tr>
-          <td>Masking (high pressure)</td>
-          <td>0.27</td>
-          <td>0.07</td>
-          <td>0.44</td>
-        </tr>
-        <tr>
-          <td>Masking (symptomatic, crowded)</td>
-          <td>0.21</td>
-          <td>0.05</td>
-          <td>0.38</td>
-        </tr>
-        <tr>
-          <td>Stay home (symptomatic)</td>
-          <td>0.15</td>
-          <td>-0.02</td>
-          <td>0.32</td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="baseline-synthesis-footnote">Higher is better. Gini = rank recovery; Skill = level accuracy vs simple baseline.</div>
-  </div>
-
-  <div class="baseline-synthesis-side">
-    <div class="baseline-synthesis-label">Psychological profiles</div>
-    <img
-      class="baseline-side-figure"
-      src="assets/fig-belief-unperturbed-cosine-cropped.png"
-      alt="Unperturbed state cosine similarity for psychological profile variables."
-    />
-    <div class="baseline-synthesis-footnote">Cosine similarity: higher = better profile-shape recovery.</div>
-  </div>
+<div class="baseline-synthesis-table">
+  <table class="baseline-synthesis-metrics">
+    <thead>
+      <tr>
+        <th rowspan="2">Outcome</th>
+        <th colspan="2">Rank Accuracy</th>
+        <th colspan="2">Level Accuracy</th>
+      </tr>
+      <tr>
+        <th>LLM</th>
+        <th>Reference</th>
+        <th>LLM</th>
+        <th>Reference</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>CoVax willingness</td>
+        <td>0.45</td>
+        <td>0.67</td>
+        <td>0.27</td>
+        <td>1.00</td>
+      </tr>
+      <tr>
+        <td>Flu vaccinated (no habit)</td>
+        <td>0.31</td>
+        <td>0.64</td>
+        <td>0.36</td>
+        <td>1.00</td>
+      </tr>
+      <tr>
+        <td>Masking (high pressure)</td>
+        <td>0.27</td>
+        <td>0.44</td>
+        <td>0.07</td>
+        <td>1.00</td>
+      </tr>
+      <tr>
+        <td>Masking (symptomatic, crowded)</td>
+        <td>0.21</td>
+        <td>0.38</td>
+        <td>0.05</td>
+        <td>1.00</td>
+      </tr>
+      <tr>
+        <td>Stay home (symptomatic)</td>
+        <td>0.15</td>
+        <td>0.32</td>
+        <td>-0.02</td>
+        <td>1.00</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="baseline-synthesis-footnote">Higher is better. Gini = rank recovery; Skill = level accuracy relative to a simple baseline, so the survey-grounded reference is normalized to 1.00.</div>
 </div>
 ```
 
@@ -553,37 +498,25 @@ Each row is a different lever; each column shows how its effects propagate over 
 
 ```{=html}
 <div class="perturbed-results-top">
+  <div class="perturbed-results-label">Performance vs containment</div>
+  <div class="perturbed-results-callout">Better ordering, worse containment</div>
   <div class="perturbed-results-subtitle">
-    Under controlled shifts, paired contrast improves perturbation ordering, but effect-size calibration and placebo containment remain weak.
+    Under controlled shifts, paired contrast improves perturbation ordering, but placebo containment remains weak.
   </div>
 </div>
 
-<div class="perturbed-results-grid">
-  <div class="perturbed-results-panel perturbed-results-panel-main">
-    <div class="perturbed-results-label">Performance vs containment</div>
-    <div class="perturbed-results-callout">Better ordering, worse containment</div>
-    <img
-      class="perturbed-results-figure"
-      src="assets/fig-perturbed-pareto-by-model-cropped.png"
-      alt="Median perturbation-effect ordering, effect-size accuracy, and placebo containment by model and prompt family."
-    />
-  </div>
-
-  <div class="perturbed-results-panel perturbed-results-panel-support">
-    <div class="perturbed-results-label">Magnitude calibration</div>
-    <div class="perturbed-results-callout">PE skill mostly &lt; 0</div>
-    <img
-      class="perturbed-results-support-figure"
-      src="assets/fig-perturbed-skill-block-cropped.png"
-      alt="Median perturbation-effect magnitude skill by block and outcome on active cells."
-    />
-  </div>
+<div class="perturbed-results-single">
+  <img
+    class="perturbed-results-figure"
+    src="assets/fig-perturbed-pareto-by-model-cropped.png"
+    alt="Median perturbation-effect ordering and placebo containment by model and prompt family."
+  />
 </div>
 ```
 
 
 <!-- ============================================= -->
-<!-- SLIDE 15: TAKEAWAYS -->
+<!-- SLIDE 14: TAKEAWAYS -->
 <!-- ============================================= -->
 
 ## Takeaways {.takeaways-slide}
@@ -670,6 +603,50 @@ BACKUP
 <!-- ============================================= -->
 <!-- BACKUP: LLM EVALUATION DETAILS -->
 <!-- ============================================= -->
+
+## ABM results: Similar cumulative effects can hide different dynamics {.abm-dynamics-slide}
+
+::: {.backup-marker}
+BACKUP
+:::
+
+```{=html}
+<div class="abm-dynamics-grid">
+```
+
+::: {.abm-slide-subtitle}
+Each row is a different lever; each column shows how its effects propagate over time.
+:::
+
+```{=html}
+<div class="abm-dynamics-main">
+  <div class="abm-dynamics-figure-wrap">
+    <img
+      class="abm-dynamics-figure"
+      src="assets/fig-05-dynamic-fingerprints.png"
+      alt="Dynamic response signatures for norm shift, outbreak wave, and trust erosion across mediator, vaccination willingness, and NPI index."
+    />
+  </div>
+  <div class="abm-dynamics-side">
+    <div class="abm-dynamics-side-item">
+      <div class="abm-dynamics-side-title">Norm campaign</div>
+      <div class="abm-dynamics-side-text">Longest behavioural tail, sustained by social reinforcement.</div>
+    </div>
+    <div class="abm-dynamics-side-item">
+      <div class="abm-dynamics-side-title">Outbreak wave</div>
+      <div class="abm-dynamics-side-text">Wave-like rise, then faster relaxation as perceived risk fades.</div>
+    </div>
+    <div class="abm-dynamics-side-item">
+      <div class="abm-dynamics-side-title">Trust erosion</div>
+      <div class="abm-dynamics-side-text">The most persistent tail appears mainly in vaccination willingness.</div>
+    </div>
+  </div>
+</div>
+```
+
+```{=html}
+</div>
+```
 
 ## LLM evaluation: Prompt strategies {.smaller visibility="hidden"}
 

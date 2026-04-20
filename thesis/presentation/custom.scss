@@ -1123,39 +1123,19 @@ $selection-bg: $accent-blue;
 }
 
 .reveal .slides section.baseline-synthesis-slide > h2 {
-  margin-bottom: 0;
+  margin-bottom: 0.2rem;
   position: relative;
   z-index: 1;
 }
 
 .reveal .baseline-synthesis-subheadline {
-  position: absolute;
-  top: 150px;
-  right: 60px;
-  left: 60px;
+  position: relative;
   width: min(1440px, calc(100% - 120px));
-  margin: 0 auto;
+  margin: 0.35rem auto 0;
   color: $primary-blue;
-  font-size: 0.72em;
+  font-size: 0.5em;
   line-height: 1.32;
-  max-width: 1220px;
-}
-
-.reveal .baseline-synthesis-bullets {
-  margin: 0 0 0 1.2rem;
-  font-size: 0.86em;
-  line-height: 1.32;
-}
-
-.reveal .baseline-synthesis-bullets li {
-  margin-bottom: 0.18rem;
-}
-
-.reveal .baseline-synthesis-inline-note {
-  font-size: 1em;
-  color: rgba($dark-gray, 0.72);
-  font-weight: 400;
-  line-height: 1.2;
+  max-width: 1320px;
 }
 
 .reveal .baseline-synthesis-footnote {
@@ -1163,27 +1143,16 @@ $selection-bg: $accent-blue;
   color: rgba($dark-gray, 0.58);
   font-weight: 400;
   line-height: 1.2;
-  margin-top: -0.1rem;
-  max-width: 92%;
-}
-
-.reveal .baseline-synthesis-grid {
-  position: absolute;
-  top: 300px;
-  right: 60px;
-  bottom: 115px;
-  left: 60px;
-  width: min(1440px, calc(100% - 120px));
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-  gap: 1.6rem;
-  align-items: stretch;
+  margin-top: 0.55rem;
+  max-width: 100%;
 }
 
 .reveal .baseline-synthesis-table {
+  position: relative;
+  width: min(1440px, calc(100% - 120px));
+  margin: 1.45rem auto 0;
   display: grid;
-  gap: 0.6rem;
+  gap: 0.45rem;
   align-content: start;
 }
 
@@ -1198,7 +1167,7 @@ $selection-bg: $accent-blue;
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-  font-size: 0.58em;
+  font-size: 0.5em;
 }
 
 .reveal .baseline-synthesis-metrics thead th {
@@ -1206,15 +1175,16 @@ $selection-bg: $accent-blue;
   color: $primary-blue;
   font-weight: 700;
   border-bottom: 1px solid rgba($highlight-blue, 0.85);
-  padding: 0.7em 0.8em;
+  padding: 0.62em 0.72em;
   text-align: left;
+  line-height: 1.2;
 }
 
 .reveal .baseline-synthesis-metrics tbody td {
-  padding: 0.7em 0.8em;
+  padding: 0.6em 0.72em;
   border-bottom: 1px solid rgba($secondary-blue, 0.12);
   color: $dark-gray;
-  line-height: 1.3;
+  line-height: 1.24;
 }
 
 .reveal .baseline-synthesis-metrics tbody td:first-child {
@@ -1226,62 +1196,28 @@ $selection-bg: $accent-blue;
   font-style: italic;
 }
 
-.reveal .baseline-synthesis-side {
-  display: grid;
-  gap: 0.75rem;
-  align-content: start;
-  min-height: 100%;
-  padding-top: 1.5rem;
-}
-
-.reveal .baseline-side-figure {
-  width: 100%;
-  max-width: 100%;
-  max-height: 430px;
-  object-fit: contain;
-  display: block;
-  align-self: center;
-}
-
 .reveal .slides section.perturbed-results-slide {
   position: absolute;
   min-height: 100%;
 }
 
 .reveal .slides section.perturbed-results-slide > h2 {
-  margin-bottom: 0;
+  margin-bottom: 0.2rem;
   position: relative;
   z-index: 1;
 }
 
 .reveal .perturbed-results-top {
-  position: absolute;
-  top: 165px;
-  right: 60px;
-  left: 60px;
+  position: relative;
   width: min(1440px, calc(100% - 120px));
-  margin: 0 auto;
+  margin: 0.35rem auto 0;
 }
 
 .reveal .perturbed-results-subtitle {
   color: $primary-blue;
-  font-size: 0.56em;
+  font-size: 0.48em;
   line-height: 1.3;
-  max-width: 980px;
-}
-
-.reveal .perturbed-results-grid {
-  position: absolute;
-  top: 290px;
-  right: 60px;
-  bottom: 130px;
-  left: 60px;
-  width: min(1440px, calc(100% - 120px));
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(360px, 0.85fr);
-  gap: 1.1rem;
-  align-items: start;
+  max-width: 1180px;
 }
 
 .reveal .perturbed-results-panel {
@@ -1292,9 +1228,10 @@ $selection-bg: $accent-blue;
 
 .reveal .perturbed-results-label {
   color: $secondary-blue;
-  font-size: 0.46em;
+  font-size: 0.42em;
   font-weight: 700;
   line-height: 1.2;
+  margin-bottom: 0.18rem;
 }
 
 .reveal .perturbed-results-callout {
@@ -1306,15 +1243,23 @@ $selection-bg: $accent-blue;
   border-left: 3px solid rgba(66, 133, 244, 0.45);
   padding: 0.2rem 0.42rem 0.18rem 0.5rem;
   border-radius: 0.08rem;
-  font-size: 0.38em;
+  font-size: 0.34em;
   font-weight: 600;
   line-height: 1.25;
+  margin-bottom: 0.32rem;
 }
 
+.reveal .perturbed-results-single {
+  position: relative;
+  width: min(1440px, calc(100% - 120px));
+  margin: 0.45rem auto 0;
+}
+
+.reveal .perturbed-results-figure,
 .reveal .perturbed-results-panel-main .perturbed-results-figure {
   width: 100%;
   max-width: 100%;
-  max-height: 470px;
+  max-height: 590px;
   object-fit: contain;
   display: block;
 }
