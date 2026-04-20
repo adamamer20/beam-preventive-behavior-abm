@@ -164,26 +164,26 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
       <div class="compact-pipeline-step">
         <div class="compact-pipeline-box">Raw survey items</div>
       </div>
-      <div class="compact-pipeline-arrow">↓</div>
-      <div class="compact-pipeline-step">
+      <div class="compact-pipeline-step fragment fade-up" data-fragment-index="1">
+        <div class="compact-pipeline-arrow compact-pipeline-arrow-above">↓</div>
         <div class="compact-pipeline-box">Survey-derived variables</div>
       </div>
-      <div class="compact-pipeline-arrow">↓</div>
-      <div class="compact-pipeline-step">
+      <div class="compact-pipeline-step fragment fade-up" data-fragment-index="2">
+        <div class="compact-pipeline-arrow compact-pipeline-arrow-above">↓</div>
         <div class="compact-pipeline-box">Theory-guided blocks</div>
       </div>
-      <div class="compact-pipeline-arrow">↓</div>
-      <div class="compact-pipeline-step">
+      <div class="compact-pipeline-step fragment fade-up" data-fragment-index="3">
+        <div class="compact-pipeline-arrow compact-pipeline-arrow-above">↓</div>
         <div class="compact-pipeline-box">Reference equations</div>
       </div>
-      <div class="compact-pipeline-arrow">↓</div>
-      <div class="compact-pipeline-step">
+      <div class="compact-pipeline-step fragment fade-up" data-fragment-index="4">
+        <div class="compact-pipeline-arrow compact-pipeline-arrow-above">↓</div>
         <div class="compact-pipeline-box compact-pipeline-box-accent">Retained empirical backbone</div>
       </div>
     </div>
   </div>
 
-  <div class="compact-backbone-panel">
+  <div class="compact-backbone-panel fragment fade-in" data-fragment-index="2">
     <div class="compact-backbone-title">Theory-guided blocks</div>
     <div class="compact-blocks-grid">
       <div class="compact-block-item">Stakes</div>

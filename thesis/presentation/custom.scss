@@ -769,7 +769,10 @@ $selection-bg: $accent-blue;
 .reveal .compact-pipeline-step {
   width: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
+  gap: 0.14rem;
 }
 
 .reveal .compact-pipeline-box {
@@ -793,6 +796,10 @@ $selection-bg: $accent-blue;
   color: $secondary-blue;
   font-size: 0.82em;
   line-height: 1;
+}
+
+.reveal .compact-pipeline-arrow-above {
+  margin-bottom: 0.06rem;
 }
 
 .reveal .compact-blocks-grid {
