@@ -186,14 +186,38 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
   <div class="compact-backbone-panel fragment fade-in" data-fragment-index="2">
     <div class="compact-backbone-title">Theory-guided blocks</div>
     <div class="compact-blocks-grid">
-      <div class="compact-block-item">Stakes</div>
-      <div class="compact-block-item">Trust</div>
-      <div class="compact-block-item">Legitimacy</div>
-      <div class="compact-block-item">Disposition</div>
-      <div class="compact-block-item">Habit</div>
-      <div class="compact-block-item">Moral orientation</div>
-      <div class="compact-block-item">Controls</div>
-      <div class="compact-block-item">Norms</div>
+      <div class="compact-block-item">
+        <div class="compact-block-name">Institutional trust</div>
+        <div class="compact-block-desc">Trust in vaccine information from institutions and experts</div>
+      </div>
+      <div class="compact-block-item">
+        <div class="compact-block-name">CoVax legitimacy</div>
+        <div class="compact-block-desc">Legitimacy of vaccination governance</div>
+      </div>
+      <div class="compact-block-item">
+        <div class="compact-block-name">Disposition (5C)</div>
+        <div class="compact-block-desc">Baseline pro-vaccine disposition</div>
+      </div>
+      <div class="compact-block-item">
+        <div class="compact-block-name">Stakes</div>
+        <div class="compact-block-desc">Perceived disease stakes</div>
+      </div>
+      <div class="compact-block-item">
+        <div class="compact-block-name">Norms</div>
+        <div class="compact-block-desc">Perceived vaccination norms</div>
+      </div>
+      <div class="compact-block-item">
+        <div class="compact-block-name">Moral orientation</div>
+        <div class="compact-block-desc">Moral-ideological orientation</div>
+      </div>
+      <div class="compact-block-item">
+        <div class="compact-block-name">Habit</div>
+        <div class="compact-block-desc">Behavioural inertia</div>
+      </div>
+      <div class="compact-block-item">
+        <div class="compact-block-name">Controls</div>
+        <div class="compact-block-desc">Demographic and socioeconomic background</div>
+      </div>
     </div>
   </div>
 </div>
