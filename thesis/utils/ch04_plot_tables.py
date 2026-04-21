@@ -3641,6 +3641,8 @@ def render_perturbed_pareto_by_model(
     model_filter: Sequence[str] | None = None,
     use_dar_size: bool = True,
     show_model_legend: bool = True,
+    highlight_strategies: Sequence[str] | None = None,
+    highlight_color: str = "#DC2626",
     output_path: str | Path | None = None,
 ) -> str | None:
     if pert_summary.is_empty():
@@ -3760,8 +3762,9 @@ def render_perturbed_pareto_by_model(
     legend_title_size = 12
     suptitle_size = 12
 
-    fig, (ax_perf, ax_contain) = plt.subplots(2, 1, figsize=(8.0, 7.0), sharex=True)
+    fig, (ax_perf, ax_contain) = plt.subplots(2, 1, figsize=(10.2, 7.0), sharex=True)
     has_containment_points = False
+    highlight_set = {str(strategy).strip() for strategy in (highlight_strategies or []) if str(strategy).strip()}
     for row in df.iter_rows(named=True):
         strategy = str(row["strategy"])
         model = str(row["model"])
@@ -3784,6 +3787,17 @@ def render_perturbed_pareto_by_model(
                 linewidth=0.5,
                 alpha=0.92,
             )
+            if strategy in highlight_set:
+                ax_perf.scatter(
+                    gini,
+                    skill,
+                    marker="s",
+                    s=size * 1.9,
+                    facecolors="none",
+                    edgecolors=highlight_color,
+                    linewidths=1.8,
+                    zorder=5,
+                )
         if np.isfinite(containment_rate):
             has_containment_points = True
             ax_contain.scatter(
@@ -3796,6 +3810,17 @@ def render_perturbed_pareto_by_model(
                 linewidth=0.5,
                 alpha=0.92,
             )
+            if strategy in highlight_set:
+                ax_contain.scatter(
+                    gini,
+                    containment_rate,
+                    marker="s",
+                    s=size * 1.9,
+                    facecolors="none",
+                    edgecolors=highlight_color,
+                    linewidths=1.8,
+                    zorder=5,
+                )
 
     for ax in (ax_perf, ax_contain):
         ax.axvline(0, color="black", linewidth=1, alpha=0.6)
@@ -3889,7 +3914,7 @@ def render_perturbed_pareto_by_model(
         handles=handles_prompt,
         title="Prompt family (color)",
         loc="center left",
-        bbox_to_anchor=(0.82, 0.83),
+        bbox_to_anchor=(0.76, 0.83),
         fontsize=legend_size,
         frameon=False,
         title_fontsize=legend_title_size,
@@ -3915,7 +3940,7 @@ def render_perturbed_pareto_by_model(
             handles=handles_model,
             title="Model (shape)",
             loc="center left",
-            bbox_to_anchor=(0.82, 0.55),
+            bbox_to_anchor=(0.76, 0.55),
             fontsize=legend_size,
             frameon=False,
             title_fontsize=legend_title_size,
@@ -3944,16 +3969,16 @@ def render_perturbed_pareto_by_model(
             handles=handles_size,
             title="DAR (size)",
             loc="center left",
-            bbox_to_anchor=(0.82, 0.28),
+            bbox_to_anchor=(0.76, 0.28),
             fontsize=legend_size,
             frameon=False,
             title_fontsize=legend_title_size,
         )
 
     fig.suptitle("Perturbed choice validation: performance and containment", fontsize=suptitle_size)
-    fig.tight_layout(rect=[0.03, 0.05, 0.80, 0.94])
+    fig.tight_layout(rect=[0.03, 0.05, 0.72, 0.94])
     if output_path is not None:
-        fig.savefig(Path(output_path), dpi=220, bbox_inches="tight", facecolor="white")
+        fig.savefig(Path(output_path), dpi=220, facecolor="white")
     plt.show()
     plt.close(fig)
     return None

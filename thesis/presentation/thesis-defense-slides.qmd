@@ -579,14 +579,12 @@ Each row is a different lever; each column shows how its effects propagate over 
 <!-- SLIDE 13: LLM RESULTS - COUNTERFACTUAL BREAKDOWN -->
 <!-- ============================================= -->
 
-## LLM micro-validation: Counterfactual coherence breaks down {.perturbed-results-slide}
+## LLM micro-validation: The model does not respond coherently to block shifts {.perturbed-results-slide}
 
 ```{=html}
 <div class="perturbed-results-top">
-  <div class="perturbed-results-label">Performance vs containment</div>
-  <div class="perturbed-results-callout">Better ordering, worse containment</div>
   <div class="perturbed-results-subtitle">
-    Under controlled shifts, paired contrast improves perturbation ordering, but placebo containment remains weak.
+    Under the same block shifts used in the empirical benchmark, the model often overreacts or underreacts, making it unreliable for use in an ABM.
   </div>
 </div>
 
@@ -595,6 +593,12 @@ Each row is a different lever; each column shows how its effects propagate over 
     class="perturbed-results-figure"
     src="assets/fig-perturbed-pareto-discussion-gptoss120b-medium.png"
     alt="Median perturbation-effect ordering and placebo containment by prompting strategy for GPT-OSS 120B medium."
+  />
+  <img
+    class="perturbed-results-figure perturbed-results-figure-overlay fragment"
+    data-fragment-index="1"
+    src="assets/fig-perturbed-pareto-discussion-gptoss120b-medium-boxed.png"
+    alt="Median perturbation-effect ordering and placebo containment by prompting strategy for GPT-OSS 120B medium, with paired contrast highlighted."
   />
 </div>
 ```
