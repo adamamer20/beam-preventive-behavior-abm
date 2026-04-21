@@ -352,39 +352,38 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 
 ```{=html}
 <div class="abm-process-subtitle">
-  Agents do not jump instantly to a new state: they move gradually toward a changing target.
+  At each step, agents move gradually toward targets shaped by policy, social exposure, and epidemic conditions.
 </div>
 
 <div class="abm-process-wrap">
   <div class="abm-process-grid">
     <div class="abm-process-box">
       <div class="abm-process-step">1</div>
-      <div class="abm-process-title">Survey-grounded starting point</div>
+      <div class="abm-process-title">Initialisation from the survey</div>
       <div class="abm-process-body">
-        Each agent starts from a survey-based profile.
-        Survey equations map profile into behaviour.
+        Each agent starts from a realistic profile drawn from the survey.
       </div>
     </div>
 
-    <div class="abm-process-arrow" aria-hidden="true">→</div>
+    <div class="abm-process-arrow fragment fade-up" data-fragment-index="1" aria-hidden="true">→</div>
 
-    <div class="abm-process-box abm-process-target">
+    <div class="abm-process-box abm-process-target fragment fade-up" data-fragment-index="1">
       <div class="abm-process-step">2</div>
-      <div class="abm-process-title">A changing target is computed</div>
+      <div class="abm-process-title">A target is computed</div>
       <div class="abm-process-body">
-        <strong>Target for mutable constructs =</strong>
-        model-implied baseline for that agent
+        Each mutable state is pulled toward a target based on:
       </div>
-      <div class="abm-target-stack">
-        <div>policy signals</div>
-        <div>social exposure</div>
-        <div>local epidemic conditions</div>
-      </div>
+      <ul class="abm-target-list">
+        <li>the agent's survey-based level</li>
+        <li>policy signals</li>
+        <li>social exposure</li>
+        <li>local epidemic conditions</li>
+      </ul>
     </div>
 
-    <div class="abm-process-arrow" aria-hidden="true">→</div>
+    <div class="abm-process-arrow fragment fade-up" data-fragment-index="2" aria-hidden="true">→</div>
 
-    <div class="abm-process-box">
+    <div class="abm-process-box fragment fade-up" data-fragment-index="2">
       <div class="abm-process-step">3</div>
       <div class="abm-process-title">Gradual update</div>
       <div class="abm-process-body">
@@ -396,24 +395,23 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
       </div>
     </div>
 
-    <div class="abm-process-arrow" aria-hidden="true">→</div>
+    <div class="abm-process-arrow fragment fade-up" data-fragment-index="3" aria-hidden="true">→</div>
 
-    <div class="abm-process-box">
+    <div class="abm-process-box fragment fade-up" data-fragment-index="3">
       <div class="abm-process-step">4</div>
-      <div class="abm-process-title">Behaviour and feedback</div>
+      <div class="abm-process-title">Behaviour and local incidence</div>
       <div class="abm-process-body">
-        Behaviour is recomputed.
-        More protection lowers local incidence.
-        Local incidence shifts later risk signals.
+        <div>Behaviour is recomputed from the statistical models.</div>
+        <div>Local incidence is updated from average protection.</div>
       </div>
     </div>
   </div>
 
-  <div class="abm-feedback-loop" aria-hidden="true">
-    <svg class="abm-feedback-svg" viewBox="0 0 1000 84" preserveAspectRatio="none">
-      <path d="M 880 10 C 740 76 390 76 260 10"></path>
+  <div class="abm-feedback-loop fragment fade-up" data-fragment-index="4" aria-hidden="true">
+    <svg class="abm-feedback-svg" viewBox="0 0 1000 92" preserveAspectRatio="none">
+      <path class="abm-feedback-curve" d="M 856 8 L 856 56 L 322 56 L 322 14"></path>
+      <path class="abm-feedback-head-fill" d="M 322 12 L 314 20 L 330 20 Z"></path>
     </svg>
-    <div class="abm-feedback-head"></div>
   </div>
 </div>
 

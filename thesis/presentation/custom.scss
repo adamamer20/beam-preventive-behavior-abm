@@ -1587,7 +1587,6 @@ $selection-bg: $accent-blue;
 }
 
 .reveal .abm-process-body,
-.reveal .abm-target-stack,
 .reveal .abm-speed-grid {
   font-size: 0.54em;
   line-height: 1.28;
@@ -1597,10 +1596,14 @@ $selection-bg: $accent-blue;
   margin-top: 0.1rem;
 }
 
-.reveal .abm-target-stack {
-  display: grid;
-  gap: 0.24rem;
-  margin-top: 0.18rem;
+.reveal .abm-target-list {
+  margin: 0.02rem 0 0 1rem;
+  font-size: 0.54em;
+  line-height: 1.24;
+}
+
+.reveal .abm-target-list li {
+  margin-bottom: 0.08rem;
 }
 
 .reveal .abm-speed-grid {
@@ -1634,23 +1637,16 @@ $selection-bg: $accent-blue;
   overflow: visible;
 }
 
-.reveal .abm-feedback-svg path {
+.reveal .abm-feedback-svg .abm-feedback-curve {
   fill: none;
   stroke: rgba($secondary-blue, 0.78);
   stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-.reveal .abm-feedback-head {
-  position: absolute;
-  left: 25.5%;
-  top: 0.04rem;
-  width: 0;
-  height: 0;
-  border-top: 0.42rem solid transparent;
-  border-bottom: 0.42rem solid transparent;
-  border-right: 0.58rem solid rgba($secondary-blue, 0.78);
-  transform: rotate(23deg);
-  transform-origin: center;
+.reveal .abm-feedback-svg .abm-feedback-head-fill {
+  fill: rgba($secondary-blue, 0.78);
 }
 
 .reveal .abm-process-footnote {
@@ -1710,10 +1706,14 @@ $selection-bg: $accent-blue;
 }
 
 .print-pdf .reveal .abm-process-body,
-.print-pdf .reveal .abm-target-stack,
 .print-pdf .reveal .abm-speed-grid {
   font-size: 0.49em;
   line-height: 1.22;
+}
+
+.print-pdf .reveal .abm-target-list {
+  font-size: 0.49em;
+  line-height: 1.18;
 }
 
 .print-pdf .reveal .abm-process-arrow {
@@ -1726,8 +1726,8 @@ $selection-bg: $accent-blue;
 }
 
 .print-pdf .reveal .abm-process-footnote {
-  top: 710px;
-  font-size: 0.34em;
+  top: 724px;
+  font-size: 0.3em;
 }
 
 .reveal .abm-slide-subtitle {
