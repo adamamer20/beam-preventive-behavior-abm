@@ -698,7 +698,7 @@ Thank you
 <!-- BACKUP: BLOCK DICTIONARY -->
 <!-- ============================================= -->
 
-## Construct dictionary {.smaller}
+## Construct dictionary {.smaller visibility="hidden"}
 
 ::: {.backup-marker}
 BACKUP
