@@ -438,11 +438,32 @@ Each row is a different lever; each column shows how its effects propagate over 
 ```{=html}
 <div class="abm-dynamics-main">
   <div class="abm-dynamics-figure-wrap">
-    <img
-      class="abm-dynamics-figure"
-      src="assets/fig-05-dynamic-fingerprints.png"
-      alt="Dynamic response signatures for norm shift, outbreak wave, and trust erosion across mediator, vaccination willingness, and NPI index."
-    />
+    <div class="abm-dynamics-figure-stack">
+      <img
+        class="abm-dynamics-figure fragment fade-out"
+        data-fragment-index="1"
+        src="assets/fig-05-dynamic-fingerprints-step0.png"
+        alt="Dynamic response signatures for norm shift, outbreak wave, and trust erosion across mediator, vaccination willingness, and NPI index."
+      />
+      <img
+        class="abm-dynamics-figure abm-dynamics-figure-overlay fragment current-visible"
+        data-fragment-index="1"
+        src="assets/fig-05-dynamic-fingerprints-step1.png"
+        alt="Dynamic response signatures with norm campaign highlighted."
+      />
+      <img
+        class="abm-dynamics-figure abm-dynamics-figure-overlay fragment current-visible"
+        data-fragment-index="2"
+        src="assets/fig-05-dynamic-fingerprints-step2.png"
+        alt="Dynamic response signatures with outbreak wave highlighted."
+      />
+      <img
+        class="abm-dynamics-figure abm-dynamics-figure-overlay fragment fade-in"
+        data-fragment-index="3"
+        src="assets/fig-05-dynamic-fingerprints-step3.png"
+        alt="Dynamic response signatures with trust erosion highlighted."
+      />
+    </div>
   </div>
   <div class="abm-dynamics-side">
     <div class="abm-dynamics-side-item">
@@ -457,6 +478,9 @@ Each row is a different lever; each column shows how its effects propagate over 
       <div class="abm-dynamics-side-title">Trust erosion</div>
       <div class="abm-dynamics-side-text">The most persistent tail appears mainly in vaccination willingness.</div>
     </div>
+    <div class="abm-dynamics-side-focus abm-dynamics-side-focus-norm fragment current-visible" data-fragment-index="1" aria-hidden="true"></div>
+    <div class="abm-dynamics-side-focus abm-dynamics-side-focus-outbreak fragment current-visible" data-fragment-index="2" aria-hidden="true"></div>
+    <div class="abm-dynamics-side-focus abm-dynamics-side-focus-trust fragment fade-in" data-fragment-index="3" aria-hidden="true"></div>
   </div>
 </div>
 ```

@@ -2067,13 +2067,25 @@ $selection-bg: $accent-blue;
   padding-top: 0;
 }
 
+.reveal .abm-dynamics-figure-stack {
+  position: relative;
+  display: inline-grid;
+  line-height: 0;
+  max-width: 100%;
+}
+
 .reveal .abm-dynamics-figure {
   display: block;
-  width: 100%;
+  width: auto;
   max-width: 100%;
   max-height: 655px;
   object-fit: contain;
   margin: 0 auto;
+}
+
+.reveal .abm-dynamics-figure-overlay {
+  position: absolute;
+  inset: 0;
 }
 
 .reveal .abm-dynamics-side {
@@ -2108,6 +2120,42 @@ $selection-bg: $accent-blue;
 
 .reveal .abm-dynamics-side-item:nth-child(3) {
   top: 548px;
+  transform: translateY(-50%);
+}
+
+.reveal .abm-dynamics-side-focus {
+  position: absolute;
+  left: 0;
+  right: 0;
+  min-height: 0;
+  height: auto;
+  border: 3px solid rgba(214, 48, 49, 0.92);
+  background: rgba(214, 48, 49, 0.055);
+  border-radius: 6px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.reveal .abm-dynamics-side-item {
+  z-index: 1;
+}
+
+.reveal .abm-dynamics-side-focus-norm {
+  top: 108px;
+  bottom: auto;
+  height: 100px;
+  transform: translateY(-50%);
+}
+
+.reveal .abm-dynamics-side-focus-outbreak {
+  top: 329px;
+  height: 120px;
+  transform: translateY(-50%);
+}
+
+.reveal .abm-dynamics-side-focus-trust {
+  top: 548px;
+  height: 100px;
   transform: translateY(-50%);
 }
 
