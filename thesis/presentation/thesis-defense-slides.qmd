@@ -59,7 +59,7 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 <!-- SLIDE 3: THESIS PROPOSAL - PIPELINE -->
 <!-- ============================================= -->
 
-## Thesis proposal: from empirical backbone to validation and simulation {.pipeline-slide}
+## Thesis proposal: from empirical backbone to simulation and validation {.pipeline-slide}
 
 ```{=html}
   <div class="pipeline-fork">

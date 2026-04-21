@@ -51,9 +51,53 @@ For flu vaccination, short-run leverage is much smaller, which is consistent wit
 
 For the NPI outcomes, the perturbation effects are much more dispersed. This mainly reflects differences in headroom: many respondent profiles are already close to the top or bottom of the predicted range, so the same shift has limited room to change behaviour. The larger effects appear mainly for profiles that start in the middle, where the response can still move.
 
+<!--- ABM Specification 1.50 min ----->
+
+So far, these are still static empirical relationships.
+
+They tell us which broad blocks matter, and which block shifts are associated with larger fitted changes. But policy questions are not static. Interventions unfold over time, and their effects depend on persistence, social exposure, and epidemic feedback.
+
+So the next step is to embed these survey-grounded relationships in an agent-based model, in order to study how preventive behaviour evolves dynamically under interventions.
+
+There is however a significant modelling challenge. The survey only gives cross-sectional behavioural relationships, and doesn't give a law of motion, it does not directly tell us how the same individual updates over time. So the ABM has to bridge that gap in a disciplined way.
+
+First, each agent is initialised from a realistic profile drawn from the survey.
+
+Second, a target is computed for each mutable state. That target depends on four things: the agent’s survey-based level, policy shifts, social exposure, and local epidemic conditions.
+
+Third, the agent moves only part of the way toward that target at each step. So adjustment is gradual rather than instantaneous. Trust and norms move more slowly, while more situational appraisals, such as perceived danger, move faster.
+
+Fourth, behaviour is recomputed from the statistical models, and local incidence is then updated from average protection.
+
+The feedback loop closes the system: behaviour changes later local incidence, and local incidence feeds back into future behavioural targets.
+
+
+
+
+
+
+<!---- Dynamic fingerprint 40 secs ------->
+
+Once these relationships are embedded in the ABM, the key point is that interventions do not just differ in size. They also differ in how their effects unfold over time.
+
+This figure should be read row by row. Each row is a different intervention scenario. The first column shows the intervention-related mediator that is being shifted, the second shows the change in vaccination willingness relative to baseline, and the third shows the change in the NPI index relative to baseline.
+
+The norm campaign produces the longest behavioural tail. Its effects remain displaced for longer, consistent with slow adjustment and social reinforcement.
+
+The outbreak wave follows a more classic wave pattern: behaviour rises under higher perceived danger, then relaxes more quickly as pressure fades.
+
+Trust erosion is different again. The initial shock is on credibility, but the more persistent behavioural tail appears mainly in vaccination willingness, while NPIs remain much closer to baseline.
+
+
 <!---- LLM Validation 2 min ------>
 
-The next step is LLM micro-validation. The question here is whether LLM-based agents can reproduce the empirical benchmark well enough to be credible candidate behavioural components for the ABM.
+At this point, the ABM already gives a survey-grounded way to study intervention dynamics.
+
+But it also raises a broader methodological question.
+
+The behavioural core of this ABM is fairly structured and rule-based: it combines empirical equations, gradual adjustment, multiple mutable states, social influence, and epidemic feedback. That makes it disciplined, but also quite hand-built.
+
+So a natural question is whether some of this behavioural component could instead be handled by LLM-based agents. In other words: can an LLM serve as a credible behavioural component that reproduces the same empirical structure, while potentially offering a more flexible generative rule?
 
 I test the models on two targets: behavioural outcomes, and a small set of psychological profile variables such as trust, legitimacy, perceived stakes, and norms. And I test them in two settings: first at baseline, where I ask whether the model can recover the observed values implied by survey profiles; and second under controlled shifts, where I change one relevant driver and ask whether the model responds in the expected way.
 
@@ -82,29 +126,6 @@ This figure has two panels. In both panels, moving to the right means better rec
 So, ideally, you would want a method that is far to the right and also high where appropriate, meaning both coherent response and good containment.
 
 The results are clearly weaker than at baseline. The left panel shows a trade-off. In the paired-contrast format, where the model sees the low and high versions of the same profile side by side, perturbation ordering improves: the model becomes better at identifying which profiles should react more. But containment remains weak, so this greater sensitivity also comes with more movement on placebo cells. The right panel shows the second problem: effect sizes are badly calibrated, especially for the NPI outcomes. So the validation step draws a fairly clear boundary. Off-the-shelf LLMs are not yet reliable enough to be used as behavioural components in this setting. So in the final step, when I move to simulation, I build the ABM on the empirical backbone instead.
-
-
-<!--- ABM Specification 1.50 min ----->
-
-There is however a significant modelling challenge. The survey only gives cross-sectional behavioural relationships, and doesn't give a law of motion, it does not directly tell us how the same individual updates over time. So the ABM has to bridge that gap in a disciplined way.
-
-The solution I use is a partial-adjustment dynamic. Each agent has a set of mutable behavioural states, and these states move gradually toward time-varying targets. These targets are derived from the survey-grounded equations. The key modelling assumption is a local one: near the current state, the between-person gradients estimated from the survey are treated as informative about the direction and relative strength of within-person change. 
-
-Adjustment is also allowed to differ across constructs. Trust- and norm-related variables move more slowly, while more situational appraisals, such as perceived danger or infection risk, move faster.
-
-These targets change over time because the ABM adds two dynamic ingredients. One is social influence. This works in two ways: agents are pulled somewhat toward the people they interact with, and they also update their perceived norms by observing what others do. The second ingredient is incidence feedback: behaviour affects later local incidence, and local incidence in turn feeds back into risk-related targets.
-
-<!---- Dynamic fingerprint 40 secs ------->
-
-Once these relationships are embedded in the ABM, the key point is that interventions do not just differ in size. They also differ in how their effects unfold over time.
-
-This figure should be read row by row. Each row is a different intervention scenario. The first column shows the intervention-related mediator that is being shifted, the second shows the change in vaccination willingness relative to baseline, and the third shows the change in the NPI index relative to baseline.
-
-The norm campaign produces the longest behavioural tail. Its effects remain displaced for longer, consistent with slow adjustment and social reinforcement.
-
-The outbreak wave follows a more classic wave pattern: behaviour rises under higher perceived danger, then relaxes more quickly as pressure fades.
-
-Trust erosion is different again. The initial shock is on credibility, but the more persistent behavioural tail appears mainly in vaccination willingness, while NPIs remain much closer to baseline.
 
 <!---- Conclusions ------->
 

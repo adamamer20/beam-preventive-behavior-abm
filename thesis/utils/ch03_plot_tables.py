@@ -244,6 +244,7 @@ def render_lobo_bic_block_outcome_heatmap(
     highlight_cells: Sequence[tuple[str, str]] | None = None,
     highlight_color: str = "#d63a31",
     highlight_linewidth: float = 2.8,
+    highlight_inset: float = 0.0,
     cmap_name: str = "cividis",
     output_path: Path | None = None,
     show: bool = True,
@@ -475,9 +476,9 @@ def render_lobo_bic_block_outcome_heatmap(
                 continue
             ax.add_patch(
                 Rectangle(
-                    (j - 0.5, i - 0.5),
-                    1,
-                    1,
+                    (j - 0.5 + highlight_inset, i - 0.5 + highlight_inset),
+                    1 - 2 * highlight_inset,
+                    1 - 2 * highlight_inset,
                     fill=False,
                     edgecolor=highlight_color,
                     linewidth=highlight_linewidth,
