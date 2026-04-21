@@ -1241,34 +1241,46 @@ $selection-bg: $accent-blue;
   margin-bottom: 0.2rem;
   position: relative;
   z-index: 1;
+  font-size: 1.12em;
+  letter-spacing: 0;
 }
 
 .reveal .baseline-synthesis-subheadline {
   position: relative;
-  width: min(1440px, calc(100% - 120px));
-  margin: 0.35rem auto 0;
+  width: min(1390px, calc(100% - 120px));
+  margin: 0.18rem auto 0;
   color: $primary-blue;
-  font-size: 0.5em;
+  font-size: 0.53em;
   line-height: 1.32;
-  max-width: 1320px;
+  text-align: center;
 }
 
 .reveal .baseline-synthesis-footnote {
-  font-size: 0.60em;
-  color: rgba($dark-gray, 0.58);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2.1rem;
+  align-items: start;
+  justify-items: start;
+  width: 100%;
+  padding: 0.8rem 1.15rem;
+  border: 1px solid rgba($secondary-blue, 0.14);
+  border-left: 3px solid rgba($highlight-blue, 0.72);
+  background: rgba($light-blue, 0.28);
+  font-size: 0.54em;
+  color: $dark-gray;
   font-weight: 400;
-  line-height: 1.2;
-  margin-top: 0.55rem;
-  max-width: 100%;
+  line-height: 1.24;
+  margin: 0;
 }
 
 .reveal .baseline-synthesis-table {
   position: relative;
-  width: min(1440px, calc(100% - 120px));
-  margin: 1.45rem auto 0;
+  width: min(1390px, calc(100% - 120px));
+  margin: 1.75rem auto 0;
   display: grid;
-  gap: 0.45rem;
+  gap: 0.72rem;
   align-content: start;
+  justify-items: center;
 }
 
 .reveal .baseline-synthesis-label {
@@ -1282,7 +1294,15 @@ $selection-bg: $accent-blue;
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-  font-size: 0.5em;
+  font-size: 0.62em;
+}
+
+.reveal .baseline-synthesis-outcome-col {
+  width: 31%;
+}
+
+.reveal .baseline-synthesis-number-col {
+  width: 17.25%;
 }
 
 .reveal .baseline-synthesis-metrics thead th {
@@ -1290,21 +1310,35 @@ $selection-bg: $accent-blue;
   color: $primary-blue;
   font-weight: 700;
   border-bottom: 1px solid rgba($highlight-blue, 0.85);
-  padding: 0.62em 0.72em;
+  padding: 0.94em 0.86em;
   text-align: left;
-  line-height: 1.2;
+  line-height: 1.22;
 }
 
 .reveal .baseline-synthesis-metrics tbody td {
-  padding: 0.6em 0.72em;
+  padding: 1.12em 0.86em;
   border-bottom: 1px solid rgba($secondary-blue, 0.12);
   color: $dark-gray;
-  line-height: 1.24;
+  line-height: 1.28;
+}
+
+.reveal .baseline-synthesis-metrics tbody tr:first-child td {
+  background: rgba($highlight-blue, 0.055);
 }
 
 .reveal .baseline-synthesis-metrics tbody td:first-child {
   color: $primary-blue;
   font-weight: 600;
+}
+
+.reveal .baseline-synthesis-metrics .baseline-synthesis-llm-value {
+  color: $primary-blue;
+  font-weight: 700;
+}
+
+.reveal .baseline-synthesis-metrics .baseline-synthesis-reference-value {
+  color: $primary-blue;
+  font-weight: 400;
 }
 
 .reveal .metric-symbol {
