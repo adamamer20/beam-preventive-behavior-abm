@@ -643,9 +643,9 @@ Each row is a different intervention; each column shows how its effects propagat
 ```
 
 ::: {.takeaway .takeaway-final}
-**1. Prevention is compact, but outcome-specific**
+**1. Prevention draws on the same broad blocks, but not in the same way**
 
-The same broad blocks recur across outcomes, but their behavioural weights change.
+The same broad blocks recur across outcomes, but their importance changes.
 :::
 
 ::: {.takeaway .takeaway-final}
@@ -655,7 +655,7 @@ Persistence, social reinforcement, and feedback make interventions differ in how
 :::
 
 ::: {.takeaway .takeaway-final}
-**3. Current LLMs are not reliable enough inside the ABM**
+**3. Current LLMs are not reliable enough for use inside the ABM**
 
 They recover some baseline patterns, but not coherent responses under the same block shifts.
 :::
@@ -668,7 +668,7 @@ They recover some baseline patterns, but not coherent responses under the same b
 ::: {.takeaway .takeaway-conclusion}
 **A disciplined survey-to-simulation pipeline is possible, but stronger dynamic evidence is still needed**
 
-Longitudinal evidence on within-person dynamics, plus a richer transmission layer.
+Longitudinal evidence on within-person dynamics and a richer transmission layer.
 :::
 
 ```{=html}
