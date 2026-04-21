@@ -241,6 +241,12 @@ def render_lobo_bic_block_outcome_heatmap(
     y_axis_label: str = "Blocks",
     colorbar_label: str = "Relative importance (ΔBIC share)",
     y_label_wrap_width: int = 24,
+    highlight_cells: Sequence[tuple[str, str]] | None = None,
+    highlight_color: str = "#d63a31",
+    highlight_linewidth: float = 2.8,
+    cmap_name: str = "cividis",
+    output_path: Path | None = None,
+    show: bool = True,
 ) -> str | None:
     default_engine_block_order = [
         "institutional_trust_engine",
@@ -415,7 +421,7 @@ def render_lobo_bic_block_outcome_heatmap(
         vmax = float(np.max(finite))
 
     fig, ax = plt.subplots(figsize=(13.6, 7.3), constrained_layout=True)
-    cmap = plt.get_cmap("cividis").copy()
+    cmap = plt.get_cmap(cmap_name).copy()
     cmap.set_bad(color="#f0f0f0")
     im = ax.imshow(
         np.ma.masked_invalid(mat),
@@ -457,6 +463,29 @@ def render_lobo_bic_block_outcome_heatmap(
                 )
                 ax.text(j, i, "NA", ha="center", va="center", fontsize=11, color="#8a8a8a")
 
+    if highlight_cells:
+        block_index = {block: idx for idx, block in enumerate(blocks)}
+        outcome_index = {outcome: idx for idx, outcome in enumerate(outcomes)}
+        for raw_block, raw_outcome in highlight_cells:
+            block = canonical_choice_engine_block(str(raw_block).strip())
+            outcome = str(raw_outcome).strip()
+            i = block_index.get(block)
+            j = outcome_index.get(outcome)
+            if i is None or j is None:
+                continue
+            ax.add_patch(
+                Rectangle(
+                    (j - 0.5, i - 0.5),
+                    1,
+                    1,
+                    fill=False,
+                    edgecolor=highlight_color,
+                    linewidth=highlight_linewidth,
+                    zorder=5,
+                    joinstyle="round",
+                )
+            )
+
     cbar = fig.colorbar(im, ax=ax, shrink=0.86)
     cbar.set_label(colorbar_label)
     cbar.ax.tick_params(labelsize=12)
@@ -464,7 +493,13 @@ def render_lobo_bic_block_outcome_heatmap(
     ax.set_xlabel(x_axis_label, fontsize=12)
     ax.set_ylabel(y_axis_label, fontsize=12)
     ax.set_title(plot_title, fontsize=12, pad=10)
-    plt.show()
+    if output_path is not None:
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        fig.savefig(output_path, dpi=220, bbox_inches="tight", facecolor="white")
+    if show:
+        plt.show()
+    else:
+        plt.close(fig)
     return None
 
 
@@ -487,6 +522,11 @@ def render_reference_signal_magnitude(
     y_axis_label: str = "Block",
     x_axis_label: str = r"Standardised perturbation effect $|PE^{\mathrm{choice}}_{\mathrm{std}}|$",
     y_label_wrap_width: int = 24,
+    highlight_outcomes: Sequence[str] | None = None,
+    highlight_color: str = "#d63a31",
+    highlight_linewidth: float = 2.8,
+    output_path: Path | None = None,
+    show: bool = True,
 ) -> str | None:
     normalize_map = dict(block_normalize_map or {})
     excluded = set(excluded_blocks or set())
@@ -674,6 +714,7 @@ def render_reference_signal_magnitude(
 
     default_cycle = plt.rcParams["axes.prop_cycle"].by_key().get("color", ["#4C78A8"])
     block_color_map = {b: default_cycle[i % len(default_cycle)] for i, b in enumerate(block_universe)}
+    highlight_set = {str(outcome).strip() for outcome in (highlight_outcomes or [])}
 
     for ax, outcome in zip(axes, outcomes, strict=False):
         sub = ref_all.filter(pl.col("outcome") == outcome)
@@ -714,13 +755,33 @@ def render_reference_signal_magnitude(
         ax.set_xlim(x_left, cap)
         ax.set_title(_label_outcome(outcome), fontsize=10.8)
         ax.set_xlabel("")
+        if str(outcome) in highlight_set:
+            ax.add_patch(
+                Rectangle(
+                    (0, 0),
+                    1,
+                    1,
+                    transform=ax.transAxes,
+                    fill=False,
+                    edgecolor=highlight_color,
+                    linewidth=highlight_linewidth,
+                    zorder=20,
+                    clip_on=False,
+                )
+            )
 
     for ax in axes[len(outcomes) :]:
         ax.axis("off")
 
     fig.supylabel(y_axis_label, fontsize=10.8)
     fig.supxlabel(x_axis_label, fontsize=10.8)
-    plt.show()
+    if output_path is not None:
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        fig.savefig(output_path, dpi=220, bbox_inches="tight", facecolor="white")
+    if show:
+        plt.show()
+    else:
+        plt.close(fig)
     return None
 
 

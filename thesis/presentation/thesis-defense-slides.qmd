@@ -154,7 +154,7 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 <!-- SLIDE 5: EMPIRICAL BACKBONE - METHOD -->
 <!-- ============================================= -->
 
-## Empirical backbone: From survey to compact representation {.compact-backbone-slide}
+## Empirical backbone: From survey items to reference models {.compact-backbone-slide}
 
 ```{=html}
 <div class="compact-backbone-grid">
@@ -174,11 +174,11 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
       </div>
       <div class="compact-pipeline-step fragment fade-up" data-fragment-index="3">
         <div class="compact-pipeline-arrow compact-pipeline-arrow-above">↓</div>
-        <div class="compact-pipeline-box">Reference equations</div>
+        <div class="compact-pipeline-box">Importance screening</div>
       </div>
       <div class="compact-pipeline-step fragment fade-up" data-fragment-index="4">
         <div class="compact-pipeline-arrow compact-pipeline-arrow-above">↓</div>
-        <div class="compact-pipeline-box compact-pipeline-box-accent">Retained empirical backbone</div>
+        <div class="compact-pipeline-box compact-pipeline-box-accent">Final reference models</div>
       </div>
     </div>
   </div>
@@ -228,30 +228,54 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 <!-- SLIDE 6: EMPIRICAL RESULTS - BLOCK IMPORTANCE -->
 <!-- ============================================= -->
 
-## Empirical results: Prevention is compact but outcome-specific {.empirical-heatmap-slide}
+## Empirical results: Shared blocks, different importance {.empirical-heatmap-slide}
 
 ```{=html}
 <div class="empirical-heatmap-grid">
   <div class="empirical-heatmap-figure-panel">
     <div class="empirical-heatmap-figure-wrap">
-      <img
-        class="empirical-heatmap-figure"
-        src="assets/fig-lobo-bic-block-outcome-cropped.png"
-        alt="Heatmap of block importance by outcome from the thesis."
-      />
+      <div class="empirical-heatmap-image-stack">
+        <img
+          class="empirical-heatmap-figure fragment fade-out"
+          data-fragment-index="1"
+          src="assets/fig-lobo-bic-block-outcome-step0.png"
+          alt="Heatmap of block importance by outcome from the thesis, without highlighted blocks, using the presentation color scale."
+        />
+        <img
+          class="empirical-heatmap-figure empirical-heatmap-figure-overlay fragment current-visible"
+          data-fragment-index="1"
+          src="assets/fig-lobo-bic-block-outcome-step1.png"
+          alt="Heatmap with highlighted COVID vaccination blocks."
+        />
+        <img
+          class="empirical-heatmap-figure empirical-heatmap-figure-overlay fragment current-visible"
+          data-fragment-index="2"
+          src="assets/fig-lobo-bic-block-outcome-step2.png"
+          alt="Heatmap with highlighted COVID and flu vaccination blocks."
+        />
+        <img
+          class="empirical-heatmap-figure empirical-heatmap-figure-overlay fragment fade-in"
+          data-fragment-index="3"
+          src="assets/fig-lobo-bic-block-outcome-step3.png"
+          alt="Heatmap with highlighted COVID, flu, and NPI blocks."
+        />
+      </div>
     </div>
   </div>
 
   <div class="empirical-heatmap-takeaways">
-    <div class="empirical-heatmap-takeaway">
+    <div class="empirical-heatmap-takeaway empirical-heatmap-takeaway-covid">
+      <div class="empirical-heatmap-takeaway-focus fragment current-visible" data-fragment-index="1" aria-hidden="true"></div>
       <span class="empirical-heatmap-label">COVID vaccination willingness:</span>
       stakes, with trust, legitimacy, and disposition also contributing
     </div>
-    <div class="empirical-heatmap-takeaway">
+    <div class="empirical-heatmap-takeaway empirical-heatmap-takeaway-flu">
+      <div class="empirical-heatmap-takeaway-focus fragment current-visible" data-fragment-index="2" aria-hidden="true"></div>
       <span class="empirical-heatmap-label">Flu vaccination:</span>
-      dominated by habit
+      dominated by habit; without inertia, controls still retain signal
     </div>
-    <div class="empirical-heatmap-takeaway">
+    <div class="empirical-heatmap-takeaway empirical-heatmap-takeaway-npi">
+      <div class="empirical-heatmap-takeaway-focus fragment fade-in" data-fragment-index="3" aria-hidden="true"></div>
       <span class="empirical-heatmap-label">NPIs:</span>
       moral orientation, with stakes still relevant
     </div>
@@ -271,26 +295,50 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
   <div class="perturbation-slide-explainer">Reference perturbation effect: fitted outcome change under a realistic low-to-high shift.</div>
 
   <div class="perturbation-slide-figure-wrap">
-    <img
-      class="perturbation-slide-figure"
-      src="assets/fig-mutable-ref-3x2-cropped.png"
-      alt="Reference perturbation effects for retained variables by outcome, shown in a 3 by 2 panel layout."
-    />
+    <div class="perturbation-slide-figure-stack">
+      <img
+        class="perturbation-slide-figure fragment fade-out"
+        data-fragment-index="1"
+        src="assets/fig-mutable-ref-3x2-step0.png"
+        alt="Reference perturbation effects for retained variables by outcome, without highlighted panels."
+      />
+      <img
+        class="perturbation-slide-figure perturbation-slide-figure-overlay fragment current-visible"
+        data-fragment-index="1"
+        src="assets/fig-mutable-ref-3x2-step1.png"
+        alt="Reference perturbation effects with the COVID willingness panel highlighted."
+      />
+      <img
+        class="perturbation-slide-figure perturbation-slide-figure-overlay fragment current-visible"
+        data-fragment-index="2"
+        src="assets/fig-mutable-ref-3x2-step2.png"
+        alt="Reference perturbation effects with the flu vaccination panels highlighted."
+      />
+      <img
+        class="perturbation-slide-figure perturbation-slide-figure-overlay fragment fade-in"
+        data-fragment-index="3"
+        src="assets/fig-mutable-ref-3x2-step3.png"
+        alt="Reference perturbation effects with the NPI panels highlighted."
+      />
+    </div>
   </div>
 
   <div class="perturbation-slide-takeaways">
-    <div class="perturbation-slide-takeaway">
+    <div class="perturbation-slide-takeaway perturbation-slide-takeaway-covid">
       <span class="perturbation-slide-label">COVID willingness:</span>
       stakes are the strongest lever
     </div>
-    <div class="perturbation-slide-takeaway">
+    <div class="perturbation-slide-takeaway perturbation-slide-takeaway-flu">
       <span class="perturbation-slide-label">Flu vaccination:</span>
       short-run leverage is small because behaviour is habit-driven
     </div>
-    <div class="perturbation-slide-takeaway">
+    <div class="perturbation-slide-takeaway perturbation-slide-takeaway-npi">
       <span class="perturbation-slide-label">NPIs:</span>
       effects are more dispersed because headroom differs across profiles
     </div>
+    <div class="perturbation-slide-takeaway-focus perturbation-slide-takeaway-focus-covid fragment current-visible" data-fragment-index="1" aria-hidden="true"></div>
+    <div class="perturbation-slide-takeaway-focus perturbation-slide-takeaway-focus-flu fragment current-visible" data-fragment-index="2" aria-hidden="true"></div>
+    <div class="perturbation-slide-takeaway-focus perturbation-slide-takeaway-focus-npi fragment fade-in" data-fragment-index="3" aria-hidden="true"></div>
   </div>
 </div>
 ```
