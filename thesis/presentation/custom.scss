@@ -1734,8 +1734,12 @@ $selection-bg: $accent-blue;
 }
 
 .print-pdf .reveal .abm-process-footnote {
-  top: 724px;
+  top: auto;
+  right: 40px;
+  bottom: 18px;
+  left: 40px;
   font-size: 0.3em;
+  line-height: 1.16;
 }
 
 .reveal .abm-slide-subtitle {
