@@ -345,80 +345,84 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 
 
 <!-- ============================================= -->
-<!-- SLIDE 12: ABM ARCHITECTURE -->
+<!-- SLIDE 8: ABM ARCHITECTURE -->
 <!-- ============================================= -->
 
-## ABM architecture: From survey gradients to dynamics {.abm-bridge-slide}
+## ABM architecture: How agents update over time {.abm-bridge-slide}
 
-::: {.abm-bridge-challenge}
-**Challenge:** the survey anchors behavioural gradients, but the ABM must supply the update rule.
-:::
+```{=html}
+<div class="abm-process-subtitle">
+  Agents do not jump instantly to a new state: they move gradually toward a changing target.
+</div>
 
-:::: {.abm-structure}
+<div class="abm-process-wrap">
+  <div class="abm-process-grid">
+    <div class="abm-process-box">
+      <div class="abm-process-step">1</div>
+      <div class="abm-process-title">Survey-grounded starting point</div>
+      <div class="abm-process-body">
+        Each agent starts from a survey-based profile.
+        Survey equations map profile into behaviour.
+      </div>
+    </div>
 
-:::: {.abm-bridge-layout}
+    <div class="abm-process-arrow" aria-hidden="true">→</div>
 
-::: {.abm-node .abm-equations-node}
-Survey-grounded equations
-:::
+    <div class="abm-process-box abm-process-target">
+      <div class="abm-process-step">2</div>
+      <div class="abm-process-title">A changing target is computed</div>
+      <div class="abm-process-body">
+        <strong>Target for mutable constructs =</strong>
+        model-implied baseline for that agent
+      </div>
+      <div class="abm-target-stack">
+        <div>policy signals</div>
+        <div>social exposure</div>
+        <div>local epidemic conditions</div>
+      </div>
+    </div>
 
-::: {.abm-arrow .abm-arrow-bridge-left}
-→
-:::
+    <div class="abm-process-arrow" aria-hidden="true">→</div>
 
-::: {.abm-dynamic-bridge-box}
-<div class="abm-dynamic-bridge-title">Dynamic bridge</div>
+    <div class="abm-process-box">
+      <div class="abm-process-step">3</div>
+      <div class="abm-process-title">Gradual update</div>
+      <div class="abm-process-body">
+        Agents move only part of the way toward that target at each step.
+      </div>
+      <div class="abm-speed-grid">
+        <div><strong>Slow:</strong> trust, norms</div>
+        <div><strong>Fast:</strong> perceived risk / danger</div>
+      </div>
+    </div>
 
-:::: {.abm-dynamic-bridge-inner}
+    <div class="abm-process-arrow" aria-hidden="true">→</div>
 
-::: {.abm-node .abm-node-large .abm-adjust-node}
-**Partial adjustment toward time-varying targets**
+    <div class="abm-process-box">
+      <div class="abm-process-step">4</div>
+      <div class="abm-process-title">Behaviour and feedback</div>
+      <div class="abm-process-body">
+        Behaviour is recomputed.
+        More protection lowers local incidence.
+        Local incidence shifts later risk signals.
+      </div>
+    </div>
+  </div>
 
-$$
-s_{i,u}(t+1)=s_{i,u}(t)+\kappa_u\big(\tilde{s}_{i,u}(t)-s_{i,u}(t)\big)
-$$
+  <div class="abm-feedback-loop" aria-hidden="true">
+    <svg class="abm-feedback-svg" viewBox="0 0 1000 84" preserveAspectRatio="none">
+      <path d="M 880 10 C 740 76 390 76 260 10"></path>
+    </svg>
+    <div class="abm-feedback-head"></div>
+  </div>
+</div>
 
-::: {.abm-adjust-kappa-note}
-::: {.abm-adjust-kappa-set}
-$\kappa_u \in \{k_{\text{slow}}, k_{\text{fast}}\}$
-:::
-
-::: {.abm-adjust-kappa-map}
-$k_{\text{slow}}$: trust, norms · $k_{\text{fast}}$: situational risk
-:::
-:::
-:::
-
-::: {.abm-side-box .abm-side-social}
-**Social influence**
-
-- peer pull
-- norm updating
-:::
-
-::: {.abm-side-box .abm-side-incidence}
-**Incidence feedback**
-
-- protection lowers incidence
-- incidence raises perceived risk
-
-Behaviour → incidence → risk-related targets
-:::
-
-::::
-:::
-
-::: {.abm-arrow .abm-arrow-bridge-right}
-→
-:::
-
-::: {.abm-node .abm-outcomes-node}
-Behavioural outcomes
-:::
-
-::::
-
-::::
+<div class="abm-process-footnote">
+  Gradual adjustment: Ouellette & Wood (1998); Gardner (2014). 
+  Slower trust dynamics: Devine &amp; Valgarsson (2024). 
+  Social exposure and norm diffusion: McPherson et al. (2001); Granovetter (1978); Centola &amp; Macy (2007).
+</div>
+```
 
 
 <!-- ============================================= -->
