@@ -61,10 +61,10 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 ## Thesis proposal: from empirical backbone to validation and simulation {.pipeline-slide}
 
 ```{=html}
-<div class="pipeline-fork">
+  <div class="pipeline-fork">
   <div class="pipeline-card pipeline-card-blue pipeline-card-source">
     <div class="pipeline-title">1. Empirical backbone</div>
-    <div class="pipeline-body">survey micro-data<br>→ theory-guided blocks<br>→ behavioural relationships</div>
+    <div class="pipeline-body">survey data<br>→ theory-guided blocks<br>→ statistical models</div>
   </div>
 
   <div class="pipeline-fork-svg" aria-hidden="true">
@@ -77,12 +77,12 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
   <div class="pipeline-branches">
     <div class="pipeline-card pipeline-card-mid">
       <div class="pipeline-title">2a. Survey-grounded ABM</div>
-      <div class="pipeline-body">empirical relationships as behavioural core<br>→ social interaction<br>→ epidemic feedback<br>→ policy comparison</div>
+      <div class="pipeline-body">statistical models as behavioural core<br>→ social interaction<br>→ epidemic feedback<br>→ policy comparison</div>
     </div>
 
     <div class="pipeline-card pipeline-card-light">
       <div class="pipeline-title">2b. LLM micro-validation</div>
-      <div class="pipeline-body">empirical benchmark for candidate behavioural components<br>→ baseline reconstruction<br>→ controlled perturbation tests</div>
+      <div class="pipeline-body">benchmarked against the empirical analysis<br>→ baseline reconstruction<br>→ controlled shift tests</div>
     </div>
   </div>
 </div>
@@ -154,7 +154,7 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 <!-- SLIDE 5: EMPIRICAL BACKBONE - METHOD -->
 <!-- ============================================= -->
 
-## Empirical backbone: From survey items to reference models {.compact-backbone-slide}
+## Empirical backbone: From survey items to statistical models {.compact-backbone-slide}
 
 ```{=html}
 <div class="compact-backbone-grid">
@@ -178,7 +178,7 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
       </div>
       <div class="compact-pipeline-step fragment fade-up" data-fragment-index="4">
         <div class="compact-pipeline-arrow compact-pipeline-arrow-above">↓</div>
-        <div class="compact-pipeline-box compact-pipeline-box-accent">Final reference models</div>
+        <div class="compact-pipeline-box compact-pipeline-box-accent">Final statistical models</div>
       </div>
     </div>
   </div>
@@ -434,7 +434,7 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 ```
 
 ::: {.abm-slide-subtitle}
-Each row is a different lever; each column shows how its effects propagate over time.
+Each row is a different intervention; each column shows how its effects propagate over time.
 :::
 
 ```{=html}
@@ -535,8 +535,8 @@ Each row is a different lever; each column shows how its effects propagate over 
 ```{=html}
 <div class="baseline-synthesis-table">
   <div class="baseline-synthesis-footnote">
-    <span><strong>Gini (rank recovery):</strong> 1 = perfect ordering, 0 = no rank recovery</span>
-    <span><strong>Skill (level recovery):</strong> 1 = perfect, 0 = baseline (median or majority), &lt; 0 = worse</span>
+    <span><strong>Gini (rank recovery):</strong> <strong>1 = perfect ordering</strong>, <strong>0 = no rank recovery</strong></span>
+    <span><strong>Skill (level recovery):</strong> <strong>1 = perfect</strong>, <strong>0 = baseline</strong>, <strong>&lt; 0 = worse</strong></span>
   </div>
   <table class="baseline-synthesis-metrics">
     <colgroup>
@@ -608,9 +608,9 @@ Each row is a different lever; each column shows how its effects propagate over 
 ## LLM micro-validation: The model does not respond coherently to block shifts {.perturbed-results-slide}
 
 ```{=html}
-<div class="perturbed-results-top">
+  <div class="perturbed-results-top">
   <div class="perturbed-results-subtitle">
-    Under the same block shifts used in the empirical benchmark, the model often overreacts or underreacts, making it unreliable for use in an ABM.
+    <strong>Under the same block shifts</strong> used in the empirical benchmark, the model often <strong>overreacts or underreacts</strong>, so it is <strong>not reliable enough for an ABM</strong>.
   </div>
 </div>
 
@@ -654,9 +654,9 @@ Static plausibility is not enough when behavioural responses must remain coheren
 :::
 
 ::: {.takeaway .takeaway-final}
-**3. Dynamics re-rank the policy levers**
+**3. Interventions differ in how their effects unfold over time**
 
-The strongest one-step lever is not always the strongest cumulative lever.
+Different interventions build, fade, and persist at different rates.
 :::
 
 ```{=html}
@@ -719,14 +719,14 @@ BACKUP
 <!-- BACKUP: ABM INTERVENTIONS -->
 <!-- ============================================= -->
 
-## ABM results: Dynamics re-rank the policy levers {.abm-leaderboard-slide}
+## ABM results: Interventions differ in how their effects unfold over time {.abm-leaderboard-slide}
 
 ::: {.backup-marker}
 BACKUP
 :::
 
 ::: {.abm-slide-subtitle}
-The strongest one-step lever is not always the strongest cumulative lever.
+Dynamics change which interventions matter most over time.
 :::
 
 ::: {.abm-technical-note}
@@ -737,7 +737,7 @@ C = 9-month campaign · S = 6-month outbreak wave · P = 1-tick pulse
 
 ::: {.abm-side-takeaways}
 ::: {.abm-takeaway}
-**Norm shift:** strongest cumulative lever.
+**Norm shift:** strongest cumulative intervention.
 :::
 
 ::: {.abm-takeaway}
@@ -816,7 +816,7 @@ BACKUP
 ```{=html}
 <div class="mechanism-slide-top">
   <div class="mechanism-slide-subtitle">
-    Under perturbation, responses are not only mis-scaled; they are assigned to the wrong levers and spread too broadly.
+    Under perturbation, responses are not only mis-scaled; they are assigned to the wrong blocks and spread too broadly.
   </div>
 </div>
 
