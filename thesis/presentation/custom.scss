@@ -899,6 +899,14 @@ $selection-bg: $accent-blue;
   justify-content: center;
 }
 
+.reveal .empirical-heatmap-explainer {
+  margin: 0 0 0.6rem;
+  font-size: 0.48em;
+  line-height: 1.2;
+  color: rgba($secondary-blue, 0.95);
+  font-weight: 600;
+}
+
 .reveal .empirical-heatmap-figure-wrap {
   display: flex;
   align-items: center;

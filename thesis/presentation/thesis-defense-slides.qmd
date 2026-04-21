@@ -82,7 +82,7 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 
     <div class="pipeline-card pipeline-card-light">
       <div class="pipeline-title">2b. LLM micro-validation</div>
-      <div class="pipeline-body">benchmarked against the empirical analysis<br>→ baseline reconstruction<br>→ controlled shift tests</div>
+      <div class="pipeline-body">benchmarked against the empirical benchmark<br>→ baseline reconstruction<br>→ controlled block-shift tests</div>
     </div>
   </div>
 </div>
@@ -233,6 +233,7 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 ```{=html}
 <div class="empirical-heatmap-grid">
   <div class="empirical-heatmap-figure-panel">
+    <div class="empirical-heatmap-explainer">Higher score = more unique predictive signal contributed by that block for that outcome.</div>
     <div class="empirical-heatmap-figure-wrap">
       <div class="empirical-heatmap-image-stack">
         <img
@@ -272,7 +273,7 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
     <div class="empirical-heatmap-takeaway empirical-heatmap-takeaway-flu">
       <div class="empirical-heatmap-takeaway-focus fragment current-visible" data-fragment-index="2" aria-hidden="true"></div>
       <span class="empirical-heatmap-label">Flu vaccination:</span>
-      dominated by habit; without inertia, controls still retain signal
+      dominated by habit; without inertia, controls remain informative
     </div>
     <div class="empirical-heatmap-takeaway empirical-heatmap-takeaway-npi">
       <div class="empirical-heatmap-takeaway-focus fragment fade-in" data-fragment-index="3" aria-hidden="true"></div>
@@ -375,7 +376,7 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
       </div>
       <ul class="abm-target-list">
         <li>the agent's survey-based level</li>
-        <li>policy signals</li>
+        <li>policy shifts</li>
         <li>social exposure</li>
         <li>local epidemic conditions</li>
       </ul>
@@ -427,7 +428,7 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 <!-- SLIDE 9: ABM DYNAMICS -->
 <!-- ============================================= -->
 
-## ABM results: Similar cumulative effects can hide different dynamics {.abm-dynamics-slide}
+## ABM results: Interventions can unfold differently over time {.abm-dynamics-slide}
 
 ```{=html}
 <div class="abm-dynamics-grid">
@@ -610,7 +611,7 @@ Each row is a different intervention; each column shows how its effects propagat
 ```{=html}
   <div class="perturbed-results-top">
   <div class="perturbed-results-subtitle">
-    <strong>Under the same block shifts</strong> used in the empirical benchmark, the model often <strong>overreacts or underreacts</strong>, so it is <strong>not reliable enough for an ABM</strong>.
+    <strong>Under the same block shifts</strong> used in the empirical benchmark, the model often <strong>overreacts or underreacts</strong>, making it <strong>unreliable for use in an ABM</strong>.
   </div>
 </div>
 
