@@ -20,6 +20,7 @@ format:
       data-background-color: "#fafbfc"
     mermaid:
       theme: neutral
+    pdf-separate-fragments: true
     self-contained: true
     embed-resources: true
 execute:
