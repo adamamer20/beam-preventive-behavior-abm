@@ -593,8 +593,8 @@ Each row is a different lever; each column shows how its effects propagate over 
 <div class="perturbed-results-single">
   <img
     class="perturbed-results-figure"
-    src="assets/fig-perturbed-pareto-by-model-cropped.png"
-    alt="Median perturbation-effect ordering and placebo containment by model and prompt family."
+    src="assets/fig-perturbed-pareto-discussion-gptoss120b-medium.png"
+    alt="Median perturbation-effect ordering and placebo containment by prompting strategy for GPT-OSS 120B medium."
   />
 </div>
 ```

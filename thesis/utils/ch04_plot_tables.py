@@ -3638,6 +3638,10 @@ def render_perturbed_pareto_by_model(
     outcome_order: Sequence[str],
     label_strategy: Callable[[str], str],
     label_model: Callable[[str], str],
+    model_filter: Sequence[str] | None = None,
+    use_dar_size: bool = True,
+    show_model_legend: bool = True,
+    output_path: str | Path | None = None,
 ) -> str | None:
     if pert_summary.is_empty():
         return "No perturbed outputs found for the global performance map."
@@ -3706,6 +3710,17 @@ def render_perturbed_pareto_by_model(
         )
 
     df = pl.DataFrame(deduped_rows)
+    if model_filter is not None:
+        filter_ids = {
+            canonical_model_id_with_effort(str(model))
+            for model in model_filter
+            if str(model).strip()
+        }
+        if filter_ids:
+            df = df.filter(pl.col("model").is_in(sorted(filter_ids)))
+    if df.is_empty():
+        return "No perturbed outputs matched the requested model filter."
+
     model_set = set(df.get_column("model").to_list())
     strategy_set = set(df.get_column("strategy").to_list())
     preferred_models = list(dict.fromkeys(canonical_model_id_with_effort(m) for m in pert_model_order))
@@ -3716,8 +3731,10 @@ def render_perturbed_pareto_by_model(
     model_marker_map = _build_pareto_model_marker_map(model_order)
     strategy_color_map = _build_pareto_strategy_color_map(strategy_order)
 
-    dar_vals = df.select(pl.col("dar").cast(pl.Float64)).to_series().to_numpy()
-    dar_vals = dar_vals[np.isfinite(dar_vals)]
+    dar_vals = np.array([], dtype=np.float64)
+    if use_dar_size:
+        dar_vals = df.select(pl.col("dar").cast(pl.Float64)).to_series().to_numpy()
+        dar_vals = dar_vals[np.isfinite(dar_vals)]
     size_min, size_max = 45.0, 180.0
     if dar_vals.size:
         dar_vmin = float(np.min(dar_vals))
@@ -3728,6 +3745,8 @@ def render_perturbed_pareto_by_model(
         dar_vmin, dar_vmax = 0.0, 1.0
 
     def _size_for_dar(value: float) -> float:
+        if not use_dar_size:
+            return 95.0
         if not np.isfinite(value):
             return 75.0
         t = (value - dar_vmin) / (dar_vmax - dar_vmin) if dar_vmax > dar_vmin else 0.5
@@ -3752,7 +3771,7 @@ def render_perturbed_pareto_by_model(
         containment_rate = 1.0 - fp_move if np.isfinite(fp_move) else float("nan")
         size = _size_for_dar(float(row.get("dar", float("nan"))))
         color = strategy_color_map.get(strategy, "#0F766E")
-        marker = model_marker_map.get(model, "o")
+        marker = model_marker_map.get(model, "o") if show_model_legend else "o"
 
         if np.isfinite(skill):
             ax_perf.scatter(
@@ -3787,12 +3806,15 @@ def render_perturbed_pareto_by_model(
     ax_perf.axhline(0, color="black", linewidth=1, alpha=0.25)
     ax_perf.set_ylabel("Median PE $\\mathrm{skill}$ (active set)", fontsize=axis_label_size)
     ax_perf.set_title("A) Performance on active set", fontsize=panel_title_size)
+    xlim_perf = ax_perf.get_xlim()
+    ylim_perf = ax_perf.get_ylim()
+    x_guide_perf = max(0.003, 0.01 * (xlim_perf[1] - xlim_perf[0]))
+    y_guide_perf = ylim_perf[0] + 0.06 * (ylim_perf[1] - ylim_perf[0])
     ax_perf.text(
-        0.98,
-        0.02,
+        x_guide_perf,
+        y_guide_perf,
         "better gradient ordering →",
-        transform=ax_perf.transAxes,
-        ha="right",
+        ha="left",
         va="bottom",
         fontsize=guide_text_size,
         color="#444444",
@@ -3813,12 +3835,15 @@ def render_perturbed_pareto_by_model(
     ax_contain.set_ylim(-0.02, 1.02)
     ax_contain.set_ylabel("Containment on placebo cells", fontsize=axis_label_size)
     ax_contain.set_title("B) Containment", fontsize=panel_title_size)
+    xlim_contain = ax_contain.get_xlim()
+    ylim_contain = ax_contain.get_ylim()
+    x_guide_contain = max(0.003, 0.01 * (xlim_contain[1] - xlim_contain[0]))
+    y_guide_contain = ylim_contain[0] + 0.05 * (ylim_contain[1] - ylim_contain[0])
     ax_contain.text(
-        0.98,
-        0.02,
+        x_guide_contain,
+        y_guide_contain,
         "better gradient ordering →",
-        transform=ax_contain.transAxes,
-        ha="right",
+        ha="left",
         va="bottom",
         fontsize=guide_text_size,
         color="#444444",
@@ -3860,22 +3885,6 @@ def render_perturbed_pareto_by_model(
         )
         for s in strategy_order
     ]
-    handles_model = [
-        plt.Line2D(
-            [0],
-            [0],
-            marker=model_marker_map.get(m, "o"),
-            color="#444444",
-            label=label_model(m),
-            markerfacecolor="#B0B0B0",
-            markeredgecolor="#333333",
-            markeredgewidth=0.6,
-            linestyle="None",
-            markersize=8,
-        )
-        for m in model_order
-    ]
-
     leg_prompt = fig.legend(
         handles=handles_prompt,
         title="Prompt family (color)",
@@ -3886,18 +3895,34 @@ def render_perturbed_pareto_by_model(
         title_fontsize=legend_title_size,
     )
     fig.add_artist(leg_prompt)
-    leg_model = fig.legend(
-        handles=handles_model,
-        title="Model (shape)",
-        loc="center left",
-        bbox_to_anchor=(0.82, 0.55),
-        fontsize=legend_size,
-        frameon=False,
-        title_fontsize=legend_title_size,
-    )
-    fig.add_artist(leg_model)
+    if show_model_legend:
+        handles_model = [
+            plt.Line2D(
+                [0],
+                [0],
+                marker=model_marker_map.get(m, "o"),
+                color="#444444",
+                label=label_model(m),
+                markerfacecolor="#B0B0B0",
+                markeredgecolor="#333333",
+                markeredgewidth=0.6,
+                linestyle="None",
+                markersize=8,
+            )
+            for m in model_order
+        ]
+        leg_model = fig.legend(
+            handles=handles_model,
+            title="Model (shape)",
+            loc="center left",
+            bbox_to_anchor=(0.82, 0.55),
+            fontsize=legend_size,
+            frameon=False,
+            title_fontsize=legend_title_size,
+        )
+        fig.add_artist(leg_model)
 
-    if dar_vals.size:
+    if use_dar_size and dar_vals.size:
 
         def _size_handle(val: float) -> plt.Line2D:
             return plt.Line2D(
@@ -3927,7 +3952,10 @@ def render_perturbed_pareto_by_model(
 
     fig.suptitle("Perturbed choice validation: performance and containment", fontsize=suptitle_size)
     fig.tight_layout(rect=[0.03, 0.05, 0.80, 0.94])
+    if output_path is not None:
+        fig.savefig(Path(output_path), dpi=220, bbox_inches="tight", facecolor="white")
     plt.show()
+    plt.close(fig)
     return None
 
 
