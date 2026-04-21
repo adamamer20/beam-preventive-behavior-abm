@@ -288,11 +288,11 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 <!-- SLIDE 7: EMPIRICAL RESULTS - PERTURBATION -->
 <!-- ============================================= -->
 
-## Empirical results: Which levers actually move behaviour? {.perturbation-slide}
+## Empirical results: Which blocks increase prevention most? {.perturbation-slide}
 
 ```{=html}
 <div class="perturbation-slide-grid">
-  <div class="perturbation-slide-explainer">Reference perturbation effect: fitted outcome change under a realistic low-to-high shift.</div>
+  <div class="perturbation-slide-explainer"><strong>The figure shows the fitted change</strong> in each prevention outcome when <strong>one retained block</strong> is shifted, <strong>one at a time</strong>, from a realistic low to a realistic high value, <strong>holding the rest of the profile fixed</strong>.</div>
 
   <div class="perturbation-slide-figure-wrap">
     <div class="perturbation-slide-figure-stack">
@@ -326,11 +326,11 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
   <div class="perturbation-slide-takeaways">
     <div class="perturbation-slide-takeaway perturbation-slide-takeaway-covid">
       <span class="perturbation-slide-label">COVID willingness:</span>
-      stakes are the strongest lever
+      stakes show the largest fitted shift
     </div>
     <div class="perturbation-slide-takeaway perturbation-slide-takeaway-flu">
       <span class="perturbation-slide-label">Flu vaccination:</span>
-      short-run leverage is small because behaviour is habit-driven
+      short-run leverage is limited because behaviour is habit-driven
     </div>
     <div class="perturbation-slide-takeaway perturbation-slide-takeaway-npi">
       <span class="perturbation-slide-label">NPIs:</span>

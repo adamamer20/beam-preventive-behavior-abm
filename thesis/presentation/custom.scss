@@ -1001,6 +1001,7 @@ $selection-bg: $accent-blue;
 
 .reveal .perturbation-slide-figure-wrap {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 0;
