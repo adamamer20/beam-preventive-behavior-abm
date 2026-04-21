@@ -3762,7 +3762,7 @@ def render_perturbed_pareto_by_model(
     legend_title_size = 12
     suptitle_size = 12
 
-    fig, (ax_perf, ax_contain) = plt.subplots(2, 1, figsize=(10.2, 7.0), sharex=True)
+    fig, (ax_perf, ax_contain) = plt.subplots(2, 1, figsize=(8.0, 7.0), sharex=True)
     has_containment_points = False
     highlight_set = {str(strategy).strip() for strategy in (highlight_strategies or []) if str(strategy).strip()}
     for row in df.iter_rows(named=True):
@@ -3914,7 +3914,7 @@ def render_perturbed_pareto_by_model(
         handles=handles_prompt,
         title="Prompt family (color)",
         loc="center left",
-        bbox_to_anchor=(0.76, 0.83),
+        bbox_to_anchor=(0.78, 0.83),
         fontsize=legend_size,
         frameon=False,
         title_fontsize=legend_title_size,
@@ -3940,7 +3940,7 @@ def render_perturbed_pareto_by_model(
             handles=handles_model,
             title="Model (shape)",
             loc="center left",
-            bbox_to_anchor=(0.76, 0.55),
+            bbox_to_anchor=(0.78, 0.55),
             fontsize=legend_size,
             frameon=False,
             title_fontsize=legend_title_size,
@@ -3969,14 +3969,14 @@ def render_perturbed_pareto_by_model(
             handles=handles_size,
             title="DAR (size)",
             loc="center left",
-            bbox_to_anchor=(0.76, 0.28),
+            bbox_to_anchor=(0.78, 0.28),
             fontsize=legend_size,
             frameon=False,
             title_fontsize=legend_title_size,
         )
 
     fig.suptitle("Perturbed choice validation: performance and containment", fontsize=suptitle_size)
-    fig.tight_layout(rect=[0.03, 0.05, 0.72, 0.94])
+    fig.tight_layout(rect=[0.03, 0.05, 0.74, 0.94])
     if output_path is not None:
         fig.savefig(Path(output_path), dpi=220, facecolor="white")
     plt.show()
