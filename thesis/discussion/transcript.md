@@ -10,24 +10,26 @@ The goal of my thesis is to address these questions by building a disciplined li
 
 I begin by building a common empirical backbone of preventive behaviour from survey data.
 
-From there, I use that backbone as a benchmark to test whether LLMs can reproduce the same behavioural patterns, both at baseline and under controlled changes in individual profiles. Second, I use those empirically estimated behavioural relationships as the core of a survey-grounded ABM to study counterfactual scenarios of preventive behaviour.
+From there, I use those statistical models as the core of a survey-grounded ABM to study counterfactual scenarios of preventive behaviour.
 
+Second, I use that backbone as a benchmark to test whether LLMs can reproduce the same behavioural patterns, both at baseline and under controlled shifts in individual profiles. 
 
 <!-----Empirical Backbone Survey data - 1 min ---------->
 
-So the phenomenon I study is preventive behaviour in epidemics.
+The phenomenon I study is preventive behaviour in epidemics.
 To build the empirical backbone, I start from a large cross-country survey with about 22,000 respondents across six European countries. The survey is very rich: it covers demographics and health, COVID and flu experience, vaccine beliefs, information environment, social exposure, trust, barriers, and moral orientations.
 
 From this survey, I focus on a small set of core prevention outcomes: COVID vaccination willingness, flu vaccination, and non-pharmaceutical preventive behaviours such as masking and staying home when symptomatic.
 
 <!-----Empirical Backbone Reduction pipeline 1:30 min ---------->
 
-The next step is to identify a compact behavioural structure that can explain these outcomes. The raw survey is too high-dimensional and contains too many overlapping items to be used directly for either evaluation or simulation. I therefore reduce it in stages. First, I combine related items into derived variables and indices when they capture the same underlying construct. I then group these into theory-guided behavioural blocks from the prevention literature, such as stakes, trust, legitimacy, disposition, habit, norms, and moral orientation. From these blocks, I estimate reference equations and retain only the components that provide unique empirical signal. The final result is a compact and interpretable empirical backbone, represented as a set of estimated equations that can be carried into both the LLM evaluation and the ABM.
-
+The next step is to identify a behavioural structure that can explain these outcomes. The raw survey is too high-dimensional and contains too many overlapping items to be used directly for either simulation or validation. I therefore reduce it in stages. First, I combine related items into derived variables and indices when they capture the same underlying construct. I then group these into theory-guided behavioural blocks from the prevention literature, such as stakes, trust, legitimacy, disposition, habit, norms, and moral orientation. For each outcome, I retain and identify only the blocks and variables that give unique predictive signals about each outcome. The final result is a set of statistical models for each outcome that can be carried into both the LLM evaluation and the ABM.
 
 <!-----Empirical Backbone: Prevention compact but outcome specific - 1 min e 45 con la parte del detail sul trust-related blocks ---------->
 
 The first main result is that the same broad blocks recur across outcomes, but their relative importance changes substantially depending on the behaviour.
+
+This heatmap should be read column by column. Each column is one prevention outcome, each row is one behavioural block, and a higher score means that block contributes more unique predictive signal for that outcome, once the other blocks are also taken into account.
 
 For COVID vaccination willingness, the dominant block is perceived stakes, with additional roles for institutional trust, legitimacy, and vaccine disposition. 
 
@@ -41,7 +43,7 @@ For the non-pharmaceutical behaviours, the strongest block is moral orientation,
 
 Beyond identifying which blocks carry unique signal, I also study which drivers actually move behaviour when they are shifted in a realistic way.
 
-To do this, I compute reference perturbation effects: the change in the fitted outcome when one variable is moved from a low value to a high value, holding the rest of the profile fixed.
+To do this, I compute the change in the fitted outcome when one variable is moved from a low value to a high value, holding the rest of the profile fixed.
 
 For COVID vaccination willingness, the strongest lever is again stakes, followed by disposition, institutional trust, and legitimacy.
 
@@ -61,6 +63,8 @@ Performance is judged slightly differently depending on the task. At baseline, I
 
 At baseline, the models do recover some structure, but only in a limited sense.
 
+So a higher Gini here means better ordering, while a higher skill score means better level recovery.
+
 For the behavioural outcomes, they are better at sorting respondents relatively than at placing them at the correct point on the response scale. 
 
 The reason is that predictions are systematically pulled toward the centre. Extremes are flattened, and part of the empirical heterogeneity disappear.
@@ -72,6 +76,10 @@ And that is more consequential on the profile side, because these variables are 
 <!---- Perturbed LLM 1:45 min ---->
 
 The more important test is the perturbed setting, because this is what counterfactual simulation is really about. Policies act by shifting specific behavioural levers, so the key question is whether the model reacts coherently when one of those levers is changed. I test this with controlled perturbations: I shift one driver over a realistic range, keep the rest of the profile fixed, and compare the response with the empirical benchmark.
+
+This figure has two panels. In both panels, moving to the right means better recovery of the empirical gradient ordering: the model becomes better at identifying which profiles should react more. The top panel looks at performance on the active shifts, while the bottom panel looks at containment, meaning whether placebo cells remain quiet instead of moving spuriously.
+
+So, ideally, you would want a method that is far to the right and also high where appropriate, meaning both coherent response and good containment.
 
 The results are clearly weaker than at baseline. The left panel shows a trade-off. In the paired-contrast format, where the model sees the low and high versions of the same profile side by side, perturbation ordering improves: the model becomes better at identifying which profiles should react more. But containment remains weak, so this greater sensitivity also comes with more movement on placebo cells. The right panel shows the second problem: effect sizes are badly calibrated, especially for the NPI outcomes. So the validation step draws a fairly clear boundary. Off-the-shelf LLMs are not yet reliable enough to be used as behavioural components in this setting. So in the final step, when I move to simulation, I build the ABM on the empirical backbone instead.
 
@@ -86,21 +94,11 @@ Adjustment is also allowed to differ across constructs. Trust- and norm-related 
 
 These targets change over time because the ABM adds two dynamic ingredients. One is social influence. This works in two ways: agents are pulled somewhat toward the people they interact with, and they also update their perceived norms by observing what others do. The second ingredient is incidence feedback: behaviour affects later local incidence, and local incidence in turn feeds back into risk-related targets.
 
-<!--- ABM Results 1:30 min ----->
-
-Once the ABM is specified, I compare a set of counterfactual scenarios and rank them by cumulative impact, because in a mean-reverting model total displacement over time is more informative than a single end-point. 
-
-The main result is that dynamics re-rank the policy levers identified in the empirical backbone. Norm-based interventions, which were not among the strongest one-step levers in the empirical benchmark, become the strongest cumulative lever because they persist and reinforce through social exposure. 
-
-Credibility interventions are more asymmetric. Legitimacy mainly shifts vaccination willingness, whereas institutional trust has broader spillovers across both vaccination and NPIs. 
-
-Access facilitation behaves differently again. Counterintuitively, it can turn negative in cumulative terms: it may initially increase vaccination willingness, but once protection rises, incidence pressure falls, perceived risk declines, and other precautions can weaken through feedback. 
-
-A final robustness check suggests that the clearest cumulative asymmetries on this slide remain stable: norm shift stays above institutional-trust repair on both outcomes, while legitimacy dominates trust repair for vaccination and trust dominates legitimacy for NPIs.
-
 <!---- Dynamic fingerprint 40 secs ------->
 
-We can also see that these effects unfold differently over time.
+Once these relationships are embedded in the ABM, the key point is that interventions do not just differ in size. They also differ in how their effects unfold over time.
+
+This figure should be read row by row. Each row is a different intervention scenario. The first column shows the intervention-related mediator that is being shifted, the second shows the change in vaccination willingness relative to baseline, and the third shows the change in the NPI index relative to baseline.
 
 The norm campaign produces the longest behavioural tail. Its effects remain displaced for longer, consistent with slow adjustment and social reinforcement.
 
