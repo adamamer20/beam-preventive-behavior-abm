@@ -504,13 +504,13 @@ Each row is a different lever; each column shows how its effects propagate over 
 <!-- SLIDE 12: LLM RESULTS - BASELINE -->
 <!-- ============================================= -->
 
-## LLM micro-validation: LLMs recover ordering better than levels at baseline {.baseline-synthesis-slide}
+## LLM micro-validation: Baseline structure is partly recovered {.baseline-synthesis-slide}
 
 ```{=html}
 <div class="baseline-synthesis-table">
   <div class="baseline-synthesis-footnote">
     <span><strong>Gini (rank recovery):</strong> 1 = perfect ordering, 0 = no rank recovery</span>
-    <span><strong>Skill (level recovery, median or majority baseline):</strong> 1 = perfect, 0 = baseline, &lt; 0 = worse</span>
+    <span><strong>Skill (level recovery):</strong> 1 = perfect, 0 = baseline (median or majority), &lt; 0 = worse</span>
   </div>
   <table class="baseline-synthesis-metrics">
     <colgroup>
