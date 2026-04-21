@@ -162,7 +162,7 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
     <div class="compact-backbone-title">Reduction pipeline</div>
     <div class="compact-pipeline">
       <div class="compact-pipeline-step">
-        <div class="compact-pipeline-box">Raw survey items</div>
+        <div class="compact-pipeline-box">Survey items</div>
       </div>
       <div class="compact-pipeline-step fragment fade-up" data-fragment-index="1">
         <div class="compact-pipeline-arrow compact-pipeline-arrow-above">↓</div>
@@ -555,9 +555,9 @@ Each row is a different intervention; each column shows how its effects propagat
       </tr>
       <tr>
         <th>LLM</th>
-        <th>Empirical ref.</th>
+        <th>Statistical ref.</th>
         <th>LLM</th>
-        <th>Empirical ref.</th>
+        <th>Statistical ref.</th>
       </tr>
     </thead>
     <tbody>
@@ -645,26 +645,33 @@ Each row is a different intervention; each column shows how its effects propagat
 ::: {.takeaway .takeaway-final}
 **1. Prevention is compact, but outcome-specific**
 
-The same broad engines recur across outcomes, but their behavioural weights change.
+The same broad blocks recur across outcomes, but their behavioural weights change.
 :::
 
 ::: {.takeaway .takeaway-final}
-**2. LLMs recover baselines better than counterfactuals**
+**2. Embedding those relationships in an ABM changes the policy picture**
 
-Static plausibility is not enough when behavioural responses must remain coherent under perturbation.
+Persistence, social reinforcement, and feedback make interventions differ in how their effects build and last over time.
 :::
 
 ::: {.takeaway .takeaway-final}
-**3. Interventions differ in how their effects unfold over time**
+**3. Current LLMs are not reliable enough inside the ABM**
 
-Different interventions build, fade, and persist at different rates.
+They recover some baseline patterns, but not coherent responses under the same block shifts.
 :::
 
 ```{=html}
   </div>
-  <div class="takeaways-next-step">
-    <div class="takeaways-next-step-label">Next step</div>
-    <div class="takeaways-next-step-text">Longitudinal evidence on within-person dynamics, plus a richer transmission layer.</div>
+  <div class="takeaways-conclusion-box">
+```
+
+::: {.takeaway .takeaway-conclusion}
+**A disciplined survey-to-simulation pipeline is possible, but stronger dynamic evidence is still needed**
+
+Longitudinal evidence on within-person dynamics, plus a richer transmission layer.
+:::
+
+```{=html}
   </div>
 </div>
 ```
