@@ -474,23 +474,16 @@ Each row is a different lever; each column shows how its effects propagate over 
 
 ```{=html}
 <div class="evaluation-design-grid">
-  <div class="evaluation-design-benchmark-strip">
-    <span class="evaluation-design-benchmark-label">Benchmark:</span>
-    survey-grounded behavioural and profile patterns from the empirical backbone
-  </div>
-
   <div class="evaluation-design-cards">
     <div class="evaluation-design-card">
       <div class="evaluation-design-card-title">Why this matters</div>
       <div class="evaluation-design-item">candidate behavioural components for the ABM</div>
-      <div class="evaluation-design-item">usable only if they reproduce survey-grounded patterns</div>
+      <div class="evaluation-design-item">usable only if they reproduce empirical patterns</div>
     </div>
 
     <div class="evaluation-design-card">
       <div class="evaluation-design-card-title">What is tested</div>
-      <div class="evaluation-design-subsection">Targets</div>
-      <div class="evaluation-design-item">behavioural outcomes</div>
-      <div class="evaluation-design-subsection">Settings</div>
+      <div class="evaluation-design-subsection">Behavioural outcomes</div>
       <div class="evaluation-design-item">at baseline</div>
       <div class="evaluation-design-item">under controlled shifts</div>
     </div>
@@ -498,9 +491,9 @@ Each row is a different lever; each column shows how its effects propagate over 
     <div class="evaluation-design-card">
       <div class="evaluation-design-card-title">How performance is judged</div>
       <div class="evaluation-design-subsection">At baseline</div>
-      <div class="evaluation-design-item">outcomes: level and rank recovery</div>
+      <div class="evaluation-design-item">level and rank recovery</div>
       <div class="evaluation-design-subsection">Under controlled shifts</div>
-      <div class="evaluation-design-item">outcomes: who moves, how much, and placebo containment</div>
+      <div class="evaluation-design-item">who moves, how much, and whether irrelevant shifts stay small</div>
     </div>
   </div>
 </div>
