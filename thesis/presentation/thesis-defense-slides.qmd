@@ -170,7 +170,7 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
       </div>
       <div class="compact-pipeline-step fragment fade-up" data-fragment-index="2">
         <div class="compact-pipeline-arrow compact-pipeline-arrow-above">↓</div>
-        <div class="compact-pipeline-box">Theory-guided blocks</div>
+        <div class="compact-pipeline-box compact-pipeline-box-source">Theory-guided blocks</div>
       </div>
       <div class="compact-pipeline-step fragment fade-up" data-fragment-index="3">
         <div class="compact-pipeline-arrow compact-pipeline-arrow-above">↓</div>
@@ -183,7 +183,7 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
     </div>
   </div>
 
-  <div class="compact-backbone-panel fragment fade-in" data-fragment-index="2">
+  <div class="compact-backbone-panel compact-blocks-panel fragment fade-in" data-fragment-index="2">
     <div class="compact-backbone-title">Theory-guided blocks</div>
     <div class="compact-blocks-grid">
       <div class="compact-block-item">
@@ -422,34 +422,48 @@ Behavioural outcomes
 
 
 <!-- ============================================= -->
-<!-- SLIDE 12: ABM INTERVENTIONS -->
+<!-- SLIDE 9: ABM DYNAMICS -->
 <!-- ============================================= -->
 
-## ABM results: Dynamics re-rank the policy levers {.abm-leaderboard-slide}
+## ABM results: Similar cumulative effects can hide different dynamics {.abm-dynamics-slide}
+
+```{=html}
+<div class="abm-dynamics-grid">
+```
 
 ::: {.abm-slide-subtitle}
-The strongest one-step lever is not always the strongest cumulative lever.
+Each row is a different lever; each column shows how its effects propagate over time.
 :::
 
-::: {.abm-technical-note}
-C = 9-month campaign · S = 6-month outbreak wave · P = 1-tick pulse
-:::
+```{=html}
+<div class="abm-dynamics-main">
+  <div class="abm-dynamics-figure-wrap">
+    <img
+      class="abm-dynamics-figure"
+      src="assets/fig-05-dynamic-fingerprints.png"
+      alt="Dynamic response signatures for norm shift, outbreak wave, and trust erosion across mediator, vaccination willingness, and NPI index."
+    />
+  </div>
+  <div class="abm-dynamics-side">
+    <div class="abm-dynamics-side-item">
+      <div class="abm-dynamics-side-title">Norm campaign</div>
+      <div class="abm-dynamics-side-text">Longest behavioural tail, sustained by social reinforcement.</div>
+    </div>
+    <div class="abm-dynamics-side-item">
+      <div class="abm-dynamics-side-title">Outbreak wave</div>
+      <div class="abm-dynamics-side-text">Wave-like rise, then faster relaxation as perceived risk fades.</div>
+    </div>
+    <div class="abm-dynamics-side-item">
+      <div class="abm-dynamics-side-title">Trust erosion</div>
+      <div class="abm-dynamics-side-text">The most persistent tail appears mainly in vaccination willingness.</div>
+    </div>
+  </div>
+</div>
+```
 
-![](assets/fig-05-auc-leaderboard-upstream@2x.png){.abm-leaderboard-figure}
-
-::: {.abm-side-takeaways}
-::: {.abm-takeaway}
-**Norm shift:** strongest cumulative lever.
-:::
-
-::: {.abm-takeaway}
-**Credibility:** legitimacy is vaccine-specific; trust is broader.
-:::
-
-::: {.abm-takeaway}
-**Access facilitation:** can reverse through incidence feedback.
-:::
-:::
+```{=html}
+</div>
+```
 
 
 <!-- ============================================= -->
@@ -525,39 +539,39 @@ C = 9-month campaign · S = 6-month outbreak wave · P = 1-tick pulse
         <td>0.45</td>
         <td>0.67</td>
         <td>0.27</td>
-        <td>1.00</td>
+        <td>0.43</td>
       </tr>
       <tr>
         <td>Flu vaccinated (no habit)</td>
         <td>0.31</td>
         <td>0.64</td>
         <td>0.36</td>
-        <td>1.00</td>
+        <td>-0.26</td>
       </tr>
       <tr>
         <td>Masking (high pressure)</td>
         <td>0.27</td>
         <td>0.44</td>
         <td>0.07</td>
-        <td>1.00</td>
+        <td>0.16</td>
       </tr>
       <tr>
         <td>Masking (symptomatic, crowded)</td>
         <td>0.21</td>
         <td>0.38</td>
         <td>0.05</td>
-        <td>1.00</td>
+        <td>0.14</td>
       </tr>
       <tr>
         <td>Stay home (symptomatic)</td>
         <td>0.15</td>
         <td>0.32</td>
         <td>-0.02</td>
-        <td>1.00</td>
+        <td>0.07</td>
       </tr>
     </tbody>
   </table>
-  <div class="baseline-synthesis-footnote">Higher is better. Gini = rank recovery; Skill = level accuracy relative to a simple baseline, so the survey-grounded reference is normalized to 1.00.</div>
+  <div class="baseline-synthesis-footnote">Higher is better. Gini = rank recovery; Skill = level accuracy relative to a simple baseline. Reference values come from the empirical statistical models.</div>
 </div>
 ```
 
@@ -673,52 +687,43 @@ BACKUP
 
 
 <!-- ============================================= -->
-<!-- BACKUP: LLM EVALUATION DETAILS -->
+<!-- BACKUP: ABM INTERVENTIONS -->
 <!-- ============================================= -->
 
-## ABM results: Similar cumulative effects can hide different dynamics {.abm-dynamics-slide}
+## ABM results: Dynamics re-rank the policy levers {.abm-leaderboard-slide}
 
 ::: {.backup-marker}
 BACKUP
 :::
 
-```{=html}
-<div class="abm-dynamics-grid">
-```
-
 ::: {.abm-slide-subtitle}
-Each row is a different lever; each column shows how its effects propagate over time.
+The strongest one-step lever is not always the strongest cumulative lever.
 :::
 
-```{=html}
-<div class="abm-dynamics-main">
-  <div class="abm-dynamics-figure-wrap">
-    <img
-      class="abm-dynamics-figure"
-      src="assets/fig-05-dynamic-fingerprints.png"
-      alt="Dynamic response signatures for norm shift, outbreak wave, and trust erosion across mediator, vaccination willingness, and NPI index."
-    />
-  </div>
-  <div class="abm-dynamics-side">
-    <div class="abm-dynamics-side-item">
-      <div class="abm-dynamics-side-title">Norm campaign</div>
-      <div class="abm-dynamics-side-text">Longest behavioural tail, sustained by social reinforcement.</div>
-    </div>
-    <div class="abm-dynamics-side-item">
-      <div class="abm-dynamics-side-title">Outbreak wave</div>
-      <div class="abm-dynamics-side-text">Wave-like rise, then faster relaxation as perceived risk fades.</div>
-    </div>
-    <div class="abm-dynamics-side-item">
-      <div class="abm-dynamics-side-title">Trust erosion</div>
-      <div class="abm-dynamics-side-text">The most persistent tail appears mainly in vaccination willingness.</div>
-    </div>
-  </div>
-</div>
-```
+::: {.abm-technical-note}
+C = 9-month campaign · S = 6-month outbreak wave · P = 1-tick pulse
+:::
 
-```{=html}
-</div>
-```
+![](assets/fig-05-auc-leaderboard-upstream@2x.png){.abm-leaderboard-figure}
+
+::: {.abm-side-takeaways}
+::: {.abm-takeaway}
+**Norm shift:** strongest cumulative lever.
+:::
+
+::: {.abm-takeaway}
+**Credibility:** legitimacy is vaccine-specific; trust is broader.
+:::
+
+::: {.abm-takeaway}
+**Access facilitation:** can reverse through incidence feedback.
+:::
+:::
+
+
+<!-- ============================================= -->
+<!-- BACKUP: LLM EVALUATION DETAILS -->
+<!-- ============================================= -->
 
 ## LLM evaluation: Prompt strategies {.smaller visibility="hidden"}
 
