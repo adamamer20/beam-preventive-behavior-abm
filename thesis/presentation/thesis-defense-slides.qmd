@@ -38,17 +38,21 @@ execute:
 
 <br>
 
+::: {.fragment .fade-up data-fragment-index="1"}
 **Possible solution: ABMs**
 
 - They provide a computational laboratory for counterfactual policy analysis
 - But aggregate fit alone does not identify the right **micro-mechanism**
+:::
 
 <br>
 
+::: {.fragment .fade-up data-fragment-index="2"}
 **LLMs as the micro-mechanism?**
 
 - They promise richer behavioural rules
 - But that promise must be tested
+:::
 
 ::: {.notes}
 Policy design is fundamentally counterfactual. In social sciences, clean experiments are rare. ABMs can move this logic into computation, but they face the identification problem: aggregate fit doesn't guarantee correct micro-mechanisms.
@@ -70,18 +74,19 @@ Policy design is fundamentally counterfactual. In social sciences, clean experim
 
   <div class="pipeline-fork-svg" aria-hidden="true">
     <svg viewBox="0 0 180 240" preserveAspectRatio="none">
-      <path d="M 0 120 L 72 120 L 72 40 L 180 40" />
-      <path d="M 72 120 L 72 200 L 180 200" />
+      <path d="M 0 120 L 72 120" />
+      <path class="fragment fade-up" data-fragment-index="1" d="M 72 120 L 72 40 L 180 40" />
+      <path class="fragment fade-up" data-fragment-index="2" d="M 72 120 L 72 200 L 180 200" />
     </svg>
   </div>
 
   <div class="pipeline-branches">
-    <div class="pipeline-card pipeline-card-mid">
+    <div class="pipeline-card pipeline-card-mid fragment fade-up" data-fragment-index="1">
       <div class="pipeline-title">2a. Survey-grounded ABM</div>
       <div class="pipeline-body">statistical models as behavioural core<br>→ social interaction<br>→ epidemic feedback<br>→ policy comparison</div>
     </div>
 
-    <div class="pipeline-card pipeline-card-light">
+    <div class="pipeline-card pipeline-card-light fragment fade-up" data-fragment-index="2">
       <div class="pipeline-title">2b. LLM micro-validation</div>
       <div class="pipeline-body">benchmarked against the empirical benchmark<br>→ baseline reconstruction<br>→ controlled block-shift tests</div>
     </div>
@@ -649,13 +654,13 @@ Each row is a different intervention; each column shows how its effects propagat
 The same broad blocks recur across outcomes, but their importance changes.
 :::
 
-::: {.takeaway .takeaway-final}
+::: {.takeaway .takeaway-final .fragment .fade-up data-fragment-index="1"}
 **2. Embedding those relationships in an ABM changes the policy picture**
 
 Persistence, social reinforcement, and feedback make interventions differ in how their effects build and last over time.
 :::
 
-::: {.takeaway .takeaway-final}
+::: {.takeaway .takeaway-final .fragment .fade-up data-fragment-index="2"}
 **3. Current LLMs are not reliable enough for use inside the ABM**
 
 They recover some baseline patterns, but not coherent responses under the same block shifts.
@@ -663,7 +668,7 @@ They recover some baseline patterns, but not coherent responses under the same b
 
 ```{=html}
   </div>
-  <div class="takeaways-conclusion-box">
+  <div class="takeaways-conclusion-box fragment fade-up" data-fragment-index="3">
 ```
 
 ::: {.takeaway .takeaway-conclusion}
