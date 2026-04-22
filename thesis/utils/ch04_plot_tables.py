@@ -3643,6 +3643,7 @@ def render_perturbed_pareto_by_model(
     show_model_legend: bool = True,
     highlight_strategies: Sequence[str] | None = None,
     highlight_color: str = "#DC2626",
+    x_limits: tuple[float, float] | None = None,
     output_path: str | Path | None = None,
 ) -> str | None:
     if pert_summary.is_empty():
@@ -3827,6 +3828,11 @@ def render_perturbed_pareto_by_model(
         ax.grid(True, alpha=0.15, linewidth=0.6)
         ax.set_xlabel("Median PE magnitude Gini (active set)", fontsize=axis_label_size)
         ax.tick_params(axis="both", labelsize=axis_tick_size)
+    if x_limits is not None:
+        x_left, x_right = x_limits
+        if np.isfinite(x_left) and np.isfinite(x_right) and x_left < x_right:
+            ax_perf.set_xlim(float(x_left), float(x_right))
+            ax_contain.set_xlim(float(x_left), float(x_right))
 
     ax_perf.axhline(0, color="black", linewidth=1, alpha=0.25)
     ax_perf.set_ylabel("Median PE $\\mathrm{skill}$ (active set)", fontsize=axis_label_size)
@@ -3978,7 +3984,7 @@ def render_perturbed_pareto_by_model(
     fig.suptitle("Perturbed choice validation: performance and containment", fontsize=suptitle_size)
     fig.tight_layout(rect=[0.03, 0.05, 0.74, 0.94])
     if output_path is not None:
-        fig.savefig(Path(output_path), dpi=220, facecolor="white")
+        fig.savefig(Path(output_path), dpi=220, facecolor="white", bbox_inches="tight", pad_inches=0.05)
     plt.show()
     plt.close(fig)
     return None
