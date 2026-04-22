@@ -14,14 +14,13 @@ format:
     center: false
     width: 1600
     height: 900
-    margin: 0
+    margin: 0.05
     transition: none
     title-slide-attributes:
       data-background-color: "#fafbfc"
     mermaid:
       theme: neutral
     pdf-separate-fragments: true
-    pdf-max-pages-per-slide: 1
     self-contained: true
     embed-resources: true
 execute:
@@ -688,7 +687,11 @@ Longitudinal evidence on within-person dynamics and a richer transmission layer.
 Thank you
 :::
 
-## Backup Slides {#backup-slides .backup-divider background-color="#1e3a5f"}
+## {.center background-color="#1e3a5f"}
+
+::: {style="color: white; font-size: 1.5em; text-align: center;"}
+**Backup Slides**
+:::
 
 
 <!-- ============================================= -->
