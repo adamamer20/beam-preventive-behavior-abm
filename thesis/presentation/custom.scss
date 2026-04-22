@@ -601,6 +601,21 @@ $selection-bg: $accent-blue;
   display: none;
 }
 
+.reveal .slides section.backup-divider {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  padding: 0;
+  text-align: center;
+}
+
+.reveal .slides section.backup-divider > h2 {
+  color: #ffffff;
+  font-size: 1.5em;
+  margin: 0;
+}
+
 // Small text for notes
 .reveal .small {
   font-size: 0.75em;
