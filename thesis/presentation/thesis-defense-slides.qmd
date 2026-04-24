@@ -1,0 +1,967 @@
+---
+title: "From Survey Data to Behavioural ABMs"
+subtitle: "Evaluating the Limits of LLM Agents in Preventive Behaviour Modelling"
+author: "Adam Amer"
+institute: "<span class='title-slide-degree'>MSc in Artificial Intelligence · Bocconi University</span><span class='title-slide-advisors'><span class='title-slide-meta-line'><strong>Advisor:</strong> Prof. Alessia Melegaro</span></span>"
+format:
+  revealjs:
+    theme: [simple, custom.scss]
+    slide-number: true
+    progress: true
+    hash: true
+    navigation-mode: linear
+    controls: true
+    center: false
+    width: 1600
+    height: 900
+    margin: 0.05
+    transition: none
+    title-slide-attributes:
+      data-background-color: "#fafbfc"
+    mermaid:
+      theme: neutral
+    pdf-separate-fragments: true
+    self-contained: true
+    embed-resources: true
+execute:
+  echo: false
+  warning: false
+---
+
+## Research motivation: Policy needs counterfactuals {.smaller}
+
+**Core challenge**
+
+- Policymakers need to reason about alternative interventions
+- Social systems are hard to randomise cleanly
+- Outcomes depend on **heterogeneity, interaction, and feedback**
+
+<br>
+
+::: {.fragment .fade-up data-fragment-index="1"}
+**Possible solution: ABMs**
+
+- They provide a computational laboratory for counterfactual policy analysis
+- But aggregate fit alone does not identify the right **micro-mechanism**
+:::
+
+<br>
+
+::: {.fragment .fade-up data-fragment-index="2"}
+**LLMs as the micro-mechanism?**
+
+- They promise richer behavioural rules
+- But that promise must be tested
+:::
+
+::: {.notes}
+Policy design is fundamentally counterfactual. In social sciences, clean experiments are rare. ABMs can move this logic into computation, but they face the identification problem: aggregate fit doesn't guarantee correct micro-mechanisms.
+:::
+
+
+<!-- ============================================= -->
+<!-- SLIDE 3: THESIS PROPOSAL - PIPELINE -->
+<!-- ============================================= -->
+
+## Thesis proposal: from empirical backbone to simulation and validation {.pipeline-slide}
+
+```{=html}
+  <div class="pipeline-fork">
+  <div class="pipeline-card pipeline-card-blue pipeline-card-source">
+    <div class="pipeline-title">1. Empirical backbone</div>
+    <div class="pipeline-body">survey data<br>→ theory-guided blocks<br>→ statistical models</div>
+  </div>
+
+  <div class="pipeline-fork-svg" aria-hidden="true">
+    <svg viewBox="0 0 180 240" preserveAspectRatio="none">
+      <path d="M 0 120 L 72 120" />
+      <path class="fragment fade-up" data-fragment-index="1" d="M 72 120 L 72 40 L 180 40" />
+      <path class="fragment fade-up" data-fragment-index="2" d="M 72 120 L 72 200 L 180 200" />
+    </svg>
+  </div>
+
+  <div class="pipeline-branches">
+    <div class="pipeline-card pipeline-card-mid fragment fade-up" data-fragment-index="1">
+      <div class="pipeline-title">2a. Survey-grounded ABM</div>
+      <div class="pipeline-body">statistical models as behavioural core<br>→ social interaction<br>→ epidemic feedback<br>→ policy comparison</div>
+    </div>
+
+    <div class="pipeline-card pipeline-card-light fragment fade-up" data-fragment-index="2">
+      <div class="pipeline-title">2b. LLM micro-validation</div>
+      <div class="pipeline-body">benchmarked against the empirical benchmark<br>→ baseline reconstruction<br>→ controlled block-shift tests</div>
+    </div>
+  </div>
+</div>
+```
+
+
+<!-- ============================================= -->
+<!-- SLIDE 4: EMPIRICAL BACKBONE - DATA -->
+<!-- ============================================= -->
+
+## Empirical backbone: Data and outcomes {.backbone-slide}
+
+```{=html}
+<div class="backbone-grid">
+  <div class="backbone-panel">
+    <div class="backbone-panel-title">Survey base</div>
+    <div class="backbone-structured-text">
+      <div class="backbone-text-section">
+        <div class="backbone-text-label">Sample</div>
+        <div class="backbone-text-content">~22,000 respondents · 6 European countries · 2024 survey wave</div>
+      </div>
+      <div class="backbone-text-section">
+        <div class="backbone-text-label">Countries</div>
+        <div class="backbone-text-content">Italy, Spain, France, Germany, Hungary, UK</div>
+      </div>
+      <div class="backbone-text-section">
+        <div class="backbone-text-label">Survey domains</div>
+        <div class="backbone-text-content">Demographics, health, vaccine beliefs, information environment, social exposure, trust, barriers, moral orientation</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="backbone-panel">
+    <div class="backbone-panel-title">Core prevention outcomes</div>
+    <table class="backbone-outcomes-table">
+      <thead>
+        <tr>
+          <th>Outcome</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>COVID vaccination willingness</td>
+          <td>first/second dose phase</td>
+        </tr>
+        <tr>
+          <td>Flu vaccination</td>
+          <td>2023/2024 uptake</td>
+        </tr>
+        <tr>
+          <td>NPI behaviours</td>
+          <td>
+            <ul class="backbone-compact-list">
+              <li>masking when symptomatic</li>
+              <li>staying home when symptomatic</li>
+              <li>masking under high epidemic pressure</li>
+            </ul>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+```
+
+
+<!-- ============================================= -->
+<!-- SLIDE 5: EMPIRICAL BACKBONE - METHOD -->
+<!-- ============================================= -->
+
+## Empirical backbone: From survey items to statistical models {.compact-backbone-slide}
+
+```{=html}
+<div class="compact-backbone-grid">
+  <div class="compact-backbone-panel">
+    <div class="compact-backbone-title">Reduction pipeline</div>
+    <div class="compact-pipeline">
+      <div class="compact-pipeline-step">
+        <div class="compact-pipeline-box">Survey items</div>
+      </div>
+      <div class="compact-pipeline-step fragment fade-up" data-fragment-index="1">
+        <div class="compact-pipeline-arrow compact-pipeline-arrow-above">↓</div>
+        <div class="compact-pipeline-box">Derived variables and indices</div>
+      </div>
+      <div class="compact-pipeline-step fragment fade-up" data-fragment-index="2">
+        <div class="compact-pipeline-arrow compact-pipeline-arrow-above">↓</div>
+        <div class="compact-pipeline-box compact-pipeline-box-source">Theory-guided blocks</div>
+      </div>
+      <div class="compact-pipeline-step fragment fade-up" data-fragment-index="3">
+        <div class="compact-pipeline-arrow compact-pipeline-arrow-above">↓</div>
+        <div class="compact-pipeline-box">Importance screening</div>
+      </div>
+      <div class="compact-pipeline-step fragment fade-up" data-fragment-index="4">
+        <div class="compact-pipeline-arrow compact-pipeline-arrow-above">↓</div>
+        <div class="compact-pipeline-box compact-pipeline-box-accent">Final statistical models</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="compact-backbone-panel compact-blocks-panel fragment fade-in" data-fragment-index="2">
+    <div class="compact-backbone-title">Theory-guided blocks</div>
+    <div class="compact-blocks-grid">
+      <div class="compact-block-item">
+        <div class="compact-block-name">Institutional trust</div>
+        <div class="compact-block-desc">Trust in vaccine information from institutions and experts</div>
+      </div>
+      <div class="compact-block-item">
+        <div class="compact-block-name">CoVax legitimacy</div>
+        <div class="compact-block-desc">Legitimacy of vaccination governance</div>
+      </div>
+      <div class="compact-block-item">
+        <div class="compact-block-name">Disposition (5C)</div>
+        <div class="compact-block-desc">Baseline pro-vaccine disposition</div>
+      </div>
+      <div class="compact-block-item">
+        <div class="compact-block-name">Stakes</div>
+        <div class="compact-block-desc">Perceived disease stakes</div>
+      </div>
+      <div class="compact-block-item">
+        <div class="compact-block-name">Norms</div>
+        <div class="compact-block-desc">Perceived vaccination norms</div>
+      </div>
+      <div class="compact-block-item">
+        <div class="compact-block-name">Moral orientation</div>
+        <div class="compact-block-desc">Moral-ideological orientation</div>
+      </div>
+      <div class="compact-block-item">
+        <div class="compact-block-name">Habit</div>
+        <div class="compact-block-desc">Behavioural inertia</div>
+      </div>
+      <div class="compact-block-item">
+        <div class="compact-block-name">Controls</div>
+        <div class="compact-block-desc">Demographic and socioeconomic background</div>
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+
+<!-- ============================================= -->
+<!-- SLIDE 6: EMPIRICAL RESULTS - BLOCK IMPORTANCE -->
+<!-- ============================================= -->
+
+## Empirical results: Shared blocks, different importance {.empirical-heatmap-slide}
+
+```{=html}
+<div class="empirical-heatmap-grid">
+  <div class="empirical-heatmap-figure-panel">
+    <div class="empirical-heatmap-explainer">Higher score = more unique predictive signal contributed by that block for that outcome.</div>
+    <div class="empirical-heatmap-figure-wrap">
+      <div class="empirical-heatmap-image-stack">
+        <img
+          class="empirical-heatmap-figure fragment fade-out"
+          data-fragment-index="1"
+          src="assets/fig-lobo-bic-block-outcome-step0.png"
+          alt="Heatmap of block importance by outcome from the thesis, without highlighted blocks, using the presentation color scale."
+        />
+        <img
+          class="empirical-heatmap-figure empirical-heatmap-figure-overlay fragment current-visible"
+          data-fragment-index="1"
+          src="assets/fig-lobo-bic-block-outcome-step1.png"
+          alt="Heatmap with highlighted COVID vaccination blocks."
+        />
+        <img
+          class="empirical-heatmap-figure empirical-heatmap-figure-overlay fragment current-visible"
+          data-fragment-index="2"
+          src="assets/fig-lobo-bic-block-outcome-step2.png"
+          alt="Heatmap with highlighted COVID and flu vaccination blocks."
+        />
+        <img
+          class="empirical-heatmap-figure empirical-heatmap-figure-overlay fragment fade-in"
+          data-fragment-index="3"
+          src="assets/fig-lobo-bic-block-outcome-step3.png"
+          alt="Heatmap with highlighted COVID, flu, and NPI blocks."
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="empirical-heatmap-takeaways">
+    <div class="empirical-heatmap-takeaway empirical-heatmap-takeaway-covid">
+      <div class="empirical-heatmap-takeaway-focus fragment current-visible" data-fragment-index="1" aria-hidden="true"></div>
+      <span class="empirical-heatmap-label">COVID vaccination willingness:</span>
+      stakes, with trust, legitimacy, and disposition also contributing
+    </div>
+    <div class="empirical-heatmap-takeaway empirical-heatmap-takeaway-flu">
+      <div class="empirical-heatmap-takeaway-focus fragment current-visible" data-fragment-index="2" aria-hidden="true"></div>
+      <span class="empirical-heatmap-label">Flu vaccination:</span>
+      dominated by habit; without inertia, controls remain informative
+    </div>
+    <div class="empirical-heatmap-takeaway empirical-heatmap-takeaway-npi">
+      <div class="empirical-heatmap-takeaway-focus fragment fade-in" data-fragment-index="3" aria-hidden="true"></div>
+      <span class="empirical-heatmap-label">NPIs:</span>
+      moral orientation, with stakes still relevant
+    </div>
+  </div>
+</div>
+```
+
+
+<!-- ============================================= -->
+<!-- SLIDE 7: EMPIRICAL RESULTS - PERTURBATION -->
+<!-- ============================================= -->
+
+## Empirical results: Which blocks increase prevention most? {.perturbation-slide}
+
+```{=html}
+<div class="perturbation-slide-grid">
+  <div class="perturbation-slide-explainer"><strong>The figure shows the fitted change</strong> in each prevention outcome when <strong>one retained block</strong> is shifted, <strong>one at a time</strong>, from a realistic low to a realistic high value, <strong>holding the rest of the profile fixed</strong>.</div>
+
+  <div class="perturbation-slide-figure-wrap">
+    <div class="perturbation-slide-figure-stack">
+      <img
+        class="perturbation-slide-figure fragment fade-out"
+        data-fragment-index="1"
+        src="assets/fig-mutable-ref-3x2-step0.png"
+        alt="Reference perturbation effects for retained variables by outcome, without highlighted panels."
+      />
+      <img
+        class="perturbation-slide-figure perturbation-slide-figure-overlay fragment current-visible"
+        data-fragment-index="1"
+        src="assets/fig-mutable-ref-3x2-step1.png"
+        alt="Reference perturbation effects with the COVID willingness panel highlighted."
+      />
+      <img
+        class="perturbation-slide-figure perturbation-slide-figure-overlay fragment current-visible"
+        data-fragment-index="2"
+        src="assets/fig-mutable-ref-3x2-step2.png"
+        alt="Reference perturbation effects with the flu vaccination panels highlighted."
+      />
+      <img
+        class="perturbation-slide-figure perturbation-slide-figure-overlay fragment fade-in"
+        data-fragment-index="3"
+        src="assets/fig-mutable-ref-3x2-step3.png"
+        alt="Reference perturbation effects with the NPI panels highlighted."
+      />
+    </div>
+  </div>
+
+  <div class="perturbation-slide-takeaways">
+    <div class="perturbation-slide-takeaway perturbation-slide-takeaway-covid">
+      <span class="perturbation-slide-label">COVID willingness:</span>
+      stakes show the largest fitted shift
+    </div>
+    <div class="perturbation-slide-takeaway perturbation-slide-takeaway-flu">
+      <span class="perturbation-slide-label">Flu vaccination:</span>
+      short-run leverage is limited because behaviour is habit-driven
+    </div>
+    <div class="perturbation-slide-takeaway perturbation-slide-takeaway-npi">
+      <span class="perturbation-slide-label">NPIs:</span>
+      effects are more dispersed because headroom differs across profiles
+    </div>
+    <div class="perturbation-slide-takeaway-focus perturbation-slide-takeaway-focus-covid fragment current-visible" data-fragment-index="1" aria-hidden="true"></div>
+    <div class="perturbation-slide-takeaway-focus perturbation-slide-takeaway-focus-flu fragment current-visible" data-fragment-index="2" aria-hidden="true"></div>
+    <div class="perturbation-slide-takeaway-focus perturbation-slide-takeaway-focus-npi fragment fade-in" data-fragment-index="3" aria-hidden="true"></div>
+  </div>
+</div>
+```
+
+
+<!-- ============================================= -->
+<!-- SLIDE 8: ABM ARCHITECTURE -->
+<!-- ============================================= -->
+
+## ABM architecture: How agents update over time {.abm-bridge-slide}
+
+```{=html}
+<div class="abm-process-subtitle">
+  At each step, agents move gradually toward targets shaped by policy, social exposure, and epidemic conditions.
+</div>
+
+<div class="abm-process-wrap">
+  <div class="abm-process-grid">
+    <div class="abm-process-box">
+      <div class="abm-process-step">1</div>
+      <div class="abm-process-title">Initialisation from the survey</div>
+      <div class="abm-process-body">
+        Each agent starts from a realistic profile drawn from the survey.
+      </div>
+    </div>
+
+    <div class="abm-process-arrow fragment fade-up" data-fragment-index="1" aria-hidden="true">→</div>
+
+    <div class="abm-process-box abm-process-target fragment fade-up" data-fragment-index="1">
+      <div class="abm-process-step">2</div>
+      <div class="abm-process-title">A target is computed</div>
+      <div class="abm-process-body">
+        Each mutable state is pulled toward a target based on:
+      </div>
+      <ul class="abm-target-list">
+        <li>the agent's survey-based level</li>
+        <li>policy shifts</li>
+        <li>social exposure</li>
+        <li>local epidemic conditions</li>
+      </ul>
+    </div>
+
+    <div class="abm-process-arrow fragment fade-up" data-fragment-index="2" aria-hidden="true">→</div>
+
+    <div class="abm-process-box fragment fade-up" data-fragment-index="2">
+      <div class="abm-process-step">3</div>
+      <div class="abm-process-title">Gradual update</div>
+      <div class="abm-process-body">
+        Agents move only part of the way toward that target at each step.
+      </div>
+      <div class="abm-speed-grid">
+        <div><strong>Slow:</strong> trust, norms</div>
+        <div><strong>Fast:</strong> perceived risk / danger</div>
+      </div>
+    </div>
+
+    <div class="abm-process-arrow fragment fade-up" data-fragment-index="3" aria-hidden="true">→</div>
+
+    <div class="abm-process-box fragment fade-up" data-fragment-index="3">
+      <div class="abm-process-step">4</div>
+      <div class="abm-process-title">Behaviour and local incidence</div>
+      <div class="abm-process-body">
+        <div>Behaviour is recomputed from the statistical models.</div>
+        <div>Local incidence is updated from average protection.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="abm-feedback-loop fragment fade-up" data-fragment-index="4" aria-hidden="true">
+    <svg class="abm-feedback-svg" viewBox="0 0 1000 92" preserveAspectRatio="none">
+      <path class="abm-feedback-curve" d="M 856 8 L 856 56 L 322 56 L 322 14"></path>
+      <path class="abm-feedback-head-fill" d="M 322 12 L 314 20 L 330 20 Z"></path>
+    </svg>
+  </div>
+</div>
+
+<div class="abm-process-footnote">
+  Gradual adjustment: Ouellette & Wood (1998); Gardner (2014). 
+  Slower trust dynamics: Devine &amp; Valgarsson (2024). 
+  Social exposure and norm diffusion: McPherson et al. (2001); Granovetter (1978); Centola &amp; Macy (2007).
+</div>
+```
+
+
+<!-- ============================================= -->
+<!-- SLIDE 9: ABM DYNAMICS -->
+<!-- ============================================= -->
+
+## ABM results: Interventions can unfold differently over time {.abm-dynamics-slide}
+
+```{=html}
+<div class="abm-dynamics-grid">
+```
+
+::: {.abm-slide-subtitle}
+Each row is a different intervention; each column shows how its effects propagate over time.
+:::
+
+```{=html}
+<div class="abm-dynamics-main">
+  <div class="abm-dynamics-figure-wrap">
+    <div class="abm-dynamics-figure-stack">
+      <img
+        class="abm-dynamics-figure fragment fade-out"
+        data-fragment-index="1"
+        src="assets/fig-05-dynamic-fingerprints-step0.png"
+        alt="Dynamic response signatures for norm shift, outbreak wave, and trust erosion across mediator, vaccination willingness, and NPI index."
+      />
+      <img
+        class="abm-dynamics-figure abm-dynamics-figure-overlay fragment current-visible"
+        data-fragment-index="1"
+        src="assets/fig-05-dynamic-fingerprints-step1.png"
+        alt="Dynamic response signatures with norm campaign highlighted."
+      />
+      <img
+        class="abm-dynamics-figure abm-dynamics-figure-overlay fragment current-visible"
+        data-fragment-index="2"
+        src="assets/fig-05-dynamic-fingerprints-step2.png"
+        alt="Dynamic response signatures with outbreak wave highlighted."
+      />
+      <img
+        class="abm-dynamics-figure abm-dynamics-figure-overlay fragment fade-in"
+        data-fragment-index="3"
+        src="assets/fig-05-dynamic-fingerprints-step3.png"
+        alt="Dynamic response signatures with trust erosion highlighted."
+      />
+    </div>
+  </div>
+  <div class="abm-dynamics-side">
+    <div class="abm-dynamics-side-item">
+      <div class="abm-dynamics-side-title">Norm campaign</div>
+      <div class="abm-dynamics-side-text">Longest behavioural tail, sustained by social reinforcement.</div>
+    </div>
+    <div class="abm-dynamics-side-item">
+      <div class="abm-dynamics-side-title">Outbreak wave</div>
+      <div class="abm-dynamics-side-text">Wave-like rise, then faster relaxation as perceived risk fades.</div>
+    </div>
+    <div class="abm-dynamics-side-item">
+      <div class="abm-dynamics-side-title">Trust erosion</div>
+      <div class="abm-dynamics-side-text">The most persistent tail appears mainly in vaccination willingness.</div>
+    </div>
+    <div class="abm-dynamics-side-focus abm-dynamics-side-focus-norm fragment current-visible" data-fragment-index="1" aria-hidden="true"></div>
+    <div class="abm-dynamics-side-focus abm-dynamics-side-focus-outbreak fragment current-visible" data-fragment-index="2" aria-hidden="true"></div>
+    <div class="abm-dynamics-side-focus abm-dynamics-side-focus-trust fragment fade-in" data-fragment-index="3" aria-hidden="true"></div>
+  </div>
+</div>
+```
+
+```{=html}
+</div>
+```
+
+
+<!-- ============================================= -->
+<!-- SLIDE 11: LLM EVALUATION - DESIGN -->
+<!-- ============================================= -->
+
+## LLM micro-validation: Can LLM agents reproduce the empirical benchmark? {.evaluation-design-slide}
+
+```{=html}
+<div class="evaluation-design-grid">
+  <div class="evaluation-design-cards">
+    <div class="evaluation-design-card">
+      <div class="evaluation-design-card-title">Why this matters</div>
+      <div class="evaluation-design-item">candidate behavioural components for the ABM</div>
+      <div class="evaluation-design-item">usable only if they reproduce empirical patterns</div>
+    </div>
+
+    <div class="evaluation-design-card">
+      <div class="evaluation-design-card-title">What is tested</div>
+      <div class="evaluation-design-subsection">Behavioural outcomes</div>
+      <div class="evaluation-design-item">at baseline</div>
+      <div class="evaluation-design-item">under controlled shifts</div>
+    </div>
+
+    <div class="evaluation-design-card">
+      <div class="evaluation-design-card-title">How performance is judged</div>
+      <div class="evaluation-design-subsection">At baseline</div>
+      <div class="evaluation-design-item">level and rank recovery</div>
+      <div class="evaluation-design-subsection">Under controlled shifts</div>
+      <div class="evaluation-design-item">who moves, how much, and whether irrelevant shifts stay small</div>
+    </div>
+  </div>
+</div>
+```
+
+
+<!-- ============================================= -->
+<!-- SLIDE 12: LLM RESULTS - BASELINE -->
+<!-- ============================================= -->
+
+## LLM micro-validation: Baseline structure is partly recovered {.baseline-synthesis-slide}
+
+```{=html}
+<div class="baseline-synthesis-table">
+  <div class="baseline-synthesis-footnote">
+    <span><strong>Gini (rank recovery):</strong> <strong>1 = perfect ordering</strong>, <strong>0 = no rank recovery</strong></span>
+    <span><strong>Skill (level recovery):</strong> <strong>1 = perfect</strong>, <strong>0 = baseline</strong>, <strong>&lt; 0 = worse</strong></span>
+  </div>
+  <table class="baseline-synthesis-metrics">
+    <colgroup>
+      <col class="baseline-synthesis-outcome-col" />
+      <col class="baseline-synthesis-number-col" />
+      <col class="baseline-synthesis-number-col" />
+      <col class="baseline-synthesis-number-col" />
+      <col class="baseline-synthesis-number-col" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th rowspan="2">Outcome</th>
+        <th colspan="2">Rank recovery (Gini)</th>
+        <th colspan="2">Level recovery (Skill)</th>
+      </tr>
+      <tr>
+        <th>LLM</th>
+        <th>Statistical ref.</th>
+        <th>LLM</th>
+        <th>Statistical ref.</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>CoVax willingness</td>
+        <td class="baseline-synthesis-llm-value">0.45</td>
+        <td class="baseline-synthesis-reference-value">0.67</td>
+        <td class="baseline-synthesis-llm-value">0.27</td>
+        <td class="baseline-synthesis-reference-value">0.43</td>
+      </tr>
+      <tr>
+        <td>Flu vaccinated (no habit)</td>
+        <td class="baseline-synthesis-llm-value">0.31</td>
+        <td class="baseline-synthesis-reference-value">0.64</td>
+        <td class="baseline-synthesis-llm-value">-0.40</td>
+        <td class="baseline-synthesis-reference-value">-0.26</td>
+      </tr>
+      <tr>
+        <td>Masking (high pressure)</td>
+        <td class="baseline-synthesis-llm-value">0.27</td>
+        <td class="baseline-synthesis-reference-value">0.44</td>
+        <td class="baseline-synthesis-llm-value">0.07</td>
+        <td class="baseline-synthesis-reference-value">0.16</td>
+      </tr>
+      <tr>
+        <td>Masking (symptomatic, crowded)</td>
+        <td class="baseline-synthesis-llm-value">0.21</td>
+        <td class="baseline-synthesis-reference-value">0.38</td>
+        <td class="baseline-synthesis-llm-value">0.05</td>
+        <td class="baseline-synthesis-reference-value">0.14</td>
+      </tr>
+      <tr>
+        <td>Stay home (symptomatic)</td>
+        <td class="baseline-synthesis-llm-value">0.15</td>
+        <td class="baseline-synthesis-reference-value">0.32</td>
+        <td class="baseline-synthesis-llm-value">-0.02</td>
+        <td class="baseline-synthesis-reference-value">0.07</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+```
+
+
+<!-- ============================================= -->
+<!-- SLIDE 13: LLM RESULTS - COUNTERFACTUAL BREAKDOWN -->
+<!-- ============================================= -->
+
+## LLM micro-validation: The model does not respond coherently to block shifts {.perturbed-results-slide}
+
+```{=html}
+  <div class="perturbed-results-top">
+  <div class="perturbed-results-subtitle">
+    <strong>Under the same block shifts</strong> used in the empirical benchmark, the model often <strong>overreacts or underreacts</strong>, making it <strong>unreliable for use in an ABM</strong>.
+  </div>
+</div>
+
+<div class="perturbed-results-single">
+  <img
+    class="perturbed-results-figure"
+    src="assets/fig-perturbed-pareto-discussion-gptoss120b-medium.png"
+    alt="Median perturbation-effect ordering and placebo containment by prompting strategy for GPT-OSS 120B medium."
+  />
+  <img
+    class="perturbed-results-figure perturbed-results-figure-overlay fragment"
+    data-fragment-index="1"
+    src="assets/fig-perturbed-pareto-discussion-gptoss120b-medium-boxed.png"
+    alt="Median perturbation-effect ordering and placebo containment by prompting strategy for GPT-OSS 120B medium, with paired contrast highlighted."
+  />
+</div>
+```
+
+
+<!-- ============================================= -->
+<!-- SLIDE 14: TAKEAWAYS -->
+<!-- ============================================= -->
+
+## Takeaways {.takeaways-slide}
+
+```{=html}
+<div class="takeaways-layout">
+  <div class="takeaways-main">
+```
+
+::: {.takeaway .takeaway-final}
+**1. Prevention draws on the same broad blocks, but not in the same way**
+
+The same broad blocks recur across outcomes, but their importance changes.
+:::
+
+::: {.takeaway .takeaway-final .fragment .fade-up data-fragment-index="1"}
+**2. Embedding those relationships in an ABM changes the policy picture**
+
+Persistence, social reinforcement, and feedback make interventions differ in how their effects build and last over time.
+:::
+
+::: {.takeaway .takeaway-final .fragment .fade-up data-fragment-index="2"}
+**3. Current LLMs are not reliable enough for use inside the ABM**
+
+They recover some baseline patterns, but not coherent responses under the same block shifts.
+:::
+
+```{=html}
+  </div>
+  <div class="takeaways-conclusion-box fragment fade-up" data-fragment-index="3">
+```
+
+::: {.takeaway .takeaway-conclusion}
+**A disciplined survey-to-simulation pipeline is possible, but stronger dynamic evidence is still needed**
+
+Longitudinal evidence on within-person dynamics and a richer transmission layer.
+:::
+
+```{=html}
+  </div>
+</div>
+```
+
+<!-- ============================================= -->
+<!-- BACKUP SLIDES -->
+<!-- ============================================= -->
+
+## Thank you {#thank-you .thank-you-slide background-color="#fafbfc"}
+
+::: {.thank-you-slide-inner}
+Thank you
+:::
+
+## {.center background-color="#1e3a5f"}
+
+::: {style="color: white; font-size: 1.5em; text-align: center;"}
+**Backup Slides**
+:::
+
+
+<!-- ============================================= -->
+<!-- BACKUP: BLOCK DICTIONARY -->
+<!-- ============================================= -->
+
+## Construct dictionary {.smaller visibility="hidden"}
+
+::: {.backup-marker}
+BACKUP
+:::
+
+| Construct | What it captures | Example components |
+|---|---|---|
+| **Stakes** | Perceived disease threat and exposure | perceived danger, vulnerability, infection likelihood, fear |
+| **Institutional trust** | Confidence in public-health and scientific institutions | trust in government, health authorities, science |
+| **Legitimacy** | Acceptance of the policy process and rollout | fairness of decisions, acceptance of governance and mandates |
+| **Disposition** | General vaccine orientation | vaccine confidence, perceived vaccine risk/cost, general attitudes |
+| **Habit** | Inertia from past preventive behaviour | prior flu vaccination, routine uptake |
+| **Moral orientation** | Prosocial vs authority/binding framing | individualising and binding moral foundations |
+| **Norms** | Perceived prevalence and social expectations | what others do, what others approve of |
+| **Controls / constraints** | Background and practical conditions shaping feasible action | age, health, access barriers, household and socioeconomic conditions |
+
+::: {style="margin-top: 0.7rem; padding: 0.45rem 0.6rem; border-left: 3px solid #5b92c8; background: rgba(232, 240, 247, 0.45); font-size: 0.72em; line-height: 1.3;"}
+**Key distinction**
+
+**Trust** = confidence in institutions  
+**Legitimacy** = acceptance of the policy process  
+**Disposition** = orientation toward the vaccine itself
+:::
+
+
+<!-- ============================================= -->
+<!-- BACKUP: ABM INTERVENTIONS -->
+<!-- ============================================= -->
+
+## ABM results: Interventions differ in how their effects unfold over time {.abm-leaderboard-slide}
+
+::: {.backup-marker}
+BACKUP
+:::
+
+::: {.abm-slide-subtitle}
+Dynamics change which interventions matter most over time.
+:::
+
+::: {.abm-technical-note}
+C = 9-month campaign · S = 6-month outbreak wave · P = 1-tick pulse
+:::
+
+![](assets/fig-05-auc-leaderboard-upstream@2x.png){.abm-leaderboard-figure}
+
+::: {.abm-side-takeaways}
+::: {.abm-takeaway}
+**Norm shift:** strongest cumulative intervention.
+:::
+
+::: {.abm-takeaway}
+**Credibility:** legitimacy is vaccine-specific; trust is broader.
+:::
+
+::: {.abm-takeaway}
+**Access facilitation:** can reverse through incidence feedback.
+:::
+:::
+
+
+<!-- ============================================= -->
+<!-- BACKUP: LLM EVALUATION DETAILS -->
+<!-- ============================================= -->
+
+## LLM evaluation: Prompt strategies {.smaller visibility="hidden"}
+
+::: {.backup-marker}
+BACKUP
+:::
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+**Prompting variants tested:**
+
+- Zero-shot description
+- Profile-with-demographics
+- Chain-of-thought reasoning
+- Paired comparison (explicit contrast)
+
+<br>
+
+**Models evaluated:**
+
+- GPT-4 / GPT-3.5
+- Claude variants
+- Open-source alternatives
+
+:::
+
+::: {.column width="50%"}
+
+**Metrics:**
+
+| Metric | Measures |
+|--------|----------|
+| MAE | Level accuracy |
+| Spearman ρ | Rank agreement |
+| Calibration slope | Compression degree |
+| Paired accuracy | Contrast discrimination |
+
+<br>
+
+::: {.muted}
+Full results in appendix
+:::
+
+:::
+
+::::
+
+
+<!-- ============================================= -->
+<!-- BACKUP: LLM RESULTS - MISPLACED MECHANISM -->
+<!-- ============================================= -->
+
+## LLM micro-validation: The mechanism is misplaced {.mechanism-slide}
+
+::: {.backup-marker}
+BACKUP
+:::
+
+```{=html}
+<div class="mechanism-slide-top">
+  <div class="mechanism-slide-subtitle">
+    Under perturbation, responses are not only mis-scaled; they are assigned to the wrong blocks and spread too broadly.
+  </div>
+</div>
+
+<div class="mechanism-slide-grid">
+  <div class="mechanism-slide-panel">
+    <div class="mechanism-slide-label">Behavioural perturbations</div>
+    <div class="mechanism-slide-callout">Stakes underweighted; trust / legitimacy relatively overweighted</div>
+    <img
+      class="mechanism-slide-figure"
+      src="assets/fig-perturbed-block-sensitivity-lobo.png"
+      alt="Perturbed block-sensitivity alignment with reference LOBO importance for behavioural outcomes."
+    />
+  </div>
+
+  <div class="mechanism-slide-panel">
+    <div class="mechanism-slide-label">Profile perturbations</div>
+    <div class="mechanism-slide-callout">All blocks above the diagonal → systematic oversensitivity</div>
+    <img
+      class="mechanism-slide-figure"
+      src="assets/fig-belief-signal-block-sensitivity-alignment-cropped.png"
+      alt="Signal-block sensitivity alignment for perturbed psychological profile updates."
+    />
+  </div>
+</div>
+```
+
+
+<!-- ============================================= -->
+<!-- BACKUP: ABM EQUATIONS -->
+<!-- ============================================= -->
+
+## ABM equations: Partial adjustment {.smaller visibility="hidden"}
+
+::: {.backup-marker}
+BACKUP
+:::
+
+**State update:**
+
+$$
+s_{i,u}(t+1) = s_{i,u}(t) + \kappa_u\big(\tilde s_{i,u}(t)-s_{i,u}(t)\big)
+$$
+
+where $\kappa_u \in \{k_{\text{fast}}, k_{\text{slow}}\}$
+
+<br>
+
+**Target composition:**
+
+$$
+\tilde s_{i,u}(t) = s_{i,u}^{\text{base}} + \Delta^{\text{policy}}(t) + \Delta^{\text{social}}(t) + \Delta^{\text{incidence}}(t)
+$$
+
+<br>
+
+**Norm updating (threshold):**
+
+$$
+\text{norm}_{i}(t+1) = \text{norm}_{i}(t) + \alpha_i \cdot \mathbb{1}\left[\text{observed} > \theta_i\right] \cdot g(\text{observed})
+$$
+
+
+<!-- ============================================= -->
+<!-- BACKUP: MORRIS SENSITIVITY -->
+<!-- ============================================= -->
+
+## Sensitivity analysis: Robustness depends on different mechanisms {.abm-sensitivity-slide}
+
+::: {.backup-marker}
+BACKUP
+:::
+
+```{=html}
+<div class="abm-sensitivity-grid">
+```
+
+::: {.abm-slide-subtitle}
+Read across rows: brighter cells mark where sensitivity is concentrated within each scenario–outcome pair.
+:::
+
+```{=html}
+<div class="abm-sensitivity-main">
+  <div class="abm-sensitivity-figure-wrap">
+    <img
+      class="abm-sensitivity-figure"
+      src="assets/fig-05-sensitivity-heatmap.png"
+      alt="Row-normalised sensitivity heatmap showing which mechanism families dominate uncertainty within each intervention-outcome pair."
+    />
+  </div>
+  <div class="abm-sensitivity-side">
+    <div class="abm-sensitivity-side-item abm-sensitivity-side-item-persistence">
+      <div class="abm-sensitivity-side-title">Credibility repair</div>
+      <div class="abm-sensitivity-side-text">Both repair scenarios load mainly on <strong>persistence</strong> (0.38, 0.44), so robustness depends on slow trust and legitimacy relaxation.</div>
+    </div>
+    <div class="abm-sensitivity-side-item abm-sensitivity-side-item-diffusion">
+      <div class="abm-sensitivity-side-title">Norm shift</div>
+      <div class="abm-sensitivity-side-text">Sensitivity concentrates in <strong>social diffusion</strong> (0.41), with <strong>stochasticity</strong> also relevant (0.33).</div>
+    </div>
+    <div class="abm-sensitivity-side-item abm-sensitivity-side-item-incidence">
+      <div class="abm-sensitivity-side-title">Outbreak wave</div>
+      <div class="abm-sensitivity-side-text">Sensitivity is almost entirely <strong>incidence-loop</strong> driven (0.94), consistent with a risk-salience shock.</div>
+    </div>
+  </div>
+</div>
+```
+
+```{=html}
+</div>
+```
+
+## Morris sensitivity: Full results {.smaller visibility="hidden"}
+
+::: {.backup-marker}
+BACKUP
+:::
+
+**Elementary effects screening:**
+
+- Parameter space partitioned into mechanism families
+- μ* captures average absolute effect
+- σ captures interaction/non-linearity
+
+<br>
+
+**Key insights:**
+
+1. Credibility interventions → persistence parameters dominate
+2. Norm interventions → social diffusion parameters dominate
+3. Access interventions → mixed (incidence + stochastic)
+4. Cumulative AUC rankings more stable than point-in-time rankings
+
+::: {.muted}
+Confirms that intervention types work through distinct mechanisms, and that model structure drives the differentiation
+:::

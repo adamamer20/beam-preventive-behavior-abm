@@ -4,14 +4,13 @@ from __future__ import annotations
 
 import asyncio
 import json
-import random
 from dataclasses import dataclass
 from typing import Any
 
-from beam_abm.llm.backends.base import LLMRequest
 from beam_abm.llm.backends.factory import get_backend
 from beam_abm.llm.config import get_llm_runtime_settings
 from beam_abm.llm.schemas.model_config import ModelConfig
+from beam_abm.llm.utils.backoff import jittered_exponential_backoff
 
 
 @dataclass(frozen=True)
@@ -38,8 +37,7 @@ def _retry_sleep_seconds(error: Exception, attempt_index: int) -> float:
         cap = 60.0
     if "timed out" in msg or "timeout" in msg:
         base = max(base, 1.0)
-    delay = min(cap, base * (2.0**attempt_index))
-    return delay * (0.5 + random.random())
+    return jittered_exponential_backoff(attempt_index, base=base, cap=cap)
 
 
 async def sample_one(
@@ -281,43 +279,3 @@ async def sample_many_concurrent(
     all_batches = await asyncio.gather(*[run_for_prompt(i, p) for i, p in enumerate(prompts)])
     results.extend(all_batches)
     return results
-
-
-def build_requests_for_concurrent(
-    *,
-    model: ModelConfig,
-    prompts: list[str],
-    messages_list: list[list[dict[str, str]]] | None = None,
-    max_model_len: int | None = None,
-    temperature: float,
-    top_p: float,
-    use_structured_output: bool,
-    response_model: type | list[type] | None,
-    method: str,
-    record_ids: list[str | None] | None = None,
-    prompt_strategies: list[str | None] | None = None,
-    perturbations: list[str | None] | None = None,
-) -> list[LLMRequest]:
-    if messages_list is not None and len(messages_list) != len(prompts):
-        raise ValueError("messages_list must be the same length as prompts")
-    per_prompt_models: list[type | None] | None = None
-    if isinstance(response_model, list):
-        if len(response_model) != len(prompts):
-            raise ValueError("response_model list must be the same length as prompts")
-        per_prompt_models = response_model
-    return [
-        {
-            "model": model,
-            "messages": (messages_list[i] if messages_list is not None else [{"from": "human", "value": p}]),
-            "max_model_len": max_model_len,
-            "temperature": temperature,
-            "top_p": top_p,
-            "use_structured_output": use_structured_output,
-            "response_model": (per_prompt_models[i] if per_prompt_models is not None else response_model),
-            "method": method,
-            "record_id": record_ids[i] if record_ids is not None else None,
-            "prompt_strategy": prompt_strategies[i] if prompt_strategies is not None else None,
-            "perturbation": perturbations[i] if perturbations is not None else None,
-        }
-        for i, p in enumerate(prompts)
-    ]

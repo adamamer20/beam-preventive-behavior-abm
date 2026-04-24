@@ -9,11 +9,10 @@ evaluation workflows.
 src/beam_abm/llm/
 ├── backends/     # backend adapters and backend factory
 ├── clients/      # lower-level clients (e.g. async vLLM manager)
-├── processors/   # async processing strategies
 ├── prompts/      # prompt builders/templates
 ├── schemas/      # pydantic model configs and prediction schemas
 ├── strategies/   # strategy logic helpers
-├── utils/        # token, retry, logging, and writer utilities
+├── utils/        # token, logging, and helper utilities
 ├── config.py     # runtime settings resolver
 └── inference.py  # backend-agnostic async inference helpers
 ```
@@ -23,13 +22,6 @@ src/beam_abm/llm/
 ```python
 from beam_abm.llm.schemas import ModelConfig, ModelOptions
 from beam_abm.llm.backends import get_backend, AsyncLLMBackend, LLMRequest
-from beam_abm.llm.processors import (
-    AsyncZeroShotProcessor,
-    AsyncChainOfThoughtProcessor,
-    AsyncFramedProcessor,
-    AsyncPersonaCardProcessor,
-    AsyncMultiExpertProcessor,
-)
 ```
 
 ## Backend selection

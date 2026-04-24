@@ -96,8 +96,8 @@ make anchors
 ### Thesis artefact export
 
 ```bash
-make empirical-export-thesis
-make evaluation-export-thesis
+make decision-function-export-thesis
+make llm-microvalidation-export-thesis
 make abm-export-thesis
 make thesis-artifacts
 ```

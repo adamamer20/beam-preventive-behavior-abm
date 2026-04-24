@@ -12,7 +12,7 @@ from beartype import beartype
 from sklearn.linear_model import LinearRegression
 
 from beam_abm.common.logging import get_logger
-from beam_abm.empirical.io import ensure_outdir, parse_list_arg
+from beam_abm.decision_function.io import ensure_outdir, parse_list_arg
 from beam_abm.settings import CSV_FILE_CLEAN, SEED
 
 logger = get_logger(__name__)

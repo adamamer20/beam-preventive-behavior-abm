@@ -17,17 +17,6 @@ from typing import Any, Protocol, TypedDict
 from beam_abm.llm.schemas.model_config import ModelConfig
 
 
-class LLMMessage(TypedDict):
-    """A minimal message format used across backends.
-
-    The existing codebase uses vLLM-style messages: {"from": "human", "value": "..."}.
-    We keep that shape at the boundary so higher-level logic doesn't change.
-    """
-
-    from_: str
-    value: str
-
-
 class LLMRequest(TypedDict, total=False):
     """A request payload for concurrent generation."""
 

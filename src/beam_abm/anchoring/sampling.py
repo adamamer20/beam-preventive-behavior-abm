@@ -17,8 +17,8 @@ from xgboost import XGBRegressor
 
 from beam_abm.anchoring.build import _impute_within_country_knn, _prepare_matrix, build_anchor_neighborhoods
 from beam_abm.common.logging import get_logger
-from beam_abm.empirical.io import ensure_outdir
-from beam_abm.empirical.missingness import (
+from beam_abm.decision_function.io import ensure_outdir
+from beam_abm.decision_function.missingness import (
     DEFAULT_MISSINGNESS_THRESHOLD,
     apply_missingness_plan_pl,
     build_missingness_plan_pl,
@@ -155,15 +155,6 @@ def _prepare_model_matrix(
     means = np.nanmean(X, axis=0)
     X = np.where(np.isnan(X), means, X)
     return X, y, means
-
-
-def _fit_linear_model(
-    df: pl.DataFrame, *, target_col: str, driver_cols: Sequence[str]
-) -> tuple[LinearRegression, np.ndarray]:
-    X, y, means = _prepare_model_matrix(df, target_col=target_col, driver_cols=driver_cols)
-    model = LinearRegression()
-    model.fit(X, y)
-    return model, means
 
 
 def _fit_xgb_model(
@@ -1598,6 +1589,8 @@ def run_anchor_pe(config: PerturbationConfig) -> None:
                     .with_columns(
                         (pl.col("ice_plus_1sd") - pl.col("ice_base")).alias("se_1sd"),
                         (pl.col("ice_plus_1sd") - pl.col("ice_minus_1sd")).alias("se_pm1sd"),
+                    )
+                    .with_columns(
                         pl.col("se_1sd").alias("shock_effect_1sd"),
                         pl.col("se_pm1sd").alias("shock_effect_pm1sd"),
                     )

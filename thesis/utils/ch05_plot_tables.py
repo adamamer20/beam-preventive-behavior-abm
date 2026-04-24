@@ -14,6 +14,7 @@ import polars as pl
 from IPython.display import Markdown
 from matplotlib.colors import TwoSlopeNorm
 from matplotlib.lines import Line2D
+from matplotlib.patches import Rectangle
 
 from beam_abm.abm.scenario_defs import get_scenario, get_scenario_label
 from utils.chapter_io import md_table
@@ -3077,7 +3078,7 @@ def plot_dynamic_fingerprints_panel(
         return fig
 
     n_rows = len(active_rows)
-    fig, axes = plt.subplots(n_rows, 3, figsize=(11.8, 2.7 * n_rows), sharex=False)
+    fig, axes = plt.subplots(n_rows, 3, figsize=(13.2, 3.0 * n_rows), sharex=False)
     if n_rows == 1:
         axes = np.asarray([axes])
 
@@ -3166,9 +3167,81 @@ def plot_dynamic_fingerprints_panel(
             if col_idx == 2 and npi_lims is not None:
                 ax.set_ylim(npi_lims)
 
-    fig.suptitle("Dynamic response signatures of key levers", y=1.01, fontsize=12.0)
-    fig.tight_layout()
+    fig.tight_layout(pad=0.6, w_pad=0.8, h_pad=1.0)
     return fig
+
+
+def export_dynamic_fingerprints_presentation_assets(
+    context: ABMChapterContext,
+    *,
+    output_dir: str | Path = Path("../thesis/presentation/assets"),
+    stem: str = "fig-05-dynamic-fingerprints",
+    dpi: int = 220,
+    highlight_color: str = "#d63031",
+    highlight_linewidth: float = 2.3,
+    highlight_pad_x: float = 0.004,
+    highlight_pad_y: float = 0.006,
+) -> list[Path]:
+    """Export base and stepped presentation assets for the dynamic fingerprints panel.
+
+    The stepped variants are generated from the same Matplotlib figure by adding
+    a row-level rectangle in figure coordinates, so the highlight aligns exactly
+    with the underlying subplot geometry.
+    """
+    output_root = Path(output_dir)
+    output_root.mkdir(parents=True, exist_ok=True)
+
+    fig = plot_dynamic_fingerprints_panel(context)
+    axes = [ax for ax in fig.axes if ax.get_visible()]
+    if len(axes) < 9:
+        raise RuntimeError(f"Expected at least 9 visible axes for the dynamic fingerprints panel, found {len(axes)}.")
+
+    step_paths = [
+        output_root / f"{stem}.png",
+        output_root / f"{stem}-step0.png",
+        output_root / f"{stem}-step1.png",
+        output_root / f"{stem}-step2.png",
+        output_root / f"{stem}-step3.png",
+    ]
+
+    save_kwargs = {"dpi": dpi, "facecolor": "white", "bbox_inches": "tight", "pad_inches": 0.02}
+
+    # Base full figure and step0 are identical unhighlighted variants.
+    fig.savefig(step_paths[0], **save_kwargs)
+    fig.savefig(step_paths[1], **save_kwargs)
+
+    row_rectangles: list[Rectangle] = []
+    for row_idx in range(3):
+        row_axes = axes[row_idx * 3 : (row_idx + 1) * 3]
+        x0 = min(ax.get_position().x0 for ax in row_axes) - highlight_pad_x
+        y0 = min(ax.get_position().y0 for ax in row_axes) - highlight_pad_y
+        x1 = max(ax.get_position().x1 for ax in row_axes) + highlight_pad_x
+        y1 = max(ax.get_position().y1 for ax in row_axes) + highlight_pad_y
+        row_rectangles.append(
+            Rectangle(
+                (x0, y0),
+                x1 - x0,
+                y1 - y0,
+                transform=fig.transFigure,
+                fill=False,
+                edgecolor=highlight_color,
+                linewidth=highlight_linewidth,
+                zorder=1000,
+                clip_on=False,
+                joinstyle="round",
+            )
+        )
+
+    exported = step_paths[:2]
+    for row_idx, rect in enumerate(row_rectangles, start=1):
+        fig.add_artist(rect)
+        out_path = output_root / f"{stem}-step{row_idx}.png"
+        fig.savefig(out_path, **save_kwargs)
+        rect.remove()
+        exported.append(out_path)
+
+    plt.close(fig)
+    return exported
 
 
 def _corr_safe(x: np.ndarray, y: np.ndarray) -> float:

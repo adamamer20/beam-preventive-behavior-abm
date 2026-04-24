@@ -34,6 +34,7 @@ from beam_abm.common.logging import get_logger
 from beam_abm.llm.backends.base import AsyncLLMBackend, LLMRequest, gather_concurrent
 from beam_abm.llm.config import get_llm_runtime_settings
 from beam_abm.llm.schemas.model_config import ModelConfig
+from beam_abm.llm.utils.backoff import jittered_exponential_backoff
 from beam_abm.llm.utils.conversation_logger import ConversationLogger
 from beam_abm.llm.utils.tokens import count_tokens
 
@@ -179,8 +180,7 @@ def _retry_sleep_seconds(exc: Exception, attempt_index: int) -> float:
         base = 2.0
         cap = 60.0
 
-    delay = min(cap, base * (2.0**attempt_index))
-    return delay * (0.5 + random.random())
+    return jittered_exponential_backoff(attempt_index, base=base, cap=cap)
 
 
 def _extract_json_object(text: str) -> str:
