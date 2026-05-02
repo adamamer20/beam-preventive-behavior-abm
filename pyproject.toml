@@ -87,7 +87,7 @@ paper = [
     "marimo>=0.8.0",
     "matplotlib>=3.7.0",
     "seaborn>=0.12.0",
-    "plotly>=5.0.0",
+    "plotly>=6.7.0",
 ]
 
 cuda = ["flashinfer-python>=0.2.7.post1", "flash-attn>=2.8.1"]
